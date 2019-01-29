@@ -1,0 +1,24 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+#ifndef AZURE_ULIB_C_INC_ULIB_HEAP_H_
+#define AZURE_ULIB_C_INC_ULIB_HEAP_H_
+
+#include "macro_utils.h"
+#include "umock_c_prod.h"
+
+#ifdef __cplusplus
+#include <cstddef>
+extern "C" {
+#else
+#include <stddef.h>
+#endif /* __cplusplus */
+
+MOCKABLE_FUNCTION(, void*, uLibMalloc, size_t, size);
+MOCKABLE_FUNCTION(, void, uLibFree, void*, ptr);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* AZURE_ULIB_C_INC_ULIB_HEAP_H_ */
