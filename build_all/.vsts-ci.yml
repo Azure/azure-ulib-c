@@ -1,0 +1,180 @@
+name: $(BuildID)_$(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+resources:
+- repo: self
+  clean: true
+phases:
+- phase: checksubmodule  
+  queue:
+    name: Hosted Ubuntu 1604
+  steps:
+  - script: |
+      sudo apt-get update && apt-get install -y \
+      curl \
+      git \
+      python-software-properties \
+      build-essential \
+      pkg-config
+      sudo curl -sL https://deb.nodesource.com/setup_6.x | bash -
+      sudo apt-get install -y nodejs
+    displayName: 'setup'  
+  - script: |
+      npm install check_submodules
+      ./../../node_modules/.bin/check_submodules . master
+    displayName: 'build'   
+- phase: windowsx86
+  queue:
+    name: 'aziotbld-win03'
+  steps:
+  - script: |
+     if exist build_all\windows_c.cmd (
+      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
+      call build_all\windows_c.cmd)
+    displayName: 'build'
+  - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
+    displayName: 'cleanup'
+    condition: always()
+- phase: raspberrypi
+  variables:
+    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/raspberrypi-c"
+  queue: Hosted Ubuntu 1604
+  displayName: raspberrypi
+  steps:
+  - script: |
+     if [ -f "build_all/raspberrypi_c.sh" ]
+     then
+      sudo ./build_all/raspberrypi_c.sh
+     fi 
+    displayName: 'build'  
+  - script: sudo rm -rf $(Agent.BuildDirectory)/*
+    displayName: 'cleanup'
+- phase: gcc44
+  variables:
+    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/linux-c-ubuntu-gcc4.4"
+  queue: Hosted Ubuntu 1604
+  displayName: 'gcc4.4'
+  steps:
+  - script: |
+     if [ -f "build_all/linux_c_gcc44.sh" ]
+     then
+      sudo ./build_all/linux_c_gcc44.sh
+     fi
+    displayName: 'build'  
+  - script: sudo rm -rf $(Agent.BuildDirectory)/*
+    displayName: 'cleanup'
+    condition: always()
+- phase: gcc46
+  variables:
+    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/gcc-4.6:latest"
+  queue: Hosted Ubuntu 1604
+  displayName: 'gcc-4.6'
+  steps:
+  - script: |
+     if [ -f "build_all/linux_c_gcc44.sh" ]
+     then
+      sudo ./build_all/linux_c_gcc44.sh
+     fi
+    displayName: 'build'  
+  - script: sudo rm -rf $(Agent.BuildDirectory)/*
+    displayName: 'cleanup'
+    condition: always()    
+- phase: linuxoptions
+  variables:
+    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/vsts-linux-c-ubuntu"
+  queue: Hosted Ubuntu 1604
+  displayName: 'linux-options'
+  steps:
+  - script: | 
+     if [ -f "build_all/linux_c_option_test.sh" ]
+     then 
+      sudo ./build_all/linux_c_option_test.sh
+     fi
+    displayName: 'build'
+    condition: always()
+  - script: sudo rm -rf $(Agent.BuildDirectory)/*
+    displayName: 'cleanup'
+    condition: always()    
+- phase: windowscex86
+  queue:
+    name: 'win'
+  steps:
+  - script: |
+     if exist build_all\windowsce_c.cmd (
+      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
+      call build_all\windowsce_c.cmd)
+    displayName: 'build'
+  - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
+    displayName: 'cleanup'
+    condition: always()    
+- phase: windowsdynamic
+  queue:
+    name: 'aziotbld-win03'
+  steps:
+  - script: |
+     if exist build_all\windows_c_build_as_dynamic.cmd (
+      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
+      call build_all\windows_c_build_as_dynamic.cmd)
+    displayName: 'build'
+  - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
+    displayName: 'cleanup'
+    condition: always()      
+- phase: clang
+  variables:
+    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/ubuntu-clang"
+  queue: aziotbld-lin01
+  displayName: 'clang'
+  steps:
+  - script: |
+     if [ -f "build_all/ubuntu_clang.sh" ]
+     then
+      export OPENSSL_ia32cap=0x00000000
+      sudo chmod -R 755 .
+      sudo -E ./build_all/ubuntu_clang.sh
+     fi
+    displayName: 'build'
+  - script: sudo rm -rf $(Agent.BuildDirectory)/*
+    displayName: 'cleanup'
+    condition: always()    
+- phase: debian
+  variables:
+    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/c-debian"
+  queue: c-df
+  displayName: 'debian'
+  steps:
+  - script: |
+     if [ -f "build_all/debian_c.sh" ]
+     then
+      sudo chmod 755 build_all/debian_c.sh
+      sudo -E ./debian_c.sh
+      sudo build_all/debian_c.sh
+     fi
+    displayName: 'build'
+  - script: sudo rm -rf $(Agent.BuildDirectory)/*
+    displayName: 'cleanup'
+    condition: always()    
+- phase: windowsx64
+  queue:
+    name: 'aziotbld-win03'
+  displayName: 'windowsx64'
+  steps:
+  - script: |
+     if exist build_all\windows_c.cmd (
+      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
+      call build_all\windows_c.cmd --platform x64)
+    displayName: 'build'
+  - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
+    displayName: 'cleanup'
+    condition: always()    
+- phase: xcodenative
+  queue:
+    name: OSX
+  steps:
+  - script: |
+     if [ -f "build_all/osx_xcode_native.sh" ]
+     then
+      DYLD_LIBRARY_PATH=/usr/local/Cellar/curl/7.61.0/lib
+      ./build_all/osx_xcode_native.sh
+     fi
+    displayName: 'build'  
+  - script: rm -rf $(Agent.BuildDirectory)/*
+    displayName: 'cleanup'
+    condition: always()
