@@ -23,7 +23,7 @@ phases:
     displayName: 'build'   
 - phase: windowsx86
   queue:
-    name: 'azureiot-lab03'
+    name: 'azureiot-win03'
   steps:
   - script: |
      if exist build_all\windows_c.cmd (
@@ -93,21 +93,10 @@ phases:
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
     condition: always()    
-- phase: windowscex86
-  queue:
-    name: 'win'
-  steps:
-  - script: |
-     if exist build_all\windowsce_c.cmd (
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
-      call build_all\windowsce_c.cmd)
-    displayName: 'build'
-  - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
-    displayName: 'cleanup'
-    condition: always()    
+
 - phase: windowsdynamic
   queue:
-    name: 'azureiot-lab03'
+    name: 'azureiot-win03'
   steps:
   - script: |
      if exist build_all\windows_c_build_as_dynamic.cmd (
@@ -153,7 +142,7 @@ phases:
     condition: always()    
 - phase: windowsx64
   queue:
-    name: 'azureiot-lab03'
+    name: 'azureiot-win03'
   displayName: 'windowsx64'
   steps:
   - script: |
@@ -164,17 +153,3 @@ phases:
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
     displayName: 'cleanup'
     condition: always()    
-- phase: xcodenative
-  queue:
-    name: OSX
-  steps:
-  - script: |
-     if [ -f "build_all/osx_xcode_native.sh" ]
-     then
-      DYLD_LIBRARY_PATH=/usr/local/Cellar/curl/7.61.0/lib
-      ./build_all/osx_xcode_native.sh
-     fi
-    displayName: 'build'  
-  - script: rm -rf $(Agent.BuildDirectory)/*
-    displayName: 'cleanup'
-    condition: always()
