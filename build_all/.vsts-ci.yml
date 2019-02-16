@@ -23,7 +23,7 @@ phases:
     displayName: 'build'   
 - phase: windowsx86
   queue:
-    name: 'azureiot-win03'
+    name: 'aziotbld-win03'
   steps:
   - script: |
      if exist build_all\windows_c.cmd (
