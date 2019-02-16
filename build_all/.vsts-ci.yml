@@ -23,7 +23,7 @@ phases:
     displayName: 'build'   
 - phase: windowsx86
   queue:
-    name: 'azureiot-win03'
+    name: 'aziotbld-win03'
   steps:
   - script: |
      if exist build_all\windows_c.cmd (
@@ -96,7 +96,7 @@ phases:
 
 - phase: windowsdynamic
   queue:
-    name: 'azureiot-win03'
+    name: 'aziotbld-win03'
   steps:
   - script: |
      if exist build_all\windows_c_build_as_dynamic.cmd (
@@ -142,7 +142,7 @@ phases:
     condition: always()    
 - phase: windowsx64
   queue:
-    name: 'azureiot-win03'
+    name: 'aziotbld-win03'
   displayName: 'windowsx64'
   steps:
   - script: |
