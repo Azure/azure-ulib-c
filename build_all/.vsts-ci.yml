@@ -94,52 +94,6 @@ phases:
     displayName: 'cleanup'
     condition: always()    
 
-- phase: windowsdynamic
-  queue:
-    name: 'azureiot-win03'
-  steps:
-  - script: |
-     if exist build_all\windows_c_build_as_dynamic.cmd (
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
-      call build_all\windows_c_build_as_dynamic.cmd)
-    displayName: 'build'
-  - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
-    displayName: 'cleanup'
-    condition: always()      
-- phase: clang
-  variables:
-    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/ubuntu-clang"
-  queue: aziotbld-lin01
-  displayName: 'clang'
-  steps:
-  - script: |
-     if [ -f "build_all/ubuntu_clang.sh" ]
-     then
-      export OPENSSL_ia32cap=0x00000000
-      sudo chmod -R 755 .
-      sudo -E ./build_all/ubuntu_clang.sh
-     fi
-    displayName: 'build'
-  - script: sudo rm -rf $(Agent.BuildDirectory)/*
-    displayName: 'cleanup'
-    condition: always()    
-- phase: debian
-  variables:
-    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/c-debian"
-  queue: c-df
-  displayName: 'debian'
-  steps:
-  - script: |
-     if [ -f "build_all/debian_c.sh" ]
-     then
-      sudo chmod 755 build_all/debian_c.sh
-      sudo -E ./debian_c.sh
-      sudo build_all/debian_c.sh
-     fi
-    displayName: 'build'
-  - script: sudo rm -rf $(Agent.BuildDirectory)/*
-    displayName: 'cleanup'
-    condition: always()    
 - phase: windowsx64
   queue:
     name: 'azureiot-win03'
