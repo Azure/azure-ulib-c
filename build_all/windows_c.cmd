@@ -18,7 +18,7 @@ set repo_root=%build-root%
 rem // resolve to fully qualified path
 for %%i in ("%repo_root%") do set repo_root=%%~fi
 
-set CMAKE_DIR=ustreambuffer_win32
+set CMAKE_DIR=azure-ulib-c
 set build-config=Debug
 set build-platform=Win32
 
@@ -40,7 +40,7 @@ pushd %build-root%\cmake\%CMAKE_DIR%
 cmake %build-root% -Drun_unittests:BOOL=ON
 if not !ERRORLEVEL!==0 exit /b !ERRORLEVEL!
 
-msbuild /m ustreambuffer.sln "/p:Configuration=%build-config%;Platform=%build-platform%"
+msbuild /m azure-ulib-c.sln "/p:Configuration=%build-config%;Platform=%build-platform%"
 if !ERRORLEVEL! neq 0 exit /b !ERRORLEVEL!
 
 if %build-platform% neq arm (
