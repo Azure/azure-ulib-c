@@ -30,6 +30,8 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(ULIB_PAL_DIRECTORY "GCC/IOS")
 endif()
 
+include (CTest)
+
 if(${no_logging})
     add_definitions(-DNO_LOGGING)
 endif()
