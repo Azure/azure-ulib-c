@@ -32,7 +32,7 @@
 TEST_FUNCTION(uStreamBufferDispose_complianceClonedInstanceDisposedFirstSucceed)
 {
     ///arrange
-    uint32_t uStreamBufferCloneCurrentPosition;
+    offset_t uStreamBufferCloneCurrentPosition;
     USTREAMBUFFER_INTERFACE uStreamBufferInstance = USTREAMBUFFER_COMPLIANCE_TARGET_FACTORY;
     ASSERT_IS_NOT_NULL(uStreamBufferInstance);
     USTREAMBUFFER_INTERFACE uStreamBufferCloneInterface = uStreamBufferClone(uStreamBufferInstance, 0);
@@ -55,7 +55,7 @@ TEST_FUNCTION(uStreamBufferDispose_complianceClonedInstanceDisposedFirstSucceed)
 TEST_FUNCTION(uStreamBufferDispose_complianceClonedInstanceDisposedSecondSucceed)
 {
     ///arrange
-    uint32_t uStreamBufferCloneCurrentPosition;
+    offset_t uStreamBufferCloneCurrentPosition;
     USTREAMBUFFER_INTERFACE uStreamBufferInstance = USTREAMBUFFER_COMPLIANCE_TARGET_FACTORY;
     ASSERT_IS_NOT_NULL(uStreamBufferInstance);
     USTREAMBUFFER_INTERFACE uStreamBufferCloneInterface = uStreamBufferClone(uStreamBufferInstance, 0);
@@ -145,7 +145,7 @@ TEST_FUNCTION(uStreamBufferClone_complianceNewBufferClonedWithZeroOffsetSucceed)
     ASSERT_IS_NOT_NULL(uStreamBufferCloneInterface);
 
     /* current position was moved to the start of the buffer. */
-    uint32_t uStreamBufferCloneCurrentPosition;
+    offset_t uStreamBufferCloneCurrentPosition;
     ASSERT_ARE_EQUAL(
         int, 
         USTREAMBUFFER_SUCCESS, 
@@ -207,7 +207,7 @@ TEST_FUNCTION(uStreamBufferClone_complianceNewBufferClonedWithOffsetSucceed)
     ASSERT_IS_NOT_NULL(uStreamBufferCloneInterface);
 
     /* current position was moved to the start of the buffer with the offset. */
-    uint32_t uStreamBufferCloneCurrentPosition;
+    offset_t uStreamBufferCloneCurrentPosition;
     ASSERT_ARE_EQUAL(
         int, 
         USTREAMBUFFER_SUCCESS, 
@@ -274,7 +274,7 @@ TEST_FUNCTION(uStreamBufferClone_complianceEmptyBufferSucceed)
     ASSERT_IS_NOT_NULL(uStreamBufferCloneInterface);
 
     /* current position was moved to the start of the buffer. */
-    uint32_t uStreamBufferCloneCurrentPosition;
+    offset_t uStreamBufferCloneCurrentPosition;
     ASSERT_ARE_EQUAL(
         int, 
         USTREAMBUFFER_SUCCESS, 
@@ -333,7 +333,7 @@ TEST_FUNCTION(uStreamBufferClone_complianceNewBufferWithNonZeroCurrentAndRelease
     ASSERT_IS_NOT_NULL(uStreamBufferCloneInterface);
 
     /* current position was moved to the start of the buffer with the offset. */
-    uint32_t uStreamBufferCloneCurrentPosition;
+    offset_t uStreamBufferCloneCurrentPosition;
     ASSERT_ARE_EQUAL(
         int, 
         USTREAMBUFFER_SUCCESS, 
@@ -406,7 +406,7 @@ TEST_FUNCTION(uStreamBufferClone_complianceNewBufferWithNonZeroCurrentAndRelease
     ASSERT_IS_NOT_NULL(uStreamBufferCloneInterface);
 
     /* current position was moved to the start of the buffer with the offset. */
-    uint32_t uStreamBufferCloneCurrentPosition;
+    offset_t uStreamBufferCloneCurrentPosition;
     ASSERT_ARE_EQUAL(
         int, 
         USTREAMBUFFER_SUCCESS, 
@@ -488,7 +488,7 @@ TEST_FUNCTION(uStreamBufferClone_complianceClonedBufferWithNonZeroCurrentAndRele
     ASSERT_IS_NOT_NULL(uStreamBufferCloneInterface);
 
     /* current position was moved to the start of the buffer with the offset. */
-    uint32_t uStreamBufferCloneCurrentPosition;
+    offset_t uStreamBufferCloneCurrentPosition;
     ASSERT_ARE_EQUAL(
         int, 
         USTREAMBUFFER_SUCCESS, 
@@ -742,7 +742,7 @@ TEST_FUNCTION(uStreamBufferGetCurrentPosition_complianceNewBufferSucceed)
     ///arrange
     USTREAMBUFFER_INTERFACE uStreamBufferInstance = USTREAMBUFFER_COMPLIANCE_TARGET_FACTORY;
     ASSERT_IS_NOT_NULL(uStreamBufferInstance);
-    uint32_t position;
+    offset_t position;
 
     ///act
     USTREAMBUFFER_RESULT result = uStreamBufferGetCurrentPosition(uStreamBufferInstance, &position);
@@ -762,7 +762,7 @@ TEST_FUNCTION(uStreamBufferGetCurrentPosition_complianceNewBufferWithNonZeroCurr
     ASSERT_IS_NOT_NULL(uStreamBufferInstance);
     uint8_t buf[USTREAMBUFFER_COMPLIANCE_TEMP_BUFFER_LENGTH];
     size_t size;
-    uint32_t position;
+    offset_t position;
     ASSERT_ARE_EQUAL(
         int, 
         USTREAMBUFFER_SUCCESS, 
@@ -790,7 +790,7 @@ TEST_FUNCTION(uStreamBufferGetCurrentPosition_complianceClonedBufferWithNonZeroC
     ASSERT_IS_NOT_NULL(uStreamBufferInstance);
     uint8_t buf[USTREAMBUFFER_COMPLIANCE_TEMP_BUFFER_LENGTH];
     size_t size;
-    uint32_t position;
+    offset_t position;
     ASSERT_ARE_EQUAL(
         int, 
         USTREAMBUFFER_SUCCESS, 
@@ -827,7 +827,7 @@ TEST_FUNCTION(uStreamBufferGetCurrentPosition_complianceNullBufferFailed)
 {
     ///arrange
     USTREAMBUFFER_INTERFACE uStreamBufferInstance = USTREAMBUFFER_COMPLIANCE_TARGET_FACTORY;
-    uint32_t position;
+    offset_t position;
 
     ///act
     USTREAMBUFFER_RESULT result = uStreamBufferInstance->api->getCurrentPosition(NULL, &position);
@@ -844,7 +844,7 @@ TEST_FUNCTION(uStreamBufferGetCurrentPosition_complianceBufferIsNotTypeOfBufferF
 {
     ///arrange
     USTREAMBUFFER_INTERFACE uStreamBufferInstance = USTREAMBUFFER_COMPLIANCE_TARGET_FACTORY;
-    uint32_t position;
+    offset_t position;
 
     ///act
     USTREAMBUFFER_RESULT result = 
@@ -1462,7 +1462,7 @@ TEST_FUNCTION(uStreamBufferSeek_complianceRunFullBufferByteByByteSucceed)
     uint8_t bufResult[1];
     size_t sizeResult;
 
-    for(uint32_t i = 0; i < USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH; i++)
+    for(offset_t i = 0; i < USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH; i++)
     {
         ///act - assert
         ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS, uStreamBufferSeek(uStreamBufferInstance, i));
@@ -1493,7 +1493,7 @@ TEST_FUNCTION(uStreamBufferSeek_complianceRunFullBufferByteByByteReverseOrderSuc
     uint8_t bufResult[1];
     size_t sizeResult;
 
-    for(uint32_t i = USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1; i > 0; i--)
+    for(offset_t i = USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1; i > 0; i--)
     {
         ///act - assert
         ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS, uStreamBufferSeek(uStreamBufferInstance, i));
@@ -1671,7 +1671,7 @@ TEST_FUNCTION(uStreamBufferSeek_complianceClonedBufferRunFullBufferByteByByteSuc
     uint8_t bufResult[1];
     size_t sizeResult;
 
-    for(uint32_t i = 0; i < USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAMBUFFER_COMPLIANCE_LENGTH_1; i++)
+    for(offset_t i = 0; i < USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAMBUFFER_COMPLIANCE_LENGTH_1; i++)
     {
         ///act - assert
         ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS, uStreamBufferSeek(uStreamBufferCloneInterface, i));
@@ -1710,7 +1710,7 @@ TEST_FUNCTION(uStreamBufferSeek_complianceClonedBufferRunFullBufferByteByByteRev
     uint8_t bufResult[1];
     size_t sizeResult;
 
-    for(uint32_t i = USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAMBUFFER_COMPLIANCE_LENGTH_1 - 1; i > 0; i--)
+    for(offset_t i = USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAMBUFFER_COMPLIANCE_LENGTH_1 - 1; i > 0; i--)
     {
         ///act - assert
         ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS, uStreamBufferSeek(uStreamBufferCloneInterface, i));
@@ -1836,7 +1836,7 @@ TEST_FUNCTION(uStreamBufferRelease_complianceSucceed)
         int, 
         USTREAMBUFFER_SUCCESS, 
         uStreamBufferGetNext(uStreamBufferInstance, bufResult, USTREAMBUFFER_COMPLIANCE_LENGTH_1, &sizeResult));
-    uint32_t currentPosition;
+    offset_t currentPosition;
     ASSERT_ARE_EQUAL(
         int, 
         USTREAMBUFFER_SUCCESS, 
@@ -1890,7 +1890,7 @@ TEST_FUNCTION(uStreamBufferRelease_complianceRunFullBufferByteByByteSucceed)
     uint8_t bufResult[1];
     size_t sizeResult;
 
-    for(uint32_t i = 1; i < USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1; i++)
+    for(offset_t i = 1; i < USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1; i++)
     {
         ///act - assert
         ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS, uStreamBufferSeek(uStreamBufferInstance, i + 1));
@@ -1936,7 +1936,7 @@ TEST_FUNCTION(uStreamBufferRelease_complianceClonedBufferSucceed)
         int, 
         USTREAMBUFFER_SUCCESS, 
         uStreamBufferGetNext(uStreamBufferCloneInterface, bufResult, USTREAMBUFFER_COMPLIANCE_LENGTH_1, &sizeResult));
-    uint32_t currentPosition;
+    offset_t currentPosition;
     ASSERT_ARE_EQUAL(
         int, 
         USTREAMBUFFER_SUCCESS, 
@@ -2010,7 +2010,7 @@ TEST_FUNCTION(uStreamBufferRelease_complianceClonedBufferRunFullBufferByteByByte
     uint8_t bufResult[1];
     size_t sizeResult;
 
-    for(uint32_t i = 1; i < USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAMBUFFER_COMPLIANCE_LENGTH_1 - 1; i++)
+    for(offset_t i = 1; i < USTREAMBUFFER_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAMBUFFER_COMPLIANCE_LENGTH_1 - 1; i++)
     {
         ///act - assert
         ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS, uStreamBufferSeek(uStreamBufferCloneInterface, i + 1));
@@ -2049,7 +2049,7 @@ TEST_FUNCTION(uStreamBufferRelease_complianceReleaseAfterCurrentFailed)
         int, 
         USTREAMBUFFER_SUCCESS, 
         uStreamBufferGetNext(uStreamBufferInstance, bufResult, USTREAMBUFFER_COMPLIANCE_LENGTH_1, &sizeResult));
-    uint32_t currentPosition;
+    offset_t currentPosition;
     ASSERT_ARE_EQUAL(
         int, 
         USTREAMBUFFER_SUCCESS, 

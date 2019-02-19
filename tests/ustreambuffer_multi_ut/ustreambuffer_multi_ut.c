@@ -662,7 +662,7 @@ TEST_FUNCTION(uStreamBufferMultiSeek_innerBufferFailedInGetCurrentPositionFailed
 
     ///assert
     ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SYSTEM_EXCEPTION, result);
-    uint32_t pos;
+    offset_t pos;
     ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS, uStreamBufferGetCurrentPosition(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
@@ -697,7 +697,7 @@ TEST_FUNCTION(uStreamBufferMultiSeek_innerBufferFailedInGetRemainingSizeFailed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SYSTEM_EXCEPTION, result);
-    uint32_t pos;
+    offset_t pos;
     ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS, uStreamBufferGetCurrentPosition(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
@@ -732,7 +732,7 @@ TEST_FUNCTION(uStreamBufferMultiSeek_innerBufferFailedInSeekFailed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SYSTEM_EXCEPTION, result);
-    uint32_t pos;
+    offset_t pos;
     ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS, uStreamBufferGetCurrentPosition(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
@@ -862,7 +862,7 @@ TEST_FUNCTION(uStreamBufferMultiRelease_innerBufferFailedInGetCurrentPositionFai
 
     ///assert
     ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SYSTEM_EXCEPTION, result);
-    uint32_t pos;
+    offset_t pos;
     ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS, uStreamBufferGetCurrentPosition(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAMBUFFER_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
@@ -902,7 +902,7 @@ TEST_FUNCTION(uStreamBufferMultiRelease_innerBufferFailedInGetRemainingSizeFaile
 
     ///assert
     ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SYSTEM_EXCEPTION, result);
-    uint32_t pos;
+    offset_t pos;
     ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS, uStreamBufferGetCurrentPosition(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAMBUFFER_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
