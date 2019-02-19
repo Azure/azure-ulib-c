@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "uStreamBuffer.h"
+#include "ustreambuffer.h"
 #include "ulib_port.h"
 #include "ulib_heap.h"
 #include "ulog.h"
