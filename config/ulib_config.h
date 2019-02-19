@@ -38,7 +38,14 @@ extern "C" {
  * <p> Defines the log function that the ulib shall use as its own way to print information in the
  *      log system.
  */
-#define ULIB_CONFIG_LOG(category, format, ...)  ULIB_PRINT(category, format, ##__VA_ARGS__)
+#define ULIB_CONFIG_LOG(category, format, ...)  uLogPrint(category, format, ##__VA_ARGS__)
+
+/**
+ * @brief   Maximum size of the uLib log.
+ *
+ * <p> Defines the maximum number of chars in each log line.
+ */
+#define ULIB_CONFIG_MAX_LOG_SIZE        256
 
 #ifdef __cplusplus
 }
