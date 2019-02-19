@@ -12,6 +12,24 @@ option(run_unittests "set run_unittests to ON to run unittests (default is OFF)"
 option(skip_samples "set skip_samples to ON to skip building samples (default is OFF)[if possible, they are always built]" OFF)
 option(use_installed_dependencies "set use_installed_dependencies to ON to use installed packages instead of building dependencies from submodules" OFF)
 
+#
+#making a global variable to know if we are on linux, windows, or macosx.
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(WINDOWS TRUE)
+    set(ULIB_PAL_DIRECTORY "MSBUILD/X86")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(LINUX TRUE)
+    # on Linux, enable valgrind
+    # these commands (MEMORYCHECK...) need to apear BEFORE include(CTest) or they will not have any effect
+    find_program(MEMORYCHECK_COMMAND valgrind)
+    set(MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --error-exitcode=1")
+    set(ULIB_PAL_DIRECTORY "GCC/LINUX")
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(MACOSX TRUE)
+    add_definitions(-DMACOSX)
+    set(ULIB_PAL_DIRECTORY "GCC/IOS")
+endif()
+
 if(${no_logging})
     add_definitions(-DNO_LOGGING)
 endif()
@@ -63,12 +81,12 @@ set(azure_ulib_h_files
     ./inc/ustreambuffer.h
     ./config/ulib_config.h
     ./inc/ulib_heap.h
-    ./pal/MSBUILD/X86/ulib_port.h
+    ./pal/${ULIB_PAL_DIRECTORY}/ulib_port.h
 )
 
 include_directories(./inc)
 include_directories(./config)
-include_directories(./pal/MSBUILD/X86)
+include_directories(./pal/${ULIB_PAL_DIRECTORY})
 include_directories(./deps/umock-c/inc)
 
 include("build_all/configs/ulib_functions.cmake")
