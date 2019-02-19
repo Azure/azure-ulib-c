@@ -30,7 +30,7 @@ extern const char* const ULOG_TYPE_STRING[];
 
 #define ULIB_PRINT(type, format, ...)           \
 do  {                                           \
-        printf(ULOG_TYPE_STRING[type]);         \
+        printf("%s", ULOG_TYPE_STRING[type]);         \
         printf(format, ##__VA_ARGS__);          \
     } while((void)0,0)
 
