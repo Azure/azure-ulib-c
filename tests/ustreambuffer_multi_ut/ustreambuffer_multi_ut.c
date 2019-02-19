@@ -1059,6 +1059,6 @@ TEST_FUNCTION(uStreamBufferClone_noMemoryToCreateSecondNodeFailed)
     (void)uStreamBufferDispose(uStreamBufferInstance);
 }
 
-#include "uStreamBuffer_compliance_ut.h"
+#include "ustreambuffer_compliance_ut.h"
 
 END_TEST_SUITE(ustreambuffer_multi_ut)
