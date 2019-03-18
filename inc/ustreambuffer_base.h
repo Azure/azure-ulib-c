@@ -7,26 +7,26 @@
 /**
  * @brief uStreamBuffer Interface.
  *
- * <p> This is the definition of a heterogeneous buffer that helps the other modules in the system to
- *      expose big amount of data without use a big amount of memory. Modules in the system can expose
- *      its own data using this interface, to do that, the module shall implement the functions in the
- *      interface. This implementation shall be following the definition described in this file, not
- *      only the prototype of the header, but the behavior too.
- * <p> uStreamBuffer defines an provider consumer interface when:
- *      - @b Provider - is the module of code that handles a data to be exposed. This module implements
+ * <p> This is the definition of a heterogeneous buffer that helps other modules in a system
+ *      expose large amounts of data without using a large amount of memory. Modules in the system can expose
+ *      their own data using this interface. To do that, the module shall implement the functions in the
+ *      interface. This implementation shall follow the definition described in this file, which includes
+ *      not only the prototype of the header, but the behavior as well.
+ * <p> uStreamBuffer defines a provider-consumer interface when:
+ *      - @b Provider - is the module of code that handles data to be exposed. This module implements
  *          the uStreamBuffer interface to expose the data to the consumer.
  *      - @b Consumer - is the module of code that will use the data exposed by the provider.
  *
  * <p> The uStreamBuffer shall have a clear separation between the internal content (provider domain)
- *      and what it exposes as an external content (consumer domain). The uStreamBuffer shall never expose 
- *      the internal content, providing, for instance, a pointer to a internal memory position. Every 
- *      exposed content shall be copied from the internal data source to a external memory. To do that 
- *      in a clear way, the uStreamBuffer shall always work with the concept of two buffers, the 
- *      `data source` and the `local buffer`, following the follow definition:
+ *      and what it exposes as external content (consumer domain). The uStreamBuffer shall never expose 
+ *      the internal content (ex: providing a pointer to a internal memory position). All 
+ *      exposed content shall be copied from the internal data source to some given external memory. To do
+ *      that in a clear way, the uStreamBuffer shall always work with the concept of two buffers, the 
+ *      `data source` and the `local buffer`, adhering to the following definition:
  *      - @b Data source - is the place where the data is stored by the implementation of the buffer
  *          interface. The data source is in the provider domain, and it shall be protected, immutable, 
  *          and non volatile. Consumers can read the data from the data source by the calling
- *          the {@link uStreamBufferGetNext} API, which will copy a snapshots of the data to the
+ *          the {@link uStreamBufferGetNext} API, which will copy a snapshot of the data to the
  *          provided external memory, called local buffer.
  *      - @b Local buffer - is the consumer domain buffer, where the {@link uStreamBufferGetNext} API 
  *          will copy the required bytes from the data source. The local buffer belongs to the consumer 
@@ -34,10 +34,10 @@
  *          content of the local buffer can be changed and released.
  *
  * <i><b>Example:
- * <p> A provider wants to create a uStreamBuffer to expose a data to the consumer. The provider will 
+ * <p> A provider wants to create a uStreamBuffer to expose data to the consumer. The provider will 
  *      store the content in the HEAP, and will create a uStreamBuffer from it, passing the ownership of 
- *      the content to the uStreamBuffer. Consumer will print the content of the uStramBuffer, using a 
- *      local buffer of 1K. The following diagram represent this operation.
+ *      the content to the uStreamBuffer. Consumer will print the content of the uStreamBuffer, using a 
+ *      local buffer of 1K. The following diagram represents this operation.
  *
  * <pre><code>
  *  +----------------+        +----------------+         +------------------+     +------------+
@@ -60,7 +60,7 @@
  *          |<-----------------uStreamBufferInterface--------------+                    |
  *          +-uStreamBufferInterface->|                            |                    |
  *
- *  Now that the consumer have the uStreamBuffer with the content, it will print it using the 
+ *  Now that the consumer has the uStreamBuffer with the content, it will print it using the 
  *   iterator uStreamBufferGetNext.
  *
  *          |                         +------------------malloc(1024)------------------>|
@@ -87,10 +87,10 @@
  * </code></pre>
  *
  * <i><b> Heterogeneous buffer:
- * <p> Data can be stored in multiple different medias, like RAM, flash, file, or cloud. Each media
+ * <p> Data can be stored in multiple, different medias, like RAM, flash, file, or cloud. Each media
  *      has its own read requirements. A simple way to unify it is copying it all to the RAM. For
  *      example, if an HTTP package contains a header that is in the flash, with some data in the RAM
- *      and the content is in a file in the external flash, to concatenate it all in a single datagram
+ *      and the content in a file in the external flash, to concatenate it all in a single datagram
  *      you can allocate a single area in the RAM that fits it all, and bring all the data to this
  *      memory. The problem with this approach is the amount of memory required for that, which can be
  *      multiple times the total RAM that you have for the entire system.
@@ -100,27 +100,27 @@
  *      is not easily portable, as different hardware will contain different media with different
  *      requirements.
  * <p> The `uStreamBuffer` resolves this problem by creating a single interface that can handle any media,
- *      exposing it as a standard iterator. Who ever wants to expose a media as a uStreamBuffer shall
+ *      exposing it as a standard iterator. Whoever wants to expose a type of media as a uStreamBuffer shall
  *      implement the functions described on the interface, handling all implementation details for
  *      each API. For example, the  {@link uStreamBufferGetNext} can be a simple copy of the flash to
  *      the RAM for a buffer that handles constants, or be as complex as creating a TCP/IP connection
  *      to bring the data for a buffer that handles data in the cloud.
  * <p> The consumer of the uStreamBuffer can use all kinds of media in the same way, and may easily
- *      concatenate it exposing as uStreamBuffer that handles multiple uStreamBuffer.
+ *      concatenate it by exposing a uStreamBuffer that handles multiple uStreamBuffer's.
  *
  * <i><b> Ownership:
- * <p> The uStreamBuffer is an owner-less buffer, every instance of the buffer has the same rights. They
+ * <p> The uStreamBuffer is an owner-less buffer: every instance of the buffer has the same rights. They
  *      all can read the buffer content, release the parts that are not necessary anymore, and dispose
  *      it.
  * <p> Each instance of the uStreamBuffer is owned by who created it, and should never be shared by 
- *      multiple consumers. When a consumer receives an uStreamBuffer and intend to make operations over 
+ *      multiple consumers. When a consumer receives a uStreamBuffer and intends to make operations over 
  *      it, this consumer must first make a clone of the buffer, creating its own instance of it, and 
  *      then make the needed operations.
- * <p> Clone a buffer creates a new set of controls for the buffer that will share the same content of
+ * <p> Cloning a buffer creates a new set of controls for the buffer that will share the same content of
  *      the original buffer. The content itself is a smart pointer with a {@code refCount} that
  *      controls the total number of instances.
  * <p> Disposing an instance of the buffer will decrease the {@code refCount} of this buffer. If the
- *      number of references reach 0, the buffer will destroy itself releasing all allocated memory.
+ *      number of references reaches 0, the buffer will destroy itself, releasing all allocated memory.
  *      {@b Not disposing an instance of the buffer will leak memory}.
  * <p> Instances of the buffer can be created in 2 ways:
  *      - @b Factory - when a producer exposes data using this buffer, it must create the buffer
@@ -130,60 +130,61 @@
  *
  * <i><b> Thread safe:
  * <p> The uStreamBuffer **IS NOT** thread safe for multiple accesses over the same instance. The ownership
- *      of the instance of an uStreamBuffer shall **NOT** be shared, especially not by consumers that runs on 
- *      different threads. The owner thread shall create a clone of the uStreamBuffer and pass to the other 
+ *      of the instance of a uStreamBuffer shall **NOT** be shared, especially not by consumers that run on 
+ *      different threads. The owner thread shall create a clone of the uStreamBuffer and pass it to the other 
  *      thread.
- * <p> The uStreamBuffer **IS** thread safe for accesses between instances. It means that any access to a
+ * <p> The uStreamBuffer **IS** thread safe for accesses between instances. It means that any access to
  *      memory shared by multiple instances shall be thread safe.
  *
  * <i><b> Data retention:
  * <p> As with any buffer, this buffer shall be used to handle data that was created by the producer as a
  *      result of an operation.
  * <p> This interface only exposes read functions, so once created, the content of the buffer cannot
- *      be changed by the producer of any of the consumers. Change the content of the data source will
+ *      be changed by the producer of any of the consumers. Changing the content of the data source will
  *      result in a data mismatch.
  * <p> Consumers can do a partial release of the buffer by calling {@link uStreamBufferRelease}.
  *      Calling the release does not imply that part of the memory will be immediately released. Once a
  *      buffer can handle multiple instances, a memory can only be free if all instances released it.
- *      A buffer implementation can or cannot have the ability to do partial releases, for instance, a
- *      buffer that handles a constant data stored in the flash will never release any memory on the
+ *      A buffer implementation can or cannot have the ability to do partial releases. For instance, a
+ *      buffer that handles constant data stored in the flash will never release any memory on the
  *      {@link uStreamBufferRelease} API.
  * <p> Released data cannot be accessed, even if it is still available in the memory.
  *
  * <i><b> Appendable:
- * <p> New data can be appended at the end of the uStreamBuffer by calling  {@link uStreamBufferAppend}, 
- *      it include uStreamBuffer from different medias. So, the uStreamBuffer and be use as a Stream of data.
- * <p> To protect the immutability of the uStreamBuffer, append a new uStreamBuffer to an existent one will
+ * <p> New data can be appended at the end of the uStreamBuffer by calling  {@link uStreamBufferAppend}.
+ *      This can include uStreamBuffer's from other different medias. In this way, the uStreamBuffer can
+ *      be used as a Stream of data.
+ * <p> To protect the immutability of the uStreamBuffer, appending a new uStreamBuffer to an existing one will
  *      only affect the instance that is calling the {@link uStreamBufferAppend}.
  * <i><b>Example:
- * <p> A producer created 3 uStreamBuffers named A, B, and C. At this point, it handle one instance of each
- *      buffer. A consumer got an instance of the buffer A and C, and append C to A creating a new buffer AC.
+ * <p> A producer created 3 uStreamBuffers named A, B, and C. At this point, it handles one instance of each
+ *      buffer. A consumer received an instance of the buffer A and C, and appends C to A creating a new buffer AC.
  *      After that, the producer will append B to A, creating the new AB buffer.
- * <p> Observe that the fact that the consumer appended C to A on its own instance didn't affect the buffer
- *      A on the producer, and when the producer appended B to A, it create AB, not ACB, and it didn't change
- *      the consumer AB buffer creating the ABC or ACB on it.
+ * <p> Observe the fact that the consumer appendeding C to A on its own instance didn't affect the buffer
+ *      A on the producer, and when the producer appended B to A, it creates AB, not ACB, and it didn't change
+ *      the consumer AB buffer creating ABC or ACB on it.
  *
  * <i><b> Lazy:
  * <p> The buffer can contain the full content, bring it into memory when required, or even create the content
  *      when it is necessary. The implementation of the {@link uStreamBufferGetNext} function can be smart 
  *      enough to use the minimal amount of memory. 
- * <p> The only restriction is if a consumer access the same position of the buffer multiple times, it shall
+ * <p> The only restriction is if a consumer accesses the same position of the buffer multiple times, it shall
  *      return the same data.
  * <i><b>Example:
- * <p> A random generator can expose random numbers using the uStreamBuffer, to do that it shall generate a 
- *      new number when the consumer call {@link uStreamBufferGetNext}. But to preserve the immutability,
+ * <p> A random generator can expose random numbers using the uStreamBuffer. To do that it shall generate a 
+ *      new number when the consumer calls {@link uStreamBufferGetNext}. But to preserve the immutability,
  *      the implementation of the {@link uStreamBufferGetNext} shall store the number in a recover queue up
- *      to the point that the consumer release this data. Because, if in some point in time, the consumer 
- *      seek this old position, the {@link uStreamBufferGetNext} shall return the same value created in
+ *      to the point that the consumer releases this data. Because, if in some point in time, the consumer 
+ *      seeks this old position, the {@link uStreamBufferGetNext} shall return the same value created in
  *      the first call of {@link uStreamBufferGetNext}.
  *
  * <i><b> Data conversion:
  * <p> When the data is copied from the data source to the local buffer, the {@link uStreamBufferGetNext}
  *      may do a data conversion, which means that the content exposed on the local buffer is a function
  *      of the content in the data source. It directly implies that the number of bytes written in the
- *      local buffer may be different of the number of bytes read from the data source.
+ *      local buffer may be different than the number of bytes read from the data source.
  * <i><b>Example:
- * <p> An uStreamBuffer can have the data source in binary format with 36 bytes, but it shall expose the 
+ * <p> A uStreamBuffer can have the data source in binary format with 36 bytes, but it shall expose the 
  *      content encoded in base64. The base64 creates 4 encoded bytes for each 3 bytes read. So, seeking the 
  *      beginning of the file, the {@link uStreamBufferGetRemainingSize} shall return 48 (= 36 / 3 * 4),
  *      instead of 36. If the consumer provides a local buffer of 16 bytes, the {@link uStreamBufferGetNext} 
@@ -205,29 +206,29 @@
  * </code></pre>
  *
  * <i><b> Data offset:
- * <p> On the data source, each byte is associate to a position, called {@b inner position}. The first 
- *      byte is always placed in the inner position `0`, followed by the other bytes, which the position  
- *      is incremented in a sequential way. The uStreamBuffer assigned a sequential number to each byte
+ * <p> In the data source, each byte is associated with a position, called {@b inner position}. The first 
+ *      byte is always placed in the inner position `0`, followed by the other bytes which are incremented
+ *      in a sequential manner. The uStreamBuffer assigns a sequential number to each byte
  *      in the local buffer as well, called {@b logical position}. When a new uStreamBuffer is created,
- *      the logical position matches the inner position, both started at the position `0`.
+ *      the logical position matches the inner position, both starting at position `0`.
  * <p> When the buffer is cloned, an offset shall be provided. This offset is the new first logical 
  *      position. The implementation of the uStreamBuffer shall handle the difference between the inner
- *      and logical position making the conversion in all the uStreamBuffer API. Providing an offset to a 
- *      buffer can be useful in many cases, for example, to concatenate buffers the second buffer can 
+ *      and logical position, making the conversion in all the uStreamBuffer API. Providing an offset to a 
+ *      buffer can be useful in many cases. For example, to concatenate buffers, the second buffer can 
  *      have an offset of the end of the first buffer plus one, or in the TCP connection, to make the 
- *      local position with the same value of the octet sequence number.
+ *      local position the same value of the octet sequence number.
  * <i><b>Example:
- * <p> An uStreamBuffer was created from the flash with 100 bytes, the inner position is a sequence started
- *      in `0` to `99`, and it matches the logical position. The consumer clones this buffer providing a 
- *      offset of `1000`, so, the new instance contains the same content of the original one, but the 
- *      logical positions starts at `1000` to `1099`.
- * <p> If the owner of the fist instance wants to seek the position 10, it shall call {@link uStreamBufferSeek}
+ * <p> A uStreamBuffer was created from the flash with 100 bytes. The inner position is a sequence from
+ *      `0` to `99`, and it matches the logical position. The consumer clones this buffer providing an
+ *      offset of `1000`. The new instance contains the same content as the original one, but the 
+ *      logical positions are now from `1000` to `1099`.
+ * <p> If the owner of the first instance wants to seek to position 10, it shall call {@link uStreamBufferSeek}
  *      with the logical position 10. For the cloned instance, to seek the same position 10, it shall call 
  *      {@link uStreamBufferSeek} with the logical position 1010.
  *
  * <i><b> Sliding window:
- * <p> One of the target usage of the uStreamBuffer is to accelerate and simplify the implementation of 
- *      sliding window protocols, like TCP. As described in this document, the uStremBuffer associate 
+ * <p> One of the target use cases of the uStreamBuffer is to accelerate and simplify the implementation of 
+ *      sliding window protocols, like TCP. As described in this document, the uStreamBuffer associates 
  *      a single byte (octet) to a single position, which means that every byte can be accessed by its
  *      position. For the consumer, this position is the logical position.
  * <p> To better understand the sliding window concept on the uStreamBuffer, the Data source can be split
@@ -246,28 +247,28 @@
  *      - @b Released - Sequence of bytes in the data source that is already acknowledged by the consumer, 
  *          and shall not be accessed anymore.
  *      - @b Pending - Sequence of bytes in the data source that is already read by the consumer, but not 
- *          acknowledged yet. The consumer can seek these bytes and read it again. This sequence starts in 
+ *          acknowledged yet. The consumer can seek these bytes and read it again. This sequence starts at 
  *          the First Valid Position and ends at the last byte before the Current Position.
- *      - @b Read - Is the last read portion of the data source. On the GetNext operation the Read starts
+ *      - @b Read - Is the last read portion of the data source. On the GetNext operation, the Read starts
  *          in the Current Position up to the read size. At the end of the GetNext, this segment is 
- *          incorporated to the Pending by change the Current Position to the end of the Read.
+ *          incorporated to Pending by changing the Current Position to the end of the Read.
  *      - @b Future - Sequence of bytes in the data source that is not read by the consumer yet. It starts 
- *          in the Current Position and ends in the end of the data source, which has the position calculated
+ *          at the Current Position and ends at the end of the data source, which has the position calculated
  *          by data source size - 1. 
  *
- * <p> To read a new portion of the data source, the consumer shall provide a memory, the local buffer, where 
- *      the implementation of the buffer will write the bytes that was read and converted from the data source. 
- *      The consumer can use this data on its own context, for example, to transmit is as a TCP package. When
- *      the consumer finished the immediately needs over the data in the local buffer, this data can be discarded
+ * <p> To read a new portion of the data source, the consumer shall provide memory (the local buffer), where 
+ *      the implementation of the buffer will write the bytes that were read and converted from the data source. 
+ *      The consumer can use this data in its own context: for example, to transmit as a TCP packet. When
+ *      the consumer finishes using the data in the local buffer, this data can be discarded
  *      and the local buffer recycled to get the next portion of the data source.
- * <p> If in some point of the future, the consumer needs this data again, it can seek the needed position 
+ * <p> If at some point in the future, the consumer needs this data again, it can seek the needed position 
  *      and get the same content using the GetNext.
- * <p> The consumer may confirm that a portion of the data is not necessary anymore, for example, after transmit
- *      multiple TCP package, the receiver of this packages answer with an ACK for a sequence number. On this case
+ * <p> The consumer may confirm that a portion of the data is not necessary anymore. For example, after transmitting
+ *      multiple TCP packets, the receiver of these packets answers with an ACK for a sequence number. In this case,
  *      the consumer can release this data in the data source by calling the {@link uStreamBufferRelease}, moving 
  *      the First Valid Position to the next one after the released position.
- * <p> A common scenario is here the consumer needs to read over the data source starting on the first byte after
- *      the last released one. For example, when a timeout happens for a transmitted package without ACK, the 
+ * <p> A common scenario is when the consumer needs to read over the data source starting on the first byte after
+ *      the last released one. For example, when a timeout happens for a transmitted packet without ACK, the 
  *      sender shall retransmit the data starting from that point. In this case, the consumer can call the API
  *      {@link uStreamBufferReset}. 
  */
