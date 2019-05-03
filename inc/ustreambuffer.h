@@ -6,8 +6,8 @@
 
 #include "ustreambuffer_base.h"
 
-#include "macro_utils.h"
-#include "umock_c_prod.h"
+#include "azure_macro_utils/macro_utils.h"
+#include "umock_c/umock_c_prod.h"
 
 #ifdef __cplusplus
 #include <cstdint>
