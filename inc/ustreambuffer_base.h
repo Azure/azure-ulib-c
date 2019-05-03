@@ -274,8 +274,8 @@
  */
 
 #include "ulib_config.h"
-#include "macro_utils.h"
-#include "umock_c_prod.h"
+#include "azure_macro_utils/macro_utils.h"
+#include "umock_c/umock_c_prod.h"
 
 #ifdef __cplusplus
 #include <cstdint>
@@ -294,7 +294,7 @@ typedef struct USTREAMBUFFER_TAG* USTREAMBUFFER_INTERFACE;
 /**
  * @brief   List of uStreamBuffer results.
  */
-DEFINE_ENUM(
+MU_DEFINE_ENUM(
     USTREAMBUFFER_RESULT, 
         USTREAMBUFFER_SUCCESS                       = 0, 
         USTREAMBUFFER_OUT_OF_MEMORY_EXCEPTION       = -1,

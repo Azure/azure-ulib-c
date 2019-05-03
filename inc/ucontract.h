@@ -4,7 +4,7 @@
 #ifndef AZURE_ULIB_C_INC_UCONTRACT_H_
 #define AZURE_ULIB_C_INC_UCONTRACT_H_
 
-#include "macro_utils.h"
+#include "azure_macro_utils/macro_utils.h"
 #include "ulib_config.h"
 #include "ulib_port.h"
 #include "ulog.h"
@@ -20,7 +20,7 @@ extern "C" {
  * the first line of the function.
  */
 #define EVALUATE_REQUIRE(x) x;
-#define UCONTRACT(...) do { FOR_EACH_1(EVALUATE_REQUIRE, __VA_ARGS__) } while((void)0,0)
+#define UCONTRACT(...) do { MU_FOR_EACH_1(EVALUATE_REQUIRE, __VA_ARGS__) } while((void)0,0)
 
 /*
  * Each internal function may have only one session of ASSERT and must be
@@ -45,7 +45,7 @@ extern "C" {
     do { \
         if(val != expected) \
         { \
-            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_EQUALS_STRING, TOSTRING(val), TOSTRING(expected)); \
+            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
             return result; \
         } \
     } while((void)0,0)
@@ -54,7 +54,7 @@ extern "C" {
     do { \
         if(val == expected) \
         { \
-            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_EQUALS_STRING, TOSTRING(val), TOSTRING(expected)); \
+            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
             return result; \
         } \
     } while((void)0,0)
@@ -63,7 +63,7 @@ extern "C" {
     do { \
         if(val == NULL) \
         { \
-            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_NULL_STRING, TOSTRING(val)); \
+            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
             return result; \
         } \
     } while((void)0,0)
@@ -81,7 +81,7 @@ extern "C" {
     do { \
         if(val != expected) \
         { \
-            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_EQUALS_STRING, TOSTRING(val), TOSTRING(expected)); \
+            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
             ULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
@@ -90,7 +90,7 @@ extern "C" {
     do { \
         if(val == expected) \
         { \
-            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_EQUALS_STRING, TOSTRING(val), TOSTRING(expected)); \
+            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
             ULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
@@ -99,7 +99,7 @@ extern "C" {
     do { \
         if(val == NULL) \
         { \
-            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_NULL_STRING, TOSTRING(val)); \
+            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
             ULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)

@@ -5,6 +5,7 @@
 #define AZURE_ULIB_C_TESTS_INC_USTREAMBUFFER_CTEST_AUX_H_
 
 #include <stdint.h>
+#include "ctest_macros.h"
 #include "testrunnerswitcher.h"
 #include "ustreambuffer_base.h"
 

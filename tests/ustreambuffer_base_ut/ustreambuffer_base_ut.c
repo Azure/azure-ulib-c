@@ -13,13 +13,13 @@
 #include <string.h>
 #endif
 
-#include "umock_c.h"
+#include "umock_c/umock_c.h"
 #include "testrunnerswitcher.h"
-#include "umocktypes_charptr.h"
-#include "umocktypes_bool.h"
-#include "umocktypes_stdint.h"
-#include "umock_c_negative_tests.h"
-#include "macro_utils.h"
+#include "umock_c/umocktypes_charptr.h"
+#include "umock_c/umocktypes_bool.h"
+#include "umock_c/umocktypes_stdint.h"
+#include "umock_c/umock_c_negative_tests.h"
+#include "azure_macro_utils/macro_utils.h"
 #include "ustreambuffer_ctest_aux.h"
 
 #ifdef __cplusplus
@@ -71,11 +71,11 @@ static const uint8_t* const USTREAMBUFFER_LOCAL_EXPECTED_CONTENT_3 = (const uint
 #define USTREAMBUFFER_EXPECTED_CONTENT_LENGTH 62
 static const uint8_t* const USTREAMBUFFER_LOCAL_EXPECTED_CONTENT = (const uint8_t* const)USTREAMBUFFER_EXPECTED_CONTENT;
 
-DEFINE_ENUM_STRINGS(UMOCK_C_ERROR_CODE, UMOCK_C_ERROR_CODE_VALUES)
+MU_DEFINE_ENUM_STRINGS(UMOCK_C_ERROR_CODE, UMOCK_C_ERROR_CODE_VALUES)
 
 static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code)
 {
-    ASSERT_FAIL("umock_c reported error :%s", ENUM_TO_STRING(UMOCK_C_ERROR_CODE, error_code));
+    ASSERT_FAIL("umock_c reported error :%s", MU_ENUM_TO_STRING(UMOCK_C_ERROR_CODE, error_code));
 }
 
 /**
