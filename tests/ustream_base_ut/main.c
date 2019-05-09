@@ -6,6 +6,6 @@
 int main(void)
 {
     size_t failedTestCount = 0;
-    RUN_TEST_SUITE(ustreambuffer_base_ut, failedTestCount);
+    RUN_TEST_SUITE(ustream_base_ut, failedTestCount);
     return failedTestCount;
 }

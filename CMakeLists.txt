@@ -72,16 +72,16 @@ set(run_unittests ${original_run_unittests})
 
 set(azure_ulib_c_files
     ./ulog/ulog.c
-    ./ustreambuffer/ustreambuffer_base.c
-    ./ustreambuffer/ustreambuffer_multi.c
-    ./ustreambuffer/ustreambuffer.c
+    ./ustream/ustream_base.c
+    ./ustream/ustream_multi.c
+    ./ustream/ustream.c
     ./pal/MemMang/ulib_heap.c
 )
 
 set(azure_ulib_h_files
     ./inc/ulog.h
-    ./inc/ustreambuffer_base.h
-    ./inc/ustreambuffer.h
+    ./inc/ustream_base.h
+    ./inc/ustream.h
     ./config/ulib_config.h
     ./inc/ulib_heap.h
     ./pal/${ULIB_PAL_DIRECTORY}/ulib_port.h
