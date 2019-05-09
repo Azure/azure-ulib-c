@@ -33,7 +33,7 @@ static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code)
 }
 
 /**
- * Beginning of the UT for ustream_base.c module.
+ * Beginning of the UT for ucontract module.
  */
 BEGIN_TEST_SUITE(ucontract_ut)
 
