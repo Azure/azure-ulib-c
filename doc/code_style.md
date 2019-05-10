@@ -53,7 +53,7 @@ repo_name
 ```
 
 Where:
-* **build_all**: Contains the scripts to build the project on the test infrastructure.
+* **build_all**: Contains the scripts to build the project.
 * **config**: Contains the user configuration, it contains a default config that the user should copy and modify to create its own set of configurations.
 * **deps**: Contains the repo dependencies, normally github submodules.
 * **inc**: Contains the includes of the repo, all files on the root are the public API and should be part of the LTS (Long Term Support). The files in the `internal` are the ones that contains the signature of methods and data structs that are not part of the public API and Microsoft can change it without any previous note. The `internal` should not be part of the include path, include an internal file should always contains the internal path in the name, (ex: `#include “internal/bar_non_public.h”`).
@@ -74,7 +74,7 @@ Words in filenames should be separated by `_`.
 The public API should be clearly identified with the initial of the name of the module followed by the name `api` 
 * *Example*: `bar_api.h`
 
-A include (`.h`) that is not part of the public API should be placed in the `internal` directory.
+An include (`.h`) that is not part of the public API should be placed in the `internal` directory.
 * *Example*: `bar_non_public.h`
 
 Spaces, dashes and other funky characters should be avoided. 
@@ -102,18 +102,18 @@ The following apply to C language:
                            /*     main function and some_function*/
     ```
 * Functions should write to out arguments only when they succeed.
-* All data conversion should explicitly identify by a cast operator. Avoid any implicit cast. 
-* Avoid misuse of types, for example, use an integer as a Boolean. 
-* Avoid cast `const` (constant) variable to not `const` variable. 
+* All data conversion should be explicitly identified by a cast operator. Avoid any implicit cast. 
+* Avoid misuse of types, for example, using an integer as a Boolean. 
+* Avoid casting `const` (constant) variable to not `const` variable. 
 * Make single responsibility per function. Functions should be small to fulfill only one responsibility. A function with a few hundred lines of code usually implies multiple responsibilities.
 
 ## Minor style C convention
 * Single brackets per line, no missing brackets, no “Egyptian” brackets [[5]](https://blog.codinghorror.com/new-programming-jargon/).
 * Use 4 spaces instead of tab.
 * Keep lines small. Limit the number of characters per line. In some tools, including Github, it is hard to visualize the full content of lines with 100+ characters.
-* Avoid “voidly type”. Create strong type to represent entities besides use `void*`.
+* Avoid “voidly type”. Create strong type to represent entities instead of using `void*`.
 * Avoid “Baklava code” [[5]](https://blog.codinghorror.com/new-programming-jargon/). Avoid useless layers on the design.
-* Only expose on the public API what is really necessary. It is easy to expose what is internal, but it is hard to remove or change a public API.
+* Only expose what is really necessary in the public API. It is difficult to remove or change a public API, so we should make clear the limits between the public API and the internal implementation details or structures.
 
 ## Copyright
 All files should start with the copyright information:
@@ -167,19 +167,26 @@ UINT bar_do_something_create(BAR_HANDLE* handle, CHAR* name, ULONG entry,
 ```
 A public API that should be implemented in multiple flavors, should have the flavors with the same name of the public API preceded by `_`. For the flavor without argument validation, the name should be the same of the public API, for the other flavors, a character should be added after the module initial to identify the flavor. For example, the flavor that tests the arguments may add `e` on the name, and the one that validate runtime error may add `r` in the name. For example, the three flavors of `bar_do_something_create` should be: 
 ```c
+/**
+ *  bar_do_something_create documentation here.
+ */
+inline UINT bar_do_something_create(BAR_HANDLE* handle, CHAR* name, ULONG entry,
+                VOID* buffer_start, ULONG buffer_size, UINT priority)
+{
 #ifdef BAR_DISABLE_ERROR_CHECKING
-  #define bar_do_something_create           _bar_do_something_create
+    return _bar_do_something_create(handle, name, entry, buffer_start, buffer_size, priority);
 #else
   #ifdef BAR_ENABLE_RUNTIME_ERROR_CHECKING
-    #define bar_do_something_create         _barr_do_something_create
+    return _barr_do_something_create(handle, name, entry, buffer_start, buffer_size, priority);
   #else
-    #define bar_do_something_create         _bare_do_something_create
+    return _bare_do_something_create(handle, name, entry, buffer_start, buffer_size, priority);
   #endif
 #endif
+}
 ```
 All functions that are not `static` but not part of the public API should start with the initial of the name of the module followed by the function name. The definition of the function should be placed in the header file of the module, inside of the `internal` directory. 
 
-All functions whose propose is only inside of the source code (`.c`/`.cpp`) should be set as `static`. The static function should contain only the function name, without any prefix. For example:
+All functions whose purpose is only inside of the source code (`.c`/`.cpp`) should be set as `static`. The static function should contain only the function name, without any prefix. For example:
 ```c
 static LONG sum(INT a, INT b)
 {
@@ -224,7 +231,7 @@ typedef struct BAR_HEADER_DATA_STRUCT
     UCHAR* bar_data;
 } BAR_HEADER_DATA;
 ```
-To avoid user misunderstanding, private structures should be placed in the header file in the `internal` directory. So, in this case, if a module needs to have a private structure exposed as a handle, without expose the internal fields, it should create the structure in the `internal` directory and only a typedef for it in the xx_api.h. For example, the `bar_do_something` control block, should be defined in the *bar_do_something.h* as:
+To avoid user misunderstanding, private structures should be placed in the header file in the `internal` directory. So, in this case, if a module needs to have a private structure exposed as a handle, without exposing the internal fields, it should create the structure in the `internal` directory and only a typedef for it in the xx_api.h. For example, the `bar_do_something` control block, should be defined in the *bar_do_something.h* as:
 ```c
 typedef struct BAR_INTERNAL_DO_SOMETHING_STRUCT
 {
@@ -241,7 +248,7 @@ typedef struct BAR_INTERNAL_DO_SOMETHING_STRUCT         BAR_DO_SOMETHING;
 ```
 
 ## Headers
-The final **MSDN** documentation will be auto generated based on the header comments in the code. As a standard, all headers should be written using **Doxygen**.
+The final **MSDN** documentation will be auto generated based on the header comments in the code. As a standard, all headers should be written using **Doxygen** [[4]](http://www.doxygen.nl/index.html).
 
 ### Functions
 The header of a function should precede the function declaration in the header file (`.h`). All function headers should contain, at least:
@@ -258,7 +265,7 @@ The header of a function should precede the function declaration in the header f
  *     area. The actual size of the memory block is determined by the
  *     requested size, plus the header and padding. 
  *
- * @section: Allowed form
+ * @section: Allowed from
  *   Initialization, threads, timers, and ISRs
  *
  * @section: Preemption allowed
@@ -327,7 +334,7 @@ The header of a type should precede the type declaration. All type headers shoul
 ```
 
 ### Internals
-All header files in the `internal` directory should be documented as “`Internal only`” immediately after the Microsoft Copyright. The comment should contain the follow information: 
+All header files in the `internal` directory should be documented as “`Internal only`” immediately after the Microsoft Copyright. The comment should contain the following information: 
 ```c
 /**
  * @section: Visibility
@@ -362,6 +369,8 @@ Optionally, declarations placed in the internal header file may be explicitly do
 ```
 
 ## Test and requirements
+All components should be totally tested, it is highly recommended that the code have 100% of test coverage.
+
 All code should contain, at least, requirements, unit tests, end-to-end tests, and samples. The requirements description should be placed in the unit test file, on top of the test function that verifies the requirement. The unit test name should be placed in the code as a comment, together with the code that implements that functionality. For example:
 
 ### On the code:
@@ -370,14 +379,14 @@ void foo_tcp_manager_destroy(TCP_HANDLE handle)
 {
     if(handle == NULL)
     {
-        /*[foo_tcp_manager_destroy_doesNothingOnNULLHandle]*/
+        /*[foo_tcp_manager_destroy_does_nothing_on_null_handle]*/
         LogError("handle cannot be NULL");
     }
     else
     {
         TCP_INSTANCE* instance = (TCP_INSTANCE*)handle;
 
-        /*[foo_tcp_manager_destroy_freeAllResources]*/
+        /*[foo_tcp_manager_destroy_succeed_on_free_all_resources]*/
         netif_remove(&(instance->lpc_netif));
         free(instance);
     }
@@ -386,7 +395,7 @@ void foo_tcp_manager_destroy(TCP_HANDLE handle)
 ### On the unit test file:
 ```c
 /* If the provided TCP_HANDLE is NULL, the foo_tcp_manager_destroy shall do nothing. */
-TEST_FUNCTION(foo_tcp_manager_destroy_doesNothingOnNULLHandle)
+TEST_FUNCTION(foo_tcp_manager_destroy_does_nothing_on_null_handle)
 {
     ///arrange
 
@@ -399,7 +408,7 @@ TEST_FUNCTION(foo_tcp_manager_destroy_doesNothingOnNULLHandle)
 }
 
 /* The foo_tcp_manager_destroy shall free all resources allocated by the tcpip. */
-TEST_FUNCTION(foo_tcp_manager_destroy_freeAllResources)
+TEST_FUNCTION(foo_tcp_manager_destroy_succeed_on_free_all_resources)
 {
     ///arrange
     TCP_HANDLE handle = foo_tcp_manager_create();
