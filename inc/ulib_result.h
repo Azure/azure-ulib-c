@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#define ULIB_ERROR_FLAG 0X80000000
+#define ULIB_ERROR_FLAG 0X80
 
 /**
  * @brief   Enumeration of uLib results.
