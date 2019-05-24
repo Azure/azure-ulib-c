@@ -114,12 +114,12 @@ MOCKABLE_FUNCTION(, USTREAM*, uStreamMultiCreate);
  *                                  type of uStreamMulti.
  * @param:  uStreamToAppend   The {@link USTREAM*} with the handle of the buffer to add
  *                                  to the uStreamMulti. It cannot be {@code NULL}.
- * @return: The {@link USTREAM_RESULT} with the result of the append operation. The results can be:
- *          - @b USTREAM_SUCCESS - If the uStreamMulti appended the provided buffer with success.
- *          - @b USTREAM_ILLEGAL_ARGUMENT_EXCEPTION - If the one of the provided parameters is invalid.
- *          - @b USTREAM_OUT_OF_MEMORY_EXCEPTION - If there is no memory to append the buffer.
+ * @return: The {@link ULIB_RESULT} with the result of the append operation. The results can be:
+ *          - @b ULIB_SUCCESS - If the uStreamMulti appended the provided buffer with success.
+ *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If the one of the provided parameters is invalid.
+ *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is no memory to append the buffer.
  */
-MOCKABLE_FUNCTION(, USTREAM_RESULT, uStreamMultiAppend,
+MOCKABLE_FUNCTION(, ULIB_RESULT, uStreamMultiAppend,
     USTREAM*, uStreamInterface,
     USTREAM*, uStreamToAppend);
 

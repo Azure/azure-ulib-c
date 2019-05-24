@@ -3,34 +3,34 @@
 
 #include "ustream.h"
 
-USTREAM_RESULT uStreamAppend(
+ULIB_RESULT uStreamAppend(
     USTREAM* uStreamInterface, 
     USTREAM* uStreamToAppend)
 {
-    USTREAM_RESULT result;
+    ULIB_RESULT result;
 
     if((uStreamToAppend == NULL) || 
         (uStreamInterface == NULL)) 
     {
         /*[uStreamAppend_nullBufferToAddFailed]*/
         /*[uStreamAppend_nullInterfaceFailed]*/
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     /*[uStreamAppend_startingFromMultibufferWithNotEnoughMemoryFailed]*/
-    else if((result = uStreamMultiAppend(uStreamInterface, uStreamToAppend)) == USTREAM_ILLEGAL_ARGUMENT_EXCEPTION)
+    else if((result = uStreamMultiAppend(uStreamInterface, uStreamToAppend)) == ULIB_ILLEGAL_ARGUMENT_ERROR)
     {
         USTREAM* newMultiBuffer = uStreamMultiCreate();
         if(newMultiBuffer == NULL)
         {
             /*[uStreamAppend_notEnoughMemoryToCreateMultibufferFailed]*/
-            result = USTREAM_OUT_OF_MEMORY_EXCEPTION;
+            result = ULIB_OUT_OF_MEMORY_ERROR;
         }
-        else if ((result = uStreamMultiAppend(newMultiBuffer, uStreamInterface)) != USTREAM_SUCCESS)
+        else if ((result = uStreamMultiAppend(newMultiBuffer, uStreamInterface)) != ULIB_SUCCESS)
         {
             /*[uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed]*/
             uStreamDispose(newMultiBuffer);
         }
-        else if ((result = uStreamMultiAppend(newMultiBuffer, uStreamToAppend)) != USTREAM_SUCCESS)
+        else if ((result = uStreamMultiAppend(newMultiBuffer, uStreamToAppend)) != ULIB_SUCCESS)
         {
             /*[uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed]*/
             uStreamDispose(newMultiBuffer);

@@ -104,7 +104,7 @@ static void checkBuffer(
 
     if (offset < expectedContentLength)
     {
-        ASSERT_ARE_EQUAL(int, USTREAM_SUCCESS,
+        ASSERT_ARE_EQUAL(int, ULIB_SUCCESS,
             uStreamGetNext(azBuffer, bufResult, 256, &sizeResult));
 
         ASSERT_ARE_EQUAL(int, expectedContentLength - offset, sizeResult);
@@ -118,7 +118,7 @@ static void checkBuffer(
     sizeResult = 10;
     ASSERT_ARE_EQUAL(
         int,
-        USTREAM_NO_SUCH_ELEMENT_EXCEPTION,
+        ULIB_EOF,
         uStreamGetNext(azBuffer, bufResult, 256, &sizeResult));
     ASSERT_ARE_EQUAL(int, 0, sizeResult);
 }
