@@ -34,14 +34,14 @@ typedef struct USTREAM_INSTANCE_TAG
     offset_t innerFirstValidPosition;
 } USTREAM_INSTANCE;
 
-static USTREAM_RESULT concreteSeek(USTREAM* uStreamInterface, offset_t position);
-static USTREAM_RESULT concreteReset(USTREAM* uStreamInterface);
-static USTREAM_RESULT concreteGetNext(USTREAM* uStreamInterface, uint8_t* const buffer, size_t bufferLength, size_t* const size);
-static USTREAM_RESULT concreteGetRemainingSize(USTREAM* uStreamInterface, size_t* const size);
-static USTREAM_RESULT concreteGetCurrentPosition(USTREAM* uStreamInterface, offset_t* const position);
-static USTREAM_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t position);
+static ULIB_RESULT concreteSeek(USTREAM* uStreamInterface, offset_t position);
+static ULIB_RESULT concreteReset(USTREAM* uStreamInterface);
+static ULIB_RESULT concreteGetNext(USTREAM* uStreamInterface, uint8_t* const buffer, size_t bufferLength, size_t* const size);
+static ULIB_RESULT concreteGetRemainingSize(USTREAM* uStreamInterface, size_t* const size);
+static ULIB_RESULT concreteGetCurrentPosition(USTREAM* uStreamInterface, offset_t* const position);
+static ULIB_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t position);
 static USTREAM* concreteClone(USTREAM* uStreamInterface, offset_t offset);
-static USTREAM_RESULT concreteDispose(USTREAM* uStreamInterface);
+static ULIB_RESULT concreteDispose(USTREAM* uStreamInterface);
 static const USTREAM_INTERFACE _api =
 {
         concreteSeek,
@@ -151,16 +151,16 @@ static void destroyInnerBuffer(USTREAM_INNER_BUFFER* innerBuffer)
     ULIB_CONFIG_FREE(innerBuffer);
 }
 
-static USTREAM_RESULT concreteSeek(USTREAM* uStreamInterface, offset_t position)
+static ULIB_RESULT concreteSeek(USTREAM* uStreamInterface, offset_t position)
 {
-    USTREAM_RESULT result;
+    ULIB_RESULT result;
 
     if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
     {
         /*[uStreamSeek_complianceNullBufferFailed]*/
         /*[uStreamSeek_complianceNonTypeOfBufferAPIFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -173,7 +173,7 @@ static USTREAM_RESULT concreteSeek(USTREAM* uStreamInterface, offset_t position)
         {
             /*[uStreamSeek_complianceForwardOutOfTheBufferFailed]*/
             /*[uStreamSeek_complianceBackBeforeFirstValidPositionFailed]*/
-            result = USTREAM_NO_SUCH_ELEMENT_EXCEPTION;
+            result = ULIB_NO_SUCH_ELEMENT_ERROR;
         }
         else
         {
@@ -190,23 +190,23 @@ static USTREAM_RESULT concreteSeek(USTREAM* uStreamInterface, offset_t position)
             /*[uStreamSeek_complianceClonedBufferRunFullBufferByteByByteSucceed]*/
             /*[uStreamSeek_complianceClonedBufferRunFullBufferByteByByteReverseOrderSucceed]*/
             instance->innerCurrentPosition = innerPosition;
-            result = USTREAM_SUCCESS;
+            result = ULIB_SUCCESS;
         }
     }
 
     return result;
 }
 
-static USTREAM_RESULT concreteReset(USTREAM* uStreamInterface)
+static ULIB_RESULT concreteReset(USTREAM* uStreamInterface)
 {
-    USTREAM_RESULT result;
+    ULIB_RESULT result;
 
     if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
     {
         /*[uStreamReset_complianceNullBufferFailed]*/
         /*[uStreamReset_complianceNonTypeOfBufferAPIFailed]*/
 
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -215,26 +215,26 @@ static USTREAM_RESULT concreteReset(USTREAM* uStreamInterface)
         /*[uStreamReset_complianceBackToBeginningSucceed]*/
         /*[uStreamReset_complianceBackPositionSucceed]*/
         instance->innerCurrentPosition = instance->innerFirstValidPosition;
-        result = USTREAM_SUCCESS;
+        result = ULIB_SUCCESS;
     }
 
     return result;
 }
 
-static USTREAM_RESULT concreteGetNext(
+static ULIB_RESULT concreteGetNext(
         USTREAM* uStreamInterface,
         uint8_t* const buffer,
         size_t bufferLength,
         size_t* const size)
 {
-    USTREAM_RESULT result;
+    ULIB_RESULT result;
 
     if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
     {
         /*[uStreamGetNext_complianceNullBufferFailed]*/
         /*[uStreamGetNext_complianceNonTypeOfBufferAPIFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if((buffer == NULL) || (size == NULL))
     {
@@ -244,13 +244,13 @@ static USTREAM_RESULT concreteGetNext(
             ULOG_TYPE_ERROR,
             ULOG_REQUIRE_NOT_NULL_STRING, 
             (buffer == NULL ? "buffer" : "size"));
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(bufferLength == 0)
     {
         /*[uStreamGetNext_complianceBufferWithZeroSizeFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_EQUALS_STRING, "bufferLength", "0");
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -261,7 +261,7 @@ static USTREAM_RESULT concreteGetNext(
         {
             /*[uStreamGetNext_complianceSucceed_3]*/
             *size = 0;
-            result = USTREAM_NO_SUCH_ELEMENT_EXCEPTION;
+            result = ULIB_EOF;
         }
         else
         {
@@ -278,29 +278,29 @@ static USTREAM_RESULT concreteGetNext(
             /*[uStreamGetNext_complianceClonedBufferRightBoundaryConditionSucceed]*/
             (void)memcpy(buffer, innerBuffer->ptr + instance->innerCurrentPosition, *size);
             instance->innerCurrentPosition += *size;
-            result = USTREAM_SUCCESS;
+            result = ULIB_SUCCESS;
         }
     }
 
     return result;
 }
 
-static USTREAM_RESULT concreteGetRemainingSize(USTREAM* uStreamInterface, size_t* const size)
+static ULIB_RESULT concreteGetRemainingSize(USTREAM* uStreamInterface, size_t* const size)
 {
-    USTREAM_RESULT result;
+    ULIB_RESULT result;
 
     if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
     {
         /*[uStreamGetRemainingSize_complianceNullBufferFailed]*/
         /*[uStreamGetRemainingSize_complianceBufferIsNotTypeOfBufferFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(size == NULL)
     {
         /*[uStreamGetRemainingSize_complianceNullSizeFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_NULL_STRING, "size");
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -310,28 +310,28 @@ static USTREAM_RESULT concreteGetRemainingSize(USTREAM* uStreamInterface, size_t
         /*[uStreamGetRemainingSize_complianceNewBufferWithNonZeroCurrentPositionSucceed]*/
         /*[uStreamGetRemainingSize_complianceClonedBufferWithNonZeroCurrentPositionSucceed]*/
         *size = instance->innerBuffer->length - instance->innerCurrentPosition;
-        result = USTREAM_SUCCESS;
+        result = ULIB_SUCCESS;
     }
 
     return result;
 }
 
-static USTREAM_RESULT concreteGetCurrentPosition(USTREAM* uStreamInterface, offset_t* const position)
+static ULIB_RESULT concreteGetCurrentPosition(USTREAM* uStreamInterface, offset_t* const position)
 {
-    USTREAM_RESULT result;
+    ULIB_RESULT result;
 
     if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
     {
         /*[uStreamGetCurrentPosition_complianceNullBufferFailed]*/
         /*[uStreamGetCurrentPosition_complianceBufferIsNotTypeOfBufferFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(position == NULL)
     {
         /*[uStreamGetCurrentPosition_complianceNullPositionFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_NULL_STRING, "position");
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -341,22 +341,22 @@ static USTREAM_RESULT concreteGetCurrentPosition(USTREAM* uStreamInterface, offs
         /*[uStreamGetCurrentPosition_complianceNewBufferWithNonZeroCurrentPositionSucceed]*/
         /*[uStreamGetCurrentPosition_complianceClonedBufferWithNonZeroCurrentPositionSucceed]*/
         *position = instance->innerCurrentPosition + instance->offsetDiff;
-        result = USTREAM_SUCCESS;
+        result = ULIB_SUCCESS;
     }
 
     return result;
 }
 
-static USTREAM_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t position)
+static ULIB_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t position)
 {
-    USTREAM_RESULT result;
+    ULIB_RESULT result;
 
     if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
     {
         /*[uStreamRelease_complianceNullBufferFailed]*/
         /*[uStreamRelease_complianceNonTypeOfBufferAPIFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -368,7 +368,7 @@ static USTREAM_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t positi
         {
             /*[uStreamRelease_complianceReleaseAfterCurrentFailed]*/
             /*[uStreamRelease_complianceReleasePositionAlreayReleasedFailed]*/
-            result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+            result = ULIB_ILLEGAL_ARGUMENT_ERROR;
         }
         else
         {
@@ -379,7 +379,7 @@ static USTREAM_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t positi
             /*[uStreamRelease_complianceClonedBufferReleaseAllSucceed]*/
             /*[uStreamRelease_complianceClonedBufferRunFullBufferByteByByteSucceed]*/
             instance->innerFirstValidPosition = innerPosition + (offset_t)1;
-            result = USTREAM_SUCCESS;
+            result = ULIB_SUCCESS;
         }
     }
 
@@ -422,16 +422,16 @@ static USTREAM* concreteClone(USTREAM* uStreamInterface, offset_t offset)
     return interfaceResult;
 }
 
-static USTREAM_RESULT concreteDispose(USTREAM* uStreamInterface)
+static ULIB_RESULT concreteDispose(USTREAM* uStreamInterface)
 {
-    USTREAM_RESULT result;
+    ULIB_RESULT result;
 
     if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
     {
         /*[uStreamDispose_complianceNullBufferFailed]*/
         /*[uStreamDispose_complianceBufferIsNotTypeOfBufferFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = USTREAM_ILLEGAL_ARGUMENT_EXCEPTION;
+        result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -448,7 +448,7 @@ static USTREAM_RESULT concreteDispose(USTREAM* uStreamInterface)
         }
         ULIB_CONFIG_FREE(instance);
         ULIB_CONFIG_FREE(uStreamInterface);
-        result = USTREAM_SUCCESS;
+        result = ULIB_SUCCESS;
     }
 
     return result;

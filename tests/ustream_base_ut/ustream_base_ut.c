@@ -161,14 +161,14 @@ TEST_FUNCTION(uStreamAppend_startFromEmptyMultibufferSucceed)
     ASSERT_IS_NOT_NULL(defaultBuffer3);
 
     ///act
-    USTREAM_RESULT result1 = uStreamAppend(defaultMultibuffer, defaultBuffer1);
-    USTREAM_RESULT result2 = uStreamAppend(defaultMultibuffer, defaultBuffer2);
-    USTREAM_RESULT result3 = uStreamAppend(defaultMultibuffer, defaultBuffer3);
+    ULIB_RESULT result1 = uStreamAppend(defaultMultibuffer, defaultBuffer1);
+    ULIB_RESULT result2 = uStreamAppend(defaultMultibuffer, defaultBuffer2);
+    ULIB_RESULT result3 = uStreamAppend(defaultMultibuffer, defaultBuffer3);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, USTREAM_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, USTREAM_SUCCESS, result2);
-    ASSERT_ARE_EQUAL(int, USTREAM_SUCCESS, result3);
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result3);
     uStreamDispose(defaultBuffer1);
     uStreamDispose(defaultBuffer2);
     uStreamDispose(defaultBuffer3);
@@ -205,12 +205,12 @@ TEST_FUNCTION(uStreamAppend_appendMultipleBuffersSucceed)
     ASSERT_IS_NOT_NULL(defaultBuffer3);
 
     ///act
-    USTREAM_RESULT result1 = uStreamAppend(defaultBuffer1, defaultBuffer2);
-    USTREAM_RESULT result2 = uStreamAppend(defaultBuffer1, defaultBuffer3);
+    ULIB_RESULT result1 = uStreamAppend(defaultBuffer1, defaultBuffer2);
+    ULIB_RESULT result2 = uStreamAppend(defaultBuffer1, defaultBuffer3);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, USTREAM_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, USTREAM_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result2);
     uStreamDispose(defaultBuffer2);
     uStreamDispose(defaultBuffer3);
     checkBuffer(
@@ -223,7 +223,7 @@ TEST_FUNCTION(uStreamAppend_appendMultipleBuffersSucceed)
     uStreamDispose(defaultBuffer1);
 }
 
-/* If the provided interface is NULL, the Append shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION. */
+/* If the provided interface is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
 TEST_FUNCTION(uStreamAppend_nullInterfaceFailed)
 {
     ///arrange
@@ -234,16 +234,16 @@ TEST_FUNCTION(uStreamAppend_nullInterfaceFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer);
 
     ///act
-    USTREAM_RESULT result = uStreamAppend(NULL, defaultBuffer);
+    ULIB_RESULT result = uStreamAppend(NULL, defaultBuffer);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, USTREAM_ILLEGAL_ARGUMENT_EXCEPTION, result);
+    ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
     uStreamDispose(defaultBuffer);
 }
 
-/* If the provided buffer to add is NULL, the Append shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION. */
+/* If the provided buffer to add is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
 TEST_FUNCTION(uStreamAppend_nullBufferToAddFailed)
 {
     ///arrange
@@ -254,16 +254,16 @@ TEST_FUNCTION(uStreamAppend_nullBufferToAddFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer);
 
     ///act
-    USTREAM_RESULT result = uStreamAppend(defaultBuffer, NULL);
+    ULIB_RESULT result = uStreamAppend(defaultBuffer, NULL);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, USTREAM_ILLEGAL_ARGUMENT_EXCEPTION, result);
+    ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
     uStreamDispose(defaultBuffer);
 }
 
-/* If there is not enough memory to append the buffer, the Append shall return USTREAM_OUT_OF_MEMORY_EXCEPTION. */
+/* If there is not enough memory to append the buffer, the Append shall return ULIB_OUT_OF_MEMORY_ERROR. */
 TEST_FUNCTION(uStreamAppend_startingFromMultibufferWithNotEnoughMemoryFailed)
 {
     ///arrange
@@ -280,11 +280,11 @@ TEST_FUNCTION(uStreamAppend_startingFromMultibufferWithNotEnoughMemoryFailed)
     STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
-    USTREAM_RESULT result = uStreamAppend(defaultMultibuffer, defaultBuffer);
+    ULIB_RESULT result = uStreamAppend(defaultMultibuffer, defaultBuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, USTREAM_OUT_OF_MEMORY_EXCEPTION, result);
+    ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
     uStreamDispose(defaultBuffer);
@@ -311,11 +311,11 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToCreateMultibufferFailed)
     STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM))).SetReturn(NULL);
 
     ///act
-    USTREAM_RESULT result = uStreamAppend(defaultBuffer1, defaultBuffer2);
+    ULIB_RESULT result = uStreamAppend(defaultBuffer1, defaultBuffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, USTREAM_OUT_OF_MEMORY_EXCEPTION, result);
+    ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
     checkBuffer(
         defaultBuffer1,
         0,
@@ -359,11 +359,11 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed)
     STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
 
     ///act
-    USTREAM_RESULT result = uStreamAppend(defaultBuffer1, defaultBuffer2);
+    ULIB_RESULT result = uStreamAppend(defaultBuffer1, defaultBuffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, USTREAM_OUT_OF_MEMORY_EXCEPTION, result);
+    ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
     checkBuffer(
         defaultBuffer1,
         0,
@@ -414,11 +414,11 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed)
     STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
 
     ///act
-    USTREAM_RESULT result = uStreamAppend(defaultBuffer1, defaultBuffer2);
+    ULIB_RESULT result = uStreamAppend(defaultBuffer1, defaultBuffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, USTREAM_OUT_OF_MEMORY_EXCEPTION, result);
+    ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
     checkBuffer(
         defaultBuffer1,
         0,

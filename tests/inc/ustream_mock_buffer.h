@@ -12,14 +12,14 @@ extern "C" {
 
 USTREAM* uStreamMockCreate(void);
 
-void setSeekResult(USTREAM_RESULT result);
-void setResetResult(USTREAM_RESULT result);
-void setGetNextResult(USTREAM_RESULT result);
-void setGetRemainingSizeResult(USTREAM_RESULT result);
-void setGetCurrentPositionResult(USTREAM_RESULT result);
-void setReleaseResult(USTREAM_RESULT result);
-void setCloneResult(USTREAM_RESULT result);
-void setDisposeResult(USTREAM_RESULT result);
+void setSeekResult(ULIB_RESULT result);
+void setResetResult(ULIB_RESULT result);
+void setGetNextResult(ULIB_RESULT result);
+void setGetRemainingSizeResult(ULIB_RESULT result);
+void setGetCurrentPositionResult(ULIB_RESULT result);
+void setReleaseResult(ULIB_RESULT result);
+void setCloneResult(ULIB_RESULT result);
+void setDisposeResult(ULIB_RESULT result);
 
 #ifdef __cplusplus
 }

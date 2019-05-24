@@ -65,7 +65,7 @@
  *
  *          |                         +------------------malloc(1024)------------------>|
  *          |                         |<-----------------localBuffer--------------------+
- *  .. while uStreamGetNext return USTREAM_SUCCESS ................................................
+ *  .. while uStreamGetNext return ULIB_SUCCESS ...................................................
  *  :       |                         +-uStreamGetNext             |                    |         :
  *  :       |                         |  (uStreamInterface,        |                    |         :
  *  :       |                         |   localBuffer,             |                    |         :
@@ -74,7 +74,7 @@
  *  :       |                         |                     | copy the next 1024 bytes from the   :
  *  :       |                         |                     |  dataSource to the localBuffer.     :
  *  :       |                         |                     +----->|                    |         :
- *  :       |                         |<---USTREAM_SUCCESS---------+                    |         :
+ *  :       |                         |<---ULIB_SUCCESS---------+                       |         :
  *  :       |                  +------+                            |                    |         :
  *  :       |                  | use the content in the localBuffer                     |         :
  *  :       |                  +----->|                            |                    |         :
@@ -274,6 +274,7 @@
  */
 
 #include "ulib_config.h"
+#include "ulib_result.h"
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
 
@@ -285,22 +286,6 @@ extern "C" {
 #include <stdint.h>
 #include <stddef.h>
 #endif /* __cplusplus */
-
-
-/**
- * @brief   List of uStream results.
- */
-MU_DEFINE_ENUM(
-    USTREAM_RESULT, 
-        USTREAM_SUCCESS                       = 0, 
-        USTREAM_OUT_OF_MEMORY_EXCEPTION       = -1,
-        USTREAM_NO_SUCH_ELEMENT_EXCEPTION     = -2,
-        USTREAM_ILLEGAL_ARGUMENT_EXCEPTION    = -3,
-        USTREAM_SECURITY_EXCEPTION            = -4,
-        USTREAM_SYSTEM_EXCEPTION              = -5,
-        USTREAM_CANCELLED_EXCEPTION           = -9,
-        USTREAM_BUSY_EXCEPTION                = -12
-)
 
 /**
  * @brief   Define offset_t with the same size as size_t.
@@ -330,14 +315,14 @@ typedef struct USTREAM_TAG
  */
 struct USTREAM_INTERFACE_TAG
 {
-    USTREAM_RESULT(*seek)(USTREAM* uStreamInterface, offset_t position);
-    USTREAM_RESULT(*reset)(USTREAM* uStreamInterface);
-    USTREAM_RESULT(*getNext)(USTREAM* uStreamInterface, uint8_t* const buffer, size_t bufferLength, size_t* const size);
-    USTREAM_RESULT(*getRemainingSize)(USTREAM* uStreamInterface, size_t* const size);
-    USTREAM_RESULT(*getCurrentPosition)(USTREAM* uStreamInterface, offset_t* const position);
-    USTREAM_RESULT(*release)(USTREAM* uStreamInterface, offset_t position);
+    ULIB_RESULT(*seek)(USTREAM* uStreamInterface, offset_t position);
+    ULIB_RESULT(*reset)(USTREAM* uStreamInterface);
+    ULIB_RESULT(*getNext)(USTREAM* uStreamInterface, uint8_t* const buffer, size_t bufferLength, size_t* const size);
+    ULIB_RESULT(*getRemainingSize)(USTREAM* uStreamInterface, size_t* const size);
+    ULIB_RESULT(*getCurrentPosition)(USTREAM* uStreamInterface, offset_t* const position);
+    ULIB_RESULT(*release)(USTREAM* uStreamInterface, offset_t position);
     USTREAM*(*clone)(USTREAM* uStreamInterface, offset_t offset);
-    USTREAM_RESULT(*dispose)(USTREAM* uStreamInterface);
+    ULIB_RESULT(*dispose)(USTREAM* uStreamInterface);
 };
 
 
@@ -359,28 +344,28 @@ struct USTREAM_INTERFACE_TAG
  * <p> The seek API shall follow these minimum requirements:
  *      - The seek shall change the current position of the buffer.
  *      - If the provided position is out of the range of the buffer, the seek shall return
- *          USTREAM_NO_SUCH_ELEMENT_EXCEPTION, and will not change the current position.
+ *          ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
  *      - If the provided position is already released, the seek shall return
- *          USTREAM_NO_SUCH_ELEMENT_EXCEPTION, and will not change the current position.
- *      - If the provided interface is NULL, the seek shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *          ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
+ *      - If the provided interface is NULL, the seek shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented buffer type, the seek shall return
- *          USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  position        The {@code offset_t} with the new current position in the buffer.
- * @return: The {@link USTREAM_RESULT} with the result of the seek operation. The results can be:
- *          - @b USTREAM_SUCCESS - If the buffer changed the current position with success.
- *          - @b USTREAM_BUSY_EXCEPTION - If the resource necessary for the seek operation is busy.
- *          - @b USTREAM_CANCELLED_EXCEPTION - If the seek operation was cancelled.
- *          - @b USTREAM_ILLEGAL_ARGUMENT_EXCEPTION - If one of the provided parameters is invalid.
- *          - @b USTREAM_NO_SUCH_ELEMENT_EXCEPTION - If the position is out of the buffer range.
- *          - @b USTREAM_OUT_OF_MEMORY_EXCEPTION - If there is not enough memory to execute the
+ * @return: The {@link ULIB_RESULT} with the result of the seek operation. The results can be:
+ *          - @b ULIB_SUCCESS - If the buffer changed the current position with success.
+ *          - @b ULIB_BUSY_ERROR - If the resource necessary for the seek operation is busy.
+ *          - @b ULIB_CANCELLED_ERROR - If the seek operation was cancelled.
+ *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          - @b ULIB_NO_SUCH_ELEMENT_ERROR - If the position is out of the buffer range.
+ *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the
  *              seek operation.
- *          - @b USTREAM_SECURITY_EXCEPTION - if the seek operation was denied for security
+ *          - @b ULIB_SECURITY_ERROR - if the seek operation was denied for security
  *              reasons.
- *          - @b USTREAM_SYSTEM_EXCEPTION - if the seek operation failed on the system level.
+ *          - @b ULIB_SYSTEM_ERROR - if the seek operation failed on the system level.
  */
 #define uStreamSeek( \
             /*[USTREAM*]*/ uStreamInterface, \
@@ -400,27 +385,27 @@ struct USTREAM_INTERFACE_TAG
  *      - The reset shall change the current position of the buffer to the first byte after the
  *          released position.
  *      - If all bytes are already released, the buffer reset shall return
- *          USTREAM_NO_SUCH_ELEMENT_EXCEPTION, and will not change the current position.
- *      - If the provided interface is NULL, the buffer reset shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *          ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
+ *      - If the provided interface is NULL, the buffer reset shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented buffer type, the buffer reset shall return
- *          USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @return: The {@link USTREAM_RESULT} with the result of the reset operation. The results can be:
- *          - @b USTREAM_SUCCESS - If the buffer changed the current position with success.
- *          - @b USTREAM_BUSY_EXCEPTION - If the resource necessary for the reset operation is
+ * @return: The {@link ULIB_RESULT} with the result of the reset operation. The results can be:
+ *          - @b ULIB_SUCCESS - If the buffer changed the current position with success.
+ *          - @b ULIB_BUSY_ERROR - If the resource necessary for the reset operation is
  *              busy.
- *          - @b USTREAM_CANCELLED_EXCEPTION - If the reset operation was cancelled.
- *          - @b USTREAM_ILLEGAL_ARGUMENT_EXCEPTION - If one of the provided parameters is invalid.
- *          - @b USTREAM_NO_SUCH_ELEMENT_EXCEPTION - If all previous bytes in the buffer were already
+ *          - @b ULIB_CANCELLED_ERROR - If the reset operation was cancelled.
+ *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          - @b ULIB_NO_SUCH_ELEMENT_ERROR - If all previous bytes in the buffer were already
  *              released.
- *          - @b USTREAM_OUT_OF_MEMORY_EXCEPTION - If there is not enough memory to execute the
+ *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the
  *              reset operation.
- *          - @b USTREAM_SECURITY_EXCEPTION - If the reset operation was denied for security
+ *          - @b ULIB_SECURITY_ERROR - If the reset operation was denied for security
  *              reasons.
- *          - @b USTREAM_SYSTEM_EXCEPTION - If the reset operation failed on the system level.
+ *          - @b ULIB_SYSTEM_ERROR - If the reset operation failed on the system level.
  */
 #define uStreamReset( \
             /*[USTREAM*]*/ uStreamInterface) \
@@ -445,17 +430,17 @@ struct USTREAM_INTERFACE_TAG
  *      - The getNext shall return the number of valid {@code uint8_t} values in the local buffer in 
  *          the provided `size`.
  *      - If there is no more content to return, the getNext shall return
- *          USTREAM_NO_SUCH_ELEMENT_EXCEPTION, size shall receive 0, and will not change the contents
+ *          ULIB_EOF, size shall receive 0, and will not change the contents
  *          of the local buffer.
- *      - If the provided bufferLength is zero, the getNext shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *      - If the provided bufferLength is zero, the getNext shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided bufferLength is lower than the minimum number of bytes that the buffer can copy, the 
- *          getNext shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
- *      - If the provided interface is NULL, the getNext shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *          getNext shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided interface is NULL, the getNext shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented buffer type, the getNext shall return
- *          USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
- *      - If the provided local buffer is NULL, the getNext shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *          ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided local buffer is NULL, the getNext shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided return size pointer is NULL, the getNext shall return
- *          USTREAM_ILLEGAL_ARGUMENT_EXCEPTION and will not change the local buffer contents or the
+ *          ULIB_ILLEGAL_ARGUMENT_ERROR and will not change the local buffer contents or the
  *          current position of the buffer.
  *
  * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
@@ -466,17 +451,17 @@ struct USTREAM_INTERFACE_TAG
  *                              bigger than 0.
  * @param:  size            The {@code size_t* const} that points to the place where the getNext shall store
  *                              the number of valid {@code uint8_t} values in the local buffer. It cannot be {@code NULL}.
- * @return: The {@link USTREAM_RESULT} with the result of the getNext operation. The results can be:
- *          - @b USTREAM_SUCCESS - If the buffer copied the content of the Data Source to the local buffer
+ * @return: The {@link ULIB_RESULT} with the result of the getNext operation. The results can be:
+ *          - @b ULIB_SUCCESS - If the buffer copied the content of the Data Source to the local buffer
  *              with success.
- *          - @b USTREAM_BUSY_EXCEPTION - If the resource necessary to copy the buffer content is busy.
- *          - @b USTREAM_CANCELLED_EXCEPTION - If the copy of the content was cancelled.
- *          - @b USTREAM_ILLEGAL_ARGUMENT_EXCEPTION - If one of the provided parameters is invalid.
- *          - @b USTREAM_NO_SUCH_ELEMENT_EXCEPTION - If there is no more {@code uint8_t} values in the 
+ *          - @b ULIB_BUSY_ERROR - If the resource necessary to copy the buffer content is busy.
+ *          - @b ULIB_CANCELLED_ERROR - If the copy of the content was cancelled.
+ *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          - @b ULIB_EOF - If there are no more {@code uint8_t} values in the 
  *              Data Source to copy.
- *          - @b USTREAM_OUT_OF_MEMORY_EXCEPTION - If there is not enough memory to execute the copy.
- *          - @b USTREAM_SECURITY_EXCEPTION - If the get next was denied for security reasons.
- *          - @b USTREAM_SYSTEM_EXCEPTION - If the get next operation failed on the system level.
+ *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the copy.
+ *          - @b ULIB_SECURITY_ERROR - If the get next was denied for security reasons.
+ *          - @b ULIB_SYSTEM_ERROR - If the get next operation failed on the system level.
  */
 #define uStreamGetNext( \
             /*[USTREAM*]*/ uStreamInterface, \
@@ -497,26 +482,26 @@ struct USTREAM_INTERFACE_TAG
  * <p> The getRemainingSize API shall follow the following minimum requirements:
  *      - The getRemainingSize shall return the number of bytes between the current position and the
  *          end of the buffer.
- *      - If the provided interface is NULL, the getRemainingSize shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *      - If the provided interface is NULL, the getRemainingSize shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented buffer type, the getRemainingSize shall
- *          return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
- *      - If the provided size is NULL, the getRemainingSize shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *          return ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided size is NULL, the getRemainingSize shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  size            The {@code size_t* const} to returns the remaining number of {@code uint8_t} values 
  *                              copied to the buffer. It cannot be {@code NULL}.
- * @return: The {@link USTREAM_RESULT} with the result of the getRemainingSize operation. The results can be:
- *          - @b USTREAM_SUCCESS - If it succeeded to get the remaining size of the buffer.
- *          - @b USTREAM_BUSY_EXCEPTION - If the resource necessary to the get the remain size of
+ * @return: The {@link ULIB_RESULT} with the result of the getRemainingSize operation. The results can be:
+ *          - @b ULIB_SUCCESS - If it succeeded to get the remaining size of the buffer.
+ *          - @b ULIB_BUSY_ERROR - If the resource necessary to the get the remain size of
  *              the buffer is busy.
- *          - @b USTREAM_CANCELLED_EXCEPTION - If the get remaining size was cancelled.
- *          - @b USTREAM_ILLEGAL_ARGUMENT_EXCEPTION - If one of the provided parameters is invalid.
- *          - @b USTREAM_OUT_OF_MEMORY_EXCEPTION - If there is not enough memory to execute the get
+ *          - @b ULIB_CANCELLED_ERROR - If the get remaining size was cancelled.
+ *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the get
  *              remaining size operation.
- *          - @b USTREAM_SECURITY_EXCEPTION - If the get remaining size was denied for security reasons.
- *          - @b USTREAM_SYSTEM_EXCEPTION - If the get remaining size operation failed on the
+ *          - @b ULIB_SECURITY_ERROR - If the get remaining size was denied for security reasons.
+ *          - @b ULIB_SYSTEM_ERROR - If the get remaining size operation failed on the
  *              system level.
  */
 #define uStreamGetRemainingSize( \
@@ -533,27 +518,27 @@ struct USTREAM_INTERFACE_TAG
  *
  * <p> The getCurrentPosition API shall follow the following minimum requirements:
  *      - The getCurrentPosition shall return the logical current position of the buffer.
- *      - If the provided interface is NULL, the getCurrentPosition shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *      - If the provided interface is NULL, the getCurrentPosition shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented buffer type, the getCurrentPosition
- *          shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
- *      - If the provided position is NULL, the getCurrentPosition shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *          shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided position is NULL, the getCurrentPosition shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param:  uStreamInterface  The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  position                The {@code offset_t* const} to returns the logical current position in the
  *                              buffer. It cannot be {@code NULL}.
- * @return: The {@link USTREAM_RESULT} with the result of the getCurrentPosition operation. The results can be:
- *          - @b USTREAM_SUCCESS - If it provided the logical current position of the buffer.
- *          - @b USTREAM_BUSY_EXCEPTION - If the resource necessary for the getting the logical current
+ * @return: The {@link ULIB_RESULT} with the result of the getCurrentPosition operation. The results can be:
+ *          - @b ULIB_SUCCESS - If it provided the logical current position of the buffer.
+ *          - @b ULIB_BUSY_ERROR - If the resource necessary for the getting the logical current
  *              position is busy.
- *          - @b USTREAM_CANCELLED_EXCEPTION - If the get logical current position was cancelled.
- *          - @b USTREAM_ILLEGAL_ARGUMENT_EXCEPTION - If one of the provided parameters is invalid.
- *          - @b USTREAM_OUT_OF_MEMORY_EXCEPTION - If there is not enough memory to execute the get
+ *          - @b ULIB_CANCELLED_ERROR - If the get logical current position was cancelled.
+ *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the get
  *              logical current position operation.
- *          - @b USTREAM_SECURITY_EXCEPTION - If the get logical current position was denied for
+ *          - @b ULIB_SECURITY_ERROR - If the get logical current position was denied for
  *              security reasons.
- *          - @b USTREAM_SYSTEM_EXCEPTION - If the get logical current position operation failed on
+ *          - @b ULIB_SYSTEM_ERROR - If the get logical current position operation failed on
  *              the system level.
  */
 #define uStreamGetCurrentPosition( \
@@ -577,7 +562,7 @@ struct USTREAM_INTERFACE_TAG
  *
  * <pre><code>
  * offset_t pos;
- * if(uStreamGetCurrentPosition(myBuffer, &pos) == USTREAM_SUCCESS)
+ * if(uStreamGetCurrentPosition(myBuffer, &pos) == ULIB_SUCCESS)
  * {
  *     uStreamRelease(myBuffer, pos - 1);
  * }
@@ -587,12 +572,12 @@ struct USTREAM_INTERFACE_TAG
  *      - The release shall dispose all resources necessary to handle the content of buffer before and 
  *          including the release position.
  *      - If the release position is after the current position or the buffer size, the release shall
- *          return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION, and do not release any resource.
+ *          return ULIB_ILLEGAL_ARGUMENT_ERROR, and do not release any resource.
  *      - If the release position is already released, the release shall return
- *          USTREAM_NO_SUCH_ELEMENT_EXCEPTION, and do not release any resource.
- *      - If the provided interface is NULL, the release shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *          ULIB_NO_SUCH_ELEMENT_ERROR, and do not release any resource.
+ *      - If the provided interface is NULL, the release shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented buffer type, the release shall return
- *          USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
@@ -600,11 +585,11 @@ struct USTREAM_INTERFACE_TAG
  * @param:  position        The {@code offset_t} with the position in the buffer to release. The
  *                              buffer will release the {@code uint8_t} on the position and all {@code uint8_t} 
  *                              before the position. It shall be bigger than 0.
- * @return: The {@link USTREAM_RESULT} with the result of the release operation. The results can be:
- *          - @b USTREAM_SUCCESS - If the buffer releases the position with success.
- *          - @b USTREAM_ILLEGAL_ARGUMENT_EXCEPTION - If one of the provided parameters is invalid.
- *          - @b USTREAM_NO_SUCH_ELEMENT_EXCEPTION - If the position is already released.
- *          - @b USTREAM_SYSTEM_EXCEPTION - If the release operation failed on the system level.
+ * @return: The {@link ULIB_RESULT} with the result of the release operation. The results can be:
+ *          - @b ULIB_SUCCESS - If the buffer releases the position with success.
+ *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          - @b ULIB_NO_SUCH_ELEMENT_ERROR - If the position is already released.
+ *          - @b ULIB_SYSTEM_ERROR - If the release operation failed on the system level.
  */
 #define uStreamRelease( \
             /*[USTREAM*]*/ uStreamInterface, \
@@ -738,16 +723,16 @@ struct USTREAM_INTERFACE_TAG
  *      - The dispose shall free all allocated resources for the instance of the buffer.
  *      - If there is no more instances of the buffer, the dispose shall release all allocated
  *          resources to control the buffer.
- *      - If the provided interface is NULL, the dispose shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *      - If the provided interface is NULL, the dispose shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not type of the implemented buffer, the dispose shall return
- *          USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+ *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is type
  *                              of the implemented buffer.
- * @return: The {@link USTREAM_RESULT} with the result of the dispose operation. The results can be:
- *          - @b USTREAM_SUCCESS - If the instance of the buffer was disposed with success.
- *          - @b USTREAM_ILLEGAL_ARGUMENT_EXCEPTION - If one of the provided parameters is invalid.
+ * @return: The {@link ULIB_RESULT} with the result of the dispose operation. The results can be:
+ *          - @b ULIB_SUCCESS - If the instance of the buffer was disposed with success.
+ *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
  */
 #define uStreamDispose( \
             /*[USTREAM*]*/ uStreamInterface) \
@@ -765,23 +750,23 @@ struct USTREAM_INTERFACE_TAG
   * <p> The Append API shall follow the following requirements:
   *      - The Append shall append the provided buffer at the end of the current one.
   *      - If current buffer is not a multi-buffer, the Append shall convert the current buffer in a multi-buffer.
-  *      - If the provided interface is NULL, the Append shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
-  *      - If the provided buffer to add is NULL, the Append shall return USTREAM_ILLEGAL_ARGUMENT_EXCEPTION.
+  *      - If the provided interface is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
+  *      - If the provided buffer to add is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
   *      - If there is not enough memory to append the buffer, the Append shall return 
-  *         USTREAM_OUT_OF_MEMORY_EXCEPTION.
+  *         ULIB_OUT_OF_MEMORY_ERROR.
   *
   * @param:  uStreamInterface       The {@link USTREAM*} with the interface of 
   *                             the buffer. It cannot be {@code NULL}, and it shall be a valid buffer.
   * @param:  uStreamToAppend        The {@link USTREAM*} with the interface of 
   *                             the buffer to be appended to the original buffer. It cannot be {@code NULL}, 
   *                             and it shall be a valid buffer.
-  * @return: The {@link USTREAM_RESULT} with the result of the Append operation. The results can be:
-  *          - @b USTREAM_SUCCESS - If the buffer was appended with success.
-  *          - @b USTREAM_ILLEGAL_ARGUMENT_EXCEPTION - If one of the provided parameters is invalid.
-  *          - @b USTREAM_OUT_OF_MEMORY_EXCEPTION - If there is no memory to append the buffer.
+  * @return: The {@link ULIB_RESULT} with the result of the Append operation. The results can be:
+  *          - @b ULIB_SUCCESS - If the buffer was appended with success.
+  *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+  *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is no memory to append the buffer.
   */
 MOCKABLE_FUNCTION( , 
-    USTREAM_RESULT, uStreamAppend,
+    ULIB_RESULT, uStreamAppend,
     USTREAM*, uStreamInterface, 
     USTREAM*, uStreamToAppend);
 

@@ -4,18 +4,18 @@
 #include "ustream_mock_buffer.h"
 #include "ustream_base.h"
 
-static USTREAM_RESULT _concreteSeekResult = USTREAM_SUCCESS;
-static USTREAM_RESULT _concreteResetResult = USTREAM_SUCCESS;
-static USTREAM_RESULT _concreteGetNextResult = USTREAM_SUCCESS;
-static USTREAM_RESULT _concreteGetRemainingSizeResult = USTREAM_SUCCESS;
-static USTREAM_RESULT _concreteGetCurrentPositionResult = USTREAM_SUCCESS;
-static USTREAM_RESULT _concreteReleaseResult = USTREAM_SUCCESS;
-static USTREAM_RESULT _concreteCloneResult = USTREAM_SUCCESS;
-static USTREAM_RESULT _concreteDisposeResult = USTREAM_SUCCESS;
+static ULIB_RESULT _concreteSeekResult = ULIB_SUCCESS;
+static ULIB_RESULT _concreteResetResult = ULIB_SUCCESS;
+static ULIB_RESULT _concreteGetNextResult = ULIB_SUCCESS;
+static ULIB_RESULT _concreteGetRemainingSizeResult = ULIB_SUCCESS;
+static ULIB_RESULT _concreteGetCurrentPositionResult = ULIB_SUCCESS;
+static ULIB_RESULT _concreteReleaseResult = ULIB_SUCCESS;
+static ULIB_RESULT _concreteCloneResult = ULIB_SUCCESS;
+static ULIB_RESULT _concreteDisposeResult = ULIB_SUCCESS;
 
 static offset_t currentPosition = 0;
 
-static USTREAM_RESULT concreteSeek(
+static ULIB_RESULT concreteSeek(
         USTREAM* uStreamInterface, 
         offset_t position)
 {
@@ -23,22 +23,22 @@ static USTREAM_RESULT concreteSeek(
 
     currentPosition = position;
 
-    USTREAM_RESULT resutl = _concreteSeekResult;
-    _concreteSeekResult = USTREAM_SUCCESS;
+    ULIB_RESULT resutl = _concreteSeekResult;
+    _concreteSeekResult = ULIB_SUCCESS;
     return resutl;
 }
 
-static USTREAM_RESULT concreteReset(
+static ULIB_RESULT concreteReset(
         USTREAM* uStreamInterface)
 {
     (void)uStreamInterface;
 
-    USTREAM_RESULT resutl = _concreteResetResult;
-    _concreteResetResult = USTREAM_SUCCESS;
+    ULIB_RESULT resutl = _concreteResetResult;
+    _concreteResetResult = ULIB_SUCCESS;
     return resutl;
 }
 
-static USTREAM_RESULT concreteGetNext(
+static ULIB_RESULT concreteGetNext(
         USTREAM* uStreamInterface, 
         uint8_t* const buffer, 
         size_t bufferLength, 
@@ -50,12 +50,12 @@ static USTREAM_RESULT concreteGetNext(
 
     currentPosition += bufferLength;
 
-    USTREAM_RESULT resutl = _concreteGetNextResult;
-    _concreteGetNextResult = USTREAM_SUCCESS;
+    ULIB_RESULT resutl = _concreteGetNextResult;
+    _concreteGetNextResult = ULIB_SUCCESS;
     return resutl;
 }
 
-static USTREAM_RESULT concreteGetRemainingSize(
+static ULIB_RESULT concreteGetRemainingSize(
         USTREAM* uStreamInterface, 
         size_t* const size)
 {
@@ -63,12 +63,12 @@ static USTREAM_RESULT concreteGetRemainingSize(
 
     *size = 10;
 
-    USTREAM_RESULT resutl = _concreteGetRemainingSizeResult;
-    _concreteGetRemainingSizeResult = USTREAM_SUCCESS;
+    ULIB_RESULT resutl = _concreteGetRemainingSizeResult;
+    _concreteGetRemainingSizeResult = ULIB_SUCCESS;
     return resutl;
 }
 
-static USTREAM_RESULT concreteGetCurrentPosition(
+static ULIB_RESULT concreteGetCurrentPosition(
         USTREAM* uStreamInterface, 
         offset_t* const position)
 {
@@ -76,20 +76,20 @@ static USTREAM_RESULT concreteGetCurrentPosition(
     
     *position = currentPosition;
 
-    USTREAM_RESULT resutl = _concreteGetCurrentPositionResult;
-    _concreteGetCurrentPositionResult = USTREAM_SUCCESS;
+    ULIB_RESULT resutl = _concreteGetCurrentPositionResult;
+    _concreteGetCurrentPositionResult = ULIB_SUCCESS;
     return resutl;
 }
 
-static USTREAM_RESULT concreteRelease(
+static ULIB_RESULT concreteRelease(
         USTREAM* uStreamInterface, 
         offset_t position)
 {
     (void)uStreamInterface;
     (void)position;
 
-    USTREAM_RESULT resutl = _concreteReleaseResult;
-    _concreteReleaseResult = USTREAM_SUCCESS;
+    ULIB_RESULT resutl = _concreteReleaseResult;
+    _concreteReleaseResult = ULIB_SUCCESS;
     return resutl;
 }
 
@@ -100,25 +100,25 @@ static USTREAM* concreteClone(
     currentPosition = offset;
 
     USTREAM* interfaceResult;
-    if (_concreteCloneResult == USTREAM_SUCCESS)
+    if (_concreteCloneResult == ULIB_SUCCESS)
     {
         interfaceResult = uStreamInterface;
     }
     else
     {
         interfaceResult = NULL;
-        _concreteCloneResult = USTREAM_SUCCESS;
+        _concreteCloneResult = ULIB_SUCCESS;
     }
     return interfaceResult;
 }
 
-static USTREAM_RESULT concreteDispose(
+static ULIB_RESULT concreteDispose(
         USTREAM* uStreamInterface)
 {
     (void)uStreamInterface;
 
-    USTREAM_RESULT resutl = _concreteDisposeResult;
-    _concreteDisposeResult = USTREAM_SUCCESS;
+    ULIB_RESULT resutl = _concreteDisposeResult;
+    _concreteDisposeResult = ULIB_SUCCESS;
     return resutl;
 }
 
@@ -144,54 +144,54 @@ static const USTREAM USTREAM_COMPLIANCE_MOCK_BUFFER =
 
 USTREAM* uStreamMockCreate(void)
 {
-    _concreteSeekResult = USTREAM_SUCCESS;
-    _concreteResetResult = USTREAM_SUCCESS;
-    _concreteGetNextResult = USTREAM_SUCCESS;
-    _concreteGetRemainingSizeResult = USTREAM_SUCCESS;
-    _concreteGetCurrentPositionResult = USTREAM_SUCCESS;
-    _concreteReleaseResult = USTREAM_SUCCESS;
-    _concreteCloneResult = USTREAM_SUCCESS;
-    _concreteDisposeResult = USTREAM_SUCCESS;
+    _concreteSeekResult = ULIB_SUCCESS;
+    _concreteResetResult = ULIB_SUCCESS;
+    _concreteGetNextResult = ULIB_SUCCESS;
+    _concreteGetRemainingSizeResult = ULIB_SUCCESS;
+    _concreteGetCurrentPositionResult = ULIB_SUCCESS;
+    _concreteReleaseResult = ULIB_SUCCESS;
+    _concreteCloneResult = ULIB_SUCCESS;
+    _concreteDisposeResult = ULIB_SUCCESS;
 
     return (USTREAM*)&USTREAM_COMPLIANCE_MOCK_BUFFER;
 }
 
-void setSeekResult(USTREAM_RESULT result)
+void setSeekResult(ULIB_RESULT result)
 {
     _concreteSeekResult = result;
 }
 
-void setResetResult(USTREAM_RESULT result)
+void setResetResult(ULIB_RESULT result)
 {
     _concreteResetResult = result;
 }
 
-void setGetNextResult(USTREAM_RESULT result)
+void setGetNextResult(ULIB_RESULT result)
 {
     _concreteGetNextResult = result;
 }
 
-void setGetRemainingSizeResult(USTREAM_RESULT result)
+void setGetRemainingSizeResult(ULIB_RESULT result)
 {
     _concreteGetRemainingSizeResult = result;
 }
 
-void setGetCurrentPositionResult(USTREAM_RESULT result)
+void setGetCurrentPositionResult(ULIB_RESULT result)
 {
     _concreteGetCurrentPositionResult = result;
 }
 
-void setReleaseResult(USTREAM_RESULT result)
+void setReleaseResult(ULIB_RESULT result)
 {
     _concreteReleaseResult = result;
 }
 
-void setCloneResult(USTREAM_RESULT result)
+void setCloneResult(ULIB_RESULT result)
 {
     _concreteCloneResult = result;
 }
 
-void setDisposeResult(USTREAM_RESULT result)
+void setDisposeResult(ULIB_RESULT result)
 {
     _concreteDisposeResult = result;
 }
