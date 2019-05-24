@@ -65,7 +65,7 @@
  *
  *          |                         +------------------malloc(1024)------------------>|
  *          |                         |<-----------------localBuffer--------------------+
- *  .. while uStreamGetNext return ULIB_SUCCESS ................................................
+ *  .. while uStreamGetNext return ULIB_SUCCESS ...................................................
  *  :       |                         +-uStreamGetNext             |                    |         :
  *  :       |                         |  (uStreamInterface,        |                    |         :
  *  :       |                         |   localBuffer,             |                    |         :
@@ -74,7 +74,7 @@
  *  :       |                         |                     | copy the next 1024 bytes from the   :
  *  :       |                         |                     |  dataSource to the localBuffer.     :
  *  :       |                         |                     +----->|                    |         :
- *  :       |                         |<---ULIB_SUCCESS---------+                    |         :
+ *  :       |                         |<---ULIB_SUCCESS---------+                       |         :
  *  :       |                  +------+                            |                    |         :
  *  :       |                  | use the content in the localBuffer                     |         :
  *  :       |                  +----->|                            |                    |         :
