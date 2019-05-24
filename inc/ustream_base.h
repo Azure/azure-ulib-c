@@ -328,7 +328,7 @@ typedef struct USTREAM_TAG
  * <p> Any code that will use an exposed uStream shall call the APIs using the `uStream...`
  *      macros.
  */
-typedef struct USTREAM_INTERFACE_TAG
+struct USTREAM_INTERFACE_TAG
 {
     USTREAM_RESULT(*seek)(USTREAM* uStreamInterface, offset_t position);
     USTREAM_RESULT(*reset)(USTREAM* uStreamInterface);
@@ -338,7 +338,7 @@ typedef struct USTREAM_INTERFACE_TAG
     USTREAM_RESULT(*release)(USTREAM* uStreamInterface, offset_t position);
     USTREAM*(*clone)(USTREAM* uStreamInterface, offset_t offset);
     USTREAM_RESULT(*dispose)(USTREAM* uStreamInterface);
-} USTREAM_INTERFACE;
+};
 
 
 /**
