@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef AZURE_ULIB_C_TESTS_INC_USTREAMBUFFER_CTEST_AUX_H_
-#define AZURE_ULIB_C_TESTS_INC_USTREAMBUFFER_CTEST_AUX_H_
+#ifndef AZURE_ULIB_C_TESTS_INC_USTREAM_CTEST_AUX_H_
+#define AZURE_ULIB_C_TESTS_INC_USTREAM_CTEST_AUX_H_
 
 #include <stdint.h>
 #include "ctest_macros.h"
 #include "testrunnerswitcher.h"
-#include "ustreambuffer_base.h"
+#include "ustream_base.h"
 
 /**
  * Missing CTEST function to compare arrays.
@@ -94,7 +94,7 @@ do { \
  * Check buffer
  */
 static void checkBuffer(
-        USTREAMBUFFER_INTERFACE azBuffer, 
+        USTREAM* azBuffer, 
         uint8_t offset, 
         const uint8_t* const expectedContent, 
         uint8_t expectedContentLength)
@@ -104,8 +104,8 @@ static void checkBuffer(
 
     if (offset < expectedContentLength)
     {
-        ASSERT_ARE_EQUAL(int, USTREAMBUFFER_SUCCESS,
-            uStreamBufferGetNext(azBuffer, bufResult, 256, &sizeResult));
+        ASSERT_ARE_EQUAL(int, USTREAM_SUCCESS,
+            uStreamGetNext(azBuffer, bufResult, 256, &sizeResult));
 
         ASSERT_ARE_EQUAL(int, expectedContentLength - offset, sizeResult);
         ASSERT_BUFFER_ARE_EQUAL(
@@ -118,9 +118,9 @@ static void checkBuffer(
     sizeResult = 10;
     ASSERT_ARE_EQUAL(
         int,
-        USTREAMBUFFER_NO_SUCH_ELEMENT_EXCEPTION,
-        uStreamBufferGetNext(azBuffer, bufResult, 256, &sizeResult));
+        USTREAM_NO_SUCH_ELEMENT_EXCEPTION,
+        uStreamGetNext(azBuffer, bufResult, 256, &sizeResult));
     ASSERT_ARE_EQUAL(int, 0, sizeResult);
 }
 
-#endif /* AZURE_ULIB_C_TESTS_INC_USTREAMBUFFER_CTEST_AUX_H_ */
+#endif /* AZURE_ULIB_C_TESTS_INC_USTREAM_CTEST_AUX_H_ */
