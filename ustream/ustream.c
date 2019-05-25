@@ -157,8 +157,8 @@ static ULIB_RESULT concreteSeek(USTREAM* uStreamInterface, offset_t position)
 
     if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
     {
-        /*[uStreamSeek_complianceNullBufferFailed]*/
-        /*[uStreamSeek_complianceNonTypeOfBufferAPIFailed]*/
+        /*[ustream_set_position_complianceNullBufferFailed]*/
+        /*[ustream_set_position_complianceNonTypeOfBufferAPIFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -171,24 +171,24 @@ static ULIB_RESULT concreteSeek(USTREAM* uStreamInterface, offset_t position)
         if((innerPosition > (offset_t)(innerBuffer->length)) || 
                 (innerPosition < instance->innerFirstValidPosition))
         {
-            /*[uStreamSeek_complianceForwardOutOfTheBufferFailed]*/
-            /*[uStreamSeek_complianceBackBeforeFirstValidPositionFailed]*/
+            /*[ustream_set_position_complianceForwardOutOfTheBufferFailed]*/
+            /*[ustream_set_position_complianceBackBeforeFirstValidPositionFailed]*/
             result = ULIB_NO_SUCH_ELEMENT_ERROR;
         }
         else
         {
-            /*[uStreamSeek_complianceBackToBeginningSucceed]*/
-            /*[uStreamSeek_complianceBackPositionSucceed]*/
-            /*[uStreamSeek_complianceForwardPositionSucceed]*/
-            /*[uStreamSeek_complianceForwardToTheEndPositionSucceed]*/
-            /*[uStreamSeek_complianceRunFullBufferByteByByteSucceed]*/
-            /*[uStreamSeek_complianceRunFullBufferByteByByteReverseOrderSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferBackToBeginningSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferBackPositionSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferForwardPositionSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferForwardToTheEndPositionSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferRunFullBufferByteByByteSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferRunFullBufferByteByByteReverseOrderSucceed]*/
+            /*[ustream_set_position_complianceBackToBeginningSucceed]*/
+            /*[ustream_set_position_complianceBackPositionSucceed]*/
+            /*[ustream_set_position_complianceForwardPositionSucceed]*/
+            /*[ustream_set_position_complianceForwardToTheEndPositionSucceed]*/
+            /*[ustream_set_position_complianceRunFullBufferByteByByteSucceed]*/
+            /*[ustream_set_position_complianceRunFullBufferByteByByteReverseOrderSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferBackToBeginningSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferBackPositionSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferForwardPositionSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferForwardToTheEndPositionSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferRunFullBufferByteByByteSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferRunFullBufferByteByByteReverseOrderSucceed]*/
             instance->innerCurrentPosition = innerPosition;
             result = ULIB_SUCCESS;
         }

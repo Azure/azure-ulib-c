@@ -311,11 +311,11 @@ TEST_FUNCTION(uStreamMultiAppend_partialReleasedMultibufferSucceed)
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, testBuffer2));
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, testBuffer3));
     
-    // seek to half of the buffer
+    // set_position to half of the buffer
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamSeek(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2)));
+        ustream_set_position(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2)));
     
     // release current - 1
     ASSERT_ARE_EQUAL(
@@ -385,11 +385,11 @@ TEST_FUNCTION(uStreamMultiAppend_fullyReleasedMultibufferSucceed)
 
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, testBuffer1));
     
-    // seek to end of the buffer
+    // set_position to end of the buffer
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamSeek(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1)));
+        ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1)));
     
     // release all
     ASSERT_ARE_EQUAL(
@@ -635,7 +635,7 @@ TEST_FUNCTION(uStreamMultiDispose_multibufferWithBuffersFreeAllResourcesSucceed)
     ///cleanup
 }
 
-/* The Seek shall bypass the error if the Inner uStream return not success for one of the needed operations. */
+/* The set_position shall bypass the error if the Inner uStream return not success for one of the needed operations. */
 TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetCurrentPositionFailed)
 {
     ///arrange
@@ -655,7 +655,7 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetCurrentPositionFailed)
 
     ///act
     ULIB_RESULT result = 
-        uStreamSeek(
+        ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
@@ -690,7 +690,7 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetRemainingSizeFailed)
 
     ///act
     ULIB_RESULT result = 
-        uStreamSeek(
+        ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
@@ -725,7 +725,7 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInSeekFailed)
 
     ///act
     ULIB_RESULT result = 
-        uStreamSeek(
+        ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
@@ -849,7 +849,7 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetCurrentPositionFailed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamSeek(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
+        ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
 
     setGetCurrentPositionResult(ULIB_SYSTEM_ERROR);
 
@@ -889,7 +889,7 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetRemainingSizeFailed)
     ASSERT_ARE_EQUAL(
         int,
         ULIB_SUCCESS,
-        uStreamSeek(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
+        ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
 
     setGetRemainingSizeResult(ULIB_SYSTEM_ERROR);
 

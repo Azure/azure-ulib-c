@@ -142,8 +142,8 @@ static ULIB_RESULT concreteSeek(
 
     if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
     {
-        /*[uStreamSeek_complianceNullBufferFailed]*/
-        /*[uStreamSeek_complianceNonTypeOfBufferAPIFailed]*/
+        /*[ustream_set_position_complianceNullBufferFailed]*/
+        /*[ustream_set_position_complianceNonTypeOfBufferAPIFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -154,29 +154,29 @@ static ULIB_RESULT concreteSeek(
 
         if(innerPosition == instance->innerCurrentPosition)
         {
-            /*[uStreamSeek_complianceForwardToTheEndPositionSucceed]*/
+            /*[ustream_set_position_complianceForwardToTheEndPositionSucceed]*/
             result = ULIB_SUCCESS;
         }
         else if((innerPosition > (offset_t)(instance->length)) || 
                 (innerPosition < instance->innerFirstValidPosition))
         {
-            /*[uStreamSeek_complianceForwardOutOfTheBufferFailed]*/
-            /*[uStreamSeek_complianceBackBeforeFirstValidPositionFailed]*/
+            /*[ustream_set_position_complianceForwardOutOfTheBufferFailed]*/
+            /*[ustream_set_position_complianceBackBeforeFirstValidPositionFailed]*/
             result = ULIB_NO_SUCH_ELEMENT_ERROR;
         }
         else
         {
-            /*[uStreamSeek_complianceBackToBeginningSucceed]*/
-            /*[uStreamSeek_complianceBackPositionSucceed]*/
-            /*[uStreamSeek_complianceForwardPositionSucceed]*/
-            /*[uStreamSeek_complianceRunFullBufferByteByByteSucceed]*/
-            /*[uStreamSeek_complianceRunFullBufferByteByByteReverseOrderSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferBackToBeginningSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferBackPositionSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferForwardPositionSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferForwardToTheEndPositionSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferRunFullBufferByteByByteSucceed]*/
-            /*[uStreamSeek_complianceClonedBufferRunFullBufferByteByByteReverseOrderSucceed]*/
+            /*[ustream_set_position_complianceBackToBeginningSucceed]*/
+            /*[ustream_set_position_complianceBackPositionSucceed]*/
+            /*[ustream_set_position_complianceForwardPositionSucceed]*/
+            /*[ustream_set_position_complianceRunFullBufferByteByByteSucceed]*/
+            /*[ustream_set_position_complianceRunFullBufferByteByByteReverseOrderSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferBackToBeginningSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferBackPositionSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferForwardPositionSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferForwardToTheEndPositionSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferRunFullBufferByteByByteSucceed]*/
+            /*[ustream_set_position_complianceClonedBufferRunFullBufferByteByByteReverseOrderSucceed]*/
             result = ULIB_SUCCESS;
             BUFFER_LIST_NODE* node = instance->bufferList;
             BUFFER_LIST_NODE* newCurrentNode = NULL; 
@@ -200,11 +200,11 @@ static ULIB_RESULT concreteSeek(
                             if((currentPosition + size) > innerPosition)
                             {
                                 newCurrentNode = node;
-                                result = uStreamSeek(node->buffer, innerPosition);
+                                result = ustream_set_position(node->buffer, innerPosition);
                             }
                             else
                             {
-                                result = uStreamSeek(node->buffer, (currentPosition + (offset_t)size - (offset_t)1));
+                                result = ustream_set_position(node->buffer, (currentPosition + (offset_t)size - (offset_t)1));
                             }
                         }
                     }
@@ -230,7 +230,7 @@ static ULIB_RESULT concreteSeek(
                 if(instance->currentNode != NULL)
                 {
                     ULIB_RESULT rollbackResult = 
-                        uStreamSeek(instance->currentNode->buffer, instance->innerCurrentPosition);
+                        ustream_set_position(instance->currentNode->buffer, instance->innerCurrentPosition);
                     if(rollbackResult != ULIB_SUCCESS)
                     {
                         ULIB_CONFIG_LOG(

@@ -222,9 +222,9 @@
  *      `0` to `99`, and it matches the logical position. The consumer clones this buffer providing an
  *      offset of `1000`. The new instance contains the same content as the original one, but the 
  *      logical positions are now from `1000` to `1099`.
- * <p> If the owner of the first instance wants to seek to position 10, it shall call {@link uStreamSeek}
- *      with the logical position 10. For the cloned instance, to seek the same position 10, it shall call 
- *      {@link uStreamSeek} with the logical position 1010.
+ * <p> If the owner of the first instance wants to set_position to position 10, it shall call {@link ustream_set_position}
+ *      with the logical position 10. For the cloned instance, to set_position the same position 10, it shall call 
+ *      {@link ustream_set_position} with the logical position 1010.
  *
  * <i><b> Sliding window:
  * <p> One of the target use cases of the uStream is to accelerate and simplify the implementation of 
@@ -247,7 +247,7 @@
  *      - @b Released - Sequence of bytes in the data source that is already acknowledged by the consumer, 
  *          and shall not be accessed anymore.
  *      - @b Pending - Sequence of bytes in the data source that is already read by the consumer, but not 
- *          acknowledged yet. The consumer can seek these bytes and read it again. This sequence starts at 
+ *          acknowledged yet. The consumer can set_position these bytes and read it again. This sequence starts at 
  *          the First Valid Position and ends at the last byte before the Current Position.
  *      - @b Read - Is the last read portion of the data source. On the GetNext operation, the Read starts
  *          in the Current Position up to the read size. At the end of the GetNext, this segment is 
@@ -261,7 +261,7 @@
  *      The consumer can use this data in its own context: for example, to transmit as a TCP packet. When
  *      the consumer finishes using the data in the local buffer, this data can be discarded
  *      and the local buffer recycled to get the next portion of the data source.
- * <p> If at some point in the future, the consumer needs this data again, it can seek the needed position 
+ * <p> If at some point in the future, the consumer needs this data again, it can set_position the needed position 
  *      and get the same content using the GetNext.
  * <p> The consumer may confirm that a portion of the data is not necessary anymore. For example, after transmitting
  *      multiple TCP packets, the receiver of these packets answers with an ACK for a sequence number. In this case,
@@ -315,7 +315,7 @@ typedef struct USTREAM_TAG
  */
 struct USTREAM_INTERFACE_TAG
 {
-    ULIB_RESULT(*seek)(USTREAM* uStreamInterface, offset_t position);
+    ULIB_RESULT(*set_position)(USTREAM* uStreamInterface, offset_t position);
     ULIB_RESULT(*reset)(USTREAM* uStreamInterface);
     ULIB_RESULT(*read)(USTREAM* uStreamInterface, uint8_t* const buffer, size_t bufferLength, size_t* const size);
     ULIB_RESULT(*getRemainingSize)(USTREAM* uStreamInterface, size_t* const size);
@@ -341,38 +341,36 @@ struct USTREAM_INTERFACE_TAG
  *      {@link ustream_read}. Consumers can call this API to go back or forward, but it cannot be exceed
  *      the end of the buffer or precede the fist valid position (last released position + 1).
  *
- * <p> The seek API shall follow these minimum requirements:
- *      - The seek shall change the current position of the buffer.
- *      - If the provided position is out of the range of the buffer, the seek shall return
+ * <p> The set_position API shall follow these minimum requirements:
+ *      - The set_position shall change the current position of the buffer.
+ *      - If the provided position is out of the range of the buffer, the set_position shall return
  *          ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
- *      - If the provided position is already released, the seek shall return
+ *      - If the provided position is already released, the set_position shall return
  *          ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
- *      - If the provided interface is NULL, the seek shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
- *      - If the provided interface is not the implemented buffer type, the seek shall return
+ *      - If the provided interface is NULL, the set_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided interface is not the implemented buffer type, the set_position shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  position        The {@code offset_t} with the new current position in the buffer.
- * @return: The {@link ULIB_RESULT} with the result of the seek operation. The results can be:
+ * @return: The {@link ULIB_RESULT} with the result of the set_position operation. The results can be:
  *          - @b ULIB_SUCCESS - If the buffer changed the current position with success.
- *          - @b ULIB_BUSY_ERROR - If the resource necessary for the seek operation is busy.
- *          - @b ULIB_CANCELLED_ERROR - If the seek operation was cancelled.
+ *          - @b ULIB_BUSY_ERROR - If the resource necessary for the set_position operation is busy.
+ *          - @b ULIB_CANCELLED_ERROR - If the set_position operation was cancelled.
  *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
  *          - @b ULIB_NO_SUCH_ELEMENT_ERROR - If the position is out of the buffer range.
  *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the
- *              seek operation.
- *          - @b ULIB_SECURITY_ERROR - if the seek operation was denied for security
+ *              set_position operation.
+ *          - @b ULIB_SECURITY_ERROR - if the set_position operation was denied for security
  *              reasons.
- *          - @b ULIB_SYSTEM_ERROR - if the seek operation failed on the system level.
+ *          - @b ULIB_SYSTEM_ERROR - if the set_position operation failed on the system level.
  */
-#define uStreamSeek( \
-            /*[USTREAM*]*/ uStreamInterface, \
-            /*[offset_t]*/ position) \
-    ((uStreamInterface)->api->seek( \
-            (uStreamInterface), \
-            (position)))
+inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t position)
+{
+    return ((ustream_interface)->api->set_position((ustream_interface), (position)));
+}
 
 /**
  * @brief   Changes the current position to the first valid position.
