@@ -45,16 +45,16 @@
  *  +----------------+        +----------------+         +------------------+     +------------+
  *          |                         |                            |                    |
  *          |<--GetProviderContent()--+                            |                    |
- *          +-----------------------------malloc(contentSize)-------------------------->|
- *          |<--------------------------------contentPtr--------------------------------+
+ *          +----------------------------malloc(content_size)-------------------------->|
+ *          |<--------------------------------content_ptr-------------------------------+
  *   +------+                         |                            |                    |
- *   | generate the content and store in the contentPtr            |                    |
+ *   | generate the content and store in the content_ptr           |                    |
  *   +----->|                         |                            |                    |
  *          +-----ustream_create                                   |                    |
- *          |          (contentPtr, contentSize, takeOwnership)--->|                    |
+ *          |       (content_ptr, content_size, take_ownership)--->|                    |
  *          |                         |                     +------+                    |
- *          |                         |                     | dataSource = contentPtr   |
- *          |                         |                     | dataSourceSize = contentSize
+ *          |                         |                     | data_source = content_ptr |
+ *          |                         |                     | data_sourceSize = content_size
  *          |                         |                     | ownership = true          |
  *          |                         |                     +----->|                    |
  *          |<-----------------ustream_interface-------------------+                    |
@@ -64,25 +64,25 @@
  *   iterator ustream_read.
  *
  *          |                         +------------------malloc(1024)------------------>|
- *          |                         |<-----------------localBuffer--------------------+
+ *          |                         |<-----------------local_buffer-------------------+
  *  .. while ustream_read return ULIB_SUCCESS .....................................................
  *  :       |                         +-ustream_read               |                    |         :
  *  :       |                         |  (ustream_interface,       |                    |         :
- *  :       |                         |   localBuffer,             |                    |         :
+ *  :       |                         |   local_buffer,            |                    |         :
  *  :       |                         |   1024)------------------->|                    |         :
  *  :       |                         |                     +------+                    |         :
  *  :       |                         |                     | copy the next 1024 bytes from the   :
- *  :       |                         |                     |  dataSource to the localBuffer.     :
+ *  :       |                         |                     |  data_source to the local_buffer.   :
  *  :       |                         |                     +----->|                    |         :
  *  :       |                         |<---ULIB_SUCCESS---------+                       |         :
  *  :       |                  +------+                            |                    |         :
- *  :       |                  | use the content in the localBuffer                     |         :
+ *  :       |                  | use the content in the local_buffer                    |         :
  *  :       |                  +----->|                            |                    |         :
  *  ...............................................................................................
- *          |                         +---------------free(localBuffer)---------------->|
+ *          |                         +---------------free(local_buffer)--------------->|
  *          |                         +-ustream_dispose            |                    |
  *          |                         |       (ustream_interface)->|                    |
- *          |                         |                            +--free(dataSource)->|
+ *          |                         |                            +-free(data_source)->|
  *          |                         |                            |                    |
  * </code></pre>
  *

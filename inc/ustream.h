@@ -25,7 +25,7 @@ extern "C" {
  * <p> This factory creates a uStream that handles the content of the provided buffer. As a result,
  *      it will return a {@link USTREAM*} with this content. The new uStream can keep 
  *      or not keep the ownership of the memory pointed to by the {@code *buffer} depending on the state of the 
- *      boolean {@code takeOwnership}. It can be:
+ *      boolean {@code take_ownership}. It can be:
  *
  *          -@b true - To inform the new uStream that it shall take the ownership of the memory. This 
  *                  means that the uStream will copy only the reference of the memory, use it directly 
@@ -35,14 +35,14 @@ extern "C" {
  *          -@b false - To inform the new uStream that it shall not take the ownership of the memory.
  *                  This means that the uStream shall allocate its own memory and copy the content of
  *                  the provided buffer to this internal memory. The function that called this factory with
- *                  {@code takeOwnership = false} may release or change the original buffer. When the 
+ *                  {@code take_ownership = false} may release or change the original buffer. When the 
  *                  uStream is disposed, it will only release the memory allocated to copy the original
  *                  buffer.
  *
  * @param:  buffer          The {@code const uint8_t* const} that points to a memory position where the buffer starts.
  *                              It cannot be {@code NULL}.
  * @param:  buffer_length    The {@code size_t} with the number of {@code uint8_t} in the provided buffer.
- * @param:  takeOwnership   The {@code bool} that indicates if the factory shall or shall not take ownership of the buffer.
+ * @param:  take_ownership   The {@code bool} that indicates if the factory shall or shall not take ownership of the buffer.
  *                              If {@code true} the uStream will take ownership of the memory allocated for the
  *                              provided buffer. If {@code false} the uStream will make a copy of the content of
  *                              the provided buffer in its own memory.
@@ -53,7 +53,7 @@ extern "C" {
 MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
         const uint8_t* const, buffer,
         size_t, buffer_length,
-        bool, takeOwnership);
+        bool, take_ownership);
 
 /**
  * @brief   Factory to create a new uStream using constant content, which cannot be changed or released.

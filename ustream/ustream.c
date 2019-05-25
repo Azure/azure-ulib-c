@@ -97,13 +97,13 @@ static USTREAM* createInstance(
 static USTREAM_INNER_BUFFER* createInnerBuffer(
     const uint8_t* const buffer, 
     size_t buffer_length,
-    bool takeOwnership,
+    bool take_ownership,
     bool releaseOnDestroy)
 {
     uint8_t* ptr;
     USTREAM_INNER_BUFFER* innerBuffer;
 
-    if(takeOwnership)
+    if(take_ownership)
     {
         ptr = (uint8_t*)buffer;
     }
@@ -126,7 +126,7 @@ static USTREAM_INNER_BUFFER* createInnerBuffer(
     else if((innerBuffer = (USTREAM_INNER_BUFFER*)ULIB_CONFIG_MALLOC(sizeof(USTREAM_INNER_BUFFER))) == NULL)
     {
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_OUT_OF_MEMORY_STRING, "inner buffer control");
-        if(!takeOwnership)
+        if(!take_ownership)
         {
             ULIB_CONFIG_FREE(ptr);
         }
@@ -457,7 +457,7 @@ static ULIB_RESULT concreteDispose(USTREAM* ustream_interface)
 USTREAM* ustream_create(
         const uint8_t* const buffer, 
         size_t buffer_length,
-        bool takeOwnership)
+        bool take_ownership)
 {
     USTREAM* interfaceResult;
 
@@ -476,7 +476,7 @@ USTREAM* ustream_create(
     else
     {
         /*[uStreamCreate_succeed]*/
-        USTREAM_INNER_BUFFER* innerBuffer = createInnerBuffer(buffer, buffer_length, takeOwnership, true);
+        USTREAM_INNER_BUFFER* innerBuffer = createInnerBuffer(buffer, buffer_length, take_ownership, true);
         /*[uStreamCreate_noMemoryToCreateProtectedBufferFailed]*/
         /*[uStreamCreate_noMemoryToCreateInnerBufferFailed]*/
         if(innerBuffer == NULL)
@@ -489,7 +489,7 @@ USTREAM* ustream_create(
             /*[uStreamCreate_noMemoryToCreateInstanceFailed]*/
             if(interfaceResult == NULL)
             {
-                if(takeOwnership)
+                if(take_ownership)
                 {
                     ULIB_CONFIG_FREE(innerBuffer);
                 }
