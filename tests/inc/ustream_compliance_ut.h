@@ -46,7 +46,7 @@ TEST_FUNCTION(uStreamDispose_complianceClonedInstanceDisposedFirstSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamInstance, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamInstance, &uStreamCloneCurrentPosition));
         
     ///cleanup
     (void)uStreamDispose(uStreamInstance);
@@ -69,7 +69,7 @@ TEST_FUNCTION(uStreamDispose_complianceClonedInstanceDisposedSecondSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
         
     ///cleanup
     (void)uStreamDispose(uStreamCloneInterface);
@@ -149,7 +149,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferClonedWithZeroOffsetSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, 0, uStreamCloneCurrentPosition);
 
     /* release position was moved to the start menus one. */
@@ -160,7 +160,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferClonedWithZeroOffsetSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, 0, uStreamCloneCurrentPosition);
 
     /* Full content was copied. */
@@ -211,7 +211,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferClonedWithOffsetSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, 10000, uStreamCloneCurrentPosition);
 
     /* release position was moved to the start menus one. */
@@ -219,7 +219,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferClonedWithOffsetSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, 10000, uStreamCloneCurrentPosition);
 
     /* Full content was copied. */
@@ -278,7 +278,7 @@ TEST_FUNCTION(uStreamClone_complianceEmptyBufferSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, 0, uStreamCloneCurrentPosition);
 
     /* release position was moved to the start menus one. */
@@ -286,7 +286,7 @@ TEST_FUNCTION(uStreamClone_complianceEmptyBufferSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, 0, uStreamCloneCurrentPosition);
 
     /* Full content was copied. */
@@ -337,7 +337,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, 100, uStreamCloneCurrentPosition);
 
     /* release position was moved to the start menus one. */
@@ -345,7 +345,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, 100, uStreamCloneCurrentPosition);
 
     /* Full content was copied. */
@@ -410,7 +410,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, USTREAM_COMPLIANCE_LENGTH_1, uStreamCloneCurrentPosition);
 
     /* release position was moved to the start menus one. */
@@ -418,7 +418,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, USTREAM_COMPLIANCE_LENGTH_1, uStreamCloneCurrentPosition);
 
     /* Full content was copied. */
@@ -492,7 +492,7 @@ TEST_FUNCTION(uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPo
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, 0, uStreamCloneCurrentPosition);
 
     /* release position was moved to the start menus one. */
@@ -500,7 +500,7 @@ TEST_FUNCTION(uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPo
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &uStreamCloneCurrentPosition));
+        ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
     ASSERT_ARE_EQUAL(int, 0, uStreamCloneCurrentPosition);
 
     /* Full content was copied. */
@@ -736,7 +736,7 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceNullSizeFailed)
     (void)uStreamDispose(uStreamInstance);
 }
 
-/* The getCurrentPosition shall return the logical current position of the buffer. */
+/* The get_position shall return the logical current position of the buffer. */
 TEST_FUNCTION(uStreamGetCurrentPosition_complianceNewBufferSucceed)
 {
     ///arrange
@@ -745,7 +745,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceNewBufferSucceed)
     offset_t position;
 
     ///act
-    ULIB_RESULT result = uStreamGetCurrentPosition(uStreamInstance, &position);
+    ULIB_RESULT result = ustream_get_position(uStreamInstance, &position);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
@@ -773,7 +773,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceNewBufferWithNonZeroCurrentPos
         uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
 
     ///act
-    ULIB_RESULT result = uStreamGetCurrentPosition(uStreamInstance, &position);
+    ULIB_RESULT result = ustream_get_position(uStreamInstance, &position);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
@@ -811,7 +811,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceClonedBufferWithNonZeroCurrent
         uStreamRelease(uStreamCloneInterface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
-    ULIB_RESULT result = uStreamGetCurrentPosition(uStreamCloneInterface, &position);
+    ULIB_RESULT result = ustream_get_position(uStreamCloneInterface, &position);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
@@ -822,7 +822,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceClonedBufferWithNonZeroCurrent
     (void)uStreamDispose(uStreamInstance);
 }
 
-/* If the provided interface is NULL, the getCurrentPosition shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* If the provided interface is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
 TEST_FUNCTION(uStreamGetCurrentPosition_complianceNullBufferFailed)
 {
     ///arrange
@@ -830,7 +830,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceNullBufferFailed)
     offset_t position;
 
     ///act
-    ULIB_RESULT result = uStreamInstance->api->getCurrentPosition(NULL, &position);
+    ULIB_RESULT result = uStreamInstance->api->get_position(NULL, &position);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -839,7 +839,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceNullBufferFailed)
     (void)uStreamDispose(uStreamInstance);
 }
 
-/* If the provided interface is not the implemented buffer type, the getCurrentPosition shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* If the provided interface is not the implemented buffer type, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
 TEST_FUNCTION(uStreamGetCurrentPosition_complianceBufferIsNotTypeOfBufferFailed)
 {
     ///arrange
@@ -848,7 +848,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceBufferIsNotTypeOfBufferFailed)
 
     ///act
     ULIB_RESULT result = 
-        uStreamInstance->api->getCurrentPosition(uStreamMockCreate(), &position);
+        uStreamInstance->api->get_position(uStreamMockCreate(), &position);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -857,14 +857,14 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceBufferIsNotTypeOfBufferFailed)
     (void)uStreamDispose(uStreamInstance);
 }
 
-/* If the provided position is NULL, the getCurrentPosition shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* If the provided position is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
 TEST_FUNCTION(uStreamGetCurrentPosition_complianceNullPositionFailed)
 {
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
 
     ///act
-    ULIB_RESULT result = uStreamGetCurrentPosition(uStreamInstance, NULL);
+    ULIB_RESULT result = ustream_get_position(uStreamInstance, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -1840,7 +1840,7 @@ TEST_FUNCTION(uStreamRelease_complianceSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamInstance, &currentPosition));
+        ustream_get_position(uStreamInstance, &currentPosition));
 
     ///act
     ULIB_RESULT result = uStreamRelease(uStreamInstance, currentPosition - 1);
@@ -1940,7 +1940,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamCloneInterface, &currentPosition));
+        ustream_get_position(uStreamCloneInterface, &currentPosition));
 
     ///act
     ULIB_RESULT result = uStreamRelease(uStreamCloneInterface, currentPosition - 1);
@@ -2053,7 +2053,7 @@ TEST_FUNCTION(uStreamRelease_complianceReleaseAfterCurrentFailed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetCurrentPosition(uStreamInstance, &currentPosition));
+        ustream_get_position(uStreamInstance, &currentPosition));
 
     ///act
     ULIB_RESULT result = uStreamRelease(uStreamInstance, currentPosition);

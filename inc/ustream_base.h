@@ -319,7 +319,7 @@ struct USTREAM_INTERFACE_TAG
     ULIB_RESULT(*reset)(USTREAM* uStreamInterface);
     ULIB_RESULT(*read)(USTREAM* uStreamInterface, uint8_t* const buffer, size_t bufferLength, size_t* const size);
     ULIB_RESULT(*get_remaining_size)(USTREAM* uStreamInterface, size_t* const size);
-    ULIB_RESULT(*getCurrentPosition)(USTREAM* uStreamInterface, offset_t* const position);
+    ULIB_RESULT(*get_position)(USTREAM* uStreamInterface, offset_t* const position);
     ULIB_RESULT(*release)(USTREAM* uStreamInterface, offset_t position);
     USTREAM*(*clone)(USTREAM* uStreamInterface, offset_t offset);
     ULIB_RESULT(*dispose)(USTREAM* uStreamInterface);
@@ -506,19 +506,19 @@ inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t
  *
  * <p> This API returns the logical current position.
  *
- * <p> The getCurrentPosition API shall follow the following minimum requirements:
- *      - The getCurrentPosition shall return the logical current position of the buffer.
- *      - If the provided interface is NULL, the getCurrentPosition shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
- *      - If the provided interface is not the implemented buffer type, the getCurrentPosition
+ * <p> The get_position API shall follow the following minimum requirements:
+ *      - The get_position shall return the logical current position of the buffer.
+ *      - If the provided interface is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided interface is not the implemented buffer type, the get_position
  *          shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
- *      - If the provided position is NULL, the getCurrentPosition shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided position is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param:  uStreamInterface  The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  position                The {@code offset_t* const} to returns the logical current position in the
  *                              buffer. It cannot be {@code NULL}.
- * @return: The {@link ULIB_RESULT} with the result of the getCurrentPosition operation. The results can be:
+ * @return: The {@link ULIB_RESULT} with the result of the get_position operation. The results can be:
  *          - @b ULIB_SUCCESS - If it provided the logical current position of the buffer.
  *          - @b ULIB_BUSY_ERROR - If the resource necessary for the getting the logical current
  *              position is busy.
@@ -531,12 +531,10 @@ inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t
  *          - @b ULIB_SYSTEM_ERROR - If the get logical current position operation failed on
  *              the system level.
  */
-#define uStreamGetCurrentPosition( \
-            /*[USTREAM*]*/ uStreamInterface, \
-            /*[offset_t* const]*/ position) \
-    ((uStreamInterface)->api->getCurrentPosition( \
-            (uStreamInterface), \
-            (position)))
+inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* const position)
+{
+    return ((ustream_interface)->api->get_position((ustream_interface), (position)));
+}
 
 /**
  * @brief   Releases all the resources related to the Data Source before and including the released position.
@@ -552,7 +550,7 @@ inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t
  *
  * <pre><code>
  * offset_t pos;
- * if(uStreamGetCurrentPosition(myBuffer, &pos) == ULIB_SUCCESS)
+ * if(ustream_get_position(myBuffer, &pos) == ULIB_SUCCESS)
  * {
  *     uStreamRelease(myBuffer, pos - 1);
  * }

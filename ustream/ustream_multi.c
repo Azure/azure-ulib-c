@@ -192,7 +192,7 @@ static ULIB_RESULT concreteSeek(
                 {
                     offset_t currentPosition;
                     /*[uStreamMultiSeek_innerBufferFailedInGetCurrentPositionFailed]*/
-                    if((result = uStreamGetCurrentPosition(node->buffer, &currentPosition)) == ULIB_SUCCESS)
+                    if((result = ustream_get_position(node->buffer, &currentPosition)) == ULIB_SUCCESS)
                     {
                         size_t size;
                         if((result = ustream_get_remaining_size(node->buffer, &size)) == ULIB_SUCCESS)
@@ -471,7 +471,7 @@ static ULIB_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t position)
             result = ULIB_SUCCESS;
             offset_t lastPosition = 0;
             while((newBufferListStart != NULL) &&
-                    ((result = uStreamGetCurrentPosition(newBufferListStart->buffer, &lastPosition)) == ULIB_SUCCESS) && 
+                    ((result = ustream_get_position(newBufferListStart->buffer, &lastPosition)) == ULIB_SUCCESS) && 
                     (innerPosition > lastPosition))
             {
                 newBufferListStart = newBufferListStart->next;

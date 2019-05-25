@@ -662,7 +662,7 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetCurrentPositionFailed)
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamGetCurrentPosition(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
@@ -697,7 +697,7 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetRemainingSizeFailed)
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamGetCurrentPosition(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
@@ -732,7 +732,7 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInSeekFailed)
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamGetCurrentPosition(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
@@ -862,7 +862,7 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetCurrentPositionFailed)
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamGetCurrentPosition(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
     ///cleanup
@@ -902,7 +902,7 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetRemainingSizeFailed)
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamGetCurrentPosition(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
     ///cleanup
