@@ -17,20 +17,20 @@ ULIB_RESULT ustream_append(
         result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     /*[uStreamAppend_startingFromMultibufferWithNotEnoughMemoryFailed]*/
-    else if((result = uStreamMultiAppend(ustream_interface, ustream_to_append)) == ULIB_ILLEGAL_ARGUMENT_ERROR)
+    else if((result = ustream_multi_append(ustream_interface, ustream_to_append)) == ULIB_ILLEGAL_ARGUMENT_ERROR)
     {
-        USTREAM* newMultiBuffer = uStreamMultiCreate();
+        USTREAM* newMultiBuffer = ustream_multi_create();
         if(newMultiBuffer == NULL)
         {
             /*[uStreamAppend_notEnoughMemoryToCreateMultibufferFailed]*/
             result = ULIB_OUT_OF_MEMORY_ERROR;
         }
-        else if ((result = uStreamMultiAppend(newMultiBuffer, ustream_interface)) != ULIB_SUCCESS)
+        else if ((result = ustream_multi_append(newMultiBuffer, ustream_interface)) != ULIB_SUCCESS)
         {
             /*[uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed]*/
             ustream_dispose(newMultiBuffer);
         }
-        else if ((result = uStreamMultiAppend(newMultiBuffer, ustream_to_append)) != ULIB_SUCCESS)
+        else if ((result = ustream_multi_append(newMultiBuffer, ustream_to_append)) != ULIB_SUCCESS)
         {
             /*[uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed]*/
             ustream_dispose(newMultiBuffer);

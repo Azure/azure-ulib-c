@@ -50,7 +50,7 @@ extern "C" {
  *          - @b not NULL - If the uStream was created with success.
  *          - @b NULL - If there is no memory to create the new uStream.
  */
-MOCKABLE_FUNCTION(, USTREAM*, uStreamCreate,
+MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
         const uint8_t* const, buffer,
         size_t, buffer_length,
         bool, takeOwnership);
@@ -71,7 +71,7 @@ MOCKABLE_FUNCTION(, USTREAM*, uStreamCreate,
  *          - @b not NULL - If the uStream was created with success.
  *          - @b NULL - If there is no memory to create the new uStream.
  */
-MOCKABLE_FUNCTION(, USTREAM*, uStreamConstCreate,
+MOCKABLE_FUNCTION(, USTREAM*, ustream_const_create,
     const uint8_t* const, buffer,
     size_t, buffer_length);
 
@@ -99,7 +99,7 @@ MOCKABLE_FUNCTION(, USTREAM*, uStreamConstCreate,
  *          - @b not NULL - If the uStreamMulti was created with success.
  *          - @b NULL - If there is no memory to create the new uStreamMulti.
  */
-MOCKABLE_FUNCTION(, USTREAM*, uStreamMultiCreate);
+MOCKABLE_FUNCTION(, USTREAM*, ustream_multi_create);
 
 /**
  * @brief   Append an existent buffer to the uStreamMulti.
@@ -119,7 +119,7 @@ MOCKABLE_FUNCTION(, USTREAM*, uStreamMultiCreate);
  *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If the one of the provided parameters is invalid.
  *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is no memory to append the buffer.
  */
-MOCKABLE_FUNCTION(, ULIB_RESULT, uStreamMultiAppend,
+MOCKABLE_FUNCTION(, ULIB_RESULT, ustream_multi_append,
     USTREAM*, ustream_interface,
     USTREAM*, ustream_to_append);
 

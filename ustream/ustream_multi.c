@@ -608,14 +608,14 @@ static ULIB_RESULT concreteDispose(USTREAM* ustream_interface)
     return result;
 }
 
-USTREAM* uStreamMultiCreate(void)
+USTREAM* ustream_multi_create(void)
 {
     /*[uStreamMultiCreate_succeed]*/
     /*[uStreamMultiCreate_noMemoryToCreateInterfaceFailed]*/
     return createInstance();
 }
 
-ULIB_RESULT uStreamMultiAppend(
+ULIB_RESULT ustream_multi_append(
         USTREAM* ustream_interface,
         USTREAM* ustream_to_append)
 {
@@ -652,7 +652,7 @@ ULIB_RESULT uStreamMultiAppend(
             ULIB_CONFIG_LOG(
                 ULOG_TYPE_ERROR,
                 ULOG_REPORT_EXCEPTION_STRING,
-                "uStreamMultiAppend",
+                "ustream_multi_append",
                 result);
             destroyBufferNode(newNode);
         }

@@ -72,30 +72,30 @@ static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3 =
 
 static USTREAM* createTestDefaultMultibuffer()
 {
-    USTREAM* defaultMultibuffer = uStreamMultiCreate();
+    USTREAM* defaultMultibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(defaultMultibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(defaultMultibuffer, defaultBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(defaultMultibuffer, defaultBuffer1));
 
     USTREAM* defaultBuffer2 =
-        uStreamCreate(
+        ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2),
             false);
     ASSERT_IS_NOT_NULL(defaultBuffer2);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(defaultMultibuffer, defaultBuffer2));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(defaultMultibuffer, defaultBuffer2));
 
     USTREAM* defaultBuffer3 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3));
     ASSERT_IS_NOT_NULL(defaultBuffer3);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(defaultMultibuffer, defaultBuffer3));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(defaultMultibuffer, defaultBuffer3));
 
     (void)ustream_dispose(defaultBuffer1);
     (void)ustream_dispose(defaultBuffer2);
@@ -173,7 +173,7 @@ TEST_FUNCTION_CLEANUP(TestMethodCleanup)
     TEST_MUTEX_RELEASE(g_testByTest);
 }
 
-/* The uStreamMultiCreate shall create an instance of the multi-buffer and initialize the interface. */
+/* The ustream_multi_create shall create an instance of the multi-buffer and initialize the interface. */
 TEST_FUNCTION(uStreamMultiCreate_succeed)
 {
     ///arrange
@@ -181,7 +181,7 @@ TEST_FUNCTION(uStreamMultiCreate_succeed)
     STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
 
     ///act
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -192,14 +192,14 @@ TEST_FUNCTION(uStreamMultiCreate_succeed)
     (void)ustream_dispose(multibuffer);
 }
 
-/* The uStreamMultiCreate shall return NULL if there is no memory to create the multi-buffer interface. */
+/* The ustream_multi_create shall return NULL if there is no memory to create the multi-buffer interface. */
 TEST_FUNCTION(uStreamMultiCreate_noMemoryToCreateInterfaceFailed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM))).SetReturn(NULL);
 
     ///act
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -216,7 +216,7 @@ TEST_FUNCTION(uStreamMultiCreate_noMemoryToCreateInstanceFailed)
     STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
 
     ///act
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -225,25 +225,25 @@ TEST_FUNCTION(uStreamMultiCreate_noMemoryToCreateInstanceFailed)
     ///cleanup
 }
 
-/* The uStreamMultiAppend shall add the provided buffer to the multibuffer list. */
+/* The ustream_multi_append shall add the provided buffer to the multibuffer list. */
 TEST_FUNCTION(uStreamMultiAppend_newMultibufferSucceed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* testBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(testBuffer1);
     USTREAM* testBuffer2 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2));
     ASSERT_IS_NOT_NULL(testBuffer2);
     USTREAM* testBuffer3 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3));
     ASSERT_IS_NOT_NULL(testBuffer3);
@@ -260,9 +260,9 @@ TEST_FUNCTION(uStreamMultiAppend_newMultibufferSucceed)
     STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
 
     ///act
-    ULIB_RESULT result1 = uStreamMultiAppend(multibuffer, testBuffer1);
-    ULIB_RESULT result2 = uStreamMultiAppend(multibuffer, testBuffer2);
-    ULIB_RESULT result3 = uStreamMultiAppend(multibuffer, testBuffer3);
+    ULIB_RESULT result1 = ustream_multi_append(multibuffer, testBuffer1);
+    ULIB_RESULT result2 = ustream_multi_append(multibuffer, testBuffer2);
+    ULIB_RESULT result3 = ustream_multi_append(multibuffer, testBuffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -288,28 +288,28 @@ TEST_FUNCTION(uStreamMultiAppend_newMultibufferSucceed)
 TEST_FUNCTION(uStreamMultiAppend_partialReleasedMultibufferSucceed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* testBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(testBuffer1);
     USTREAM* testBuffer2 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2));
     ASSERT_IS_NOT_NULL(testBuffer2);
     USTREAM* testBuffer3 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3));
     ASSERT_IS_NOT_NULL(testBuffer3);
 
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, testBuffer1));
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, testBuffer2));
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, testBuffer3));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, testBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, testBuffer2));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, testBuffer3));
     
     // set_position to half of the buffer
     ASSERT_ARE_EQUAL(
@@ -335,9 +335,9 @@ TEST_FUNCTION(uStreamMultiAppend_partialReleasedMultibufferSucceed)
     STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
 
     ///act
-    ULIB_RESULT result1 = uStreamMultiAppend(multibuffer, testBuffer1);
-    ULIB_RESULT result2 = uStreamMultiAppend(multibuffer, testBuffer2);
-    ULIB_RESULT result3 = uStreamMultiAppend(multibuffer, testBuffer3);
+    ULIB_RESULT result1 = ustream_multi_append(multibuffer, testBuffer1);
+    ULIB_RESULT result2 = ustream_multi_append(multibuffer, testBuffer2);
+    ULIB_RESULT result3 = ustream_multi_append(multibuffer, testBuffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -364,26 +364,26 @@ TEST_FUNCTION(uStreamMultiAppend_partialReleasedMultibufferSucceed)
 TEST_FUNCTION(uStreamMultiAppend_fullyReleasedMultibufferSucceed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* testBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(testBuffer1);
     USTREAM* testBuffer2 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2));
     ASSERT_IS_NOT_NULL(testBuffer2);
     USTREAM* testBuffer3 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3));
     ASSERT_IS_NOT_NULL(testBuffer3);
 
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, testBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, testBuffer1));
     
     // set_position to end of the buffer
     ASSERT_ARE_EQUAL(
@@ -409,9 +409,9 @@ TEST_FUNCTION(uStreamMultiAppend_fullyReleasedMultibufferSucceed)
     STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
 
     ///act
-    ULIB_RESULT result1 = uStreamMultiAppend(multibuffer, testBuffer1);
-    ULIB_RESULT result2 = uStreamMultiAppend(multibuffer, testBuffer2);
-    ULIB_RESULT result3 = uStreamMultiAppend(multibuffer, testBuffer3);
+    ULIB_RESULT result1 = ustream_multi_append(multibuffer, testBuffer1);
+    ULIB_RESULT result2 = ustream_multi_append(multibuffer, testBuffer2);
+    ULIB_RESULT result3 = ustream_multi_append(multibuffer, testBuffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -434,17 +434,17 @@ TEST_FUNCTION(uStreamMultiAppend_fullyReleasedMultibufferSucceed)
     (void)ustream_dispose(multibuffer);
 }
 
-/* If the provided handle is NULL, the uStreamMultiAppend shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* If the provided handle is NULL, the ustream_multi_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
 TEST_FUNCTION(uStreamMultiAppend_nullMultibufferFailed)
 {
     ///arrange
     USTREAM* testBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
 
     ///act
-    ULIB_RESULT result = uStreamMultiAppend(NULL, testBuffer1);
+    ULIB_RESULT result = ustream_multi_append(NULL, testBuffer1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -453,21 +453,21 @@ TEST_FUNCTION(uStreamMultiAppend_nullMultibufferFailed)
     (void)ustream_dispose(testBuffer1);
 }
 
-/* If the provided handle is not the implemented buffer type, the uStreamMultiAppend shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* If the provided handle is not the implemented buffer type, the ustream_multi_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
 TEST_FUNCTION(uStreamMultiAppend_bufferIsNotTypeOfBufferFailed)
 {
     ///arrange
     USTREAM* testBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     USTREAM* testBuffer2 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2));
 
     ///act
-    ULIB_RESULT result = uStreamMultiAppend(testBuffer1, testBuffer2);
+    ULIB_RESULT result = ustream_multi_append(testBuffer1, testBuffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -477,22 +477,22 @@ TEST_FUNCTION(uStreamMultiAppend_bufferIsNotTypeOfBufferFailed)
     (void)ustream_dispose(testBuffer2);
 }
 
-/* If the provided buffer to add is NULL, the uStreamMultiAppend shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* If the provided buffer to add is NULL, the ustream_multi_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
 TEST_FUNCTION(uStreamMultiAppend_nullBufferToAddFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     USTREAM* testBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
-    uStreamMultiAppend(multibuffer, testBuffer1);
+    ustream_multi_append(multibuffer, testBuffer1);
     umock_c_reset_all_calls();
     STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
 
     ///act
-    ULIB_RESULT result = uStreamMultiAppend(multibuffer, NULL);
+    ULIB_RESULT result = ustream_multi_append(multibuffer, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -502,21 +502,21 @@ TEST_FUNCTION(uStreamMultiAppend_nullBufferToAddFailed)
     (void)ustream_dispose(multibuffer);
 }
 
-/* If there is no memory to control the new buffer, the uStreamMultiAppend shall return ULIB_OUT_OF_MEMORY_ERROR. */
+/* If there is no memory to control the new buffer, the ustream_multi_append shall return ULIB_OUT_OF_MEMORY_ERROR. */
 TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     USTREAM* testBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     umock_c_reset_all_calls();
     STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
-    ULIB_RESULT result = uStreamMultiAppend(multibuffer, testBuffer1);
+    ULIB_RESULT result = ustream_multi_append(multibuffer, testBuffer1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
@@ -526,14 +526,14 @@ TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryFailed)
     (void)ustream_dispose(multibuffer);
 }
 
-/* If the uStreamMultiAppend failed to copy the buffer, it shall return ULIB_OUT_OF_MEMORY_ERROR. */
+/* If the ustream_multi_append failed to copy the buffer, it shall return ULIB_OUT_OF_MEMORY_ERROR. */
 TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryToCloneTheBufferFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     USTREAM* testBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     umock_c_reset_all_calls();
@@ -542,7 +542,7 @@ TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryToCloneTheBufferFailed)
     STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
 
     ///act
-    ULIB_RESULT result = uStreamMultiAppend(multibuffer, testBuffer1);
+    ULIB_RESULT result = ustream_multi_append(multibuffer, testBuffer1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
@@ -552,26 +552,26 @@ TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryToCloneTheBufferFailed)
     (void)ustream_dispose(multibuffer);
 }
 
-/* If the uStreamMultiAppend failed to copy the buffer, it shall return ULIB_OUT_OF_MEMORY_ERROR. */
+/* If the ustream_multi_append failed to copy the buffer, it shall return ULIB_OUT_OF_MEMORY_ERROR. */
 TEST_FUNCTION(uStreamMultiAppend_newInnerBufferFailedOnGetRemainingSizeFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
     USTREAM* defaultBuffer2 = uStreamMockCreate();
 
     setGetRemainingSizeResult(ULIB_SYSTEM_ERROR);
 
     ///act
-    ULIB_RESULT result = uStreamMultiAppend(multibuffer, defaultBuffer2);
+    ULIB_RESULT result = ustream_multi_append(multibuffer, defaultBuffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SYSTEM_ERROR, result);
@@ -586,7 +586,7 @@ TEST_FUNCTION(uStreamMultiAppend_newInnerBufferFailedOnGetRemainingSizeFailed)
 TEST_FUNCTION(uStreamMultiDispose_multibufferWithoutBuffersFreeAllResourcesSucceed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     umock_c_reset_all_calls();
     STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
@@ -639,18 +639,18 @@ TEST_FUNCTION(uStreamMultiDispose_multibufferWithBuffersFreeAllResourcesSucceed)
 TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetCurrentPositionFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
     USTREAM* defaultBuffer2 = uStreamMockCreate();
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer2));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
     setGetCurrentPositionResult(ULIB_SYSTEM_ERROR);
 
     ///act
@@ -674,18 +674,18 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetCurrentPositionFailed)
 TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetRemainingSizeFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
     USTREAM* defaultBuffer2 = uStreamMockCreate();
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer2));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
     setGetRemainingSizeResult(ULIB_SYSTEM_ERROR);
 
     ///act
@@ -709,18 +709,18 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetRemainingSizeFailed)
 TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInSeekFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
     USTREAM* defaultBuffer2 = uStreamMockCreate();
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer2));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
     setSeekResult(ULIB_SYSTEM_ERROR);
 
     ///act
@@ -745,18 +745,18 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInSeekFailed)
 TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextWithSomeValidContentSucceed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
     USTREAM* defaultBuffer2 = uStreamMockCreate();
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer2));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
     setGetNextResult(ULIB_SYSTEM_ERROR);
 
     uint8_t bufResult[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
@@ -784,18 +784,18 @@ TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextWithSomeValidContent
 TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
     USTREAM* defaultBuffer2 = uStreamMockCreate();
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer2));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
     setGetNextResult(ULIB_SYSTEM_ERROR);
 
     uint8_t bufResult[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
@@ -834,18 +834,18 @@ TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextFailed)
 TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetCurrentPositionFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
     USTREAM* defaultBuffer2 = uStreamMockCreate();
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer2));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
@@ -874,18 +874,18 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetCurrentPositionFailed)
 TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetRemainingSizeFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
     USTREAM* defaultBuffer2 = uStreamMockCreate();
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer2));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
     ASSERT_ARE_EQUAL(
         int,
         ULIB_SUCCESS,
@@ -915,18 +915,18 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetRemainingSizeFailed)
 TEST_FUNCTION(uStreamMultiClone_innerBufferFailedInGetRemainingSizeFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
     USTREAM* defaultBuffer2 = uStreamMockCreate();
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer2));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
 
     setGetRemainingSizeResult(ULIB_SYSTEM_ERROR);
 
@@ -1005,18 +1005,18 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateFirstNodeFailed)
 TEST_FUNCTION(uStreamClone_noMemoryToCloneFirstNodeFailed)
 {
     ///arrange
-    USTREAM* multibuffer = uStreamMultiCreate();
+    USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer1));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
     USTREAM* defaultBuffer2 = uStreamMockCreate();
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(multibuffer, defaultBuffer2));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
 
     setCloneResult(ULIB_SYSTEM_ERROR);
 

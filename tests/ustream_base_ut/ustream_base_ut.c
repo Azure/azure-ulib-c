@@ -138,24 +138,24 @@ TEST_FUNCTION_CLEANUP(TestMethodCleanup)
 TEST_FUNCTION(uStreamAppend_startFromEmptyMultibufferSucceed)
 {
     ///arrange
-    USTREAM* defaultMultibuffer = uStreamMultiCreate();
+    USTREAM* defaultMultibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(defaultMultibuffer);
 
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
 
     USTREAM* defaultBuffer2 =
-        uStreamCreate(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
             false);
     ASSERT_IS_NOT_NULL(defaultBuffer2);
 
     USTREAM* defaultBuffer3 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_3));
     ASSERT_IS_NOT_NULL(defaultBuffer3);
@@ -186,20 +186,20 @@ TEST_FUNCTION(uStreamAppend_appendMultipleBuffersSucceed)
 {
     ///arrange
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
 
     USTREAM* defaultBuffer2 =
-        uStreamCreate(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
             false);
     ASSERT_IS_NOT_NULL(defaultBuffer2);
 
     USTREAM* defaultBuffer3 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_3));
     ASSERT_IS_NOT_NULL(defaultBuffer3);
@@ -228,7 +228,7 @@ TEST_FUNCTION(uStreamAppend_nullInterfaceFailed)
 {
     ///arrange
     USTREAM* defaultBuffer =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer);
@@ -248,7 +248,7 @@ TEST_FUNCTION(uStreamAppend_nullBufferToAddFailed)
 {
     ///arrange
     USTREAM* defaultBuffer =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer);
@@ -267,11 +267,11 @@ TEST_FUNCTION(uStreamAppend_nullBufferToAddFailed)
 TEST_FUNCTION(uStreamAppend_startingFromMultibufferWithNotEnoughMemoryFailed)
 {
     ///arrange
-    USTREAM* defaultMultibuffer = uStreamMultiCreate();
+    USTREAM* defaultMultibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(defaultMultibuffer);
 
     USTREAM* defaultBuffer =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer);
@@ -295,13 +295,13 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToCreateMultibufferFailed)
 {
     ///arrange
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
 
     USTREAM* defaultBuffer2 =
-        uStreamCreate(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
             false);
@@ -336,13 +336,13 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed)
 {
     ///arrange
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
 
     USTREAM* defaultBuffer2 =
-        uStreamCreate(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
             false);
@@ -384,13 +384,13 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed)
 {
     ///arrange
     USTREAM* defaultBuffer1 =
-        uStreamConstCreate(
+        ustream_const_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
     ASSERT_IS_NOT_NULL(defaultBuffer1);
 
     USTREAM* defaultBuffer2 =
-        uStreamCreate(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
             false);

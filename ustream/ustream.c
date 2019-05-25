@@ -454,7 +454,7 @@ static ULIB_RESULT concreteDispose(USTREAM* ustream_interface)
     return result;
 }
 
-USTREAM* uStreamCreate(
+USTREAM* ustream_create(
         const uint8_t* const buffer, 
         size_t buffer_length,
         bool takeOwnership)
@@ -504,7 +504,7 @@ USTREAM* uStreamCreate(
     return interfaceResult;
 }
 
-USTREAM* uStreamConstCreate(
+USTREAM* ustream_const_create(
     const uint8_t* const buffer,
     size_t buffer_length)
 {

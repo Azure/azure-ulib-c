@@ -50,7 +50,7 @@
  *   +------+                         |                            |                    |
  *   | generate the content and store in the contentPtr            |                    |
  *   +----->|                         |                            |                    |
- *          +-----uStreamCreate                                    |                    |
+ *          +-----ustream_create                                   |                    |
  *          |          (contentPtr, contentSize, takeOwnership)--->|                    |
  *          |                         |                     +------+                    |
  *          |                         |                     | dataSource = contentPtr   |
