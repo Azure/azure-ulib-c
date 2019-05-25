@@ -41,7 +41,7 @@ extern "C" {
  *
  * @param:  buffer          The {@code const uint8_t* const} that points to a memory position where the buffer starts.
  *                              It cannot be {@code NULL}.
- * @param:  bufferLength    The {@code size_t} with the number of {@code uint8_t} in the provided buffer.
+ * @param:  buffer_length    The {@code size_t} with the number of {@code uint8_t} in the provided buffer.
  * @param:  takeOwnership   The {@code bool} that indicates if the factory shall or shall not take ownership of the buffer.
  *                              If {@code true} the uStream will take ownership of the memory allocated for the
  *                              provided buffer. If {@code false} the uStream will make a copy of the content of
@@ -52,7 +52,7 @@ extern "C" {
  */
 MOCKABLE_FUNCTION(, USTREAM*, uStreamCreate,
         const uint8_t* const, buffer,
-        size_t, bufferLength,
+        size_t, buffer_length,
         bool, takeOwnership);
 
 /**
@@ -66,14 +66,14 @@ MOCKABLE_FUNCTION(, USTREAM*, uStreamCreate,
  *
  * @param:  buffer          The {@code const uint8_t* const} that points to a memory position where the buffer starts.
  *                              It cannot be {@code NULL}.
- * @param:  bufferLength    The {@code size_t} with the number of {@code uint8_t} in the provided buffer. It cannot be zero.
+ * @param:  buffer_length    The {@code size_t} with the number of {@code uint8_t} in the provided buffer. It cannot be zero.
  * @return: The {@link USTREAM*} with the uStream interface. The results can be:
  *          - @b not NULL - If the uStream was created with success.
  *          - @b NULL - If there is no memory to create the new uStream.
  */
 MOCKABLE_FUNCTION(, USTREAM*, uStreamConstCreate,
     const uint8_t* const, buffer,
-    size_t, bufferLength);
+    size_t, buffer_length);
 
 /**
  * @brief   Factory to create a new uStreamMulti.
@@ -109,10 +109,10 @@ MOCKABLE_FUNCTION(, USTREAM*, uStreamMultiCreate);
  *      means that appending a new buffer in a current instance of the uStreamMulti will not affect the
  *      other instances.
  *
- * @param:  uStreamInterface  The {@link USTREAM*} with the handle of the uStreamMulti.
+ * @param:  ustream_interface  The {@link USTREAM*} with the handle of the uStreamMulti.
  *                                  It cannot be {@code NULL}, and it shall be a valid buffer that is a
  *                                  type of uStreamMulti.
- * @param:  uStreamToAppend   The {@link USTREAM*} with the handle of the buffer to add
+ * @param:  ustream_to_append   The {@link USTREAM*} with the handle of the buffer to add
  *                                  to the uStreamMulti. It cannot be {@code NULL}.
  * @return: The {@link ULIB_RESULT} with the result of the append operation. The results can be:
  *          - @b ULIB_SUCCESS - If the uStreamMulti appended the provided buffer with success.
@@ -120,8 +120,8 @@ MOCKABLE_FUNCTION(, USTREAM*, uStreamMultiCreate);
  *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is no memory to append the buffer.
  */
 MOCKABLE_FUNCTION(, ULIB_RESULT, uStreamMultiAppend,
-    USTREAM*, uStreamInterface,
-    USTREAM*, uStreamToAppend);
+    USTREAM*, ustream_interface,
+    USTREAM*, ustream_to_append);
 
 #ifdef __cplusplus
 }

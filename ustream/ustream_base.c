@@ -4,20 +4,20 @@
 #include "ustream.h"
 
 ULIB_RESULT ustream_append(
-    USTREAM* uStreamInterface, 
-    USTREAM* uStreamToAppend)
+    USTREAM* ustream_interface, 
+    USTREAM* ustream_to_append)
 {
     ULIB_RESULT result;
 
-    if((uStreamToAppend == NULL) || 
-        (uStreamInterface == NULL)) 
+    if((ustream_to_append == NULL) || 
+        (ustream_interface == NULL)) 
     {
         /*[uStreamAppend_nullBufferToAddFailed]*/
         /*[uStreamAppend_nullInterfaceFailed]*/
         result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     /*[uStreamAppend_startingFromMultibufferWithNotEnoughMemoryFailed]*/
-    else if((result = uStreamMultiAppend(uStreamInterface, uStreamToAppend)) == ULIB_ILLEGAL_ARGUMENT_ERROR)
+    else if((result = uStreamMultiAppend(ustream_interface, ustream_to_append)) == ULIB_ILLEGAL_ARGUMENT_ERROR)
     {
         USTREAM* newMultiBuffer = uStreamMultiCreate();
         if(newMultiBuffer == NULL)
@@ -25,12 +25,12 @@ ULIB_RESULT ustream_append(
             /*[uStreamAppend_notEnoughMemoryToCreateMultibufferFailed]*/
             result = ULIB_OUT_OF_MEMORY_ERROR;
         }
-        else if ((result = uStreamMultiAppend(newMultiBuffer, uStreamInterface)) != ULIB_SUCCESS)
+        else if ((result = uStreamMultiAppend(newMultiBuffer, ustream_interface)) != ULIB_SUCCESS)
         {
             /*[uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed]*/
             ustream_dispose(newMultiBuffer);
         }
-        else if ((result = uStreamMultiAppend(newMultiBuffer, uStreamToAppend)) != ULIB_SUCCESS)
+        else if ((result = uStreamMultiAppend(newMultiBuffer, ustream_to_append)) != ULIB_SUCCESS)
         {
             /*[uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed]*/
             ustream_dispose(newMultiBuffer);
@@ -40,11 +40,11 @@ ULIB_RESULT ustream_append(
             /*[uStreamAppend_startFromEmptyMultibufferSucceed]*/
             /*[uStreamAppend_appendMultipleBuffersSucceed]*/
             USTREAM aux;
-            aux.api = uStreamInterface->api;
-            aux.handle = uStreamInterface->handle;
+            aux.api = ustream_interface->api;
+            aux.handle = ustream_interface->handle;
 
-            uStreamInterface->api = newMultiBuffer->api;
-            uStreamInterface->handle = newMultiBuffer->handle;
+            ustream_interface->api = newMultiBuffer->api;
+            ustream_interface->handle = newMultiBuffer->handle;
 
             newMultiBuffer->api = aux.api;
             newMultiBuffer->handle = aux.handle;

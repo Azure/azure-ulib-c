@@ -28,14 +28,14 @@ typedef struct USTREAM_MULTI_INSTANCE_TAG
     offset_t innerFirstValidPosition;
 } USTREAM_MULTI_INSTANCE;
 
-static ULIB_RESULT concreteSeek(USTREAM* uStreamInterface, offset_t position);
-static ULIB_RESULT concreteReset(USTREAM* uStreamInterface);
-static ULIB_RESULT concreteGetNext(USTREAM* uStreamInterface, uint8_t* const buffer, size_t bufferLength, size_t* const size);
-static ULIB_RESULT concreteGetRemainingSize(USTREAM* uStreamInterface, size_t* const size);
-static ULIB_RESULT concreteGetCurrentPosition(USTREAM* uStreamInterface, offset_t* const position);
-static ULIB_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t position);
-static USTREAM* concreteClone(USTREAM* uStreamInterface, offset_t offset);
-static ULIB_RESULT concreteDispose(USTREAM* uStreamInterface);
+static ULIB_RESULT concreteSeek(USTREAM* ustream_interface, offset_t position);
+static ULIB_RESULT concreteReset(USTREAM* ustream_interface);
+static ULIB_RESULT concreteGetNext(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
+static ULIB_RESULT concreteGetRemainingSize(USTREAM* ustream_interface, size_t* const size);
+static ULIB_RESULT concreteGetCurrentPosition(USTREAM* ustream_interface, offset_t* const position);
+static ULIB_RESULT concreteRelease(USTREAM* ustream_interface, offset_t position);
+static USTREAM* concreteClone(USTREAM* ustream_interface, offset_t offset);
+static ULIB_RESULT concreteDispose(USTREAM* ustream_interface);
 static const USTREAM_INTERFACE _api =
 {
         concreteSeek,
@@ -92,12 +92,12 @@ static void destroyFullBufferList(BUFFER_LIST_NODE* node)
 
 static USTREAM* createInstance(void)
 {
-    USTREAM* uStreamInterface = (USTREAM*)ULIB_CONFIG_MALLOC(sizeof(USTREAM));
+    USTREAM* ustream_interface = (USTREAM*)ULIB_CONFIG_MALLOC(sizeof(USTREAM));
     /*[uStreamMultiCreate_noMemoryToCreateInstanceFailed]*/
     /*[uStreamClone_noMemoryToCreateInterfaceFailed]*/
-    if(uStreamInterface == NULL)
+    if(ustream_interface == NULL)
     {
-        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_OUT_OF_MEMORY_STRING, "uStreamInterface");
+        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_OUT_OF_MEMORY_STRING, "ustream_interface");
     }
     else
     {
@@ -106,13 +106,13 @@ static USTREAM* createInstance(void)
         {
             /*[uStreamClone_noMemoryToCreateInstanceFailed]*/
             ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_OUT_OF_MEMORY_STRING, "uStreamInstance");
-            ULIB_CONFIG_FREE(uStreamInterface);
-            uStreamInterface = NULL;
+            ULIB_CONFIG_FREE(ustream_interface);
+            ustream_interface = NULL;
         }
         else
         {
-            uStreamInterface->api = &_api;
-            uStreamInterface->handle = (void*)instance;
+            ustream_interface->api = &_api;
+            ustream_interface->handle = (void*)instance;
 
             instance->innerCurrentPosition = 0;
             instance->innerFirstValidPosition = 0;
@@ -122,25 +122,25 @@ static USTREAM* createInstance(void)
             instance->length = 0;
         }
     }
-    return uStreamInterface;
+    return ustream_interface;
 }
 
-static void destroyInstance(USTREAM* uStreamInterface)
+static void destroyInstance(USTREAM* ustream_interface)
 {
-    USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)uStreamInterface->handle;
+    USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
     destroyFullBufferList(instance->bufferList);
     ULIB_CONFIG_FREE(instance);
-    ULIB_CONFIG_FREE(uStreamInterface);
+    ULIB_CONFIG_FREE(ustream_interface);
 }
 
 static ULIB_RESULT concreteSeek(
-        USTREAM* uStreamInterface, 
+        USTREAM* ustream_interface, 
         offset_t position)
 {
     ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
+    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, _api))
     {
         /*[ustream_set_position_complianceNullBufferFailed]*/
         /*[ustream_set_position_complianceNonTypeOfBufferAPIFailed]*/
@@ -149,7 +149,7 @@ static ULIB_RESULT concreteSeek(
     }
     else
     {
-        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)uStreamInterface->handle;
+        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
         offset_t innerPosition = position - instance->offsetDiff;
 
         if(innerPosition == instance->innerCurrentPosition)
@@ -252,11 +252,11 @@ static ULIB_RESULT concreteSeek(
     return result;
 }
 
-static ULIB_RESULT concreteReset(USTREAM* uStreamInterface)
+static ULIB_RESULT concreteReset(USTREAM* ustream_interface)
 {
     ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
+    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, _api))
     {
         /*[uStreamReset_complianceNullBufferFailed]*/
         /*[uStreamReset_complianceNonTypeOfBufferAPIFailed]*/
@@ -265,11 +265,11 @@ static ULIB_RESULT concreteReset(USTREAM* uStreamInterface)
     }
     else
     {
-        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)uStreamInterface->handle;
+        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
         /*[uStreamReset_complianceBackToBeginningSucceed]*/
         /*[uStreamReset_complianceBackPositionSucceed]*/
-        result = concreteSeek(uStreamInterface, 
+        result = concreteSeek(ustream_interface, 
                 (instance->innerFirstValidPosition + instance->offsetDiff));
     }
 
@@ -277,14 +277,14 @@ static ULIB_RESULT concreteReset(USTREAM* uStreamInterface)
 }
 
 static ULIB_RESULT concreteGetNext(
-        USTREAM* uStreamInterface,
+        USTREAM* ustream_interface,
         uint8_t* const buffer,
-        size_t bufferLength,
+        size_t buffer_length,
         size_t* const size)
 {
     ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
+    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, _api))
     {
         /*[ustream_read_complianceNullBufferFailed]*/
         /*[ustream_read_complianceNonTypeOfBufferAPIFailed]*/
@@ -301,15 +301,15 @@ static ULIB_RESULT concreteGetNext(
             (buffer == NULL ? "buffer" : "size"));
         result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
-    else if(bufferLength == 0)
+    else if(buffer_length == 0)
     {
         /*[ustream_read_complianceBufferWithZeroSizeFailed]*/
-        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_EQUALS_STRING, "bufferLength", "0");
+        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_EQUALS_STRING, "buffer_length", "0");
         result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
-        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)uStreamInterface->handle;
+        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
         BUFFER_LIST_NODE* node = instance->currentNode;
         if(node == NULL)
@@ -329,12 +329,12 @@ static ULIB_RESULT concreteGetNext(
             *size = 0;
             ULIB_RESULT intermediateResult = ULIB_SUCCESS;
             while((node != NULL) &&
-                    (*size < bufferLength) &&
+                    (*size < buffer_length) &&
                     (intermediateResult == ULIB_SUCCESS))
             {
                 size_t totalCopySize;
                 /*[ustream_read_complianceSucceed_2]*/
-                size_t remainSize = bufferLength - *size;
+                size_t remainSize = buffer_length - *size;
                 /*[ustream_read_complianceSucceed_1]*/
                 intermediateResult = ustream_read(node->buffer, &buffer[*size], remainSize, &totalCopySize);
                 switch(intermediateResult)
@@ -343,7 +343,7 @@ static ULIB_RESULT concreteGetNext(
                     *size += totalCopySize;
                     /* do not **break** here.*/
                 case ULIB_EOF:
-                    if(*size < bufferLength)
+                    if(*size < buffer_length)
                     {
                         node = node->next;
                         instance->currentNode = node;
@@ -376,11 +376,11 @@ static ULIB_RESULT concreteGetNext(
     return result;
 }
 
-static ULIB_RESULT concreteGetRemainingSize(USTREAM* uStreamInterface, size_t* const size)
+static ULIB_RESULT concreteGetRemainingSize(USTREAM* ustream_interface, size_t* const size)
 {
     ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
+    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, _api))
     {
         /*[uStreamGetRemainingSize_complianceNullBufferFailed]*/
         /*[uStreamGetRemainingSize_complianceBufferIsNotTypeOfBufferFailed]*/
@@ -395,7 +395,7 @@ static ULIB_RESULT concreteGetRemainingSize(USTREAM* uStreamInterface, size_t* c
     }
     else
     {
-        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)uStreamInterface->handle;
+        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
         /*[uStreamGetRemainingSize_complianceNewBufferSucceed]*/
         /*[uStreamGetRemainingSize_complianceNewBufferWithNonZeroCurrentPositionSucceed]*/
@@ -407,11 +407,11 @@ static ULIB_RESULT concreteGetRemainingSize(USTREAM* uStreamInterface, size_t* c
     return result;
 }
 
-static ULIB_RESULT concreteGetCurrentPosition(USTREAM* uStreamInterface, offset_t* const position)
+static ULIB_RESULT concreteGetCurrentPosition(USTREAM* ustream_interface, offset_t* const position)
 {
     ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
+    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, _api))
     {
         /*[uStreamGetCurrentPosition_complianceNullBufferFailed]*/
         /*[uStreamGetCurrentPosition_complianceBufferIsNotTypeOfBufferFailed]*/
@@ -426,7 +426,7 @@ static ULIB_RESULT concreteGetCurrentPosition(USTREAM* uStreamInterface, offset_
     }
     else
     {
-        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)uStreamInterface->handle;
+        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
         /*[uStreamGetCurrentPosition_complianceNewBufferSucceed]*/
         /*[uStreamGetCurrentPosition_complianceNewBufferWithNonZeroCurrentPositionSucceed]*/
@@ -438,11 +438,11 @@ static ULIB_RESULT concreteGetCurrentPosition(USTREAM* uStreamInterface, offset_
     return result;
 }
 
-static ULIB_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t position)
+static ULIB_RESULT concreteRelease(USTREAM* ustream_interface, offset_t position)
 {
     ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
+    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, _api))
     {
         /*[uStreamRelease_complianceNullBufferFailed]*/
         /*[uStreamRelease_complianceNonTypeOfBufferAPIFailed]*/
@@ -451,7 +451,7 @@ static ULIB_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t position)
     }
     else
     {
-        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)uStreamInterface->handle;
+        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
         offset_t innerPosition = position - instance->offsetDiff;
         BUFFER_LIST_NODE* newBufferListStart = instance->bufferList;
 
@@ -507,11 +507,11 @@ static ULIB_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t position)
     return result;
 }
 
-static USTREAM* concreteClone(USTREAM* uStreamInterface, offset_t offset)
+static USTREAM* concreteClone(USTREAM* ustream_interface, offset_t offset)
 {
     USTREAM* interfaceResult;
 
-    if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
+    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, _api))
     {
         /*[uStreamClone_complianceNullBufferFailed]*/
         /*[uStreamClone_complianceBufferIsNotTypeOfBufferFailed]*/
@@ -520,7 +520,7 @@ static USTREAM* concreteClone(USTREAM* uStreamInterface, offset_t offset)
     }
     else
     {
-        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)uStreamInterface->handle;
+        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
         if(offset > (UINT32_MAX - instance->length))
         {
@@ -585,11 +585,11 @@ static USTREAM* concreteClone(USTREAM* uStreamInterface, offset_t offset)
     return interfaceResult;
 }
 
-static ULIB_RESULT concreteDispose(USTREAM* uStreamInterface)
+static ULIB_RESULT concreteDispose(USTREAM* ustream_interface)
 {
     ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
+    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, _api))
     {
         /*[uStreamDispose_complianceNullBufferFailed]*/
         /*[uStreamDispose_complianceBufferIsNotTypeOfBufferFailed]*/
@@ -601,7 +601,7 @@ static ULIB_RESULT concreteDispose(USTREAM* uStreamInterface)
         /*[uStreamDispose_complianceClonedInstanceDisposedFirstSucceed]*/
         /*[uStreamDispose_complianceClonedInstanceDisposedSecondSucceed]*/
         /*[uStreamDispose_complianceSingleInstanceSucceed]*/
-        destroyInstance(uStreamInterface);
+        destroyInstance(ustream_interface);
         result = ULIB_SUCCESS;
     }
 
@@ -616,33 +616,33 @@ USTREAM* uStreamMultiCreate(void)
 }
 
 ULIB_RESULT uStreamMultiAppend(
-        USTREAM* uStreamInterface,
-        USTREAM* uStreamToAppend)
+        USTREAM* ustream_interface,
+        USTREAM* ustream_to_append)
 {
     ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
+    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, _api))
     {
         /*[uStreamMultiAppend_nullMultibufferFailed]*/
         /*[uStreamMultiAppend_notMultibufferTypeFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
-    else if(uStreamToAppend == NULL)
+    else if(ustream_to_append == NULL)
     {
         /*[uStreamMultiAppend_nullBufferToAddFailed]*/
-        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_NULL_STRING, "uStreamToAppend");
+        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_NULL_STRING, "ustream_to_append");
         result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
         size_t newBufferSize;
         BUFFER_LIST_NODE* newNode;
-        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)uStreamInterface->handle;
+        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
         /*[uStreamMultiAppend_notEnoughMemoryFailed]*/
         /*[uStreamMultiAppend_notEnoughMemoryToCloneTheBufferFailed]*/
-        if((newNode = createBufferNode(uStreamToAppend, (offset_t)(instance->length))) == NULL)
+        if((newNode = createBufferNode(ustream_to_append, (offset_t)(instance->length))) == NULL)
         {
             result = ULIB_OUT_OF_MEMORY_ERROR;
         }

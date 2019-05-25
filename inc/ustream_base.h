@@ -57,8 +57,8 @@
  *          |                         |                     | dataSourceSize = contentSize
  *          |                         |                     | ownership = true          |
  *          |                         |                     +----->|                    |
- *          |<-----------------uStreamInterface--------------------+                    |
- *          +-uStreamInterface------->|                            |                    |
+ *          |<-----------------ustream_interface-------------------+                    |
+ *          +-ustream_interface------>|                            |                    |
  *
  *  Now that the consumer has the uStream with the content, it will print it using the 
  *   iterator ustream_read.
@@ -67,7 +67,7 @@
  *          |                         |<-----------------localBuffer--------------------+
  *  .. while ustream_read return ULIB_SUCCESS .....................................................
  *  :       |                         +-ustream_read               |                    |         :
- *  :       |                         |  (uStreamInterface,        |                    |         :
+ *  :       |                         |  (ustream_interface,       |                    |         :
  *  :       |                         |   localBuffer,             |                    |         :
  *  :       |                         |   1024)------------------->|                    |         :
  *  :       |                         |                     +------+                    |         :
@@ -81,7 +81,7 @@
  *  ...............................................................................................
  *          |                         +---------------free(localBuffer)---------------->|
  *          |                         +-ustream_dispose            |                    |
- *          |                         |        (uStreamInterface)->|                    |
+ *          |                         |       (ustream_interface)->|                    |
  *          |                         |                            +--free(dataSource)->|
  *          |                         |                            |                    |
  * </code></pre>
@@ -315,14 +315,14 @@ typedef struct USTREAM_TAG
  */
 struct USTREAM_INTERFACE_TAG
 {
-    ULIB_RESULT(*set_position)(USTREAM* uStreamInterface, offset_t position);
-    ULIB_RESULT(*reset)(USTREAM* uStreamInterface);
-    ULIB_RESULT(*read)(USTREAM* uStreamInterface, uint8_t* const buffer, size_t bufferLength, size_t* const size);
-    ULIB_RESULT(*get_remaining_size)(USTREAM* uStreamInterface, size_t* const size);
-    ULIB_RESULT(*get_position)(USTREAM* uStreamInterface, offset_t* const position);
-    ULIB_RESULT(*release)(USTREAM* uStreamInterface, offset_t position);
-    USTREAM*(*clone)(USTREAM* uStreamInterface, offset_t offset);
-    ULIB_RESULT(*dispose)(USTREAM* uStreamInterface);
+    ULIB_RESULT(*set_position)(USTREAM* ustream_interface, offset_t position);
+    ULIB_RESULT(*reset)(USTREAM* ustream_interface);
+    ULIB_RESULT(*read)(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
+    ULIB_RESULT(*get_remaining_size)(USTREAM* ustream_interface, size_t* const size);
+    ULIB_RESULT(*get_position)(USTREAM* ustream_interface, offset_t* const position);
+    ULIB_RESULT(*release)(USTREAM* ustream_interface, offset_t position);
+    USTREAM*(*clone)(USTREAM* ustream_interface, offset_t offset);
+    ULIB_RESULT(*dispose)(USTREAM* ustream_interface);
 };
 
 
@@ -351,7 +351,7 @@ struct USTREAM_INTERFACE_TAG
  *      - If the provided interface is not the implemented buffer type, the set_position shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
+ * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  position        The {@code offset_t} with the new current position in the buffer.
@@ -388,7 +388,7 @@ inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t pos
  *      - If the provided interface is not the implemented buffer type, the buffer reset shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
+ * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @return: The {@link ULIB_RESULT} with the result of the reset operation. The results can be:
@@ -415,7 +415,7 @@ inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *
  * <p> The {@code ustream_read} API will copy the contents of the Data source to the local buffer
  *      starting at the current position. The local buffer is the one referenced by the parameter
- *      `buffer`, and with the maximum size bufferLength.
+ *      `buffer`, and with the maximum size buffer_length.
  * <p> The buffer is defined as a {@code uint8_t*} and can represent any sequence of data. Pay
  *      special attention, if the data is a string, the buffer will still copy it as a sequence of
  *      {@code uint8_t}, and will **NOT** put any terminator at the end of the string. The size of 
@@ -423,15 +423,15 @@ inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *
  * <p> The read API shall follow the following minimum requirements:
  *      - The read shall copy the contents of the Data Source to the provided local buffer.
- *      - If the contents of the Data Source is bigger than the `bufferLength`, the read shall
- *          limit the copy size up to the bufferLength.
+ *      - If the contents of the Data Source is bigger than the `buffer_length`, the read shall
+ *          limit the copy size up to the buffer_length.
  *      - The read shall return the number of valid {@code uint8_t} values in the local buffer in 
  *          the provided `size`.
  *      - If there is no more content to return, the read shall return
  *          ULIB_EOF, size shall receive 0, and will not change the contents
  *          of the local buffer.
- *      - If the provided bufferLength is zero, the read shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
- *      - If the provided bufferLength is lower than the minimum number of bytes that the buffer can copy, the 
+ *      - If the provided buffer_length is zero, the read shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided buffer_length is lower than the minimum number of bytes that the buffer can copy, the 
  *          read shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is NULL, the read shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented buffer type, the read shall return
@@ -441,11 +441,11 @@ inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *          ULIB_ILLEGAL_ARGUMENT_ERROR and will not change the local buffer contents or the
  *          current position of the buffer.
  *
- * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
+ * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  buffer          The {@code uint8_t* const} that points to the local buffer. It cannot be {@code NULL}.
- * @param:  bufferLength    The {@code size_t} with the size of the local buffer. It shall be
+ * @param:  buffer_length    The {@code size_t} with the size of the local buffer. It shall be
  *                              bigger than 0.
  * @param:  size            The {@code size_t* const} that points to the place where the read shall store
  *                              the number of valid {@code uint8_t} values in the local buffer. It cannot be {@code NULL}.
@@ -479,7 +479,7 @@ inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffe
  *          return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided size is NULL, the get_remaining_size shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
+ * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  size            The {@code size_t* const} to returns the remaining number of {@code uint8_t} values 
@@ -513,7 +513,7 @@ inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t
  *          shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided position is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  uStreamInterface  The {@link USTREAM*} with the interface of the buffer. It
+ * @param:  ustream_interface  The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  position                The {@code offset_t* const} to returns the logical current position in the
@@ -567,7 +567,7 @@ inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* co
  *      - If the provided interface is not the implemented buffer type, the release shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
+ * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  position        The {@code offset_t} with the position in the buffer to release. The
@@ -681,7 +681,7 @@ inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position
  *          shall return NULL.
  *      - The cloned buffer shall not interfere in the instance of the original buffer and vice versa.
  *
- * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer.
+ * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer.
  *                              It cannot be {@code NULL}, and it shall be a valid buffer that is
  *                              type of the implemented buffer.
  * @param:  offset          The {@code offset_t} with the `Logical` position of the first byte in
@@ -711,7 +711,7 @@ inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset)
  *      - If the provided interface is not type of the implemented buffer, the dispose shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
+ * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is type
  *                              of the implemented buffer.
  * @return: The {@link ULIB_RESULT} with the result of the dispose operation. The results can be:
@@ -739,9 +739,9 @@ inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *      - If there is not enough memory to append the buffer, the Append shall return 
   *         ULIB_OUT_OF_MEMORY_ERROR.
   *
-  * @param:  uStreamInterface       The {@link USTREAM*} with the interface of 
+  * @param:  ustream_interface       The {@link USTREAM*} with the interface of 
   *                             the buffer. It cannot be {@code NULL}, and it shall be a valid buffer.
-  * @param:  uStreamToAppend        The {@link USTREAM*} with the interface of 
+  * @param:  ustream_to_append        The {@link USTREAM*} with the interface of 
   *                             the buffer to be appended to the original buffer. It cannot be {@code NULL}, 
   *                             and it shall be a valid buffer.
   * @return: The {@link ULIB_RESULT} with the result of the Append operation. The results can be:
@@ -751,8 +751,8 @@ inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   */
 MOCKABLE_FUNCTION( , 
     ULIB_RESULT, ustream_append,
-    USTREAM*, uStreamInterface, 
-    USTREAM*, uStreamToAppend);
+    USTREAM*, ustream_interface, 
+    USTREAM*, ustream_to_append);
 
 #ifdef __cplusplus
 }

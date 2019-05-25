@@ -16,10 +16,10 @@ static ULIB_RESULT _concreteDisposeResult = ULIB_SUCCESS;
 static offset_t currentPosition = 0;
 
 static ULIB_RESULT concreteSeek(
-        USTREAM* uStreamInterface, 
+        USTREAM* ustream_interface, 
         offset_t position)
 {
-    (void)uStreamInterface;
+    (void)ustream_interface;
 
     currentPosition = position;
 
@@ -29,9 +29,9 @@ static ULIB_RESULT concreteSeek(
 }
 
 static ULIB_RESULT concreteReset(
-        USTREAM* uStreamInterface)
+        USTREAM* ustream_interface)
 {
-    (void)uStreamInterface;
+    (void)ustream_interface;
 
     ULIB_RESULT resutl = _concreteResetResult;
     _concreteResetResult = ULIB_SUCCESS;
@@ -39,16 +39,16 @@ static ULIB_RESULT concreteReset(
 }
 
 static ULIB_RESULT concreteGetNext(
-        USTREAM* uStreamInterface, 
+        USTREAM* ustream_interface, 
         uint8_t* const buffer, 
-        size_t bufferLength, 
+        size_t buffer_length, 
         size_t* const size)
 {
-    (void)uStreamInterface;
+    (void)ustream_interface;
     (void)buffer;
     (void)size;
 
-    currentPosition += bufferLength;
+    currentPosition += buffer_length;
 
     ULIB_RESULT resutl = _concreteGetNextResult;
     _concreteGetNextResult = ULIB_SUCCESS;
@@ -56,10 +56,10 @@ static ULIB_RESULT concreteGetNext(
 }
 
 static ULIB_RESULT concreteGetRemainingSize(
-        USTREAM* uStreamInterface, 
+        USTREAM* ustream_interface, 
         size_t* const size)
 {
-    (void)uStreamInterface;
+    (void)ustream_interface;
 
     *size = 10;
 
@@ -69,10 +69,10 @@ static ULIB_RESULT concreteGetRemainingSize(
 }
 
 static ULIB_RESULT concreteGetCurrentPosition(
-        USTREAM* uStreamInterface, 
+        USTREAM* ustream_interface, 
         offset_t* const position)
 {
-    (void)uStreamInterface;
+    (void)ustream_interface;
     
     *position = currentPosition;
 
@@ -82,10 +82,10 @@ static ULIB_RESULT concreteGetCurrentPosition(
 }
 
 static ULIB_RESULT concreteRelease(
-        USTREAM* uStreamInterface, 
+        USTREAM* ustream_interface, 
         offset_t position)
 {
-    (void)uStreamInterface;
+    (void)ustream_interface;
     (void)position;
 
     ULIB_RESULT resutl = _concreteReleaseResult;
@@ -94,7 +94,7 @@ static ULIB_RESULT concreteRelease(
 }
 
 static USTREAM* concreteClone(
-        USTREAM* uStreamInterface, 
+        USTREAM* ustream_interface, 
         offset_t offset)
 {
     currentPosition = offset;
@@ -102,7 +102,7 @@ static USTREAM* concreteClone(
     USTREAM* interfaceResult;
     if (_concreteCloneResult == ULIB_SUCCESS)
     {
-        interfaceResult = uStreamInterface;
+        interfaceResult = ustream_interface;
     }
     else
     {
@@ -113,9 +113,9 @@ static USTREAM* concreteClone(
 }
 
 static ULIB_RESULT concreteDispose(
-        USTREAM* uStreamInterface)
+        USTREAM* ustream_interface)
 {
-    (void)uStreamInterface;
+    (void)ustream_interface;
 
     ULIB_RESULT resutl = _concreteDisposeResult;
     _concreteDisposeResult = ULIB_SUCCESS;

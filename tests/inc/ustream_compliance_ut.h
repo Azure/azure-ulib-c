@@ -874,7 +874,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceNullPositionFailed)
 }
 
 /* [1]The read shall copy the content in the provided buffer and return the number of valid {@code uint8_t} values in the local buffer in the provided `size`. */
-/* [2]If the length of the content is bigger than the `bufferLength`, the read shall limit the copy size to the bufferLength.*/
+/* [2]If the length of the content is bigger than the `buffer_length`, the read shall limit the copy size to the buffer_length.*/
 /* [3]If there is no more content to return, the read shall return ULIB_NO_SUCH_ELEMENT_ERROR, size shall receive 0, and do not change the content of the local buffer. */
 TEST_FUNCTION(ustream_read_complianceGetFromOriginalBufferSucceed)
 {
@@ -1213,7 +1213,7 @@ TEST_FUNCTION(ustream_read_complianceSingleByteSucceed)
     (void)ustream_dispose(uStreamInstance);
 }
 
-/* If the provided bufferLength is zero, the read shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* If the provided buffer_length is zero, the read shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
 TEST_FUNCTION(ustream_read_complianceBufferWithZeroSizeFailed)
 {
     ///arrange
