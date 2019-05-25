@@ -142,12 +142,12 @@
  * <p> This interface only exposes read functions, so once created, the content of the buffer cannot
  *      be changed by the producer of any of the consumers. Changing the content of the data source will
  *      result in a data mismatch.
- * <p> Consumers can do a partial release of the buffer by calling {@link uStreamRelease}.
+ * <p> Consumers can do a partial release of the buffer by calling {@link ustream_release}.
  *      Calling the release does not imply that part of the memory will be immediately released. Once a
  *      buffer can handle multiple instances, a memory can only be free if all instances released it.
  *      A buffer implementation can or cannot have the ability to do partial releases. For instance, a
  *      buffer that handles constant data stored in the flash will never release any memory on the
- *      {@link uStreamRelease} API.
+ *      {@link ustream_release} API.
  * <p> Released data cannot be accessed, even if it is still available in the memory.
  *
  * <i><b> Appendable:
@@ -265,7 +265,7 @@
  *      and get the same content using the GetNext.
  * <p> The consumer may confirm that a portion of the data is not necessary anymore. For example, after transmitting
  *      multiple TCP packets, the receiver of these packets answers with an ACK for a sequence number. In this case,
- *      the consumer can release this data in the data source by calling the {@link uStreamRelease}, moving 
+ *      the consumer can release this data in the data source by calling the {@link ustream_release}, moving 
  *      the First Valid Position to the next one after the released position.
  * <p> A common scenario is when the consumer needs to read over the data source starting on the first byte after
  *      the last released one. For example, when a timeout happens for a transmitted packet without ACK, the 
@@ -552,7 +552,7 @@ inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* co
  * offset_t pos;
  * if(ustream_get_position(myBuffer, &pos) == ULIB_SUCCESS)
  * {
- *     uStreamRelease(myBuffer, pos - 1);
+ *     ustream_release(myBuffer, pos - 1);
  * }
  * </code></pre>
  *
@@ -579,12 +579,10 @@ inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* co
  *          - @b ULIB_NO_SUCH_ELEMENT_ERROR - If the position is already released.
  *          - @b ULIB_SYSTEM_ERROR - If the release operation failed on the system level.
  */
-#define uStreamRelease( \
-            /*[USTREAM*]*/ uStreamInterface, \
-            /*[offset_t]*/ position) \
-    ((uStreamInterface)->api->release( \
-            (uStreamInterface), \
-            (position)))
+inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position)
+{
+    return ((ustream_interface)->api->release((ustream_interface), (position)));
+}
 
 /**
  * @brief   Creates a new instance of the buffer and return it.

@@ -321,7 +321,7 @@ TEST_FUNCTION(uStreamMultiAppend_partialReleasedMultibufferSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2) - 1));
+        ustream_release(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2) - 1));
 
     umock_c_reset_all_calls();
     STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
@@ -395,7 +395,7 @@ TEST_FUNCTION(uStreamMultiAppend_fullyReleasedMultibufferSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) - 1));
+        ustream_release(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) - 1));
 
     umock_c_reset_all_calls();
     STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
@@ -855,7 +855,7 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetCurrentPositionFailed)
 
     ///act
     ULIB_RESULT result =
-        uStreamRelease(
+        ustream_release(
             multibuffer,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
@@ -895,7 +895,7 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetRemainingSizeFailed)
 
     ///act
     ULIB_RESULT result =
-        uStreamRelease(
+        ustream_release(
             multibuffer,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 

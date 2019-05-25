@@ -264,7 +264,7 @@ TEST_FUNCTION(uStreamClone_complianceEmptyBufferSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1));
 
     ///act
     USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
@@ -322,7 +322,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
 
     ///act
     USTREAM* uStreamCloneInterface =
@@ -395,7 +395,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
 
     ///act
     USTREAM* uStreamCloneInterface =
@@ -468,7 +468,7 @@ TEST_FUNCTION(uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPo
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
     USTREAM* uStreamClone1 = uStreamClone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamClone1);
     ASSERT_ARE_EQUAL(
@@ -478,7 +478,7 @@ TEST_FUNCTION(uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPo
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamClone1, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        ustream_release(uStreamClone1, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
     USTREAM* uStreamCloneInterface = uStreamClone(uStreamClone1, 0);
@@ -628,7 +628,7 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceNewBufferWithNonZeroCurrentPosit
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
 
     ///act
     ULIB_RESULT result = ustream_get_remaining_size(uStreamInstance, &size);
@@ -658,7 +658,7 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceClonedBufferWithNonZeroCurrentPo
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
     USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     ASSERT_ARE_EQUAL(
@@ -668,7 +668,7 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceClonedBufferWithNonZeroCurrentPo
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamCloneInterface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        ustream_release(uStreamCloneInterface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
     ULIB_RESULT result = ustream_get_remaining_size(uStreamCloneInterface, &size);
@@ -770,7 +770,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceNewBufferWithNonZeroCurrentPos
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
 
     ///act
     ULIB_RESULT result = ustream_get_position(uStreamInstance, &position);
@@ -798,7 +798,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceClonedBufferWithNonZeroCurrent
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
     USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     ASSERT_ARE_EQUAL(
@@ -808,7 +808,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceClonedBufferWithNonZeroCurrent
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamCloneInterface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        ustream_release(uStreamCloneInterface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
     ULIB_RESULT result = ustream_get_position(uStreamCloneInterface, &position);
@@ -1775,7 +1775,7 @@ TEST_FUNCTION(ustream_set_position_complianceBackBeforeFirstValidPositionFailed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
     ULIB_RESULT result = ustream_set_position(uStreamInstance, 0);
@@ -1843,7 +1843,7 @@ TEST_FUNCTION(uStreamRelease_complianceSucceed)
         ustream_get_position(uStreamInstance, &currentPosition));
 
     ///act
-    ULIB_RESULT result = uStreamRelease(uStreamInstance, currentPosition - 1);
+    ULIB_RESULT result = ustream_release(uStreamInstance, currentPosition - 1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
@@ -1868,7 +1868,7 @@ TEST_FUNCTION(uStreamRelease_complianceReleaseAllSucceed)
 
     ///act
     ULIB_RESULT result = 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1);
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
@@ -1895,7 +1895,7 @@ TEST_FUNCTION(uStreamRelease_complianceRunFullBufferByteByByteSucceed)
         ///act - assert
         ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_set_position(uStreamInstance, i + 1));
     
-        ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamRelease(uStreamInstance, i - 1));
+        ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_release(uStreamInstance, i - 1));
         
         ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_reset(uStreamInstance));
     
@@ -1943,7 +1943,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferSucceed)
         ustream_get_position(uStreamCloneInterface, &currentPosition));
 
     ///act
-    ULIB_RESULT result = uStreamRelease(uStreamCloneInterface, currentPosition - 1);
+    ULIB_RESULT result = ustream_release(uStreamCloneInterface, currentPosition - 1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
@@ -1978,7 +1978,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferReleaseAllSucceed)
 
     ///act
     ULIB_RESULT result = 
-        uStreamRelease(
+        ustream_release(
             uStreamCloneInterface, 
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_COMPLIANCE_LENGTH_1 + 999);
 
@@ -2015,7 +2015,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferRunFullBufferByteByByteSuccee
         ///act - assert
         ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_set_position(uStreamCloneInterface, i + 1));
     
-        ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamRelease(uStreamCloneInterface, i - 1));
+        ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_release(uStreamCloneInterface, i - 1));
         
         ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_reset(uStreamCloneInterface));
     
@@ -2056,7 +2056,7 @@ TEST_FUNCTION(uStreamRelease_complianceReleaseAfterCurrentFailed)
         ustream_get_position(uStreamInstance, &currentPosition));
 
     ///act
-    ULIB_RESULT result = uStreamRelease(uStreamInstance, currentPosition);
+    ULIB_RESULT result = ustream_release(uStreamInstance, currentPosition);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -2084,11 +2084,11 @@ TEST_FUNCTION(uStreamRelease_complianceReleasePositionAlreayReleasedFailed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_2 - 1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_2 - 1));
 
     ///act
     ULIB_RESULT result = 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1);
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -2176,7 +2176,7 @@ TEST_FUNCTION(uStreamReset_complianceBackPositionSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
     ULIB_RESULT result = ustream_reset(uStreamInstance);
@@ -2207,7 +2207,7 @@ TEST_FUNCTION(uStreamReset_complianceClonedBufferSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
     USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     ASSERT_ARE_EQUAL(
@@ -2217,7 +2217,7 @@ TEST_FUNCTION(uStreamReset_complianceClonedBufferSucceed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamRelease(uStreamCloneInterface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        ustream_release(uStreamCloneInterface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
     ULIB_RESULT result = ustream_reset(uStreamCloneInterface);
