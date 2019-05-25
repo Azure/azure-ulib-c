@@ -61,7 +61,7 @@ static BUFFER_LIST_NODE* createBufferNode(
     else
     {
         newNode->next = NULL;
-        newNode->buffer = uStreamClone(buffer, offset);
+        newNode->buffer = ustream_clone(buffer, offset);
         if(newNode->buffer == NULL)
         {
             /*[uStreamClone_noMemoryToCloneFirstNodeFailed]*/

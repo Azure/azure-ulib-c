@@ -126,7 +126,7 @@
  *      - @b Factory - when a producer exposes data using this buffer, it must create the buffer
  *          using a factory, so the operation buffer {@code Create} returns the first instance of the
  *          buffer.
- *      - @b Clone - when a consumer needs a copy of the buffer, it can use the {@link uStreamClone}.
+ *      - @b Clone - when a consumer needs a copy of the buffer, it can use the {@link ustream_clone}.
  *
  * <i><b> Thread safe:
  * <p> The uStream **IS NOT** thread safe for multiple accesses over the same instance. The ownership
@@ -691,12 +691,10 @@ inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position
  *          - @b NULL - If one of the provided parameters is invalid or there is not enough memory to
  *              control the new buffer.
  */
-#define uStreamClone( \
-            /*[USTREAM*]*/ uStreamInterface, \
-            /*[offset_t]*/ offset) \
-    ((uStreamInterface)->api->clone( \
-            (uStreamInterface), \
-            (offset)))
+inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset)
+{
+    return ((ustream_interface)->api->clone((ustream_interface), (offset)));
+}
 
 /**
  * @brief   Release all the resources allocated to control the instance of the buffer.

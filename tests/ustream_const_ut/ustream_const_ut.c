@@ -256,7 +256,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateInterfaceFailed)
     EXPECTED_CALL(uLibMalloc(sizeof(USTREAM))).SetReturn(NULL);
 
     ///act
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
 
     ///assert
     ASSERT_IS_NULL(uStreamCloneInterface);
@@ -275,7 +275,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateInstanceFailed)
     STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
 
     ///act
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());

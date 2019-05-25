@@ -35,7 +35,7 @@ TEST_FUNCTION(uStreamDispose_complianceClonedInstanceDisposedFirstSucceed)
     offset_t uStreamCloneCurrentPosition;
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     ASSERT_IS_NOT_NULL(uStreamInstance);
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamInstance);
         
     ///act
@@ -58,7 +58,7 @@ TEST_FUNCTION(uStreamDispose_complianceClonedInstanceDisposedSecondSucceed)
     offset_t uStreamCloneCurrentPosition;
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     ASSERT_IS_NOT_NULL(uStreamInstance);
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamInstance);
         
     ///act
@@ -138,7 +138,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferClonedWithZeroOffsetSucceed)
     ASSERT_IS_NOT_NULL(uStreamInstance);
 
     ///act
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
 
     ///assert
     /* clone succeed */
@@ -200,7 +200,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferClonedWithOffsetSucceed)
     ASSERT_IS_NOT_NULL(uStreamInstance);
 
     ///act
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 10000);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 10000);
 
     ///assert
     /* clone succeed */
@@ -267,7 +267,7 @@ TEST_FUNCTION(uStreamClone_complianceEmptyBufferSucceed)
         ustream_release(uStreamInstance, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1));
 
     ///act
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
 
     ///assert
     /* clone succeed */
@@ -326,7 +326,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
 
     ///act
     USTREAM* uStreamCloneInterface =
-        uStreamClone(uStreamInstance, 100);
+        ustream_clone(uStreamInstance, 100);
 
     ///assert
     /* clone succeed */
@@ -399,7 +399,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
 
     ///act
     USTREAM* uStreamCloneInterface =
-        uStreamClone(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1);
+        ustream_clone(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1);
 
     ///assert
     /* clone succeed */
@@ -469,7 +469,7 @@ TEST_FUNCTION(uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPo
         int, 
         ULIB_SUCCESS, 
         ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
-    USTREAM* uStreamClone1 = uStreamClone(uStreamInstance, 100);
+    USTREAM* uStreamClone1 = ustream_clone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamClone1);
     ASSERT_ARE_EQUAL(
         int, 
@@ -481,7 +481,7 @@ TEST_FUNCTION(uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPo
         ustream_release(uStreamClone1, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamClone1, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamClone1, 0);
 
     ///assert
     /* clone succeed */
@@ -586,7 +586,7 @@ TEST_FUNCTION(uStreamClone_complianceOffsetExceedSizeFailed)
 
     ///act
     USTREAM* uStreamCloneInterface =
-        uStreamClone(uStreamInstance, UINT32_MAX - 2);
+        ustream_clone(uStreamInstance, UINT32_MAX - 2);
 
     ///assert
     ASSERT_IS_NULL(uStreamCloneInterface);
@@ -659,7 +659,7 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceClonedBufferWithNonZeroCurrentPo
         int, 
         ULIB_SUCCESS, 
         ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 100);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     ASSERT_ARE_EQUAL(
         int, 
@@ -799,7 +799,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceClonedBufferWithNonZeroCurrent
         int, 
         ULIB_SUCCESS, 
         ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 100);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     ASSERT_ARE_EQUAL(
         int, 
@@ -943,7 +943,7 @@ TEST_FUNCTION(ustream_read_complianceGetFromClonedBufferSucceed)
         ULIB_SUCCESS, 
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
     USTREAM* uStreamCloneInterface = 
-        uStreamClone(uStreamInstance, 100);
+        ustream_clone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     (void)uStreamDispose(uStreamInstance);
 
@@ -1085,7 +1085,7 @@ TEST_FUNCTION(ustream_read_complianceClonedBufferRightBoundaryConditionSucceed)
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     (void)uStreamDispose(uStreamInstance);
 
@@ -1527,7 +1527,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferBackToBeginningSucceed)
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     (void)uStreamDispose(uStreamInstance);
     uint8_t bufResult[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1561,7 +1561,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferBackPositionSucceed)
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     (void)uStreamDispose(uStreamInstance);
     uint8_t bufResult[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1600,7 +1600,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferForwardPositionSucceed)
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     (void)uStreamDispose(uStreamInstance);
     uint8_t bufResult[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1634,7 +1634,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferForwardToTheEndPosition
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 100);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     (void)uStreamDispose(uStreamInstance);
 
@@ -1665,7 +1665,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferRunFullBufferByteByByte
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     (void)uStreamDispose(uStreamInstance);
     uint8_t bufResult[1];
@@ -1704,7 +1704,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferRunFullBufferByteByByte
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     (void)uStreamDispose(uStreamInstance);
     uint8_t bufResult[1];
@@ -1927,7 +1927,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferSucceed)
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     (void)uStreamDispose(uStreamInstance);
     uint8_t bufResult[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1966,7 +1966,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferReleaseAllSucceed)
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 1000);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 1000);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     (void)uStreamDispose(uStreamInstance);
     ASSERT_ARE_EQUAL(
@@ -2004,7 +2004,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferRunFullBufferByteByByteSuccee
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     (void)uStreamDispose(uStreamInstance);
     uint8_t bufResult[1];
@@ -2208,7 +2208,7 @@ TEST_FUNCTION(uStreamReset_complianceClonedBufferSucceed)
         int, 
         ULIB_SUCCESS, 
         ustream_release(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 100);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
     ASSERT_ARE_EQUAL(
         int, 
