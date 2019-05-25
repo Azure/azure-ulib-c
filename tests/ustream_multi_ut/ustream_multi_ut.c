@@ -765,7 +765,7 @@ TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextWithSomeValidContent
 
     ///act
     ULIB_RESULT result =
-        uStreamGetNext(
+        ustream_read(
             multibuffer,
             bufResult,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
@@ -804,7 +804,7 @@ TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextFailed)
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
-        uStreamGetNext(
+        ustream_read(
             multibuffer,
             bufResult,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
@@ -815,7 +815,7 @@ TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextFailed)
 
     ///act
     ULIB_RESULT result =
-        uStreamGetNext(
+        ustream_read(
             multibuffer,
             bufResult,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,

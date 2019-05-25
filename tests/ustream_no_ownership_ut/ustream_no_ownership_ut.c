@@ -177,7 +177,7 @@ TEST_FUNCTION(uStreamCreate_protectedImmutableBufferSucceed)
     }
     uint8_t outBuffer[TEST_CONST_BUFFER_LENGTH];
     size_t resultSize;
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamGetNext(bufferInterface, outBuffer, TEST_CONST_MAX_BUFFER_SIZE, &resultSize));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_read(bufferInterface, outBuffer, TEST_CONST_MAX_BUFFER_SIZE, &resultSize));
     outBuffer[resultSize] = '\0';
     ASSERT_ARE_EQUAL(char_ptr, "0123456789", outBuffer);
 

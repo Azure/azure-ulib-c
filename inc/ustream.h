@@ -81,7 +81,7 @@ MOCKABLE_FUNCTION(, USTREAM*, uStreamConstCreate,
  * <p> uStreamMulti is a buffer that handles multiple heterogeneous uStreams and exposes 
  *      it with a single interface. The sequence of the buffers is determined by the appended sequence:
  *      first in first out.
- * <p> Note that the {@code getNext()} API will return the content of the appended buffers as if
+ * <p> Note that the {@code read()} API will return the content of the appended buffers as if
  *      it was a single buffer. There is nothing that identifies where one buffer stops and the
  *      next one starts.
  * <p> Copying a uStreamMulti creates a new instance that has the same content of the original one

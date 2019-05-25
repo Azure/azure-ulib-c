@@ -231,15 +231,15 @@ static ULIB_RESULT concreteGetNext(
 
     if(USTREAM_IS_NOT_TYPE_OF(uStreamInterface, _api))
     {
-        /*[uStreamGetNext_complianceNullBufferFailed]*/
-        /*[uStreamGetNext_complianceNonTypeOfBufferAPIFailed]*/
+        /*[ustream_read_complianceNullBufferFailed]*/
+        /*[ustream_read_complianceNonTypeOfBufferAPIFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if((buffer == NULL) || (size == NULL))
     {
-        /*[uStreamGetNext_complianceNullReturnBufferFailed]*/
-        /*[uStreamGetNext_complianceNullReturnSizeFailed]*/
+        /*[ustream_read_complianceNullReturnBufferFailed]*/
+        /*[ustream_read_complianceNullReturnSizeFailed]*/
         ULIB_CONFIG_LOG(
             ULOG_TYPE_ERROR,
             ULOG_REQUIRE_NOT_NULL_STRING, 
@@ -248,7 +248,7 @@ static ULIB_RESULT concreteGetNext(
     }
     else if(bufferLength == 0)
     {
-        /*[uStreamGetNext_complianceBufferWithZeroSizeFailed]*/
+        /*[ustream_read_complianceBufferWithZeroSizeFailed]*/
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_EQUALS_STRING, "bufferLength", "0");
         result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -259,23 +259,23 @@ static ULIB_RESULT concreteGetNext(
 
         if(instance->innerCurrentPosition >= innerBuffer->length)
         {
-            /*[uStreamGetNext_complianceSucceed_3]*/
+            /*[ustream_read_complianceSucceed_3]*/
             *size = 0;
             result = ULIB_EOF;
         }
         else
         {
-            /*[uStreamGetNext_complianceSucceed_2]*/
+            /*[ustream_read_complianceSucceed_2]*/
             size_t remainSize = innerBuffer->length - (size_t)instance->innerCurrentPosition;
             *size = (bufferLength < remainSize) ? bufferLength : remainSize;
-            /*[uStreamGetNext_complianceSucceed_1]*/
-            /*[uStreamGetNext_complianceSingleBufferSucceed]*/
-            /*[uStreamGetNext_complianceRightBoundaryConditionSucceed]*/
-            /*[uStreamGetNext_complianceBoundaryConditionSucceed]*/
-            /*[uStreamGetNext_complianceLeftBoundaryConditionSucceed]*/
-            /*[uStreamGetNext_complianceSingleByteSucceed]*/
-            /*[uStreamGetNext_complianceGetFromClonedBufferSucceed]*/
-            /*[uStreamGetNext_complianceClonedBufferRightBoundaryConditionSucceed]*/
+            /*[ustream_read_complianceSucceed_1]*/
+            /*[ustream_read_complianceSingleBufferSucceed]*/
+            /*[ustream_read_complianceRightBoundaryConditionSucceed]*/
+            /*[ustream_read_complianceBoundaryConditionSucceed]*/
+            /*[ustream_read_complianceLeftBoundaryConditionSucceed]*/
+            /*[ustream_read_complianceSingleByteSucceed]*/
+            /*[ustream_read_complianceGetFromClonedBufferSucceed]*/
+            /*[ustream_read_complianceClonedBufferRightBoundaryConditionSucceed]*/
             (void)memcpy(buffer, innerBuffer->ptr + instance->innerCurrentPosition, *size);
             instance->innerCurrentPosition += *size;
             result = ULIB_SUCCESS;
