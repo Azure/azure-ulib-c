@@ -195,7 +195,7 @@ static ULIB_RESULT concreteSeek(
                     if((result = uStreamGetCurrentPosition(node->buffer, &currentPosition)) == ULIB_SUCCESS)
                     {
                         size_t size;
-                        if((result = uStreamGetRemainingSize(node->buffer, &size)) == ULIB_SUCCESS)
+                        if((result = ustream_get_remaining_size(node->buffer, &size)) == ULIB_SUCCESS)
                         {
                             if((currentPosition + size) > innerPosition)
                             {
@@ -211,7 +211,7 @@ static ULIB_RESULT concreteSeek(
                 }
                 else
                 {
-                    (void)uStreamReset(node->buffer);
+                    (void)ustream_reset(node->buffer);
                     if(bypassOldCurrentNode == true)
                     {
                         break;
@@ -350,7 +350,7 @@ static ULIB_RESULT concreteGetNext(
                         if(node != NULL)
                         {
                             intermediateResult = ULIB_SUCCESS;
-                            (void)uStreamReset(node->buffer);
+                            (void)ustream_reset(node->buffer);
                         }
                     }
                     break;
@@ -480,7 +480,7 @@ static ULIB_RESULT concreteRelease(USTREAM* uStreamInterface, offset_t position)
             if(result == ULIB_SUCCESS)
             {
                 size_t size;
-                if((result = uStreamGetRemainingSize(newBufferListStart->buffer, &size)) == ULIB_SUCCESS)
+                if((result = ustream_get_remaining_size(newBufferListStart->buffer, &size)) == ULIB_SUCCESS)
                 {
                     if((size == 0) && (innerPosition == (lastPosition - 1)))
                     {
@@ -553,7 +553,7 @@ static USTREAM* concreteClone(USTREAM* uStreamInterface, offset_t offset)
                     {
                         fail = true;
                     }
-                    else if(uStreamGetRemainingSize(newNode->buffer, &(newBufferSize)) == ULIB_SUCCESS)
+                    else if(ustream_get_remaining_size(newNode->buffer, &(newBufferSize)) == ULIB_SUCCESS)
                     {
                         // find insertion position in the list
                         *insertPosition = newNode;
@@ -646,7 +646,7 @@ ULIB_RESULT uStreamMultiAppend(
         {
             result = ULIB_OUT_OF_MEMORY_ERROR;
         }
-        else if((result = uStreamGetRemainingSize(newNode->buffer, &(newBufferSize))) != ULIB_SUCCESS)
+        else if((result = ustream_get_remaining_size(newNode->buffer, &(newBufferSize))) != ULIB_SUCCESS)
         {
             /*[uStreamMultiAppend_newInnerBufferFailedOnGetRemainingSizeFailed]*/
             ULIB_CONFIG_LOG(

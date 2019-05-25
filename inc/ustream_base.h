@@ -186,7 +186,7 @@
  * <i><b>Example:
  * <p> A uStream can have the data source in binary format with 36 bytes, but it shall expose the 
  *      content encoded in base64. The base64 creates 4 encoded bytes for each 3 bytes read. So, seeking the 
- *      beginning of the file, the {@link uStreamGetRemainingSize} shall return 48 (= 36 / 3 * 4),
+ *      beginning of the file, the {@link ustream_get_remaining_size} shall return 48 (= 36 / 3 * 4),
  *      instead of 36. If the consumer provides a local buffer of 16 bytes, the {@link ustream_read} 
  *      shall read only 12 bytes from the data source, and encode it in base64 expanding the 12 bytes to 
  *      16 bytes on the local buffer.
@@ -270,7 +270,7 @@
  * <p> A common scenario is when the consumer needs to read over the data source starting on the first byte after
  *      the last released one. For example, when a timeout happens for a transmitted packet without ACK, the 
  *      sender shall retransmit the data starting from that point. In this case, the consumer can call the API
- *      {@link uStreamReset}. 
+ *      {@link ustream_reset}. 
  */
 
 #include "ulib_config.h"
@@ -318,7 +318,7 @@ struct USTREAM_INTERFACE_TAG
     ULIB_RESULT(*set_position)(USTREAM* uStreamInterface, offset_t position);
     ULIB_RESULT(*reset)(USTREAM* uStreamInterface);
     ULIB_RESULT(*read)(USTREAM* uStreamInterface, uint8_t* const buffer, size_t bufferLength, size_t* const size);
-    ULIB_RESULT(*getRemainingSize)(USTREAM* uStreamInterface, size_t* const size);
+    ULIB_RESULT(*get_remaining_size)(USTREAM* uStreamInterface, size_t* const size);
     ULIB_RESULT(*getCurrentPosition)(USTREAM* uStreamInterface, offset_t* const position);
     ULIB_RESULT(*release)(USTREAM* uStreamInterface, offset_t position);
     USTREAM*(*clone)(USTREAM* uStreamInterface, offset_t offset);
@@ -405,10 +405,10 @@ inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t pos
  *              reasons.
  *          - @b ULIB_SYSTEM_ERROR - If the reset operation failed on the system level.
  */
-#define uStreamReset( \
-            /*[USTREAM*]*/ uStreamInterface) \
-    ((uStreamInterface)->api->reset( \
-            (uStreamInterface)))
+inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
+{
+    return ((ustream_interface)->api->reset((ustream_interface)));
+}
 
 /**
  * @brief   Gets the next portion of the buffer starting at the current position.
@@ -471,20 +471,20 @@ inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffe
  *
  * <p> This API returns the number of bytes between the current position and the end of the buffer.
  *
- * <p> The getRemainingSize API shall follow the following minimum requirements:
- *      - The getRemainingSize shall return the number of bytes between the current position and the
+ * <p> The get_remaining_size API shall follow the following minimum requirements:
+ *      - The get_remaining_size shall return the number of bytes between the current position and the
  *          end of the buffer.
- *      - If the provided interface is NULL, the getRemainingSize shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
- *      - If the provided interface is not the implemented buffer type, the getRemainingSize shall
+ *      - If the provided interface is NULL, the get_remaining_size shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided interface is not the implemented buffer type, the get_remaining_size shall
  *          return ULIB_ILLEGAL_ARGUMENT_ERROR.
- *      - If the provided size is NULL, the getRemainingSize shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided size is NULL, the get_remaining_size shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param:  uStreamInterface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  size            The {@code size_t* const} to returns the remaining number of {@code uint8_t} values 
  *                              copied to the buffer. It cannot be {@code NULL}.
- * @return: The {@link ULIB_RESULT} with the result of the getRemainingSize operation. The results can be:
+ * @return: The {@link ULIB_RESULT} with the result of the get_remaining_size operation. The results can be:
  *          - @b ULIB_SUCCESS - If it succeeded to get the remaining size of the buffer.
  *          - @b ULIB_BUSY_ERROR - If the resource necessary to the get the remain size of
  *              the buffer is busy.
@@ -496,12 +496,10 @@ inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffe
  *          - @b ULIB_SYSTEM_ERROR - If the get remaining size operation failed on the
  *              system level.
  */
-#define uStreamGetRemainingSize( \
-            /*[USTREAM*]*/ uStreamInterface, \
-            /*[size_t* const]*/ size) \
-    ((uStreamInterface)->api->getRemainingSize( \
-            (uStreamInterface), \
-            (size)))
+inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t* const size)
+{
+    return ((ustream_interface)->api->get_remaining_size((ustream_interface), (size)));
+}
 
 /**
  * @brief   Returns the current position in the buffer.

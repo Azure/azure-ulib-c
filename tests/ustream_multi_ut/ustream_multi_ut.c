@@ -271,7 +271,7 @@ TEST_FUNCTION(uStreamMultiAppend_newMultibufferSucceed)
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamGetRemainingSize(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(
 	    int, 
 	    strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 
@@ -346,7 +346,7 @@ TEST_FUNCTION(uStreamMultiAppend_partialReleasedMultibufferSucceed)
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamGetRemainingSize(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(int, 
             (strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) +
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2) +
@@ -420,7 +420,7 @@ TEST_FUNCTION(uStreamMultiAppend_fullyReleasedMultibufferSucceed)
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamGetRemainingSize(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(
 	    int, 
 	    strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 
