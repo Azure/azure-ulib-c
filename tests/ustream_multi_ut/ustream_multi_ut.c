@@ -97,9 +97,9 @@ static USTREAM* createTestDefaultMultibuffer()
     ASSERT_IS_NOT_NULL(defaultBuffer3);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, uStreamMultiAppend(defaultMultibuffer, defaultBuffer3));
 
-    (void)uStreamDispose(defaultBuffer1);
-    (void)uStreamDispose(defaultBuffer2);
-    (void)uStreamDispose(defaultBuffer3);
+    (void)ustream_dispose(defaultBuffer1);
+    (void)ustream_dispose(defaultBuffer2);
+    (void)ustream_dispose(defaultBuffer3);
 
     return defaultMultibuffer;
 }
@@ -189,7 +189,7 @@ TEST_FUNCTION(uStreamMultiCreate_succeed)
     ASSERT_IS_NOT_NULL(multibuffer->api);
 
     ///cleanup
-    (void)uStreamDispose(multibuffer);
+    (void)ustream_dispose(multibuffer);
 }
 
 /* The uStreamMultiCreate shall return NULL if there is no memory to create the multi-buffer interface. */
@@ -279,10 +279,10 @@ TEST_FUNCTION(uStreamMultiAppend_newMultibufferSucceed)
 	    strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), size);
 
     ///cleanup
-    (void)uStreamDispose(testBuffer1);
-    (void)uStreamDispose(testBuffer2);
-    (void)uStreamDispose(testBuffer3);
-    (void)uStreamDispose(multibuffer);
+    (void)ustream_dispose(testBuffer1);
+    (void)ustream_dispose(testBuffer2);
+    (void)ustream_dispose(testBuffer3);
+    (void)ustream_dispose(multibuffer);
 }
 
 TEST_FUNCTION(uStreamMultiAppend_partialReleasedMultibufferSucceed)
@@ -355,10 +355,10 @@ TEST_FUNCTION(uStreamMultiAppend_partialReleasedMultibufferSucceed)
         size);
 
     ///cleanup
-    (void)uStreamDispose(testBuffer1);
-    (void)uStreamDispose(testBuffer2);
-    (void)uStreamDispose(testBuffer3);
-    (void)uStreamDispose(multibuffer);
+    (void)ustream_dispose(testBuffer1);
+    (void)ustream_dispose(testBuffer2);
+    (void)ustream_dispose(testBuffer3);
+    (void)ustream_dispose(multibuffer);
 }
 
 TEST_FUNCTION(uStreamMultiAppend_fullyReleasedMultibufferSucceed)
@@ -428,10 +428,10 @@ TEST_FUNCTION(uStreamMultiAppend_fullyReleasedMultibufferSucceed)
 	    strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), size);
 
     ///cleanup
-    (void)uStreamDispose(testBuffer1);
-    (void)uStreamDispose(testBuffer2);
-    (void)uStreamDispose(testBuffer3);
-    (void)uStreamDispose(multibuffer);
+    (void)ustream_dispose(testBuffer1);
+    (void)ustream_dispose(testBuffer2);
+    (void)ustream_dispose(testBuffer3);
+    (void)ustream_dispose(multibuffer);
 }
 
 /* If the provided handle is NULL, the uStreamMultiAppend shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -450,7 +450,7 @@ TEST_FUNCTION(uStreamMultiAppend_nullMultibufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(testBuffer1);
+    (void)ustream_dispose(testBuffer1);
 }
 
 /* If the provided handle is not the implemented buffer type, the uStreamMultiAppend shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -473,8 +473,8 @@ TEST_FUNCTION(uStreamMultiAppend_bufferIsNotTypeOfBufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(testBuffer1);
-    (void)uStreamDispose(testBuffer2);
+    (void)ustream_dispose(testBuffer1);
+    (void)ustream_dispose(testBuffer2);
 }
 
 /* If the provided buffer to add is NULL, the uStreamMultiAppend shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -498,8 +498,8 @@ TEST_FUNCTION(uStreamMultiAppend_nullBufferToAddFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(testBuffer1);
-    (void)uStreamDispose(multibuffer);
+    (void)ustream_dispose(testBuffer1);
+    (void)ustream_dispose(multibuffer);
 }
 
 /* If there is no memory to control the new buffer, the uStreamMultiAppend shall return ULIB_OUT_OF_MEMORY_ERROR. */
@@ -522,8 +522,8 @@ TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryFailed)
     ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(testBuffer1);
-    (void)uStreamDispose(multibuffer);
+    (void)ustream_dispose(testBuffer1);
+    (void)ustream_dispose(multibuffer);
 }
 
 /* If the uStreamMultiAppend failed to copy the buffer, it shall return ULIB_OUT_OF_MEMORY_ERROR. */
@@ -548,8 +548,8 @@ TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryToCloneTheBufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(testBuffer1);
-    (void)uStreamDispose(multibuffer);
+    (void)ustream_dispose(testBuffer1);
+    (void)ustream_dispose(multibuffer);
 }
 
 /* If the uStreamMultiAppend failed to copy the buffer, it shall return ULIB_OUT_OF_MEMORY_ERROR. */
@@ -577,9 +577,9 @@ TEST_FUNCTION(uStreamMultiAppend_newInnerBufferFailedOnGetRemainingSizeFailed)
     ASSERT_ARE_EQUAL(int, ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(defaultBuffer1);
-    (void)uStreamDispose(defaultBuffer2);
-    (void)uStreamDispose(multibuffer);
+    (void)ustream_dispose(defaultBuffer1);
+    (void)ustream_dispose(defaultBuffer2);
+    (void)ustream_dispose(multibuffer);
 }
 
 /* The dispose shall uLibFree all allocated resources. */
@@ -593,7 +593,7 @@ TEST_FUNCTION(uStreamMultiDispose_multibufferWithoutBuffersFreeAllResourcesSucce
     STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
 
     ///act
-    ULIB_RESULT result = uStreamDispose(multibuffer);
+    ULIB_RESULT result = ustream_dispose(multibuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -626,7 +626,7 @@ TEST_FUNCTION(uStreamMultiDispose_multibufferWithBuffersFreeAllResourcesSucceed)
     STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
 
     ///act
-    ULIB_RESULT result = uStreamDispose(multibuffer);
+    ULIB_RESULT result = ustream_dispose(multibuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -666,9 +666,9 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetCurrentPositionFailed)
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
-    (void)uStreamDispose(multibuffer);
-    (void)uStreamDispose(defaultBuffer1);
-    (void)uStreamDispose(defaultBuffer2);
+    (void)ustream_dispose(multibuffer);
+    (void)ustream_dispose(defaultBuffer1);
+    (void)ustream_dispose(defaultBuffer2);
 }
 
 TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetRemainingSizeFailed)
@@ -701,9 +701,9 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetRemainingSizeFailed)
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
-    (void)uStreamDispose(multibuffer);
-    (void)uStreamDispose(defaultBuffer1);
-    (void)uStreamDispose(defaultBuffer2);
+    (void)ustream_dispose(multibuffer);
+    (void)ustream_dispose(defaultBuffer1);
+    (void)ustream_dispose(defaultBuffer2);
 }
 
 TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInSeekFailed)
@@ -736,9 +736,9 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInSeekFailed)
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
-    (void)uStreamDispose(multibuffer);
-    (void)uStreamDispose(defaultBuffer1);
-    (void)uStreamDispose(defaultBuffer2);
+    (void)ustream_dispose(multibuffer);
+    (void)ustream_dispose(defaultBuffer1);
+    (void)ustream_dispose(defaultBuffer2);
 }
 
 /* The GetNext shall return partial result if one of the internal buffers failed. */
@@ -776,9 +776,9 @@ TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextWithSomeValidContent
     ASSERT_BUFFER_ARE_EQUAL(uint8_t_ptr, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1, bufResult, sizeResult);
 
     ///cleanup
-    (void)uStreamDispose(multibuffer);
-    (void)uStreamDispose(defaultBuffer1);
-    (void)uStreamDispose(defaultBuffer2);
+    (void)ustream_dispose(multibuffer);
+    (void)ustream_dispose(defaultBuffer1);
+    (void)ustream_dispose(defaultBuffer2);
 }
 
 TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextFailed)
@@ -825,9 +825,9 @@ TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextFailed)
     ASSERT_ARE_EQUAL(int, ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(multibuffer);
-    (void)uStreamDispose(defaultBuffer1);
-    (void)uStreamDispose(defaultBuffer2);
+    (void)ustream_dispose(multibuffer);
+    (void)ustream_dispose(defaultBuffer1);
+    (void)ustream_dispose(defaultBuffer2);
 }
 
 /* The Release shall bypass the error if the Inner uStream return not success for one of the needed operations. */
@@ -866,9 +866,9 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetCurrentPositionFailed)
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
     ///cleanup
-    (void)uStreamDispose(multibuffer);
-    (void)uStreamDispose(defaultBuffer1);
-    (void)uStreamDispose(defaultBuffer2);
+    (void)ustream_dispose(multibuffer);
+    (void)ustream_dispose(defaultBuffer1);
+    (void)ustream_dispose(defaultBuffer2);
 }
 
 TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetRemainingSizeFailed)
@@ -906,9 +906,9 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetRemainingSizeFailed)
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
     ///cleanup
-    (void)uStreamDispose(multibuffer);
-    (void)uStreamDispose(defaultBuffer1);
-    (void)uStreamDispose(defaultBuffer2);
+    (void)ustream_dispose(multibuffer);
+    (void)ustream_dispose(defaultBuffer1);
+    (void)ustream_dispose(defaultBuffer2);
 }
 
 /* The Clone shall bypass the error if the Inner uStream return not success for one of the needed operations. */
@@ -937,9 +937,9 @@ TEST_FUNCTION(uStreamMultiClone_innerBufferFailedInGetRemainingSizeFailed)
     ASSERT_IS_NULL(cloneResult);
 
     ///cleanup
-    (void)uStreamDispose(multibuffer);
-    (void)uStreamDispose(defaultBuffer1);
-    (void)uStreamDispose(defaultBuffer2);
+    (void)ustream_dispose(multibuffer);
+    (void)ustream_dispose(defaultBuffer1);
+    (void)ustream_dispose(defaultBuffer2);
 }
 
 /*  The clone shall return NULL if there is not enough memory to control the new buffer. */
@@ -957,7 +957,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateInterfaceFailed)
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamClone_noMemoryToCreateInstanceFailed)
@@ -977,7 +977,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateInstanceFailed)
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamClone_noMemoryToCreateFirstNodeFailed)
@@ -999,7 +999,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateFirstNodeFailed)
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamClone_noMemoryToCloneFirstNodeFailed)
@@ -1027,9 +1027,9 @@ TEST_FUNCTION(uStreamClone_noMemoryToCloneFirstNodeFailed)
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(multibuffer);
-    (void)uStreamDispose(defaultBuffer1);
-    (void)uStreamDispose(defaultBuffer2);
+    (void)ustream_dispose(multibuffer);
+    (void)ustream_dispose(defaultBuffer1);
+    (void)ustream_dispose(defaultBuffer2);
 }
 
 TEST_FUNCTION(uStreamClone_noMemoryToCreateSecondNodeFailed)
@@ -1055,7 +1055,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateSecondNodeFailed)
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 #include "ustream_compliance_ut.h"

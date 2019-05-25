@@ -28,12 +28,12 @@ ULIB_RESULT uStreamAppend(
         else if ((result = uStreamMultiAppend(newMultiBuffer, uStreamInterface)) != ULIB_SUCCESS)
         {
             /*[uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed]*/
-            uStreamDispose(newMultiBuffer);
+            ustream_dispose(newMultiBuffer);
         }
         else if ((result = uStreamMultiAppend(newMultiBuffer, uStreamToAppend)) != ULIB_SUCCESS)
         {
             /*[uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed]*/
-            uStreamDispose(newMultiBuffer);
+            ustream_dispose(newMultiBuffer);
         }
         else
         {
@@ -49,7 +49,7 @@ ULIB_RESULT uStreamAppend(
             newMultiBuffer->api = aux.api;
             newMultiBuffer->handle = aux.handle;
 
-            uStreamDispose(newMultiBuffer);
+            ustream_dispose(newMultiBuffer);
         }
     }
 

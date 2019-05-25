@@ -39,7 +39,7 @@ TEST_FUNCTION(uStreamDispose_complianceClonedInstanceDisposedFirstSucceed)
     ASSERT_IS_NOT_NULL(uStreamInstance);
         
     ///act
-    ULIB_RESULT result = uStreamDispose(uStreamCloneInterface);
+    ULIB_RESULT result = ustream_dispose(uStreamCloneInterface);
         
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
@@ -49,7 +49,7 @@ TEST_FUNCTION(uStreamDispose_complianceClonedInstanceDisposedFirstSucceed)
         ustream_get_position(uStreamInstance, &uStreamCloneCurrentPosition));
         
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamDispose_complianceClonedInstanceDisposedSecondSucceed)
@@ -62,7 +62,7 @@ TEST_FUNCTION(uStreamDispose_complianceClonedInstanceDisposedSecondSucceed)
     ASSERT_IS_NOT_NULL(uStreamInstance);
         
     ///act
-    ULIB_RESULT result = uStreamDispose(uStreamInstance);
+    ULIB_RESULT result = ustream_dispose(uStreamInstance);
         
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
@@ -72,7 +72,7 @@ TEST_FUNCTION(uStreamDispose_complianceClonedInstanceDisposedSecondSucceed)
         ustream_get_position(uStreamCloneInterface, &uStreamCloneCurrentPosition));
         
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 /* If there is no more instances of the buffer, the dispose shall release all allocated
@@ -84,7 +84,7 @@ TEST_FUNCTION(uStreamDispose_complianceSingleInstanceSucceed)
     ASSERT_IS_NOT_NULL(uStreamInstance);
     
     ///act
-    ULIB_RESULT result = uStreamDispose(uStreamInstance);
+    ULIB_RESULT result = ustream_dispose(uStreamInstance);
     
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
@@ -106,7 +106,7 @@ TEST_FUNCTION(uStreamDispose_complianceNullBufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
     
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided handle is not the implemented buffer type, the dispose shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -123,7 +123,7 @@ TEST_FUNCTION(uStreamDispose_complianceBufferIsNotTypeOfBufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
     
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* The clone shall return a buffer with the same content of the original buffer. */
@@ -189,8 +189,8 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferClonedWithZeroOffsetSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamInstance);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(uStreamClone_complianceNewBufferClonedWithOffsetSucceed)
@@ -248,8 +248,8 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferClonedWithOffsetSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamInstance);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(uStreamClone_complianceEmptyBufferSucceed)
@@ -304,8 +304,8 @@ TEST_FUNCTION(uStreamClone_complianceEmptyBufferSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamInstance);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPositionsClonedWithOffsetSucceed)
@@ -377,8 +377,8 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamInstance);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPositionsClonedWithNegativeOffsetSucceed)
@@ -450,8 +450,8 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamInstance);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPositionsClonedWithOffsetSucceed)
@@ -537,9 +537,9 @@ TEST_FUNCTION(uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPo
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
-    (void)uStreamDispose(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamClone1);
+    (void)ustream_dispose(uStreamInstance);
+    (void)ustream_dispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamClone1);
 }
 
 /* If the provided handle is NULL, the clone shall return NULL. */
@@ -556,7 +556,7 @@ TEST_FUNCTION(uStreamClone_complianceNullBufferFailed)
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided handle is not the implemented buffer type, the clone shall return NULL. */
@@ -574,7 +574,7 @@ TEST_FUNCTION(uStreamClone_complianceBufferIsNotTypeOfBufferFailed)
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the offset plus the buffer length bypass UINT32_MAX, the clone shall return NULL. */
@@ -592,7 +592,7 @@ TEST_FUNCTION(uStreamClone_complianceOffsetExceedSizeFailed)
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* The get_remaining_size shall return the number of bytes between the current position and the end of the buffer. */
@@ -611,7 +611,7 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceNewBufferSucceed)
     ASSERT_ARE_EQUAL(int, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, size);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamGetRemainingSize_complianceNewBufferWithNonZeroCurrentPositionSucceed)
@@ -641,7 +641,7 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceNewBufferWithNonZeroCurrentPosit
         size);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamGetRemainingSize_complianceClonedBufferWithNonZeroCurrentPositionSucceed)
@@ -681,8 +681,8 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceClonedBufferWithNonZeroCurrentPo
         size);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided handle is NULL, the get_remaining_size shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -699,7 +699,7 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceNullBufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided handle is not the implemented buffer type, the get_remaining_size shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -717,7 +717,7 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceBufferIsNotTypeOfBufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided size is NULL, the get_remaining_size shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -733,7 +733,7 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceNullSizeFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* The get_position shall return the logical current position of the buffer. */
@@ -752,7 +752,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceNewBufferSucceed)
     ASSERT_ARE_EQUAL(int, 0, position);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamGetCurrentPosition_complianceNewBufferWithNonZeroCurrentPositionSucceed)
@@ -780,7 +780,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceNewBufferWithNonZeroCurrentPos
     ASSERT_ARE_EQUAL(int, USTREAM_COMPLIANCE_LENGTH_2, position);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamGetCurrentPosition_complianceClonedBufferWithNonZeroCurrentPositionSucceed)
@@ -818,8 +818,8 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceClonedBufferWithNonZeroCurrent
     ASSERT_ARE_EQUAL(int, 100 + USTREAM_COMPLIANCE_LENGTH_1, position);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided interface is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -836,7 +836,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceNullBufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided interface is not the implemented buffer type, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -854,7 +854,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceBufferIsNotTypeOfBufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided position is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -870,7 +870,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceNullPositionFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* [1]The read shall copy the content in the provided buffer and return the number of valid {@code uint8_t} values in the local buffer in the provided `size`. */
@@ -930,7 +930,7 @@ TEST_FUNCTION(ustream_read_complianceGetFromOriginalBufferSucceed)
     ASSERT_ARE_EQUAL(int, ULIB_EOF, result3);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(ustream_read_complianceGetFromClonedBufferSucceed)
@@ -945,7 +945,7 @@ TEST_FUNCTION(ustream_read_complianceGetFromClonedBufferSucceed)
     USTREAM* uStreamCloneInterface = 
         ustream_clone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 
     uint8_t bufResult1[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     uint8_t bufResult2[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -997,7 +997,7 @@ TEST_FUNCTION(ustream_read_complianceGetFromClonedBufferSucceed)
     ASSERT_ARE_EQUAL(int, ULIB_EOF, result3);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(ustream_read_complianceSingleBufferSucceed)
@@ -1021,7 +1021,7 @@ TEST_FUNCTION(ustream_read_complianceSingleBufferSucceed)
     ASSERT_BUFFER_ARE_EQUAL(uint8_t_ptr, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, bufResult, sizeResult);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(ustream_read_complianceRightBoundaryConditionSucceed)
@@ -1073,7 +1073,7 @@ TEST_FUNCTION(ustream_read_complianceRightBoundaryConditionSucceed)
                 &sizeResult));
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(ustream_read_complianceClonedBufferRightBoundaryConditionSucceed)
@@ -1087,7 +1087,7 @@ TEST_FUNCTION(ustream_read_complianceClonedBufferRightBoundaryConditionSucceed)
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1));
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 
     uint8_t bufResult[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     size_t sizeResult;
@@ -1119,7 +1119,7 @@ TEST_FUNCTION(ustream_read_complianceClonedBufferRightBoundaryConditionSucceed)
                 &sizeResult));
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(ustream_read_complianceBoundaryConditionSucceed)
@@ -1152,7 +1152,7 @@ TEST_FUNCTION(ustream_read_complianceBoundaryConditionSucceed)
                 &sizeResult));
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(ustream_read_complianceLeftBoundaryConditionSucceed)
@@ -1185,7 +1185,7 @@ TEST_FUNCTION(ustream_read_complianceLeftBoundaryConditionSucceed)
                 &sizeResult));
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(ustream_read_complianceSingleByteSucceed)
@@ -1210,7 +1210,7 @@ TEST_FUNCTION(ustream_read_complianceSingleByteSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided bufferLength is zero, the read shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -1233,7 +1233,7 @@ TEST_FUNCTION(ustream_read_complianceBufferWithZeroSizeFailed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided handle is NULL, the read shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -1261,7 +1261,7 @@ TEST_FUNCTION(ustream_read_complianceNullBufferFailed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided handle is not the implemented buffer type, the read shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -1289,7 +1289,7 @@ TEST_FUNCTION(ustream_read_complianceNonTypeOfBufferAPIFailed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided buffer is NULL, the read shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -1316,7 +1316,7 @@ TEST_FUNCTION(ustream_read_complianceNullReturnBufferFailed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided return size pointer is NULL, the read shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -1343,7 +1343,7 @@ TEST_FUNCTION(ustream_read_complianceNullReturnSizeFailed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* The set_position shall change the current position of the buffer. */
@@ -1374,7 +1374,7 @@ TEST_FUNCTION(ustream_set_position_complianceBackToBeginningSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(ustream_set_position_complianceBackPositionSucceed)
@@ -1405,7 +1405,7 @@ TEST_FUNCTION(ustream_set_position_complianceBackPositionSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(ustream_set_position_complianceForwardPositionSucceed)
@@ -1431,7 +1431,7 @@ TEST_FUNCTION(ustream_set_position_complianceForwardPositionSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(ustream_set_position_complianceForwardToTheEndPositionSucceed)
@@ -1452,7 +1452,7 @@ TEST_FUNCTION(ustream_set_position_complianceForwardToTheEndPositionSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(ustream_set_position_complianceRunFullBufferByteByByteSucceed)
@@ -1483,7 +1483,7 @@ TEST_FUNCTION(ustream_set_position_complianceRunFullBufferByteByByteSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(ustream_set_position_complianceRunFullBufferByteByByteReverseOrderSucceed)
@@ -1515,7 +1515,7 @@ TEST_FUNCTION(ustream_set_position_complianceRunFullBufferByteByByteReverseOrder
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(ustream_set_position_complianceClonedBufferBackToBeginningSucceed)
@@ -1529,7 +1529,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferBackToBeginningSucceed)
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
     uint8_t bufResult[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     size_t sizeResult;
     ASSERT_ARE_EQUAL(
@@ -1549,7 +1549,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferBackToBeginningSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(ustream_set_position_complianceClonedBufferBackPositionSucceed)
@@ -1563,7 +1563,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferBackPositionSucceed)
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
     uint8_t bufResult[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     size_t sizeResult;
     ASSERT_ARE_EQUAL(
@@ -1588,7 +1588,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferBackPositionSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(ustream_set_position_complianceClonedBufferForwardPositionSucceed)
@@ -1602,7 +1602,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferForwardPositionSucceed)
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
     uint8_t bufResult[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     size_t sizeResult;
     ASSERT_ARE_EQUAL(
@@ -1622,7 +1622,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferForwardPositionSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(ustream_set_position_complianceClonedBufferForwardToTheEndPositionSucceed)
@@ -1636,7 +1636,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferForwardToTheEndPosition
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 100);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 
     ///act
     ULIB_RESULT result = 
@@ -1653,7 +1653,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferForwardToTheEndPosition
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(ustream_set_position_complianceClonedBufferRunFullBufferByteByByteSucceed)
@@ -1667,7 +1667,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferRunFullBufferByteByByte
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
     uint8_t bufResult[1];
     size_t sizeResult;
 
@@ -1692,7 +1692,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferRunFullBufferByteByByte
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(ustream_set_position_complianceClonedBufferRunFullBufferByteByByteReverseOrderSucceed)
@@ -1706,7 +1706,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferRunFullBufferByteByByte
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
     uint8_t bufResult[1];
     size_t sizeResult;
 
@@ -1735,7 +1735,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferRunFullBufferByteByByte
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 /* If the provided position is out of the range of the buffer, the set_position shall return ULIB_NO_SUCH_ELEMENT_ERROR, and do not change the current position. */
@@ -1757,7 +1757,7 @@ TEST_FUNCTION(ustream_set_position_complianceForwardOutOfTheBufferFailed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided position is before the first valid position, the set_position shall return ULIB_NO_SUCH_ELEMENT_ERROR, and do not change the current position. */
@@ -1789,7 +1789,7 @@ TEST_FUNCTION(ustream_set_position_complianceBackBeforeFirstValidPositionFailed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided handle is NULL, the set_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -1805,7 +1805,7 @@ TEST_FUNCTION(ustream_set_position_complianceNullBufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided handle is not the implemented buffer type, the set_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -1822,7 +1822,7 @@ TEST_FUNCTION(ustream_set_position_complianceNonTypeOfBufferAPIFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* The release shall do nothing for uStreamInstance. */
@@ -1854,7 +1854,7 @@ TEST_FUNCTION(uStreamRelease_complianceSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamRelease_complianceReleaseAllSucceed)
@@ -1880,7 +1880,7 @@ TEST_FUNCTION(uStreamRelease_complianceReleaseAllSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamRelease_complianceRunFullBufferByteByByteSucceed)
@@ -1915,7 +1915,7 @@ TEST_FUNCTION(uStreamRelease_complianceRunFullBufferByteByByteSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamRelease_complianceClonedBufferSucceed)
@@ -1929,7 +1929,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferSucceed)
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
     uint8_t bufResult[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     size_t sizeResult;
     ASSERT_ARE_EQUAL(
@@ -1954,7 +1954,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(uStreamRelease_complianceClonedBufferReleaseAllSucceed)
@@ -1968,7 +1968,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferReleaseAllSucceed)
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 1000);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
     ASSERT_ARE_EQUAL(
             int, 
             ULIB_SUCCESS, 
@@ -1992,7 +1992,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferReleaseAllSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 TEST_FUNCTION(uStreamRelease_complianceClonedBufferRunFullBufferByteByByteSucceed)
@@ -2006,7 +2006,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferRunFullBufferByteByByteSuccee
         ustream_set_position(uStreamInstance, USTREAM_COMPLIANCE_LENGTH_1));
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
     ASSERT_IS_NOT_NULL(uStreamCloneInterface);
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
     uint8_t bufResult[1];
     size_t sizeResult;
 
@@ -2035,7 +2035,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferRunFullBufferByteByByteSuccee
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 /* If the release position is after the current position, the release shall return ULIB_NO_SUCH_ELEMENT_ERROR, and do not release any resource. */
@@ -2067,7 +2067,7 @@ TEST_FUNCTION(uStreamRelease_complianceReleaseAfterCurrentFailed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the release position is already released, the release shall return ULIB_ILLEGAL_ARGUMENT_ERROR, and do not release any resource. */
@@ -2100,7 +2100,7 @@ TEST_FUNCTION(uStreamRelease_complianceReleasePositionAlreayReleasedFailed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided handle is NULL, the release shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -2116,7 +2116,7 @@ TEST_FUNCTION(uStreamRelease_complianceNullBufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result1);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided handle is not the implemented buffer type, the release shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -2133,7 +2133,7 @@ TEST_FUNCTION(uStreamRelease_complianceNonTypeOfBufferAPIFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result1);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* The set_position shall change the current position of the buffer. */
@@ -2160,7 +2160,7 @@ TEST_FUNCTION(uStreamReset_complianceBackToBeginningSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamReset_complianceBackPositionSucceed)
@@ -2190,7 +2190,7 @@ TEST_FUNCTION(uStreamReset_complianceBackPositionSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamReset_complianceClonedBufferSucceed)
@@ -2236,8 +2236,8 @@ TEST_FUNCTION(uStreamReset_complianceClonedBufferSucceed)
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
-    (void)uStreamDispose(uStreamCloneInterface);
+    (void)ustream_dispose(uStreamInstance);
+    (void)ustream_dispose(uStreamCloneInterface);
 }
 
 /* If the provided handle is NULL, the set_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -2253,7 +2253,7 @@ TEST_FUNCTION(uStreamReset_complianceNullBufferFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 /* If the provided handle is not the implemented buffer type, the set_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -2269,7 +2269,7 @@ TEST_FUNCTION(uStreamReset_complianceNonTypeOfBufferAPIFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 #endif /* AZURE_ULIB_C_TESTS_INC_USTREAM_COMPLIANCE_UT_H_ */

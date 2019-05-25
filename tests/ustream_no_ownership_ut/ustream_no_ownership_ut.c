@@ -159,7 +159,7 @@ TEST_FUNCTION(uStreamCreate_succeed)
     ASSERT_IS_NOT_NULL(bufferInterface->api);
 
     ///cleanup
-    (void)uStreamDispose(bufferInterface);
+    (void)ustream_dispose(bufferInterface);
 }
 
 TEST_FUNCTION(uStreamCreate_protectedImmutableBufferSucceed)
@@ -182,7 +182,7 @@ TEST_FUNCTION(uStreamCreate_protectedImmutableBufferSucceed)
     ASSERT_ARE_EQUAL(char_ptr, "0123456789", outBuffer);
 
     ///cleanup
-    (void)uStreamDispose(bufferInterface);
+    (void)ustream_dispose(bufferInterface);
 }
 
 /* The uStreamCreate shall return NULL if there is no memory to create the buffer. */
@@ -315,7 +315,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateInterfaceFailed)
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 TEST_FUNCTION(uStreamClone_noMemoryToCreateInstanceFailed)
@@ -335,7 +335,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateInstanceFailed)
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 #include "ustream_compliance_ut.h"

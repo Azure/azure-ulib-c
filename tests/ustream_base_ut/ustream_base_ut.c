@@ -169,9 +169,9 @@ TEST_FUNCTION(uStreamAppend_startFromEmptyMultibufferSucceed)
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result2);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result3);
-    uStreamDispose(defaultBuffer1);
-    uStreamDispose(defaultBuffer2);
-    uStreamDispose(defaultBuffer3);
+    ustream_dispose(defaultBuffer1);
+    ustream_dispose(defaultBuffer2);
+    ustream_dispose(defaultBuffer3);
     checkBuffer(
         defaultMultibuffer,
         0, 
@@ -179,7 +179,7 @@ TEST_FUNCTION(uStreamAppend_startFromEmptyMultibufferSucceed)
         USTREAM_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    uStreamDispose(defaultMultibuffer);
+    ustream_dispose(defaultMultibuffer);
 }
 
 TEST_FUNCTION(uStreamAppend_appendMultipleBuffersSucceed)
@@ -211,8 +211,8 @@ TEST_FUNCTION(uStreamAppend_appendMultipleBuffersSucceed)
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result2);
-    uStreamDispose(defaultBuffer2);
-    uStreamDispose(defaultBuffer3);
+    ustream_dispose(defaultBuffer2);
+    ustream_dispose(defaultBuffer3);
     checkBuffer(
         defaultBuffer1,
         0,
@@ -220,7 +220,7 @@ TEST_FUNCTION(uStreamAppend_appendMultipleBuffersSucceed)
         USTREAM_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    uStreamDispose(defaultBuffer1);
+    ustream_dispose(defaultBuffer1);
 }
 
 /* If the provided interface is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -240,7 +240,7 @@ TEST_FUNCTION(uStreamAppend_nullInterfaceFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    uStreamDispose(defaultBuffer);
+    ustream_dispose(defaultBuffer);
 }
 
 /* If the provided buffer to add is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
@@ -260,7 +260,7 @@ TEST_FUNCTION(uStreamAppend_nullBufferToAddFailed)
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    uStreamDispose(defaultBuffer);
+    ustream_dispose(defaultBuffer);
 }
 
 /* If there is not enough memory to append the buffer, the Append shall return ULIB_OUT_OF_MEMORY_ERROR. */
@@ -287,8 +287,8 @@ TEST_FUNCTION(uStreamAppend_startingFromMultibufferWithNotEnoughMemoryFailed)
     ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
-    uStreamDispose(defaultBuffer);
-    uStreamDispose(defaultMultibuffer);
+    ustream_dispose(defaultBuffer);
+    ustream_dispose(defaultMultibuffer);
 }
 
 TEST_FUNCTION(uStreamAppend_notEnoughMemoryToCreateMultibufferFailed)
@@ -328,8 +328,8 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToCreateMultibufferFailed)
         (uint8_t)strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2));
 
     ///cleanup
-    uStreamDispose(defaultBuffer1);
-    uStreamDispose(defaultBuffer2);
+    ustream_dispose(defaultBuffer1);
+    ustream_dispose(defaultBuffer2);
 }
 
 TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed)
@@ -376,8 +376,8 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed)
         (uint8_t)strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2));
 
     ///cleanup
-    uStreamDispose(defaultBuffer1);
-    uStreamDispose(defaultBuffer2);
+    ustream_dispose(defaultBuffer1);
+    ustream_dispose(defaultBuffer2);
 }
 
 TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed)
@@ -431,8 +431,8 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed)
         (uint8_t)strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2));
 
     ///cleanup
-    uStreamDispose(defaultBuffer1);
-    uStreamDispose(defaultBuffer2);
+    ustream_dispose(defaultBuffer1);
+    ustream_dispose(defaultBuffer2);
 }
 
 END_TEST_SUITE(ustream_base_ut)

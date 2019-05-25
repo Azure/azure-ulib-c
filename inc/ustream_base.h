@@ -80,7 +80,7 @@
  *  :       |                  +----->|                            |                    |         :
  *  ...............................................................................................
  *          |                         +---------------free(localBuffer)---------------->|
- *          |                         +-uStreamDispose             |                    |
+ *          |                         +-ustream_dispose            |                    |
  *          |                         |        (uStreamInterface)->|                    |
  *          |                         |                            +--free(dataSource)->|
  *          |                         |                            |                    |
@@ -718,10 +718,10 @@ inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset)
  *          - @b ULIB_SUCCESS - If the instance of the buffer was disposed with success.
  *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
  */
-#define uStreamDispose( \
-            /*[USTREAM*]*/ uStreamInterface) \
-    ((uStreamInterface)->api->dispose( \
-            (uStreamInterface)))
+inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
+{
+    return ((ustream_interface)->api->dispose((ustream_interface)));
+}
 
 /**
   * @brief   Append a uStream to the existing buffer.

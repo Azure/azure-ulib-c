@@ -74,7 +74,7 @@ static BUFFER_LIST_NODE* createBufferNode(
 
 static void destroyBufferNode(BUFFER_LIST_NODE* node)
 {
-    uStreamDispose(node->buffer);
+    ustream_dispose(node->buffer);
     ULIB_CONFIG_FREE(node);
 }
 
