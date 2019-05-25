@@ -3,7 +3,7 @@
 
 #include "ustream.h"
 
-ULIB_RESULT uStreamAppend(
+ULIB_RESULT ustream_append(
     USTREAM* uStreamInterface, 
     USTREAM* uStreamToAppend)
 {

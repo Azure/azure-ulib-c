@@ -151,11 +151,11 @@
  * <p> Released data cannot be accessed, even if it is still available in the memory.
  *
  * <i><b> Appendable:
- * <p> New data can be appended at the end of the uStream by calling  {@link uStreamAppend}.
+ * <p> New data can be appended at the end of the uStream by calling  {@link ustream_append}.
  *      This can include uStream's from other different medias. In this way, the uStream can
  *      be used as a Stream of data.
  * <p> To protect the immutability of the uStream, appending a new uStream to an existing one will
- *      only affect the instance that is calling the {@link uStreamAppend}.
+ *      only affect the instance that is calling the {@link ustream_append}.
  * <i><b>Example:
  * <p> A producer created 3 uStreams named A, B, and C. At this point, it handles one instance of each
  *      buffer. A consumer received an instance of the buffer A and C, and appends C to A creating a new buffer AC.
@@ -750,7 +750,7 @@ inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is no memory to append the buffer.
   */
 MOCKABLE_FUNCTION( , 
-    ULIB_RESULT, uStreamAppend,
+    ULIB_RESULT, ustream_append,
     USTREAM*, uStreamInterface, 
     USTREAM*, uStreamToAppend);
 

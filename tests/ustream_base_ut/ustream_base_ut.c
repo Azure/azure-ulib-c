@@ -161,9 +161,9 @@ TEST_FUNCTION(uStreamAppend_startFromEmptyMultibufferSucceed)
     ASSERT_IS_NOT_NULL(defaultBuffer3);
 
     ///act
-    ULIB_RESULT result1 = uStreamAppend(defaultMultibuffer, defaultBuffer1);
-    ULIB_RESULT result2 = uStreamAppend(defaultMultibuffer, defaultBuffer2);
-    ULIB_RESULT result3 = uStreamAppend(defaultMultibuffer, defaultBuffer3);
+    ULIB_RESULT result1 = ustream_append(defaultMultibuffer, defaultBuffer1);
+    ULIB_RESULT result2 = ustream_append(defaultMultibuffer, defaultBuffer2);
+    ULIB_RESULT result3 = ustream_append(defaultMultibuffer, defaultBuffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result1);
@@ -205,8 +205,8 @@ TEST_FUNCTION(uStreamAppend_appendMultipleBuffersSucceed)
     ASSERT_IS_NOT_NULL(defaultBuffer3);
 
     ///act
-    ULIB_RESULT result1 = uStreamAppend(defaultBuffer1, defaultBuffer2);
-    ULIB_RESULT result2 = uStreamAppend(defaultBuffer1, defaultBuffer3);
+    ULIB_RESULT result1 = ustream_append(defaultBuffer1, defaultBuffer2);
+    ULIB_RESULT result2 = ustream_append(defaultBuffer1, defaultBuffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result1);
@@ -234,7 +234,7 @@ TEST_FUNCTION(uStreamAppend_nullInterfaceFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer);
 
     ///act
-    ULIB_RESULT result = uStreamAppend(NULL, defaultBuffer);
+    ULIB_RESULT result = ustream_append(NULL, defaultBuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -254,7 +254,7 @@ TEST_FUNCTION(uStreamAppend_nullBufferToAddFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer);
 
     ///act
-    ULIB_RESULT result = uStreamAppend(defaultBuffer, NULL);
+    ULIB_RESULT result = ustream_append(defaultBuffer, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -280,7 +280,7 @@ TEST_FUNCTION(uStreamAppend_startingFromMultibufferWithNotEnoughMemoryFailed)
     STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
-    ULIB_RESULT result = uStreamAppend(defaultMultibuffer, defaultBuffer);
+    ULIB_RESULT result = ustream_append(defaultMultibuffer, defaultBuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -311,7 +311,7 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToCreateMultibufferFailed)
     STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM))).SetReturn(NULL);
 
     ///act
-    ULIB_RESULT result = uStreamAppend(defaultBuffer1, defaultBuffer2);
+    ULIB_RESULT result = ustream_append(defaultBuffer1, defaultBuffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -359,7 +359,7 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed)
     STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
 
     ///act
-    ULIB_RESULT result = uStreamAppend(defaultBuffer1, defaultBuffer2);
+    ULIB_RESULT result = ustream_append(defaultBuffer1, defaultBuffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -414,7 +414,7 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed)
     STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
 
     ///act
-    ULIB_RESULT result = uStreamAppend(defaultBuffer1, defaultBuffer2);
+    ULIB_RESULT result = ustream_append(defaultBuffer1, defaultBuffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
