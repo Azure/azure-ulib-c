@@ -34,27 +34,27 @@ typedef struct USTREAM_INSTANCE_TAG
     offset_t innerFirstValidPosition;
 } USTREAM_INSTANCE;
 
-static ULIB_RESULT concreteSeek(USTREAM* ustream_interface, offset_t position);
-static ULIB_RESULT concreteReset(USTREAM* ustream_interface);
-static ULIB_RESULT concreteGetNext(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
-static ULIB_RESULT concreteGetRemainingSize(USTREAM* ustream_interface, size_t* const size);
-static ULIB_RESULT concreteGetCurrentPosition(USTREAM* ustream_interface, offset_t* const position);
-static ULIB_RESULT concreteRelease(USTREAM* ustream_interface, offset_t position);
-static USTREAM* concreteClone(USTREAM* ustream_interface, offset_t offset);
-static ULIB_RESULT concreteDispose(USTREAM* ustream_interface);
+static ULIB_RESULT concrete_set_position(USTREAM* ustream_interface, offset_t position);
+static ULIB_RESULT concrete_reset(USTREAM* ustream_interface);
+static ULIB_RESULT concrete_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
+static ULIB_RESULT concrete_get_remaining_size(USTREAM* ustream_interface, size_t* const size);
+static ULIB_RESULT concrete_get_position(USTREAM* ustream_interface, offset_t* const position);
+static ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t position);
+static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset);
+static ULIB_RESULT concrete_dispose(USTREAM* ustream_interface);
 static const USTREAM_INTERFACE _api =
 {
-        concreteSeek,
-        concreteReset,
-        concreteGetNext,
-        concreteGetRemainingSize,
-        concreteGetCurrentPosition,
-        concreteRelease,
-        concreteClone,
-        concreteDispose
+        concrete_set_position,
+        concrete_reset,
+        concrete_read,
+        concrete_get_remaining_size,
+        concrete_get_position,
+        concrete_release,
+        concrete_clone,
+        concrete_dispose
 };
 
-static USTREAM* createInstance(
+static USTREAM* create_instance(
     USTREAM_INNER_BUFFER* innerBuffer,
     offset_t innerCurrentPosition,
     offset_t offset)
@@ -63,7 +63,7 @@ static USTREAM* createInstance(
     /*[uStreamCreate_noMemoryToCreateInterfaceFailed]*/
     /*[uStreamConstCreate_noMemoryToCreateInterfaceFailed]*/
     /*[uStreamClone_noMemoryToCreateInterfaceFailed]*/
-    /*[uStreamClone_noMemoryToCreateInstanceFailed]*/
+    /*[uStreamClone_noMemoryTocreate_instanceFailed]*/
     if(ustream_interface == NULL)
     {
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_OUT_OF_MEMORY_STRING, "ustream_interface");
@@ -71,7 +71,7 @@ static USTREAM* createInstance(
     else
     {
         USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ULIB_CONFIG_MALLOC(sizeof(USTREAM_INSTANCE));
-        /*[az_stdbufferClone_noMemoryToCreateInstanceFailed]*/
+        /*[az_stdbufferClone_noMemoryTocreate_instanceFailed]*/
         if(instance != NULL)
         {
             ustream_interface->api = &_api;
@@ -151,7 +151,7 @@ static void destroyInnerBuffer(USTREAM_INNER_BUFFER* innerBuffer)
     ULIB_CONFIG_FREE(innerBuffer);
 }
 
-static ULIB_RESULT concreteSeek(USTREAM* ustream_interface, offset_t position)
+static ULIB_RESULT concrete_set_position(USTREAM* ustream_interface, offset_t position)
 {
     ULIB_RESULT result;
 
@@ -197,7 +197,7 @@ static ULIB_RESULT concreteSeek(USTREAM* ustream_interface, offset_t position)
     return result;
 }
 
-static ULIB_RESULT concreteReset(USTREAM* ustream_interface)
+static ULIB_RESULT concrete_reset(USTREAM* ustream_interface)
 {
     ULIB_RESULT result;
 
@@ -221,7 +221,7 @@ static ULIB_RESULT concreteReset(USTREAM* ustream_interface)
     return result;
 }
 
-static ULIB_RESULT concreteGetNext(
+static ULIB_RESULT concrete_read(
         USTREAM* ustream_interface,
         uint8_t* const buffer,
         size_t buffer_length,
@@ -285,7 +285,7 @@ static ULIB_RESULT concreteGetNext(
     return result;
 }
 
-static ULIB_RESULT concreteGetRemainingSize(USTREAM* ustream_interface, size_t* const size)
+static ULIB_RESULT concrete_get_remaining_size(USTREAM* ustream_interface, size_t* const size)
 {
     ULIB_RESULT result;
 
@@ -316,7 +316,7 @@ static ULIB_RESULT concreteGetRemainingSize(USTREAM* ustream_interface, size_t* 
     return result;
 }
 
-static ULIB_RESULT concreteGetCurrentPosition(USTREAM* ustream_interface, offset_t* const position)
+static ULIB_RESULT concrete_get_position(USTREAM* ustream_interface, offset_t* const position)
 {
     ULIB_RESULT result;
 
@@ -347,7 +347,7 @@ static ULIB_RESULT concreteGetCurrentPosition(USTREAM* ustream_interface, offset
     return result;
 }
 
-static ULIB_RESULT concreteRelease(USTREAM* ustream_interface, offset_t position)
+static ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t position)
 {
     ULIB_RESULT result;
 
@@ -386,7 +386,7 @@ static ULIB_RESULT concreteRelease(USTREAM* ustream_interface, offset_t position
     return result;
 }
 
-static USTREAM* concreteClone(USTREAM* ustream_interface, offset_t offset)
+static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset)
 {
     USTREAM* interfaceResult;
 
@@ -413,16 +413,16 @@ static USTREAM* concreteClone(USTREAM* ustream_interface, offset_t offset)
             /*[uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPositionsClonedWithOffsetSucceed]*/
             /*[uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPositionsClonedWithNegativeOffsetSucceed]*/
             /*[uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPositionsClonedWithOffsetSucceed]*/
-            /*[uStreamClone_complianceNoMemoryToCreateInstanceFailed]*/
+            /*[uStreamClone_complianceNoMemoryTocreate_instanceFailed]*/
             /*[uStreamClone_complianceEmptyBufferSucceed]*/
-            interfaceResult = createInstance(instance->innerBuffer, instance->innerCurrentPosition, offset);
+            interfaceResult = create_instance(instance->innerBuffer, instance->innerCurrentPosition, offset);
         }
     }
 
     return interfaceResult;
 }
 
-static ULIB_RESULT concreteDispose(USTREAM* ustream_interface)
+static ULIB_RESULT concrete_dispose(USTREAM* ustream_interface)
 {
     ULIB_RESULT result;
 
@@ -485,8 +485,8 @@ USTREAM* ustream_create(
         }
         else
         {
-            interfaceResult = createInstance(innerBuffer, 0, 0);
-            /*[uStreamCreate_noMemoryToCreateInstanceFailed]*/
+            interfaceResult = create_instance(innerBuffer, 0, 0);
+            /*[uStreamCreate_noMemoryTocreate_instanceFailed]*/
             if(interfaceResult == NULL)
             {
                 if(take_ownership)
@@ -534,8 +534,8 @@ USTREAM* ustream_const_create(
         }
         else
         {
-            interfaceResult = createInstance(innerBuffer, 0, 0);
-            /*[uStreamConstCreate_noMemoryToCreateInstanceFailed]*/
+            interfaceResult = create_instance(innerBuffer, 0, 0);
+            /*[uStreamConstCreate_noMemoryTocreate_instanceFailed]*/
             if(interfaceResult == NULL)
             {
                 destroyInnerBuffer(innerBuffer);

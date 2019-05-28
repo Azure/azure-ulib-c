@@ -193,7 +193,7 @@ TEST_FUNCTION(uStreamCreate_noMemoryToCreateInterfaceFailed)
     uLibFree(buf);
 }
 
-TEST_FUNCTION(uStreamCreate_noMemoryToCreateInstanceFailed)
+TEST_FUNCTION(uStreamCreate_noMemoryTocreate_instanceFailed)
 {
     ///arrange
     uint8_t* buf = (uint8_t*)uLibMalloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
@@ -291,7 +291,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateInterfaceFailed)
     (void)ustream_dispose(uStreamInstance);
 }
 
-TEST_FUNCTION(uStreamClone_noMemoryToCreateInstanceFailed)
+TEST_FUNCTION(uStreamClone_noMemoryTocreate_instanceFailed)
 {
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;

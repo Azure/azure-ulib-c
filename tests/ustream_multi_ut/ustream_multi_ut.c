@@ -208,7 +208,7 @@ TEST_FUNCTION(uStreamMultiCreate_noMemoryToCreateInterfaceFailed)
     ///cleanup
 }
 
-TEST_FUNCTION(uStreamMultiCreate_noMemoryToCreateInstanceFailed)
+TEST_FUNCTION(uStreamMultiCreate_noMemoryTocreate_instanceFailed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
@@ -960,7 +960,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateInterfaceFailed)
     (void)ustream_dispose(uStreamInstance);
 }
 
-TEST_FUNCTION(uStreamClone_noMemoryToCreateInstanceFailed)
+TEST_FUNCTION(uStreamClone_noMemoryTocreate_instanceFailed)
 {
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
