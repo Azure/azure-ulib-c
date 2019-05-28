@@ -741,8 +741,8 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInSeekFailed)
     (void)ustream_dispose(defaultBuffer2);
 }
 
-/* The GetNext shall return partial result if one of the internal buffers failed. */
-TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextWithSomeValidContentSucceed)
+/* The Read shall return partial result if one of the internal buffers failed. */
+TEST_FUNCTION(uStreamMultiRead_innerBufferFailedInReadWithSomeValidContentSucceed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -781,7 +781,7 @@ TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextWithSomeValidContent
     (void)ustream_dispose(defaultBuffer2);
 }
 
-TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextFailed)
+TEST_FUNCTION(uStreamMultiRead_innerBufferFailedInReadFailed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();

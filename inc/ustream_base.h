@@ -249,8 +249,8 @@
  *      - @b Pending - Sequence of bytes in the data source that is already read by the consumer, but not 
  *          acknowledged yet. The consumer can set_position these bytes and read it again. This sequence starts at 
  *          the First Valid Position and ends at the last byte before the Current Position.
- *      - @b Read - Is the last read portion of the data source. On the GetNext operation, the Read starts
- *          in the Current Position up to the read size. At the end of the GetNext, this segment is 
+ *      - @b Read - Is the last read portion of the data source. On the read operation, the Read starts
+ *          in the Current Position up to the read size. At the end of the read, this segment is 
  *          incorporated to Pending by changing the Current Position to the end of the Read.
  *      - @b Future - Sequence of bytes in the data source that is not read by the consumer yet. It starts 
  *          at the Current Position and ends at the end of the data source, which has the position calculated
@@ -262,7 +262,7 @@
  *      the consumer finishes using the data in the local buffer, this data can be discarded
  *      and the local buffer recycled to get the next portion of the data source.
  * <p> If at some point in the future, the consumer needs this data again, it can set_position the needed position 
- *      and get the same content using the GetNext.
+ *      and get the same content using the read.
  * <p> The consumer may confirm that a portion of the data is not necessary anymore. For example, after transmitting
  *      multiple TCP packets, the receiver of these packets answers with an ACK for a sequence number. In this case,
  *      the consumer can release this data in the data source by calling the {@link ustream_release}, moving 
@@ -458,8 +458,8 @@ inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *          - @b ULIB_EOF - If there are no more {@code uint8_t} values in the 
  *              Data Source to copy.
  *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the copy.
- *          - @b ULIB_SECURITY_ERROR - If the get next was denied for security reasons.
- *          - @b ULIB_SYSTEM_ERROR - If the get next operation failed on the system level.
+ *          - @b ULIB_SECURITY_ERROR - If the read was denied for security reasons.
+ *          - @b ULIB_SYSTEM_ERROR - If the read operation failed on the system level.
  */
 inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
 {
