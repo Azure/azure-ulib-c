@@ -222,8 +222,8 @@
  *      `0` to `99`, and it matches the logical position. The consumer clones this buffer providing an
  *      offset of `1000`. The new instance contains the same content as the original one, but the 
  *      logical positions are now from `1000` to `1099`.
- * <p> If the owner of the first instance wants to set_position to position 10, it shall call {@link ustream_set_position}
- *      with the logical position 10. For the cloned instance, to set_position the same position 10, it shall call 
+ * <p> If the owner of the first instance wants to set the position to position 10, it shall call {@link ustream_set_position}
+ *      with the logical position 10. For the cloned instance, to set the position to the same position 10, it shall call 
  *      {@link ustream_set_position} with the logical position 1010.
  *
  * <i><b> Sliding window:
@@ -261,7 +261,7 @@
  *      The consumer can use this data in its own context: for example, to transmit as a TCP packet. When
  *      the consumer finishes using the data in the local buffer, this data can be discarded
  *      and the local buffer recycled to get the next portion of the data source.
- * <p> If at some point in the future, the consumer needs this data again, it can set_position the needed position 
+ * <p> If at some point in the future, the consumer needs this data again, it can set the position to the needed position 
  *      and get the same content using the read.
  * <p> The consumer may confirm that a portion of the data is not necessary anymore. For example, after transmitting
  *      multiple TCP packets, the receiver of these packets answers with an ACK for a sequence number. In this case,
@@ -341,7 +341,7 @@ struct USTREAM_INTERFACE_TAG
  *      {@link ustream_read}. Consumers can call this API to go back or forward, but it cannot be exceed
  *      the end of the buffer or precede the fist valid position (last released position + 1).
  *
- * <p> The set_position API shall follow these minimum requirements:
+ * <p> The {@code ustream_set_position} API shall follow these minimum requirements:
  *      - The set_position shall change the current position of the buffer.
  *      - If the provided position is out of the range of the buffer, the set_position shall return
  *          ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
@@ -354,7 +354,7 @@ struct USTREAM_INTERFACE_TAG
  * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @param:  position        The {@code offset_t} with the new current position in the buffer.
+ * @param:  position                The {@code offset_t} with the new current position in the buffer.
  * @return: The {@link ULIB_RESULT} with the result of the set_position operation. The results can be:
  *          - @b ULIB_SUCCESS - If the buffer changed the current position with success.
  *          - @b ULIB_BUSY_ERROR - If the resource necessary for the set_position operation is busy.
@@ -369,7 +369,7 @@ struct USTREAM_INTERFACE_TAG
  */
 inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t position)
 {
-    return ((ustream_interface)->api->set_position((ustream_interface), (position)));
+    return ustream_interface->api->set_position(ustream_interface, position);
 }
 
 /**
@@ -379,7 +379,7 @@ inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t pos
  *      {@link ustream_read}. Reset will bring the current position to the first valid one, which
  *      is the first byte after the released position.
  *
- * <p> The reset API shall follow the following minimum requirements:
+ * <p> The {@code ustream_reset} API shall follow the following minimum requirements:
  *      - The reset shall change the current position of the buffer to the first byte after the
  *          released position.
  *      - If all bytes are already released, the buffer reset shall return
@@ -407,7 +407,7 @@ inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t pos
  */
 inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
 {
-    return ((ustream_interface)->api->reset((ustream_interface)));
+    return ustream_interface->api->reset(ustream_interface);
 }
 
 /**
@@ -444,10 +444,10 @@ inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @param:  buffer          The {@code uint8_t* const} that points to the local buffer. It cannot be {@code NULL}.
- * @param:  buffer_length    The {@code size_t} with the size of the local buffer. It shall be
+ * @param:  buffer                  The {@code uint8_t* const} that points to the local buffer. It cannot be {@code NULL}.
+ * @param:  buffer_length           The {@code size_t} with the size of the local buffer. It shall be
  *                              bigger than 0.
- * @param:  size            The {@code size_t* const} that points to the place where the read shall store
+ * @param:  size                    The {@code size_t* const} that points to the place where the read shall store
  *                              the number of valid {@code uint8_t} values in the local buffer. It cannot be {@code NULL}.
  * @return: The {@link ULIB_RESULT} with the result of the read operation. The results can be:
  *          - @b ULIB_SUCCESS - If the buffer copied the content of the Data Source to the local buffer
@@ -463,7 +463,7 @@ inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  */
 inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
 {
-    return ((ustream_interface)->api->read((ustream_interface), (buffer), (buffer_length), (size)));
+    return ustream_interface->api->read(ustream_interface, buffer, buffer_length, size);
 }
 
 /**
@@ -471,7 +471,7 @@ inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffe
  *
  * <p> This API returns the number of bytes between the current position and the end of the buffer.
  *
- * <p> The get_remaining_size API shall follow the following minimum requirements:
+ * <p> The {@code ustream_get_remaining_size} API shall follow the following minimum requirements:
  *      - The get_remaining_size shall return the number of bytes between the current position and the
  *          end of the buffer.
  *      - If the provided interface is NULL, the get_remaining_size shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
@@ -482,7 +482,7 @@ inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffe
  * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @param:  size            The {@code size_t* const} to returns the remaining number of {@code uint8_t} values 
+ * @param:  size                    The {@code size_t* const} to returns the remaining number of {@code uint8_t} values 
  *                              copied to the buffer. It cannot be {@code NULL}.
  * @return: The {@link ULIB_RESULT} with the result of the get_remaining_size operation. The results can be:
  *          - @b ULIB_SUCCESS - If it succeeded to get the remaining size of the buffer.
@@ -498,7 +498,7 @@ inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffe
  */
 inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t* const size)
 {
-    return ((ustream_interface)->api->get_remaining_size((ustream_interface), (size)));
+    return ustream_interface->api->get_remaining_size(ustream_interface, size);
 }
 
 /**
@@ -506,14 +506,14 @@ inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t
  *
  * <p> This API returns the logical current position.
  *
- * <p> The get_position API shall follow the following minimum requirements:
+ * <p> The {@code ustream_get_position} API shall follow the following minimum requirements:
  *      - The get_position shall return the logical current position of the buffer.
  *      - If the provided interface is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented buffer type, the get_position
  *          shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided position is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  ustream_interface  The {@link USTREAM*} with the interface of the buffer. It
+ * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
  * @param:  position                The {@code offset_t* const} to returns the logical current position in the
@@ -533,7 +533,7 @@ inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t
  */
 inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* const position)
 {
-    return ((ustream_interface)->api->get_position((ustream_interface), (position)));
+    return ustream_interface->api->get_position(ustream_interface, position);
 }
 
 /**
@@ -556,7 +556,7 @@ inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* co
  * }
  * </code></pre>
  *
- * <p> The release API shall follow the following requirements:
+ * <p> The {@code ustream_release} API shall follow the following requirements:
  *      - The release shall dispose all resources necessary to handle the content of buffer before and 
  *          including the release position.
  *      - If the release position is after the current position or the buffer size, the release shall
@@ -570,7 +570,7 @@ inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* co
  * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
  *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @param:  position        The {@code offset_t} with the position in the buffer to release. The
+ * @param:  position                The {@code offset_t} with the position in the buffer to release. The
  *                              buffer will release the {@code uint8_t} on the position and all {@code uint8_t} 
  *                              before the position. It shall be bigger than 0.
  * @return: The {@link ULIB_RESULT} with the result of the release operation. The results can be:
@@ -581,7 +581,7 @@ inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* co
  */
 inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position)
 {
-    return ((ustream_interface)->api->release((ustream_interface), (position)));
+    return ustream_interface->api->release(ustream_interface, position);
 }
 
 /**
@@ -672,7 +672,7 @@ inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position
  *          always use the `Logical` position for all operations.
  *      - If the position is not important to the consumer, make the offset equals `0` is a safe option.
  *
- * <p> The clone API shall follow the following minimum requirements:
+ * <p> The {@code ustream_clone} API shall follow the following minimum requirements:
  *      - The clone shall return a buffer with the same content of the original buffer.
  *      - If the provided interface is NULL, the clone shall return NULL.
  *      - If the provided interface is not type of the implemented buffer, the clone shall return NULL.
@@ -684,7 +684,7 @@ inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position
  * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer.
  *                              It cannot be {@code NULL}, and it shall be a valid buffer that is
  *                              type of the implemented buffer.
- * @param:  offset          The {@code offset_t} with the `Logical` position of the first byte in
+ * @param:  offset                  The {@code offset_t} with the `Logical` position of the first byte in
  *                              the cloned buffer.
  * @return: The {@link USTREAM*} with the result of the clone operation. The results can be:
  *          - @b not NULL - If the buffer was copied with success.
@@ -693,7 +693,7 @@ inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position
  */
 inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset)
 {
-    return ((ustream_interface)->api->clone((ustream_interface), (offset)));
+    return ustream_interface->api->clone(ustream_interface, offset);
 }
 
 /**
@@ -703,7 +703,7 @@ inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset)
  *          If there is no more references to the buffer, the dispose will release all recourses
  *          allocated to control the buffer.
  *
- * <p> The dispose API shall follow the following requirements:
+ * <p> The {@code ustream_dispose} API shall follow the following requirements:
  *      - The dispose shall free all allocated resources for the instance of the buffer.
  *      - If there is no more instances of the buffer, the dispose shall release all allocated
  *          resources to control the buffer.
@@ -720,7 +720,7 @@ inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset)
  */
 inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
 {
-    return ((ustream_interface)->api->dispose((ustream_interface)));
+    return ustream_interface->api->dispose(ustream_interface);
 }
 
 /**
@@ -731,7 +731,7 @@ inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *         on it. If the current buffer is already an instance of {@link USTREAM_MULTI_INSTANCE}, this API
   *         will only append the new buffer.
   *
-  * <p> The Append API shall follow the following requirements:
+  * <p> The {@code ustream_append} API shall follow the following requirements:
   *      - The Append shall append the provided buffer at the end of the current one.
   *      - If current buffer is not a multi-buffer, the Append shall convert the current buffer in a multi-buffer.
   *      - If the provided interface is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
@@ -741,7 +741,7 @@ inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *
   * @param:  ustream_interface       The {@link USTREAM*} with the interface of 
   *                             the buffer. It cannot be {@code NULL}, and it shall be a valid buffer.
-  * @param:  ustream_to_append        The {@link USTREAM*} with the interface of 
+  * @param:  ustream_to_append       The {@link USTREAM*} with the interface of 
   *                             the buffer to be appended to the original buffer. It cannot be {@code NULL}, 
   *                             and it shall be a valid buffer.
   * @return: The {@link ULIB_RESULT} with the result of the Append operation. The results can be:

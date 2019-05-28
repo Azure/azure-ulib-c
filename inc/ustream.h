@@ -39,7 +39,7 @@ extern "C" {
  *                  uStream is disposed, it will only release the memory allocated to copy the original
  *                  buffer.
  *
- * @param:  buffer          The {@code const uint8_t* const} that points to a memory position where the buffer starts.
+ * @param:  buffer           The {@code const uint8_t* const} that points to a memory position where the buffer starts.
  *                              It cannot be {@code NULL}.
  * @param:  buffer_length    The {@code size_t} with the number of {@code uint8_t} in the provided buffer.
  * @param:  take_ownership   The {@code bool} that indicates if the factory shall or shall not take ownership of the buffer.
@@ -64,7 +64,7 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
  *      and the number of bytes to handle. The factory will use the reference of the provided buffer as its
  *      own inner buffer.
  *
- * @param:  buffer          The {@code const uint8_t* const} that points to a memory position where the buffer starts.
+ * @param:  buffer           The {@code const uint8_t* const} that points to a memory position where the buffer starts.
  *                              It cannot be {@code NULL}.
  * @param:  buffer_length    The {@code size_t} with the number of {@code uint8_t} in the provided buffer. It cannot be zero.
  * @return: The {@link USTREAM*} with the uStream interface. The results can be:
@@ -109,7 +109,7 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_multi_create);
  *      means that appending a new buffer in a current instance of the uStreamMulti will not affect the
  *      other instances.
  *
- * @param:  ustream_interface  The {@link USTREAM*} with the handle of the uStreamMulti.
+ * @param:  ustream_interface   The {@link USTREAM*} with the handle of the uStreamMulti.
  *                                  It cannot be {@code NULL}, and it shall be a valid buffer that is a
  *                                  type of uStreamMulti.
  * @param:  ustream_to_append   The {@link USTREAM*} with the handle of the buffer to add

@@ -18,8 +18,8 @@ typedef struct BUFFER_LIST_NODE_TAG
 typedef struct USTREAM_MULTI_INSTANCE_TAG
 {
     /* Inner buffer. */
-    BUFFER_LIST_NODE* bufferList;
-    BUFFER_LIST_NODE* currentNode;
+    BUFFER_LIST_NODE* buffer_list;
+    BUFFER_LIST_NODE* current_node;
     size_t length;
 
     /* Instance controls. */
@@ -117,8 +117,8 @@ static USTREAM* create_instance(void)
             instance->inner_current_position = 0;
             instance->inner_first_valid_position = 0;
             instance->offset_diff = 0;
-            instance->bufferList = NULL;
-            instance->currentNode = NULL;
+            instance->buffer_list = NULL;
+            instance->current_node = NULL;
             instance->length = 0;
         }
     }
@@ -129,7 +129,7 @@ static void destroy_instance(USTREAM* ustream_interface)
 {
     USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
-    destroy_full_buffer_list(instance->bufferList);
+    destroy_full_buffer_list(instance->buffer_list);
     ULIB_CONFIG_FREE(instance);
     ULIB_CONFIG_FREE(ustream_interface);
 }
@@ -178,12 +178,12 @@ static ULIB_RESULT concrete_set_position(
             /*[ustream_set_position_complianceClonedBufferRunFullBufferByteByByteSucceed]*/
             /*[ustream_set_position_complianceClonedBufferRunFullBufferByteByByteReverseOrderSucceed]*/
             result = ULIB_SUCCESS;
-            BUFFER_LIST_NODE* node = instance->bufferList;
+            BUFFER_LIST_NODE* node = instance->buffer_list;
             BUFFER_LIST_NODE* newCurrentNode = NULL; 
             bool bypassOldCurrentNode = false;
             while((node != NULL) && (result == ULIB_SUCCESS))
             {
-                if(node == instance->currentNode)
+                if(node == instance->current_node)
                 {
                     bypassOldCurrentNode = true;
                 }
@@ -223,14 +223,14 @@ static ULIB_RESULT concrete_set_position(
             if(result == ULIB_SUCCESS)
             {
                 instance->inner_current_position = innerPosition;
-                instance->currentNode = newCurrentNode;
+                instance->current_node = newCurrentNode;
             }
             else
             {
-                if(instance->currentNode != NULL)
+                if(instance->current_node != NULL)
                 {
                     ULIB_RESULT rollbackResult = 
-                        ustream_set_position(instance->currentNode->buffer, instance->inner_current_position);
+                        ustream_set_position(instance->current_node->buffer, instance->inner_current_position);
                     if(rollbackResult != ULIB_SUCCESS)
                     {
                         ULIB_CONFIG_LOG(
@@ -311,7 +311,7 @@ static ULIB_RESULT concrete_read(
     {
         USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
-        BUFFER_LIST_NODE* node = instance->currentNode;
+        BUFFER_LIST_NODE* node = instance->current_node;
         if(node == NULL)
         {
             *size = 0;
@@ -346,7 +346,7 @@ static ULIB_RESULT concrete_read(
                     if(*size < buffer_length)
                     {
                         node = node->next;
-                        instance->currentNode = node;
+                        instance->current_node = node;
                         if(node != NULL)
                         {
                             intermediateResult = ULIB_SUCCESS;
@@ -453,7 +453,7 @@ static ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t positio
     {
         USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
         offset_t innerPosition = position - instance->offset_diff;
-        BUFFER_LIST_NODE* newBufferListStart = instance->bufferList;
+        BUFFER_LIST_NODE* newBufferListStart = instance->buffer_list;
 
         if((innerPosition >= instance->inner_current_position) ||
                 (innerPosition < instance->inner_first_valid_position))
@@ -493,10 +493,10 @@ static ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t positio
                     instance->inner_first_valid_position = innerPosition + (offset_t)1;
 
                     // release all unnecessary buffers.
-                    while(instance->bufferList != newBufferListStart)
+                    while(instance->buffer_list != newBufferListStart)
                     {
-                        BUFFER_LIST_NODE* node = instance->bufferList;
-                        instance->bufferList = instance->bufferList->next;
+                        BUFFER_LIST_NODE* node = instance->buffer_list;
+                        instance->buffer_list = instance->buffer_list->next;
                         destroy_buffer_node(node); 
                     }
                 }
@@ -541,8 +541,8 @@ static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset)
                 /*[uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPositionsClonedWithOffsetSucceed]*/
                 /*[uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPositionsClonedWithNegativeOffsetSucceed]*/
                 /*[uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPositionsClonedWithOffsetSucceed]*/
-                BUFFER_LIST_NODE* nodeListToClone = instance->currentNode;
-                BUFFER_LIST_NODE** insertPosition = &(newInstance->bufferList);
+                BUFFER_LIST_NODE* nodeListToClone = instance->current_node;
+                BUFFER_LIST_NODE** insertPosition = &(newInstance->buffer_list);
                 bool fail = false;
                 while((nodeListToClone != NULL) && (fail == false))
                 {
@@ -575,7 +575,7 @@ static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset)
                 }
                 else
                 {
-                    newInstance->currentNode = newInstance->bufferList;
+                    newInstance->current_node = newInstance->buffer_list;
                     newInstance->offset_diff = offset - newInstance->inner_current_position;
                 }
             }
@@ -660,7 +660,7 @@ ULIB_RESULT ustream_multi_append(
         {
             /*[uStreamMultiAppend_succeed]*/
             /* find insertion position in the list */
-            BUFFER_LIST_NODE** insertPosition = &(instance->bufferList);
+            BUFFER_LIST_NODE** insertPosition = &(instance->buffer_list);
 
             while(*insertPosition != NULL)
             {
@@ -669,9 +669,9 @@ ULIB_RESULT ustream_multi_append(
 
             *insertPosition = newNode;
             instance->length += newBufferSize;
-            if(instance->currentNode == NULL)
+            if(instance->current_node == NULL)
             {
-                instance->currentNode = newNode;
+                instance->current_node = newNode;
             }
         }
     }
