@@ -27,7 +27,7 @@ typedef enum ULOG_TYPE_TAG
 
 extern const char* const ULOG_TYPE_STRING[];
 
-void uLogPrint(ULOG_TYPE type, const char* const format, ...);
+void ulog_print(ULOG_TYPE type, const char* const format, ...);
 
 #ifdef __cplusplus
 }

@@ -3,12 +3,12 @@
 
 #include <stdlib.h>
 
-void* uLibMalloc(size_t size)
+void* ulib_malloc(size_t size)
 {
     return malloc(size);
 }
 
-void uLibFree(void* ptr)
+void ulib_free(void* ptr)
 {
     free(ptr);
 }

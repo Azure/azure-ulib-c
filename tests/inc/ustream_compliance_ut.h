@@ -117,7 +117,7 @@ TEST_FUNCTION(uStreamDispose_complianceBufferIsNotTypeOfBufferFailed)
     ASSERT_IS_NOT_NULL(uStreamInstance);
     
     ///act
-    ULIB_RESULT result = uStreamInstance->api->dispose(uStreamMockCreate());
+    ULIB_RESULT result = uStreamInstance->api->dispose(ustream_mock_create());
     
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -182,7 +182,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferClonedWithZeroOffsetSucceed)
         sizeResult);
 
     /* Keep original buffer instance */
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         0, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -241,7 +241,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferClonedWithOffsetSucceed)
         sizeResult);
 
     /* Keep original buffer instance */
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         0, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -290,14 +290,14 @@ TEST_FUNCTION(uStreamClone_complianceEmptyBufferSucceed)
     ASSERT_ARE_EQUAL(int, 0, uStreamCloneCurrentPosition);
 
     /* Full content was copied. */
-    checkBuffer(
+    check_buffer(
         uStreamCloneInterface, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     /* Keep original buffer instance */
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -370,7 +370,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
         sizeResult);
 
     /* Keep original buffer instance */
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -443,7 +443,7 @@ TEST_FUNCTION(uStreamClone_complianceNewBufferWithNonZeroCurrentAndReleasedPosit
         sizeResult);
 
     /* Keep original buffer instance */
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -525,12 +525,12 @@ TEST_FUNCTION(uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPo
         sizeResult);
 
     /* Keep original buffer instance */
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_LENGTH_1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    checkBuffer(
+    check_buffer(
         uStreamClone1, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -568,7 +568,7 @@ TEST_FUNCTION(uStreamClone_complianceBufferIsNotTypeOfBufferFailed)
 
     ///act
     USTREAM* uStreamCloneInterface =
-        uStreamInstance->api->clone(uStreamMockCreate(), 0);
+        uStreamInstance->api->clone(ustream_mock_create(), 0);
 
     ///assert
     ASSERT_IS_NULL(uStreamCloneInterface);
@@ -711,7 +711,7 @@ TEST_FUNCTION(uStreamGetRemainingSize_complianceBufferIsNotTypeOfBufferFailed)
 
     ///act
     ULIB_RESULT result = 
-        uStreamInstance->api->get_remaining_size(uStreamMockCreate(), &size);
+        uStreamInstance->api->get_remaining_size(ustream_mock_create(), &size);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -848,7 +848,7 @@ TEST_FUNCTION(uStreamGetCurrentPosition_complianceBufferIsNotTypeOfBufferFailed)
 
     ///act
     ULIB_RESULT result = 
-        uStreamInstance->api->get_position(uStreamMockCreate(), &position);
+        uStreamInstance->api->get_position(ustream_mock_create(), &position);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -1203,7 +1203,7 @@ TEST_FUNCTION(ustream_read_complianceSingleByteSucceed)
     ASSERT_ARE_EQUAL(int, 1, sizeResult);
     ASSERT_BUFFER_ARE_EQUAL(uint8_t_ptr, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, bufResult, sizeResult);
 
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1226,7 +1226,7 @@ TEST_FUNCTION(ustream_read_complianceBufferWithZeroSizeFailed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         0, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1254,7 +1254,7 @@ TEST_FUNCTION(ustream_read_complianceNullBufferFailed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         0, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1275,14 +1275,14 @@ TEST_FUNCTION(ustream_read_complianceNonTypeOfBufferAPIFailed)
     ///act
     ULIB_RESULT result = 
         uStreamInstance->api->read(
-            uStreamMockCreate(), 
+            ustream_mock_create(), 
             bufResult, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
             &sizeResult);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         0, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1309,7 +1309,7 @@ TEST_FUNCTION(ustream_read_complianceNullReturnBufferFailed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         0, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1336,7 +1336,7 @@ TEST_FUNCTION(ustream_read_complianceNullReturnSizeFailed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         0, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1367,7 +1367,7 @@ TEST_FUNCTION(ustream_set_position_complianceBackToBeginningSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         0, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1398,7 +1398,7 @@ TEST_FUNCTION(ustream_set_position_complianceBackPositionSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_LENGTH_1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1424,7 +1424,7 @@ TEST_FUNCTION(ustream_set_position_complianceForwardPositionSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1445,7 +1445,7 @@ TEST_FUNCTION(ustream_set_position_complianceForwardToTheEndPositionSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1476,7 +1476,7 @@ TEST_FUNCTION(ustream_set_position_complianceRunFullBufferByteByByteSucceed)
                 *(const uint8_t* const)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + i),
                 *bufResult);
     }
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1508,7 +1508,7 @@ TEST_FUNCTION(ustream_set_position_complianceRunFullBufferByteByByteReverseOrder
                 *bufResult);
     }
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_set_position(uStreamInstance, 0));
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         0, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1542,7 +1542,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferBackToBeginningSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamCloneInterface, 
         USTREAM_COMPLIANCE_LENGTH_1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1581,7 +1581,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferBackPositionSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamCloneInterface, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1615,7 +1615,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferForwardPositionSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamCloneInterface, 
         USTREAM_COMPLIANCE_LENGTH_3, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1646,7 +1646,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferForwardToTheEndPosition
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamCloneInterface, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1685,7 +1685,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferRunFullBufferByteByByte
                 *(const uint8_t* const)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_COMPLIANCE_LENGTH_1 + i),
                 *bufResult);
     }
-    checkBuffer(
+    check_buffer(
         uStreamCloneInterface, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1728,7 +1728,7 @@ TEST_FUNCTION(ustream_set_position_complianceClonedBufferRunFullBufferByteByByte
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(uStreamCloneInterface, 0));
-    checkBuffer(
+    check_buffer(
         uStreamCloneInterface, 
         USTREAM_COMPLIANCE_LENGTH_1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1750,7 +1750,7 @@ TEST_FUNCTION(ustream_set_position_complianceForwardOutOfTheBufferFailed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_NO_SUCH_ELEMENT_ERROR, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         0, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1782,7 +1782,7 @@ TEST_FUNCTION(ustream_set_position_complianceBackBeforeFirstValidPositionFailed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_NO_SUCH_ELEMENT_ERROR, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_LENGTH_1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1816,7 +1816,7 @@ TEST_FUNCTION(ustream_set_position_complianceNonTypeOfBufferAPIFailed)
 
     ///act
     ULIB_RESULT result = 
-        uStreamInstance->api->set_position(uStreamMockCreate(), 1);
+        uStreamInstance->api->set_position(ustream_mock_create(), 1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -1847,7 +1847,7 @@ TEST_FUNCTION(uStreamRelease_complianceSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_LENGTH_1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1873,7 +1873,7 @@ TEST_FUNCTION(uStreamRelease_complianceReleaseAllSucceed)
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_reset(uStreamInstance));
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1908,7 +1908,7 @@ TEST_FUNCTION(uStreamRelease_complianceRunFullBufferByteByByteSucceed)
                 *(const uint8_t* const)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + i),
                 *bufResult);
     }
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1947,7 +1947,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamCloneInterface, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -1985,7 +1985,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferReleaseAllSucceed)
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_reset(uStreamCloneInterface));
-    checkBuffer(
+    check_buffer(
         uStreamCloneInterface, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -2028,7 +2028,7 @@ TEST_FUNCTION(uStreamRelease_complianceClonedBufferRunFullBufferByteByByteSuccee
                 *(const uint8_t* const)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_COMPLIANCE_LENGTH_1 + i),
                 *bufResult);
     }
-    checkBuffer(
+    check_buffer(
         uStreamCloneInterface, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -2060,7 +2060,7 @@ TEST_FUNCTION(uStreamRelease_complianceReleaseAfterCurrentFailed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_LENGTH_1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -2093,7 +2093,7 @@ TEST_FUNCTION(uStreamRelease_complianceReleasePositionAlreayReleasedFailed)
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_reset(uStreamInstance));
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -2127,7 +2127,7 @@ TEST_FUNCTION(uStreamRelease_complianceNonTypeOfBufferAPIFailed)
 
     ///act
     ULIB_RESULT result1 = 
-        uStreamInstance->api->release(uStreamMockCreate(), 0);
+        uStreamInstance->api->release(ustream_mock_create(), 0);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result1);
@@ -2153,7 +2153,7 @@ TEST_FUNCTION(uStreamReset_complianceBackToBeginningSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         0, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -2183,7 +2183,7 @@ TEST_FUNCTION(uStreamReset_complianceBackPositionSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_LENGTH_1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -2224,12 +2224,12 @@ TEST_FUNCTION(uStreamReset_complianceClonedBufferSucceed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result);
-    checkBuffer(
+    check_buffer(
         uStreamCloneInterface, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    checkBuffer(
+    check_buffer(
         uStreamInstance, 
         USTREAM_COMPLIANCE_LENGTH_1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
@@ -2263,7 +2263,7 @@ TEST_FUNCTION(uStreamReset_complianceNonTypeOfBufferAPIFailed)
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
 
     ///act
-    ULIB_RESULT result = uStreamInstance->api->reset(uStreamMockCreate());
+    ULIB_RESULT result = uStreamInstance->api->reset(ustream_mock_create());
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);

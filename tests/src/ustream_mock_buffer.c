@@ -142,7 +142,7 @@ static const USTREAM USTREAM_COMPLIANCE_MOCK_BUFFER =
     (void*)&TEST_DATA
 };
 
-USTREAM* uStreamMockCreate(void)
+USTREAM* ustream_mock_create(void)
 {
     _concrete_set_positionResult = ULIB_SUCCESS;
     _concrete_resetResult = ULIB_SUCCESS;
@@ -156,42 +156,42 @@ USTREAM* uStreamMockCreate(void)
     return (USTREAM*)&USTREAM_COMPLIANCE_MOCK_BUFFER;
 }
 
-void setSeekResult(ULIB_RESULT result)
+void set_set_position_result(ULIB_RESULT result)
 {
     _concrete_set_positionResult = result;
 }
 
-void setResetResult(ULIB_RESULT result)
+void set_reset_result(ULIB_RESULT result)
 {
     _concrete_resetResult = result;
 }
 
-void setGetNextResult(ULIB_RESULT result)
+void set_read_result(ULIB_RESULT result)
 {
     _concrete_readResult = result;
 }
 
-void setGetRemainingSizeResult(ULIB_RESULT result)
+void set_get_remaining_size_result(ULIB_RESULT result)
 {
     _concrete_get_remaining_sizeResult = result;
 }
 
-void setGetCurrentPositionResult(ULIB_RESULT result)
+void set_get_position_result(ULIB_RESULT result)
 {
     _concrete_get_positionResult = result;
 }
 
-void setReleaseResult(ULIB_RESULT result)
+void set_release_result(ULIB_RESULT result)
 {
     _concrete_releaseResult = result;
 }
 
-void setCloneResult(ULIB_RESULT result)
+void set_clone_result(ULIB_RESULT result)
 {
     _concrete_cloneResult = result;
 }
 
-void setDisposeResult(ULIB_RESULT result)
+void set_dispose_result(ULIB_RESULT result)
 {
     _concrete_disposeResult = result;
 }

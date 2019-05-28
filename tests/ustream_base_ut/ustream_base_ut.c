@@ -102,8 +102,8 @@ TEST_SUITE_INITIALIZE(suite_init)
 
     REGISTER_UMOCK_ALIAS_TYPE(USTREAM, void*);
 
-    REGISTER_GLOBAL_MOCK_HOOK(uLibMalloc, myMalloc);
-    REGISTER_GLOBAL_MOCK_HOOK(uLibFree, myFree);
+    REGISTER_GLOBAL_MOCK_HOOK(ulib_malloc, myMalloc);
+    REGISTER_GLOBAL_MOCK_HOOK(ulib_free, myFree);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -172,7 +172,7 @@ TEST_FUNCTION(uStreamAppend_startFromEmptyMultibufferSucceed)
     ustream_dispose(defaultBuffer1);
     ustream_dispose(defaultBuffer2);
     ustream_dispose(defaultBuffer3);
-    checkBuffer(
+    check_buffer(
         defaultMultibuffer,
         0, 
         USTREAM_LOCAL_EXPECTED_CONTENT, 
@@ -213,7 +213,7 @@ TEST_FUNCTION(uStreamAppend_appendMultipleBuffersSucceed)
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result2);
     ustream_dispose(defaultBuffer2);
     ustream_dispose(defaultBuffer3);
-    checkBuffer(
+    check_buffer(
         defaultBuffer1,
         0,
         USTREAM_LOCAL_EXPECTED_CONTENT,
@@ -277,7 +277,7 @@ TEST_FUNCTION(uStreamAppend_startingFromMultibufferWithNotEnoughMemoryFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer);
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
     ULIB_RESULT result = ustream_append(defaultMultibuffer, defaultBuffer);
@@ -308,7 +308,7 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToCreateMultibufferFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer2);
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM))).SetReturn(NULL);
 
     ///act
     ULIB_RESULT result = ustream_append(defaultBuffer1, defaultBuffer2);
@@ -316,12 +316,12 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToCreateMultibufferFailed)
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
     ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
-    checkBuffer(
+    check_buffer(
         defaultBuffer1,
         0,
         USTREAM_LOCAL_EXPECTED_CONTENT_1,
         (uint8_t)strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
-    checkBuffer(
+    check_buffer(
         defaultBuffer2,
         0,
         USTREAM_LOCAL_EXPECTED_CONTENT_2,
@@ -350,13 +350,13 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed)
 
     umock_c_reset_all_calls();
     /* Create multibuffer */
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
     /* Append first buffer */
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
     /* Release multibuffer */
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
     ULIB_RESULT result = ustream_append(defaultBuffer1, defaultBuffer2);
@@ -364,12 +364,12 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed)
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
     ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
-    checkBuffer(
+    check_buffer(
         defaultBuffer1,
         0,
         USTREAM_LOCAL_EXPECTED_CONTENT_1,
         (uint8_t)strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
-    checkBuffer(
+    check_buffer(
         defaultBuffer2,
         0,
         USTREAM_LOCAL_EXPECTED_CONTENT_2,
@@ -398,20 +398,20 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed)
 
     umock_c_reset_all_calls();
     /* Create multibuffer */
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
     /* Append first buffer */
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
     /* Append second buffer */
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
     /* Release multibuffer */
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
     ULIB_RESULT result = ustream_append(defaultBuffer1, defaultBuffer2);
@@ -419,12 +419,12 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed)
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
     ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
-    checkBuffer(
+    check_buffer(
         defaultBuffer1,
         0,
         USTREAM_LOCAL_EXPECTED_CONTENT_1,
         (uint8_t)strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
-    checkBuffer(
+    check_buffer(
         defaultBuffer2,
         0,
         USTREAM_LOCAL_EXPECTED_CONTENT_2,

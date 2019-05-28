@@ -93,7 +93,7 @@ do { \
 /**
  * Check buffer
  */
-static void checkBuffer(
+static void check_buffer(
         USTREAM* azBuffer, 
         uint8_t offset, 
         const uint8_t* const expectedContent, 

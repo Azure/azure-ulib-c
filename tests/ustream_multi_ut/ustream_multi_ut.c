@@ -142,8 +142,8 @@ TEST_SUITE_INITIALIZE(suite_init)
 
     REGISTER_UMOCK_ALIAS_TYPE(USTREAM, void*);
 
-    REGISTER_GLOBAL_MOCK_HOOK(uLibMalloc, myMalloc);
-    REGISTER_GLOBAL_MOCK_HOOK(uLibFree, myFree);
+    REGISTER_GLOBAL_MOCK_HOOK(ulib_malloc, myMalloc);
+    REGISTER_GLOBAL_MOCK_HOOK(ulib_free, myFree);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -177,8 +177,8 @@ TEST_FUNCTION_CLEANUP(TestMethodCleanup)
 TEST_FUNCTION(uStreamMultiCreate_succeed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
     USTREAM* multibuffer = ustream_multi_create();
@@ -196,7 +196,7 @@ TEST_FUNCTION(uStreamMultiCreate_succeed)
 TEST_FUNCTION(uStreamMultiCreate_noMemoryToCreateInterfaceFailed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM))).SetReturn(NULL);
 
     ///act
     USTREAM* multibuffer = ustream_multi_create();
@@ -211,9 +211,9 @@ TEST_FUNCTION(uStreamMultiCreate_noMemoryToCreateInterfaceFailed)
 TEST_FUNCTION(uStreamMultiCreate_noMemoryTocreate_instanceFailed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
     USTREAM* multibuffer = ustream_multi_create();
@@ -249,15 +249,15 @@ TEST_FUNCTION(uStreamMultiAppend_newMultibufferSucceed)
     ASSERT_IS_NOT_NULL(testBuffer3);
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
     ULIB_RESULT result1 = ustream_multi_append(multibuffer, testBuffer1);
@@ -324,15 +324,15 @@ TEST_FUNCTION(uStreamMultiAppend_partialReleasedMultibufferSucceed)
         ustream_release(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2) - 1));
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
     ULIB_RESULT result1 = ustream_multi_append(multibuffer, testBuffer1);
@@ -398,15 +398,15 @@ TEST_FUNCTION(uStreamMultiAppend_fullyReleasedMultibufferSucceed)
         ustream_release(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) - 1));
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
     ULIB_RESULT result1 = ustream_multi_append(multibuffer, testBuffer1);
@@ -489,7 +489,7 @@ TEST_FUNCTION(uStreamMultiAppend_nullBufferToAddFailed)
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     ustream_multi_append(multibuffer, testBuffer1);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
     ULIB_RESULT result = ustream_multi_append(multibuffer, NULL);
@@ -513,7 +513,7 @@ TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryFailed)
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
     ULIB_RESULT result = ustream_multi_append(multibuffer, testBuffer1);
@@ -537,9 +537,9 @@ TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryToCloneTheBufferFailed)
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1));
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
     ULIB_RESULT result = ustream_multi_append(multibuffer, testBuffer1);
@@ -566,9 +566,9 @@ TEST_FUNCTION(uStreamMultiAppend_newInnerBufferFailedOnGetRemainingSizeFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
-    USTREAM* defaultBuffer2 = uStreamMockCreate();
+    USTREAM* defaultBuffer2 = ustream_mock_create();
 
-    setGetRemainingSizeResult(ULIB_SYSTEM_ERROR);
+    set_get_remaining_size_result(ULIB_SYSTEM_ERROR);
 
     ///act
     ULIB_RESULT result = ustream_multi_append(multibuffer, defaultBuffer2);
@@ -582,15 +582,15 @@ TEST_FUNCTION(uStreamMultiAppend_newInnerBufferFailedOnGetRemainingSizeFailed)
     (void)ustream_dispose(multibuffer);
 }
 
-/* The dispose shall uLibFree all allocated resources. */
+/* The dispose shall ulib_free all allocated resources. */
 TEST_FUNCTION(uStreamMultiDispose_multibufferWithoutBuffersFreeAllResourcesSucceed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
     ULIB_RESULT result = ustream_dispose(multibuffer);
@@ -609,21 +609,21 @@ TEST_FUNCTION(uStreamMultiDispose_multibufferWithBuffersFreeAllResourcesSucceed)
     USTREAM* multibuffer = USTREAM_COMPLIANCE_TARGET_FACTORY;
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
     ULIB_RESULT result = ustream_dispose(multibuffer);
@@ -649,9 +649,9 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetCurrentPositionFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
-    USTREAM* defaultBuffer2 = uStreamMockCreate();
+    USTREAM* defaultBuffer2 = ustream_mock_create();
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
-    setGetCurrentPositionResult(ULIB_SYSTEM_ERROR);
+    set_get_position_result(ULIB_SYSTEM_ERROR);
 
     ///act
     ULIB_RESULT result = 
@@ -684,9 +684,9 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetRemainingSizeFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
-    USTREAM* defaultBuffer2 = uStreamMockCreate();
+    USTREAM* defaultBuffer2 = ustream_mock_create();
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
-    setGetRemainingSizeResult(ULIB_SYSTEM_ERROR);
+    set_get_remaining_size_result(ULIB_SYSTEM_ERROR);
 
     ///act
     ULIB_RESULT result = 
@@ -719,9 +719,9 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInSeekFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
-    USTREAM* defaultBuffer2 = uStreamMockCreate();
+    USTREAM* defaultBuffer2 = ustream_mock_create();
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
-    setSeekResult(ULIB_SYSTEM_ERROR);
+    set_set_position_result(ULIB_SYSTEM_ERROR);
 
     ///act
     ULIB_RESULT result = 
@@ -755,9 +755,9 @@ TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextWithSomeValidContent
     ASSERT_IS_NOT_NULL(defaultBuffer1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
-    USTREAM* defaultBuffer2 = uStreamMockCreate();
+    USTREAM* defaultBuffer2 = ustream_mock_create();
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
-    setGetNextResult(ULIB_SYSTEM_ERROR);
+    set_read_result(ULIB_SYSTEM_ERROR);
 
     uint8_t bufResult[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
     size_t sizeResult;
@@ -794,9 +794,9 @@ TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
-    USTREAM* defaultBuffer2 = uStreamMockCreate();
+    USTREAM* defaultBuffer2 = ustream_mock_create();
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
-    setGetNextResult(ULIB_SYSTEM_ERROR);
+    set_read_result(ULIB_SYSTEM_ERROR);
 
     uint8_t bufResult[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
     size_t sizeResult;
@@ -811,7 +811,7 @@ TEST_FUNCTION(uStreamMultiGetNext_innerBufferFailedInGetNextFailed)
             &sizeResult));
     ASSERT_BUFFER_ARE_EQUAL(uint8_t_ptr, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1, bufResult, sizeResult);
 
-    setGetNextResult(ULIB_SYSTEM_ERROR);
+    set_read_result(ULIB_SYSTEM_ERROR);
 
     ///act
     ULIB_RESULT result =
@@ -844,14 +844,14 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetCurrentPositionFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
-    USTREAM* defaultBuffer2 = uStreamMockCreate();
+    USTREAM* defaultBuffer2 = ustream_mock_create();
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
     ASSERT_ARE_EQUAL(
         int, 
         ULIB_SUCCESS, 
         ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
 
-    setGetCurrentPositionResult(ULIB_SYSTEM_ERROR);
+    set_get_position_result(ULIB_SYSTEM_ERROR);
 
     ///act
     ULIB_RESULT result =
@@ -884,14 +884,14 @@ TEST_FUNCTION(uStreamMultiRelease_innerBufferFailedInGetRemainingSizeFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
-    USTREAM* defaultBuffer2 = uStreamMockCreate();
+    USTREAM* defaultBuffer2 = ustream_mock_create();
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
     ASSERT_ARE_EQUAL(
         int,
         ULIB_SUCCESS,
         ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
 
-    setGetRemainingSizeResult(ULIB_SYSTEM_ERROR);
+    set_get_remaining_size_result(ULIB_SYSTEM_ERROR);
 
     ///act
     ULIB_RESULT result =
@@ -925,10 +925,10 @@ TEST_FUNCTION(uStreamMultiClone_innerBufferFailedInGetRemainingSizeFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
-    USTREAM* defaultBuffer2 = uStreamMockCreate();
+    USTREAM* defaultBuffer2 = ustream_mock_create();
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
 
-    setGetRemainingSizeResult(ULIB_SYSTEM_ERROR);
+    set_get_remaining_size_result(ULIB_SYSTEM_ERROR);
 
     ///act
     USTREAM* cloneResult = ustream_clone(multibuffer, 0);
@@ -948,7 +948,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateInterfaceFailed)
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(uLibMalloc(sizeof(USTREAM))).SetReturn(NULL);
+    EXPECTED_CALL(ulib_malloc(sizeof(USTREAM))).SetReturn(NULL);
 
     ///act
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
@@ -965,9 +965,9 @@ TEST_FUNCTION(uStreamClone_noMemoryTocreate_instanceFailed)
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
@@ -985,11 +985,11 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateFirstNodeFailed)
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    EXPECTED_CALL(uLibMalloc(sizeof(USTREAM))).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    EXPECTED_CALL(ulib_malloc(sizeof(USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
@@ -1015,10 +1015,10 @@ TEST_FUNCTION(uStreamClone_noMemoryToCloneFirstNodeFailed)
     ASSERT_IS_NOT_NULL(defaultBuffer1);
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer1));
 
-    USTREAM* defaultBuffer2 = uStreamMockCreate();
+    USTREAM* defaultBuffer2 = ustream_mock_create();
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_multi_append(multibuffer, defaultBuffer2));
 
-    setCloneResult(ULIB_SYSTEM_ERROR);
+    set_clone_result(ULIB_SYSTEM_ERROR);
 
     ///act
     USTREAM* uStreamCloneInterface = ustream_clone(multibuffer, 0);
@@ -1037,15 +1037,15 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateSecondNodeFailed)
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    EXPECTED_CALL(uLibMalloc(sizeof(USTREAM))).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    EXPECTED_CALL(ulib_malloc(sizeof(USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
     USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
