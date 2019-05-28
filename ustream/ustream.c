@@ -20,18 +20,18 @@ typedef struct USTREAM_INNER_BUFFER_TAG
     uint8_t* ptr;
     size_t length;
     USTREAM_FLAGS flags;
-    volatile uint32_t refcount;
+    volatile uint32_t ref_count;
 } USTREAM_INNER_BUFFER;
 
 typedef struct USTREAM_INSTANCE_TAG
 {
     /* Inner buffer. */
-    USTREAM_INNER_BUFFER* innerBuffer;
+    USTREAM_INNER_BUFFER* inner_buffer;
 
     /* Instance controls. */
-    offset_t offsetDiff;
-    offset_t innerCurrentPosition;
-    offset_t innerFirstValidPosition;
+    offset_t offset_diff;
+    offset_t inner_current_position;
+    offset_t inner_first_valid_position;
 } USTREAM_INSTANCE;
 
 static ULIB_RESULT concrete_set_position(USTREAM* ustream_interface, offset_t position);
@@ -55,8 +55,8 @@ static const USTREAM_INTERFACE _api =
 };
 
 static USTREAM* create_instance(
-    USTREAM_INNER_BUFFER* innerBuffer,
-    offset_t innerCurrentPosition,
+    USTREAM_INNER_BUFFER* inner_buffer,
+    offset_t inner_current_position,
     offset_t offset)
 {
     USTREAM* ustream_interface = (USTREAM*)ULIB_CONFIG_MALLOC(sizeof(USTREAM));
@@ -77,11 +77,11 @@ static USTREAM* create_instance(
             ustream_interface->api = &_api;
             ustream_interface->handle = (void*)instance;
 
-            instance->innerCurrentPosition = innerCurrentPosition;
-            instance->innerFirstValidPosition = innerCurrentPosition;
-            instance->offsetDiff = offset - innerCurrentPosition;
-            instance->innerBuffer = innerBuffer;
-            ULIB_PORT_ATOMIC_INC_W(&(instance->innerBuffer->refcount));
+            instance->inner_current_position = inner_current_position;
+            instance->inner_first_valid_position = inner_current_position;
+            instance->offset_diff = offset - inner_current_position;
+            instance->inner_buffer = inner_buffer;
+            ULIB_PORT_ATOMIC_INC_W(&(instance->inner_buffer->ref_count));
         }
         else
         {
@@ -98,10 +98,10 @@ static USTREAM_INNER_BUFFER* createInnerBuffer(
     const uint8_t* const buffer, 
     size_t buffer_length,
     bool take_ownership,
-    bool releaseOnDestroy)
+    bool release_on_destroy)
 {
     uint8_t* ptr;
-    USTREAM_INNER_BUFFER* innerBuffer;
+    USTREAM_INNER_BUFFER* inner_buffer;
 
     if(take_ownership)
     {
@@ -121,9 +121,9 @@ static USTREAM_INNER_BUFFER* createInnerBuffer(
 
     if(ptr == NULL)
     {
-        innerBuffer = NULL;
+        inner_buffer = NULL;
     }
-    else if((innerBuffer = (USTREAM_INNER_BUFFER*)ULIB_CONFIG_MALLOC(sizeof(USTREAM_INNER_BUFFER))) == NULL)
+    else if((inner_buffer = (USTREAM_INNER_BUFFER*)ULIB_CONFIG_MALLOC(sizeof(USTREAM_INNER_BUFFER))) == NULL)
     {
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_OUT_OF_MEMORY_STRING, "inner buffer control");
         if(!take_ownership)
@@ -133,22 +133,22 @@ static USTREAM_INNER_BUFFER* createInnerBuffer(
     }
     else
     {
-        innerBuffer->ptr = ptr;
-        innerBuffer->length = buffer_length;
-        innerBuffer->flags = (releaseOnDestroy ? USTREAM_FLAG_RELEASE_ON_DESTROY : USTREAM_FLAG_NONE);
-        innerBuffer->refcount = 0;
+        inner_buffer->ptr = ptr;
+        inner_buffer->length = buffer_length;
+        inner_buffer->flags = (release_on_destroy ? USTREAM_FLAG_RELEASE_ON_DESTROY : USTREAM_FLAG_NONE);
+        inner_buffer->ref_count = 0;
     }
 
-    return innerBuffer;
+    return inner_buffer;
 }
 
-static void destroyInnerBuffer(USTREAM_INNER_BUFFER* innerBuffer)
+static void destroyInnerBuffer(USTREAM_INNER_BUFFER* inner_buffer)
 {
-    if((innerBuffer->flags & USTREAM_FLAG_RELEASE_ON_DESTROY) == USTREAM_FLAG_RELEASE_ON_DESTROY)
+    if((inner_buffer->flags & USTREAM_FLAG_RELEASE_ON_DESTROY) == USTREAM_FLAG_RELEASE_ON_DESTROY)
     {
-        ULIB_CONFIG_FREE(innerBuffer->ptr);
+        ULIB_CONFIG_FREE(inner_buffer->ptr);
     }
-    ULIB_CONFIG_FREE(innerBuffer);
+    ULIB_CONFIG_FREE(inner_buffer);
 }
 
 static ULIB_RESULT concrete_set_position(USTREAM* ustream_interface, offset_t position)
@@ -165,11 +165,11 @@ static ULIB_RESULT concrete_set_position(USTREAM* ustream_interface, offset_t po
     else
     {
         USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ustream_interface->handle;
-        USTREAM_INNER_BUFFER* innerBuffer = instance->innerBuffer;
-        offset_t innerPosition = position - instance->offsetDiff;
+        USTREAM_INNER_BUFFER* inner_buffer = instance->inner_buffer;
+        offset_t innerPosition = position - instance->offset_diff;
 
-        if((innerPosition > (offset_t)(innerBuffer->length)) || 
-                (innerPosition < instance->innerFirstValidPosition))
+        if((innerPosition > (offset_t)(inner_buffer->length)) || 
+                (innerPosition < instance->inner_first_valid_position))
         {
             /*[ustream_set_position_complianceForwardOutOfTheBufferFailed]*/
             /*[ustream_set_position_complianceBackBeforeFirstValidPositionFailed]*/
@@ -189,7 +189,7 @@ static ULIB_RESULT concrete_set_position(USTREAM* ustream_interface, offset_t po
             /*[ustream_set_position_complianceClonedBufferForwardToTheEndPositionSucceed]*/
             /*[ustream_set_position_complianceClonedBufferRunFullBufferByteByByteSucceed]*/
             /*[ustream_set_position_complianceClonedBufferRunFullBufferByteByByteReverseOrderSucceed]*/
-            instance->innerCurrentPosition = innerPosition;
+            instance->inner_current_position = innerPosition;
             result = ULIB_SUCCESS;
         }
     }
@@ -214,7 +214,7 @@ static ULIB_RESULT concrete_reset(USTREAM* ustream_interface)
 
         /*[uStreamReset_complianceBackToBeginningSucceed]*/
         /*[uStreamReset_complianceBackPositionSucceed]*/
-        instance->innerCurrentPosition = instance->innerFirstValidPosition;
+        instance->inner_current_position = instance->inner_first_valid_position;
         result = ULIB_SUCCESS;
     }
 
@@ -255,9 +255,9 @@ static ULIB_RESULT concrete_read(
     else
     {
         USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ustream_interface->handle;
-        USTREAM_INNER_BUFFER* innerBuffer = instance->innerBuffer;
+        USTREAM_INNER_BUFFER* inner_buffer = instance->inner_buffer;
 
-        if(instance->innerCurrentPosition >= innerBuffer->length)
+        if(instance->inner_current_position >= inner_buffer->length)
         {
             /*[ustream_read_complianceSucceed_3]*/
             *size = 0;
@@ -266,7 +266,7 @@ static ULIB_RESULT concrete_read(
         else
         {
             /*[ustream_read_complianceSucceed_2]*/
-            size_t remainSize = innerBuffer->length - (size_t)instance->innerCurrentPosition;
+            size_t remainSize = inner_buffer->length - (size_t)instance->inner_current_position;
             *size = (buffer_length < remainSize) ? buffer_length : remainSize;
             /*[ustream_read_complianceSucceed_1]*/
             /*[ustream_read_complianceSingleBufferSucceed]*/
@@ -276,8 +276,8 @@ static ULIB_RESULT concrete_read(
             /*[ustream_read_complianceSingleByteSucceed]*/
             /*[ustream_read_complianceGetFromClonedBufferSucceed]*/
             /*[ustream_read_complianceClonedBufferRightBoundaryConditionSucceed]*/
-            (void)memcpy(buffer, innerBuffer->ptr + instance->innerCurrentPosition, *size);
-            instance->innerCurrentPosition += *size;
+            (void)memcpy(buffer, inner_buffer->ptr + instance->inner_current_position, *size);
+            instance->inner_current_position += *size;
             result = ULIB_SUCCESS;
         }
     }
@@ -309,7 +309,7 @@ static ULIB_RESULT concrete_get_remaining_size(USTREAM* ustream_interface, size_
         /*[uStreamGetRemainingSize_complianceNewBufferSucceed]*/
         /*[uStreamGetRemainingSize_complianceNewBufferWithNonZeroCurrentPositionSucceed]*/
         /*[uStreamGetRemainingSize_complianceClonedBufferWithNonZeroCurrentPositionSucceed]*/
-        *size = instance->innerBuffer->length - instance->innerCurrentPosition;
+        *size = instance->inner_buffer->length - instance->inner_current_position;
         result = ULIB_SUCCESS;
     }
 
@@ -340,7 +340,7 @@ static ULIB_RESULT concrete_get_position(USTREAM* ustream_interface, offset_t* c
         /*[uStreamGetCurrentPosition_complianceNewBufferSucceed]*/
         /*[uStreamGetCurrentPosition_complianceNewBufferWithNonZeroCurrentPositionSucceed]*/
         /*[uStreamGetCurrentPosition_complianceClonedBufferWithNonZeroCurrentPositionSucceed]*/
-        *position = instance->innerCurrentPosition + instance->offsetDiff;
+        *position = instance->inner_current_position + instance->offset_diff;
         result = ULIB_SUCCESS;
     }
 
@@ -361,10 +361,10 @@ static ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t positio
     else
     {
         USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ustream_interface->handle;
-        offset_t innerPosition = position - instance->offsetDiff;
+        offset_t innerPosition = position - instance->offset_diff;
 
-        if((innerPosition >= instance->innerCurrentPosition) ||
-                (innerPosition < instance->innerFirstValidPosition))
+        if((innerPosition >= instance->inner_current_position) ||
+                (innerPosition < instance->inner_first_valid_position))
         {
             /*[uStreamRelease_complianceReleaseAfterCurrentFailed]*/
             /*[uStreamRelease_complianceReleasePositionAlreayReleasedFailed]*/
@@ -378,7 +378,7 @@ static ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t positio
             /*[uStreamRelease_complianceClonedBufferSucceed]*/
             /*[uStreamRelease_complianceClonedBufferReleaseAllSucceed]*/
             /*[uStreamRelease_complianceClonedBufferRunFullBufferByteByByteSucceed]*/
-            instance->innerFirstValidPosition = innerPosition + (offset_t)1;
+            instance->inner_first_valid_position = innerPosition + (offset_t)1;
             result = ULIB_SUCCESS;
         }
     }
@@ -401,7 +401,7 @@ static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset)
     {
         USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ustream_interface->handle;
 
-        if(offset > (UINT32_MAX - instance->innerBuffer->length))
+        if(offset > (UINT32_MAX - instance->inner_buffer->length))
         {
             /*[uStreamClone_complianceOffsetExceedSizeFailed]*/
             interfaceResult = NULL;
@@ -415,7 +415,7 @@ static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset)
             /*[uStreamClone_complianceClonedBufferWithNonZeroCurrentAndReleasedPositionsClonedWithOffsetSucceed]*/
             /*[uStreamClone_complianceNoMemoryTocreate_instanceFailed]*/
             /*[uStreamClone_complianceEmptyBufferSucceed]*/
-            interfaceResult = create_instance(instance->innerBuffer, instance->innerCurrentPosition, offset);
+            interfaceResult = create_instance(instance->inner_buffer, instance->inner_current_position, offset);
         }
     }
 
@@ -436,15 +436,15 @@ static ULIB_RESULT concrete_dispose(USTREAM* ustream_interface)
     else
     {
         USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ustream_interface->handle;
-        USTREAM_INNER_BUFFER* innerBuffer = instance->innerBuffer;
+        USTREAM_INNER_BUFFER* inner_buffer = instance->inner_buffer;
 
         /*[uStreamDispose_complianceClonedInstanceDisposedFirstSucceed]*/
         /*[uStreamDispose_complianceClonedInstanceDisposedSecondSucceed]*/
         /*[uStreamDispose_complianceSingleInstanceSucceed]*/
-        ULIB_PORT_ATOMIC_DEC_W(&(innerBuffer->refcount));
-        if(innerBuffer->refcount == 0)
+        ULIB_PORT_ATOMIC_DEC_W(&(inner_buffer->ref_count));
+        if(inner_buffer->ref_count == 0)
         {
-            destroyInnerBuffer(innerBuffer);
+            destroyInnerBuffer(inner_buffer);
         }
         ULIB_CONFIG_FREE(instance);
         ULIB_CONFIG_FREE(ustream_interface);
@@ -476,26 +476,26 @@ USTREAM* ustream_create(
     else
     {
         /*[uStreamCreate_succeed]*/
-        USTREAM_INNER_BUFFER* innerBuffer = createInnerBuffer(buffer, buffer_length, take_ownership, true);
+        USTREAM_INNER_BUFFER* inner_buffer = createInnerBuffer(buffer, buffer_length, take_ownership, true);
         /*[uStreamCreate_noMemoryToCreateProtectedBufferFailed]*/
         /*[uStreamCreate_noMemoryToCreateInnerBufferFailed]*/
-        if(innerBuffer == NULL)
+        if(inner_buffer == NULL)
         {
             interfaceResult = NULL;
         }
         else
         {
-            interfaceResult = create_instance(innerBuffer, 0, 0);
+            interfaceResult = create_instance(inner_buffer, 0, 0);
             /*[uStreamCreate_noMemoryTocreate_instanceFailed]*/
             if(interfaceResult == NULL)
             {
                 if(take_ownership)
                 {
-                    ULIB_CONFIG_FREE(innerBuffer);
+                    ULIB_CONFIG_FREE(inner_buffer);
                 }
                 else
                 {
-                    destroyInnerBuffer(innerBuffer);
+                    destroyInnerBuffer(inner_buffer);
                 }
             }
         }
@@ -525,20 +525,20 @@ USTREAM* ustream_const_create(
     else
     {
         /*[uStreamConstCreate_succeed]*/
-        USTREAM_INNER_BUFFER* innerBuffer = createInnerBuffer(buffer, buffer_length, true, false);
+        USTREAM_INNER_BUFFER* inner_buffer = createInnerBuffer(buffer, buffer_length, true, false);
         /*[uStreamConstCreate_noMemoryToCreateProtectedBufferFailed]*/
         /*[uStreamConstCreate_noMemoryToCreateInnerBufferFailed]*/
-        if(innerBuffer == NULL)
+        if(inner_buffer == NULL)
         {
             interfaceResult = NULL;
         }
         else
         {
-            interfaceResult = create_instance(innerBuffer, 0, 0);
+            interfaceResult = create_instance(inner_buffer, 0, 0);
             /*[uStreamConstCreate_noMemoryTocreate_instanceFailed]*/
             if(interfaceResult == NULL)
             {
-                destroyInnerBuffer(innerBuffer);
+                destroyInnerBuffer(inner_buffer);
             }
         }
     }

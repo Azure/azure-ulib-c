@@ -247,7 +247,7 @@
  *      - @b Released - Sequence of bytes in the data source that is already acknowledged by the consumer, 
  *          and shall not be accessed anymore.
  *      - @b Pending - Sequence of bytes in the data source that is already read by the consumer, but not 
- *          acknowledged yet. The consumer can set_position these bytes and read it again. This sequence starts at 
+ *          acknowledged yet. The consumer can seek these bytes with {@link ustream_set_position} and read it again. This sequence starts at 
  *          the First Valid Position and ends at the last byte before the Current Position.
  *      - @b Read - Is the last read portion of the data source. On the read operation, the Read starts
  *          in the Current Position up to the read size. At the end of the read, this segment is 

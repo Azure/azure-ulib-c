@@ -23,9 +23,9 @@ typedef struct USTREAM_MULTI_INSTANCE_TAG
     size_t length;
 
     /* Instance controls. */
-    offset_t offsetDiff;
-    offset_t innerCurrentPosition;
-    offset_t innerFirstValidPosition;
+    offset_t offset_diff;
+    offset_t inner_current_position;
+    offset_t inner_first_valid_position;
 } USTREAM_MULTI_INSTANCE;
 
 static ULIB_RESULT concrete_set_position(USTREAM* ustream_interface, offset_t position);
@@ -114,9 +114,9 @@ static USTREAM* create_instance(void)
             ustream_interface->api = &_api;
             ustream_interface->handle = (void*)instance;
 
-            instance->innerCurrentPosition = 0;
-            instance->innerFirstValidPosition = 0;
-            instance->offsetDiff = 0;
+            instance->inner_current_position = 0;
+            instance->inner_first_valid_position = 0;
+            instance->offset_diff = 0;
             instance->bufferList = NULL;
             instance->currentNode = NULL;
             instance->length = 0;
@@ -150,15 +150,15 @@ static ULIB_RESULT concrete_set_position(
     else
     {
         USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
-        offset_t innerPosition = position - instance->offsetDiff;
+        offset_t innerPosition = position - instance->offset_diff;
 
-        if(innerPosition == instance->innerCurrentPosition)
+        if(innerPosition == instance->inner_current_position)
         {
             /*[ustream_set_position_complianceForwardToTheEndPositionSucceed]*/
             result = ULIB_SUCCESS;
         }
         else if((innerPosition > (offset_t)(instance->length)) || 
-                (innerPosition < instance->innerFirstValidPosition))
+                (innerPosition < instance->inner_first_valid_position))
         {
             /*[ustream_set_position_complianceForwardOutOfTheBufferFailed]*/
             /*[ustream_set_position_complianceBackBeforeFirstValidPositionFailed]*/
@@ -222,7 +222,7 @@ static ULIB_RESULT concrete_set_position(
 
             if(result == ULIB_SUCCESS)
             {
-                instance->innerCurrentPosition = innerPosition;
+                instance->inner_current_position = innerPosition;
                 instance->currentNode = newCurrentNode;
             }
             else
@@ -230,7 +230,7 @@ static ULIB_RESULT concrete_set_position(
                 if(instance->currentNode != NULL)
                 {
                     ULIB_RESULT rollbackResult = 
-                        ustream_set_position(instance->currentNode->buffer, instance->innerCurrentPosition);
+                        ustream_set_position(instance->currentNode->buffer, instance->inner_current_position);
                     if(rollbackResult != ULIB_SUCCESS)
                     {
                         ULIB_CONFIG_LOG(
@@ -270,7 +270,7 @@ static ULIB_RESULT concrete_reset(USTREAM* ustream_interface)
         /*[uStreamReset_complianceBackToBeginningSucceed]*/
         /*[uStreamReset_complianceBackPositionSucceed]*/
         result = concrete_set_position(ustream_interface, 
-                (instance->innerFirstValidPosition + instance->offsetDiff));
+                (instance->inner_first_valid_position + instance->offset_diff));
     }
 
     return result;
@@ -362,7 +362,7 @@ static ULIB_RESULT concrete_read(
             if(*size != 0)
             {
                 /* if the size is bigger than 0 is because at least one inner buffer was copied, so use it and return success. */
-                instance->innerCurrentPosition += *size;
+                instance->inner_current_position += *size;
                 result = ULIB_SUCCESS;
             }
             else
@@ -400,7 +400,7 @@ static ULIB_RESULT concrete_get_remaining_size(USTREAM* ustream_interface, size_
         /*[uStreamGetRemainingSize_complianceNewBufferSucceed]*/
         /*[uStreamGetRemainingSize_complianceNewBufferWithNonZeroCurrentPositionSucceed]*/
         /*[uStreamGetRemainingSize_complianceClonedBufferWithNonZeroCurrentPositionSucceed]*/
-        *size = instance->length - instance->innerCurrentPosition;
+        *size = instance->length - instance->inner_current_position;
         result = ULIB_SUCCESS;
     }
 
@@ -431,7 +431,7 @@ static ULIB_RESULT concrete_get_position(USTREAM* ustream_interface, offset_t* c
         /*[uStreamGetCurrentPosition_complianceNewBufferSucceed]*/
         /*[uStreamGetCurrentPosition_complianceNewBufferWithNonZeroCurrentPositionSucceed]*/
         /*[uStreamGetCurrentPosition_complianceClonedBufferWithNonZeroCurrentPositionSucceed]*/
-        *position = instance->innerCurrentPosition + instance->offsetDiff;
+        *position = instance->inner_current_position + instance->offset_diff;
         result = ULIB_SUCCESS;
     }
 
@@ -452,11 +452,11 @@ static ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t positio
     else
     {
         USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
-        offset_t innerPosition = position - instance->offsetDiff;
+        offset_t innerPosition = position - instance->offset_diff;
         BUFFER_LIST_NODE* newBufferListStart = instance->bufferList;
 
-        if((innerPosition >= instance->innerCurrentPosition) ||
-                (innerPosition < instance->innerFirstValidPosition))
+        if((innerPosition >= instance->inner_current_position) ||
+                (innerPosition < instance->inner_first_valid_position))
         {
             /*[uStreamRelease_complianceReleaseAfterCurrentFailed]*/
             /*[uStreamRelease_complianceReleasePositionAlreayReleasedFailed]*/
@@ -490,7 +490,7 @@ static ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t positio
                     /*[uStreamRelease_complianceSucceed]*/
                     /*[uStreamRelease_complianceClonedBufferSucceed]*/
                     // move the first valid position.
-                    instance->innerFirstValidPosition = innerPosition + (offset_t)1;
+                    instance->inner_first_valid_position = innerPosition + (offset_t)1;
 
                     // release all unnecessary buffers.
                     while(instance->bufferList != newBufferListStart)
@@ -576,7 +576,7 @@ static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset)
                 else
                 {
                     newInstance->currentNode = newInstance->bufferList;
-                    newInstance->offsetDiff = offset - newInstance->innerCurrentPosition;
+                    newInstance->offset_diff = offset - newInstance->inner_current_position;
                 }
             }
         }
