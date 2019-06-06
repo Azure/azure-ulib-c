@@ -1,6 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+/**
+ * @file ulog.h
+ */
+
 #ifndef AZURE_ULIB_C_INC_ULOG_H_
 #define AZURE_ULIB_C_INC_ULOG_H_
 

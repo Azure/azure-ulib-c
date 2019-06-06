@@ -5,7 +5,10 @@
 #define AZURE_ULIB_C_INC_USTREAM_BASE_H_
 
 /**
- * @brief uStream Interface.
+ * 
+ * @file ustream_base.h
+ * 
+ * @brief uStream Interface
  *
  * <p> This is the definition of a heterogeneous buffer that helps other modules in a system
  *      expose large amounts of data without using a large amount of memory. Modules in the system can expose
@@ -33,7 +36,7 @@
  *          of this interface, which means that the consumer shall allocate and free this memory, and the
  *          content of the local buffer can be changed and released.
  *
- * <i><b>Example:
+ * <i><b>Example</b></i>
  * <p> A provider wants to create a uStream to expose data to the consumer. The provider will 
  *      store the content in the HEAP, and will create a uStream from it, passing the ownership of 
  *      the content to the uStream. Consumer will print the content of the uStream, using a 
@@ -86,7 +89,7 @@
  *          |                         |                            |                    |
  * </code></pre>
  *
- * <i><b> Heterogeneous buffer:
+ * <b>Heterogeneous buffer</b>
  * <p> Data can be stored in multiple, different medias, like RAM, flash, file, or cloud. Each media
  *      has its own read requirements. A simple way to unify it is copying it all to the RAM. For
  *      example, if an HTTP package contains a header that is in the flash, with some data in the RAM
@@ -108,7 +111,7 @@
  * <p> The consumer of the uStream can use all kinds of media in the same way, and may easily
  *      concatenate it by exposing a uStream that handles multiple uStream's.
  *
- * <i><b> Ownership:
+ * <b>Ownership</b>
  * <p> The uStream is an owner-less buffer: every instance of the buffer has the same rights. They
  *      all can read the buffer content, release the parts that are not necessary anymore, and dispose
  *      it.
@@ -117,18 +120,18 @@
  *      it, this consumer must first make a clone of the buffer, creating its own instance of it, and 
  *      then make the needed operations.
  * <p> Cloning a buffer creates a new set of controls for the buffer that will share the same content of
- *      the original buffer. The content itself is a smart pointer with a {@code ref_count} that
+ *      the original buffer. The content itself is a smart pointer with a <tt>ref_count</tt> that
  *      controls the total number of instances.
- * <p> Disposing an instance of the buffer will decrease the {@code ref_count} of this buffer. If the
+ * <p> Disposing an instance of the buffer will decrease the <tt>ref_count</tt> of this buffer. If the
  *      number of references reaches 0, the buffer will destroy itself, releasing all allocated memory.
  *      {@b Not disposing an instance of the buffer will leak memory}.
  * <p> Instances of the buffer can be created in 2 ways:
  *      - @b Factory - when a producer exposes data using this buffer, it must create the buffer
- *          using a factory, so the operation buffer {@code Create} returns the first instance of the
+ *          using a factory, so the operation buffer <tt>Create</tt> returns the first instance of the
  *          buffer.
  *      - @b Clone - when a consumer needs a copy of the buffer, it can use the {@link ustream_clone}.
  *
- * <i><b> Thread safe:
+ * <b>Thread safe</b>
  * <p> The uStream **IS NOT** thread safe for multiple accesses over the same instance. The ownership
  *      of the instance of a uStream shall **NOT** be shared, especially not by consumers that run on 
  *      different threads. The owner thread shall create a clone of the uStream and pass it to the other 
@@ -136,7 +139,7 @@
  * <p> The uStream **IS** thread safe for accesses between instances. It means that any access to
  *      memory shared by multiple instances shall be thread safe.
  *
- * <i><b> Data retention:
+ * <b>Data retention</b>
  * <p> As with any buffer, this buffer shall be used to handle data that was created by the producer as a
  *      result of an operation.
  * <p> This interface only exposes read functions, so once created, the content of the buffer cannot
@@ -150,13 +153,14 @@
  *      {@link ustream_release} API.
  * <p> Released data cannot be accessed, even if it is still available in the memory.
  *
- * <i><b> Appendable:
+ * <b>Appendable</b>
  * <p> New data can be appended at the end of the uStream by calling  {@link ustream_append}.
  *      This can include uStream's from other different medias. In this way, the uStream can
  *      be used as a Stream of data.
  * <p> To protect the immutability of the uStream, appending a new uStream to an existing one will
  *      only affect the instance that is calling the {@link ustream_append}.
- * <i><b>Example:
+ * 
+ * <i><b>Example</b></i>
  * <p> A producer created 3 uStreams named A, B, and C. At this point, it handles one instance of each
  *      buffer. A consumer received an instance of the buffer A and C, and appends C to A creating a new buffer AC.
  *      After that, the producer will append B to A, creating the new AB buffer.
@@ -164,13 +168,14 @@
  *      A on the producer, and when the producer appended B to A, it creates AB, not ACB, and it didn't change
  *      the consumer AB buffer creating ABC or ACB on it.
  *
- * <i><b> Lazy:
+ * <b>Lazy</b>
  * <p> The buffer can contain the full content, bring it into memory when required, or even create the content
  *      when it is necessary. The implementation of the {@link ustream_read} function can be smart 
  *      enough to use the minimal amount of memory. 
  * <p> The only restriction is if a consumer accesses the same position of the buffer multiple times, it shall
  *      return the same data.
- * <i><b>Example:
+ * 
+ * <i><b>Example</b></i>
  * <p> A random generator can expose random numbers using the uStream. To do that it shall generate a 
  *      new number when the consumer calls {@link ustream_read}. But to preserve the immutability,
  *      the implementation of the {@link ustream_read} shall store the number in a recover queue up
@@ -178,12 +183,13 @@
  *      seeks this old position, the {@link ustream_read} shall return the same value created in
  *      the first call of {@link ustream_read}.
  *
- * <i><b> Data conversion:
+ * <b>Data conversion</b>
  * <p> When the data is copied from the data source to the local buffer, the {@link ustream_read}
  *      may do a data conversion, which means that the content exposed on the local buffer is a function
  *      of the content in the data source. It directly implies that the number of bytes written in the
  *      local buffer may be different than the number of bytes read from the data source.
- * <i><b>Example:
+ * 
+ * <i><b>Example</b></i>
  * <p> A uStream can have the data source in binary format with 36 bytes, but it shall expose the 
  *      content encoded in base64. The base64 creates 4 encoded bytes for each 3 bytes read. So, seeking the 
  *      beginning of the file, the {@link ustream_get_remaining_size} shall return 48 (= 36 / 3 * 4),
@@ -205,7 +211,7 @@
  *                                                      ::        size' = 16
  * </code></pre>
  *
- * <i><b> Data offset:
+ * <b>Data offset</b>
  * <p> In the data source, each byte is associated with a position, called {@b inner position}. The first 
  *      byte is always placed in the inner position `0`, followed by the other bytes which are incremented
  *      in a sequential manner. The uStream assigns a sequential number to each byte
@@ -217,7 +223,8 @@
  *      buffer can be useful in many cases. For example, to concatenate buffers, the second buffer can 
  *      have an offset of the end of the first buffer plus one, or in the TCP connection, to make the 
  *      local position the same value of the octet sequence number.
- * <i><b>Example:
+ * 
+ * <i><b>Example</b></i>
  * <p> A uStream was created from the flash with 100 bytes. The inner position is a sequence from
  *      `0` to `99`, and it matches the logical position. The consumer clones this buffer providing an
  *      offset of `1000`. The new instance contains the same content as the original one, but the 
@@ -226,7 +233,7 @@
  *      with the logical position 10. For the cloned instance, to set the position to the same position 10, it shall call 
  *      {@link ustream_set_position} with the logical position 1010.
  *
- * <i><b> Sliding window:
+ * <b>Sliding window</b>
  * <p> One of the target use cases of the uStream is to accelerate and simplify the implementation of 
  *      sliding window protocols, like TCP. As described in this document, the uStream associates 
  *      a single byte (octet) to a single position, which means that every byte can be accessed by its
@@ -271,6 +278,7 @@
  *      the last released one. For example, when a timeout happens for a transmitted packet without ACK, the 
  *      sender shall retransmit the data starting from that point. In this case, the consumer can call the API
  *      {@link ustream_reset}. 
+ *
  */
 
 #include "ulib_config.h"
@@ -310,8 +318,8 @@ typedef struct USTREAM_TAG
  * @brief   vTable with the uStream APIs.
  *
  * <p> Any module that exposes the uStream shall implement the functions on this vTable.
- * <p> Any code that will use an exposed uStream shall call the APIs using the `uStream...`
- *      macros.
+ * <p> Any code that will use an exposed uStream shall call the APIs using the `ustream_...`
+ *      inline functions.
  */
 struct USTREAM_INTERFACE_TAG
 {
@@ -341,7 +349,7 @@ struct USTREAM_INTERFACE_TAG
  *      {@link ustream_read}. Consumers can call this API to go back or forward, but it cannot be exceed
  *      the end of the buffer or precede the fist valid position (last released position + 1).
  *
- * <p> The {@code ustream_set_position} API shall follow these minimum requirements:
+ * <p> The <tt>ustream_set_position</tt> API shall follow these minimum requirements:
  *      - The set_position shall change the current position of the buffer.
  *      - If the provided position is out of the range of the buffer, the set_position shall return
  *          ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
@@ -351,21 +359,21 @@ struct USTREAM_INTERFACE_TAG
  *      - If the provided interface is not the implemented buffer type, the set_position shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
- *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
+ * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
+ *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @param:  position                The {@code offset_t} with the new current position in the buffer.
- * @return: The {@link ULIB_RESULT} with the result of the set_position operation. The results can be:
- *          - @b ULIB_SUCCESS - If the buffer changed the current position with success.
- *          - @b ULIB_BUSY_ERROR - If the resource necessary for the set_position operation is busy.
- *          - @b ULIB_CANCELLED_ERROR - If the set_position operation was cancelled.
- *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          - @b ULIB_NO_SUCH_ELEMENT_ERROR - If the position is out of the buffer range.
- *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the
+ * @param  position                The <tt>offset_t</tt> with the new current position in the buffer.
+ * @return The {@link ULIB_RESULT} with the result of the set_position operation.
+ *          @retval ULIB_SUCCESS - If the buffer changed the current position with success.
+ *          @retval ULIB_BUSY_ERROR - If the resource necessary for the set_position operation is busy.
+ *          @retval ULIB_CANCELLED_ERROR - If the set_position operation was cancelled.
+ *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          @retval ULIB_NO_SUCH_ELEMENT_ERROR - If the position is out of the buffer range.
+ *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the
  *              set_position operation.
- *          - @b ULIB_SECURITY_ERROR - if the set_position operation was denied for security
+ *          @retval ULIB_SECURITY_ERROR - If the set_position operation was denied for security
  *              reasons.
- *          - @b ULIB_SYSTEM_ERROR - if the set_position operation failed on the system level.
+ *          @retval ULIB_SYSTEM_ERROR - If the set_position operation failed on the system level.
  */
 static inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t position)
 {
@@ -379,7 +387,7 @@ static inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offse
  *      {@link ustream_read}. Reset will bring the current position to the first valid one, which
  *      is the first byte after the released position.
  *
- * <p> The {@code ustream_reset} API shall follow the following minimum requirements:
+ * <p> The <tt>ustream_reset</tt> API shall follow the following minimum requirements:
  *      - The reset shall change the current position of the buffer to the first byte after the
  *          released position.
  *      - If all bytes are already released, the buffer reset shall return
@@ -388,22 +396,22 @@ static inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offse
  *      - If the provided interface is not the implemented buffer type, the buffer reset shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
- *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
+ * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
+ *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @return: The {@link ULIB_RESULT} with the result of the reset operation. The results can be:
- *          - @b ULIB_SUCCESS - If the buffer changed the current position with success.
- *          - @b ULIB_BUSY_ERROR - If the resource necessary for the reset operation is
+ * @return The {@link ULIB_RESULT} with the result of the reset operation.
+ *          @retval ULIB_SUCCESS - If the buffer changed the current position with success.
+ *          @retval ULIB_BUSY_ERROR - If the resource necessary for the reset operation is
  *              busy.
- *          - @b ULIB_CANCELLED_ERROR - If the reset operation was cancelled.
- *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          - @b ULIB_NO_SUCH_ELEMENT_ERROR - If all previous bytes in the buffer were already
+ *          @retval ULIB_CANCELLED_ERROR - If the reset operation was cancelled.
+ *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          @retval ULIB_NO_SUCH_ELEMENT_ERROR - If all previous bytes in the buffer were already
  *              released.
- *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the
+ *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the
  *              reset operation.
- *          - @b ULIB_SECURITY_ERROR - If the reset operation was denied for security
+ *          @retval ULIB_SECURITY_ERROR - If the reset operation was denied for security
  *              reasons.
- *          - @b ULIB_SYSTEM_ERROR - If the reset operation failed on the system level.
+ *          @retval ULIB_SYSTEM_ERROR - If the reset operation failed on the system level.
  */
 static inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
 {
@@ -413,19 +421,19 @@ static inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
 /**
  * @brief   Gets the next portion of the buffer starting at the current position.
  *
- * <p> The {@code ustream_read} API will copy the contents of the Data source to the local buffer
+ * <p> The <tt>ustream_read</tt> API will copy the contents of the Data source to the local buffer
  *      starting at the current position. The local buffer is the one referenced by the parameter
  *      `buffer`, and with the maximum size buffer_length.
- * <p> The buffer is defined as a {@code uint8_t*} and can represent any sequence of data. Pay
+ * <p> The buffer is defined as a <tt>uint8_t*</tt> and can represent any sequence of data. Pay
  *      special attention, if the data is a string, the buffer will still copy it as a sequence of
- *      {@code uint8_t}, and will **NOT** put any terminator at the end of the string. The size of 
+ *      <tt>uint8_t</tt>, and will **NOT** put any terminator at the end of the string. The size of 
  *      the content copied in the local buffer will be returned in the parameter `size`.
  *
  * <p> The read API shall follow the following minimum requirements:
  *      - The read shall copy the contents of the Data Source to the provided local buffer.
  *      - If the contents of the Data Source is bigger than the `buffer_length`, the read shall
  *          limit the copy size up to the buffer_length.
- *      - The read shall return the number of valid {@code uint8_t} values in the local buffer in 
+ *      - The read shall return the number of valid <tt>uint8_t</tt> values in the local buffer in 
  *          the provided `size`.
  *      - If there is no more content to return, the read shall return
  *          ULIB_EOF, size shall receive 0, and will not change the contents
@@ -441,25 +449,24 @@ static inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *          ULIB_ILLEGAL_ARGUMENT_ERROR and will not change the local buffer contents or the
  *          current position of the buffer.
  *
- * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
- *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
+ * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
+ *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @param:  buffer                  The {@code uint8_t* const} that points to the local buffer. It cannot be {@code NULL}.
- * @param:  buffer_length           The {@code size_t} with the size of the local buffer. It shall be
+ * @param  buffer                  The <tt>uint8_t* const} that points to the local buffer. It cannot be {@code NULL</tt>.
+ * @param  buffer_length           The <tt>size_t</tt> with the size of the local buffer. It shall be
  *                              bigger than 0.
- * @param:  size                    The {@code size_t* const} that points to the place where the read shall store
- *                              the number of valid {@code uint8_t} values in the local buffer. It cannot be {@code NULL}.
- * @return: The {@link ULIB_RESULT} with the result of the read operation. The results can be:
- *          - @b ULIB_SUCCESS - If the buffer copied the content of the Data Source to the local buffer
+ * @param  size                    The <tt>size_t* const</tt> that points to the place where the read shall store
+ *                              the number of valid <tt>uint8_t} values in the local buffer. It cannot be {@code NULL</tt>.
+ * @return The {@link ULIB_RESULT} with the result of the read operation.
+ *          @retval ULIB_SUCCESS - If the buffer copied the content of the Data Source to the local buffer
  *              with success.
- *          - @b ULIB_BUSY_ERROR - If the resource necessary to copy the buffer content is busy.
- *          - @b ULIB_CANCELLED_ERROR - If the copy of the content was cancelled.
- *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          - @b ULIB_EOF - If there are no more {@code uint8_t} values in the 
- *              Data Source to copy.
- *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the copy.
- *          - @b ULIB_SECURITY_ERROR - If the read was denied for security reasons.
- *          - @b ULIB_SYSTEM_ERROR - If the read operation failed on the system level.
+ *          @retval ULIB_BUSY_ERROR - If the resource necessary to copy the buffer content is busy.
+ *          @retval ULIB_CANCELLED_ERROR - If the copy of the content was cancelled.
+ *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          @retval ULIB_EOF - If there are no more <tt>uint8_t</tt> values in the Data Source to copy.
+ *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the copy.
+ *          @retval ULIB_SECURITY_ERROR - If the read was denied for security reasons.
+ *          @retval ULIB_SYSTEM_ERROR - If the read operation failed on the system level.
  */
 static inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
 {
@@ -471,7 +478,7 @@ static inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* cons
  *
  * <p> This API returns the number of bytes between the current position and the end of the buffer.
  *
- * <p> The {@code ustream_get_remaining_size} API shall follow the following minimum requirements:
+ * <p> The <tt>ustream_get_remaining_size</tt> API shall follow the following minimum requirements:
  *      - The get_remaining_size shall return the number of bytes between the current position and the
  *          end of the buffer.
  *      - If the provided interface is NULL, the get_remaining_size shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
@@ -479,21 +486,21 @@ static inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* cons
  *          return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided size is NULL, the get_remaining_size shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
- *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
+ * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
+ *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @param:  size                    The {@code size_t* const} to returns the remaining number of {@code uint8_t} values 
- *                              copied to the buffer. It cannot be {@code NULL}.
- * @return: The {@link ULIB_RESULT} with the result of the get_remaining_size operation. The results can be:
- *          - @b ULIB_SUCCESS - If it succeeded to get the remaining size of the buffer.
- *          - @b ULIB_BUSY_ERROR - If the resource necessary to the get the remain size of
+ * @param  size                    The <tt>size_t* const} to returns the remaining number of {@code uint8_t</tt> values 
+ *                              copied to the buffer. It cannot be <tt>NULL</tt>.
+ * @return The {@link ULIB_RESULT} with the result of the get_remaining_size operation.
+ *          @retval ULIB_SUCCESS - If it succeeded to get the remaining size of the buffer.
+ *          @retval ULIB_BUSY_ERROR - If the resource necessary to the get the remain size of
  *              the buffer is busy.
- *          - @b ULIB_CANCELLED_ERROR - If the get remaining size was cancelled.
- *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the get
+ *          @retval ULIB_CANCELLED_ERROR - If the get remaining size was cancelled.
+ *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the get
  *              remaining size operation.
- *          - @b ULIB_SECURITY_ERROR - If the get remaining size was denied for security reasons.
- *          - @b ULIB_SYSTEM_ERROR - If the get remaining size operation failed on the
+ *          @retval ULIB_SECURITY_ERROR - If the get remaining size was denied for security reasons.
+ *          @retval ULIB_SYSTEM_ERROR - If the get remaining size operation failed on the
  *              system level.
  */
 static inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t* const size)
@@ -506,29 +513,29 @@ static inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface,
  *
  * <p> This API returns the logical current position.
  *
- * <p> The {@code ustream_get_position} API shall follow the following minimum requirements:
+ * <p> The <tt>ustream_get_position</tt> API shall follow the following minimum requirements:
  *      - The get_position shall return the logical current position of the buffer.
  *      - If the provided interface is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented buffer type, the get_position
  *          shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided position is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
- *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
+ * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
+ *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @param:  position                The {@code offset_t* const} to returns the logical current position in the
- *                              buffer. It cannot be {@code NULL}.
- * @return: The {@link ULIB_RESULT} with the result of the get_position operation. The results can be:
- *          - @b ULIB_SUCCESS - If it provided the logical current position of the buffer.
- *          - @b ULIB_BUSY_ERROR - If the resource necessary for the getting the logical current
+ * @param  position                The <tt>offset_t* const</tt> to returns the logical current position in the
+ *                              buffer. It cannot be <tt>NULL</tt>.
+ * @return The {@link ULIB_RESULT} with the result of the get_position operation.
+ *          @retval ULIB_SUCCESS - If it provided the logical current position of the buffer.
+ *          @retval ULIB_BUSY_ERROR - If the resource necessary for the getting the logical current
  *              position is busy.
- *          - @b ULIB_CANCELLED_ERROR - If the get logical current position was cancelled.
- *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the get
+ *          @retval ULIB_CANCELLED_ERROR - If the get logical current position was cancelled.
+ *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the get
  *              logical current position operation.
- *          - @b ULIB_SECURITY_ERROR - If the get logical current position was denied for
+ *          @retval ULIB_SECURITY_ERROR - If the get logical current position was denied for
  *              security reasons.
- *          - @b ULIB_SYSTEM_ERROR - If the get logical current position operation failed on
+ *          @retval ULIB_SYSTEM_ERROR - If the get logical current position operation failed on
  *              the system level.
  */
 static inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* const position)
@@ -540,7 +547,7 @@ static inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offse
  * @brief   Releases all the resources related to the Data Source before and including the released position.
  *
  * <p> Calling this API will notify the buffer that the user will not need its content from the start
- *      to {@code position} (inclusive). It means that the implementation of the buffer can dispose
+ *      to <tt>position</tt> (inclusive). It means that the implementation of the buffer can dispose
  *      any resources allocated to control and contain this part of the buffer.
  * <p> It is up to the implementation of the buffer to decide to release any resource. For example, if the
  *      buffer is a string in the Flash, it do not make sense to release it.
@@ -556,7 +563,7 @@ static inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offse
  * }
  * </code></pre>
  *
- * <p> The {@code ustream_release} API shall follow the following requirements:
+ * <p> The <tt>ustream_release</tt> API shall follow the following requirements:
  *      - The release shall dispose all resources necessary to handle the content of buffer before and 
  *          including the release position.
  *      - If the release position is after the current position or the buffer size, the release shall
@@ -567,17 +574,17 @@ static inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offse
  *      - If the provided interface is not the implemented buffer type, the release shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
- *                              cannot be {@code NULL}, and it shall be a valid buffer that is the
+ * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
+ *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @param:  position                The {@code offset_t} with the position in the buffer to release. The
- *                              buffer will release the {@code uint8_t} on the position and all {@code uint8_t} 
+ * @param  position                The <tt>offset_t</tt> with the position in the buffer to release. The
+ *                              buffer will release the <tt>uint8_t} on the position and all {@code uint8_t</tt> 
  *                              before the position. It shall be bigger than 0.
- * @return: The {@link ULIB_RESULT} with the result of the release operation. The results can be:
- *          - @b ULIB_SUCCESS - If the buffer releases the position with success.
- *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          - @b ULIB_NO_SUCH_ELEMENT_ERROR - If the position is already released.
- *          - @b ULIB_SYSTEM_ERROR - If the release operation failed on the system level.
+ * @return The {@link ULIB_RESULT} with the result of the release operation.
+ *          @retval ULIB_SUCCESS - If the buffer releases the position with success.
+ *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          @retval ULIB_NO_SUCH_ELEMENT_ERROR - If the position is already released.
+ *          @retval ULIB_SYSTEM_ERROR - If the release operation failed on the system level.
  */
 static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position)
 {
@@ -596,12 +603,12 @@ static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t p
  * <p> The size of the new buffer will be the remaining size of the original buffer, which is the size
  *      menus the current position.
  *
- * <i><b>Example 1:
+ * <i><b>Example 1</b></i>
  * <p> Consider a buffer with 1500 bytes, that was created from the factory, with `Logical` and `Inner`
  *      positions as `0`. After some operations, 1000 bytes was read (from 0 to 999), so, the
  *      current position is `1000`, and 200 bytes was released (from 0 to 199), so the released
  *      position is `199`.
- * <p> For the following examples, the positions is represented by {@code [Logical, Inner]}.
+ * <p> For the following examples, the positions is represented by <tt>[Logical, Inner]</tt>.
  *
  * <pre><code>
  * Original buffer:
@@ -625,11 +632,11 @@ static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t p
  *  released [99, 999] ->|||<- start, current [100, 1000]      |<- end [599, 1499]
  * </code></pre>
  *
- * <i><b>Example 2:
+ * <i><b>Example 2</b></i>
  * <p> Consider a buffer with 5000 bytes, that was created from the factory, with `Logical` and `Inner`
  *      positions as `0`. After some operations, 250 bytes was read (from 0 to 249), so, the
  *      current position is `250`, and no release was made, so the released position is still `-1`.
- * <p> For the following examples, the positions is represented by {@code [Logical, Inner]}.
+ * <p> For the following examples, the positions is represented by <tt>[Logical, Inner]</tt>.
  *
  * <pre><code>
  * Original buffer:
@@ -647,10 +654,10 @@ static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t p
  *
  * </code></pre>
  *
- * <i><b>Example 3:
+ * <i><b>Example 3</b></i>
  * <p> From the previews cloned buffer, after some operations, the Logical current position is moved
  *      to `11000`, and the Logical released position is `10499`.
- * <p> For the following examples, the positions is represented by {@code [Logical, Inner]}.
+ * <p> For the following examples, the positions is represented by <tt>[Logical, Inner]</tt>.
  *
  * <pre><code>
  * Previews cloned buffer:
@@ -672,7 +679,7 @@ static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t p
  *          always use the `Logical` position for all operations.
  *      - If the position is not important to the consumer, make the offset equals `0` is a safe option.
  *
- * <p> The {@code ustream_clone} API shall follow the following minimum requirements:
+ * <p> The <tt>ustream_clone</tt> API shall follow the following minimum requirements:
  *      - The clone shall return a buffer with the same content of the original buffer.
  *      - If the provided interface is NULL, the clone shall return NULL.
  *      - If the provided interface is not type of the implemented buffer, the clone shall return NULL.
@@ -681,12 +688,12 @@ static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t p
  *          shall return NULL.
  *      - The cloned buffer shall not interfere in the instance of the original buffer and vice versa.
  *
- * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer.
- *                              It cannot be {@code NULL}, and it shall be a valid buffer that is
+ * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer.
+ *                              It cannot be <tt>NULL</tt>, and it shall be a valid buffer that is
  *                              type of the implemented buffer.
- * @param:  offset                  The {@code offset_t} with the `Logical` position of the first byte in
+ * @param  offset                  The <tt>offset_t</tt> with the `Logical` position of the first byte in
  *                              the cloned buffer.
- * @return: The {@link USTREAM*} with the result of the clone operation. The results can be:
+ * @return The {@link USTREAM}* with the result of the clone operation.
  *          - @b not NULL - If the buffer was copied with success.
  *          - @b NULL - If one of the provided parameters is invalid or there is not enough memory to
  *              control the new buffer.
@@ -703,7 +710,7 @@ static inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset
  *          If there is no more references to the buffer, the dispose will release all recourses
  *          allocated to control the buffer.
  *
- * <p> The {@code ustream_dispose} API shall follow the following requirements:
+ * <p> The <tt>ustream_dispose</tt> API shall follow the following requirements:
  *      - The dispose shall free all allocated resources for the instance of the buffer.
  *      - If there is no more instances of the buffer, the dispose shall release all allocated
  *          resources to control the buffer.
@@ -711,12 +718,12 @@ static inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset
  *      - If the provided interface is not type of the implemented buffer, the dispose shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param:  ustream_interface       The {@link USTREAM*} with the interface of the buffer. It
- *                              cannot be {@code NULL}, and it shall be a valid buffer that is type
+ * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
+ *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is type
  *                              of the implemented buffer.
- * @return: The {@link ULIB_RESULT} with the result of the dispose operation. The results can be:
- *          - @b ULIB_SUCCESS - If the instance of the buffer was disposed with success.
- *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ * @return The {@link ULIB_RESULT} with the result of the dispose operation.
+ *          @retval ULIB_SUCCESS - If the instance of the buffer was disposed with success.
+ *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
  */
 static inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
 {
@@ -731,7 +738,7 @@ static inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *         on it. If the current buffer is already an instance of {@link USTREAM_MULTI_INSTANCE}, this API
   *         will only append the new buffer.
   *
-  * <p> The {@code ustream_append} API shall follow the following requirements:
+  * <p> The <tt>ustream_append</tt> API shall follow the following requirements:
   *      - The Append shall append the provided buffer at the end of the current one.
   *      - If current buffer is not a multi-buffer, the Append shall convert the current buffer in a multi-buffer.
   *      - If the provided interface is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
@@ -739,15 +746,15 @@ static inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *      - If there is not enough memory to append the buffer, the Append shall return 
   *         ULIB_OUT_OF_MEMORY_ERROR.
   *
-  * @param:  ustream_interface       The {@link USTREAM*} with the interface of 
-  *                             the buffer. It cannot be {@code NULL}, and it shall be a valid buffer.
-  * @param:  ustream_to_append       The {@link USTREAM*} with the interface of 
-  *                             the buffer to be appended to the original buffer. It cannot be {@code NULL}, 
+  * @param  ustream_interface       The {@link USTREAM}* with the interface of 
+  *                             the buffer. It cannot be <tt>NULL</tt>, and it shall be a valid buffer.
+  * @param  ustream_to_append       The {@link USTREAM}* with the interface of 
+  *                             the buffer to be appended to the original buffer. It cannot be <tt>NULL</tt>, 
   *                             and it shall be a valid buffer.
-  * @return: The {@link ULIB_RESULT} with the result of the Append operation. The results can be:
-  *          - @b ULIB_SUCCESS - If the buffer was appended with success.
-  *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
-  *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is no memory to append the buffer.
+  * @return The {@link ULIB_RESULT} with the result of the Append operation.
+  *          @retval ULIB_SUCCESS - If the buffer was appended with success.
+  *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+  *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is no memory to append the buffer.
   */
 MOCKABLE_FUNCTION( , 
     ULIB_RESULT, ustream_append,

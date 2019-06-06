@@ -1,6 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+/**
+ * @file ulib_result.h
+ */
+
 #ifndef AZURE_ULIB_C_INC_ULIB_RESULT_H_
 #define AZURE_ULIB_C_INC_ULIB_RESULT_H_
 
@@ -11,6 +15,9 @@
 extern "C" {
 #endif
 
+/**
+ * @brief   Error bit for error values.
+ */
 #define ULIB_ERROR_FLAG 0X80
 
 /**

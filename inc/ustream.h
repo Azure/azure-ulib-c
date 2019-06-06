@@ -1,6 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+/**
+ * @file ustream.h
+ */
+
 #ifndef AZURE_ULIB_C_INC_USTREAM_H_
 #define AZURE_ULIB_C_INC_USTREAM_H_
 
@@ -23,9 +27,9 @@ extern "C" {
  * @brief   Factory to create a new uStream.
  *
  * <p> This factory creates a uStream that handles the content of the provided buffer. As a result,
- *      it will return a {@link USTREAM*} with this content. The new uStream can keep 
- *      or not keep the ownership of the memory pointed to by the {@code *buffer} depending on the state of the 
- *      boolean {@code take_ownership}. It can be:
+ *      it will return a {@link USTREAM}* with this content. The new uStream can keep 
+ *      or not keep the ownership of the memory pointed to by the <tt>*buffer</tt> depending on the state of the 
+ *      boolean <tt>take_ownership</tt>. It can be:
  *
  *          -@b true - To inform the new uStream that it shall take the ownership of the memory. This 
  *                  means that the uStream will copy only the reference of the memory, use it directly 
@@ -35,18 +39,18 @@ extern "C" {
  *          -@b false - To inform the new uStream that it shall not take the ownership of the memory.
  *                  This means that the uStream shall allocate its own memory and copy the content of
  *                  the provided buffer to this internal memory. The function that called this factory with
- *                  {@code take_ownership = false} may release or change the original buffer. When the 
+ *                  <tt>take_ownership = false</tt> may release or change the original buffer. When the 
  *                  uStream is disposed, it will only release the memory allocated to copy the original
  *                  buffer.
  *
- * @param:  buffer           The {@code const uint8_t* const} that points to a memory position where the buffer starts.
- *                              It cannot be {@code NULL}.
- * @param:  buffer_length    The {@code size_t} with the number of {@code uint8_t} in the provided buffer.
- * @param:  take_ownership   The {@code bool} that indicates if the factory shall or shall not take ownership of the buffer.
- *                              If {@code true} the uStream will take ownership of the memory allocated for the
- *                              provided buffer. If {@code false} the uStream will make a copy of the content of
+ * @param  buffer           The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
+ *                              It cannot be <tt>NULL</tt>.
+ * @param  buffer_length    The <tt>size_t} with the number of {@code uint8_t</tt> in the provided buffer.
+ * @param  take_ownership   The <tt>bool</tt> that indicates if the factory shall or shall not take ownership of the buffer.
+ *                              If <tt>true</tt> the uStream will take ownership of the memory allocated for the
+ *                              provided buffer. If <tt>false</tt> the uStream will make a copy of the content of
  *                              the provided buffer in its own memory.
- * @return: The {@link USTREAM*} with the uStream interface. The results can be:
+ * @return The {@link USTREAM}* with the uStream interface.
  *          - @b not NULL - If the uStream was created with success.
  *          - @b NULL - If there is no memory to create the new uStream.
  */
@@ -64,10 +68,10 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
  *      and the number of bytes to handle. The factory will use the reference of the provided buffer as its
  *      own inner buffer.
  *
- * @param:  buffer           The {@code const uint8_t* const} that points to a memory position where the buffer starts.
- *                              It cannot be {@code NULL}.
- * @param:  buffer_length    The {@code size_t} with the number of {@code uint8_t} in the provided buffer. It cannot be zero.
- * @return: The {@link USTREAM*} with the uStream interface. The results can be:
+ * @param  buffer           The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
+ *                              It cannot be <tt>NULL</tt>.
+ * @param  buffer_length    The <tt>size_t} with the number of {@code uint8_t</tt> in the provided buffer. It cannot be zero.
+ * @return The {@link USTREAM}* with the uStream interface.
  *          - @b not NULL - If the uStream was created with success.
  *          - @b NULL - If there is no memory to create the new uStream.
  */
@@ -81,7 +85,7 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_const_create,
  * <p> uStreamMulti is a buffer that handles multiple heterogeneous uStreams and exposes 
  *      it with a single interface. The sequence of the buffers is determined by the appended sequence:
  *      first in first out.
- * <p> Note that the {@code read()} API will return the content of the appended buffers as if
+ * <p> Note that the <tt>read()</tt> API will return the content of the appended buffers as if
  *      it was a single buffer. There is nothing that identifies where one buffer stops and the
  *      next one starts.
  * <p> Copying a uStreamMulti creates a new instance that has the same content of the original one
@@ -95,7 +99,7 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_const_create,
  * <p> Release part of a uStreamMulti will dispose the appended buffers that are not necessary anymore,
  *      and the disposal of the uStreamMulti will dispose all appended buffers.
  *
- * @return: The {@link USTREAM*} with the uStreamMulti interface. The results can be:
+ * @return The {@link USTREAM}* with the uStreamMulti interface.
  *          - @b not NULL - If the uStreamMulti was created with success.
  *          - @b NULL - If there is no memory to create the new uStreamMulti.
  */
@@ -109,15 +113,15 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_multi_create);
  *      means that appending a new buffer in a current instance of the uStreamMulti will not affect the
  *      other instances.
  *
- * @param:  ustream_interface   The {@link USTREAM*} with the handle of the uStreamMulti.
- *                                  It cannot be {@code NULL}, and it shall be a valid buffer that is a
+ * @param  ustream_interface   The {@link USTREAM}* with the handle of the uStreamMulti.
+ *                                  It cannot be <tt>NULL</tt>, and it shall be a valid buffer that is a
  *                                  type of uStreamMulti.
- * @param:  ustream_to_append   The {@link USTREAM*} with the handle of the buffer to add
- *                                  to the uStreamMulti. It cannot be {@code NULL}.
- * @return: The {@link ULIB_RESULT} with the result of the append operation. The results can be:
- *          - @b ULIB_SUCCESS - If the uStreamMulti appended the provided buffer with success.
- *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If the one of the provided parameters is invalid.
- *          - @b ULIB_OUT_OF_MEMORY_ERROR - If there is no memory to append the buffer.
+ * @param  ustream_to_append   The {@link USTREAM}* with the handle of the buffer to add
+ *                                  to the uStreamMulti. It cannot be <tt>NULL</tt>.
+ * @return The {@link ULIB_RESULT} with the result of the append operation.
+ *          @retval ULIB_SUCCESS - If the uStreamMulti appended the provided buffer with success.
+ *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If the one of the provided parameters is invalid.
+ *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is no memory to append the buffer.
  */
 MOCKABLE_FUNCTION(, ULIB_RESULT, ustream_multi_append,
     USTREAM*, ustream_interface,
