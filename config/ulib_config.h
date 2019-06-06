@@ -18,7 +18,7 @@ extern "C" {
  * <p> Defines the malloc function that the ulib shall use as its own way to dynamically allocate
  *      memory from the HEAP. For simplicity, it can be defined as the malloc(size) from the `stdlib.h`.
  */
-#define ULIB_CONFIG_MALLOC(size)    uLibMalloc(size)
+#define ULIB_CONFIG_MALLOC(size)    ulib_malloc(size)
 
 /**
  * @brief   uLib free.
@@ -26,7 +26,7 @@ extern "C" {
  * <p> Defines the free function that the ulib shall use as its own way to release memory dynamic 
  *      allocated in the HEAP. For simplicity, it can be defined as the free(ptr) from the `stdlib.h`.
  */
-#define ULIB_CONFIG_FREE(ptr)       uLibFree(ptr)
+#define ULIB_CONFIG_FREE(ptr)       ulib_free(ptr)
 
 /**
  * Define log Function
@@ -38,7 +38,7 @@ extern "C" {
  * <p> Defines the log function that the ulib shall use as its own way to print information in the
  *      log system.
  */
-#define ULIB_CONFIG_LOG(category, format, ...)  uLogPrint(category, format, ##__VA_ARGS__)
+#define ULIB_CONFIG_LOG(category, format, ...)  ulog_print(category, format, ##__VA_ARGS__)
 
 /**
  * @brief   Maximum size of the uLib log.

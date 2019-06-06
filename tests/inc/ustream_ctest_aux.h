@@ -93,24 +93,24 @@ do { \
 /**
  * Check buffer
  */
-static void checkBuffer(
-        USTREAM* azBuffer, 
+static void check_buffer(
+        USTREAM* ustream_interface, 
         uint8_t offset, 
-        const uint8_t* const expectedContent, 
-        uint8_t expectedContentLength)
+        const uint8_t* const expected_content, 
+        uint8_t expected_content_length)
 {
     uint8_t bufResult[256];
     size_t sizeResult;
 
-    if (offset < expectedContentLength)
+    if (offset < expected_content_length)
     {
         ASSERT_ARE_EQUAL(int, ULIB_SUCCESS,
-            uStreamGetNext(azBuffer, bufResult, 256, &sizeResult));
+            ustream_read(ustream_interface, bufResult, 256, &sizeResult));
 
-        ASSERT_ARE_EQUAL(int, expectedContentLength - offset, sizeResult);
+        ASSERT_ARE_EQUAL(int, expected_content_length - offset, sizeResult);
         ASSERT_BUFFER_ARE_EQUAL(
             uint8_t_ptr,
-            (const uint8_t* const)(expectedContent + offset),
+            (const uint8_t* const)(expected_content + offset),
             bufResult,
             sizeResult);
     }
@@ -119,7 +119,7 @@ static void checkBuffer(
     ASSERT_ARE_EQUAL(
         int,
         ULIB_EOF,
-        uStreamGetNext(azBuffer, bufResult, 256, &sizeResult));
+        ustream_read(ustream_interface, bufResult, 256, &sizeResult));
     ASSERT_ARE_EQUAL(int, 0, sizeResult);
 }
 

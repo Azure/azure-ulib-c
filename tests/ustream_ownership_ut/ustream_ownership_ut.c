@@ -69,9 +69,9 @@ static TEST_MUTEX_HANDLE g_dllByDll;
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
 static USTREAM* uStreamFactory()
 {
-    uint8_t* buf = (uint8_t*)uLibMalloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    uint8_t* buf = (uint8_t*)ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    return uStreamCreate(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, true);
+    return ustream_create(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, true);
 }
 #define USTREAM_COMPLIANCE_TARGET_FACTORY         uStreamFactory()
 
@@ -109,8 +109,8 @@ TEST_SUITE_INITIALIZE(suite_init)
 
     REGISTER_UMOCK_ALIAS_TYPE(USTREAM, void*);
 
-    REGISTER_GLOBAL_MOCK_HOOK(uLibMalloc, myMalloc);
-    REGISTER_GLOBAL_MOCK_HOOK(uLibFree, myFree);
+    REGISTER_GLOBAL_MOCK_HOOK(ulib_malloc, myMalloc);
+    REGISTER_GLOBAL_MOCK_HOOK(ulib_free, myFree);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -140,20 +140,20 @@ TEST_FUNCTION_CLEANUP(TestMethodCleanup)
     TEST_MUTEX_RELEASE(g_testByTest);
 }
 
-/* The uStreamCreate shall create an instance of the buffer and initialize the interface. */
-TEST_FUNCTION(uStreamCreate_succeed)
+/* The ustream_create shall create an instance of the buffer and initialize the interface. */
+TEST_FUNCTION(ustream_create_succeed)
 {
     ///arrange
-    uint8_t* buf = (uint8_t*)uLibMalloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    uint8_t* buf = (uint8_t*)ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
     USTREAM* bufferInterface = 
-        uStreamCreate(
+        ustream_create(
             buf, 
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
             true);
@@ -164,23 +164,23 @@ TEST_FUNCTION(uStreamCreate_succeed)
     ASSERT_IS_NOT_NULL(bufferInterface->api);
 
     ///cleanup
-    (void)uStreamDispose(bufferInterface);
+    (void)ustream_dispose(bufferInterface);
 }
 
-/* The uStreamCreate shall return NULL if there is no memory to create the buffer. */
-TEST_FUNCTION(uStreamCreate_noMemoryToCreateInterfaceFailed)
+/* The ustream_create shall return NULL if there is no memory to create the buffer. */
+TEST_FUNCTION(ustream_create_noMemoryToCreateInterfaceFailed)
 {
     ///arrange
-    uint8_t* buf = (uint8_t*)uLibMalloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    uint8_t* buf = (uint8_t*)ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM))).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
     USTREAM* bufferInterface =
-        uStreamCreate(
+        ustream_create(
             buf,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
             true);
@@ -190,24 +190,24 @@ TEST_FUNCTION(uStreamCreate_noMemoryToCreateInterfaceFailed)
     ASSERT_IS_NULL(bufferInterface);
 
     ///cleanup
-    uLibFree(buf);
+    ulib_free(buf);
 }
 
-TEST_FUNCTION(uStreamCreate_noMemoryToCreateInstanceFailed)
+TEST_FUNCTION(ustream_create_noMemoryTocreate_instanceFailed)
 {
     ///arrange
-    uint8_t* buf = (uint8_t*)uLibMalloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    uint8_t* buf = (uint8_t*)ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
     USTREAM* bufferInterface =
-        uStreamCreate(
+        ustream_create(
             buf,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
             true);
@@ -217,20 +217,20 @@ TEST_FUNCTION(uStreamCreate_noMemoryToCreateInstanceFailed)
     ASSERT_IS_NULL(bufferInterface);
 
     ///cleanup
-    uLibFree(buf);
+    ulib_free(buf);
 }
 
-TEST_FUNCTION(uStreamCreate_noMemoryToCreateInnerBufferFailed)
+TEST_FUNCTION(ustream_create_noMemoryToCreateInnerBufferFailed)
 {
     ///arrange
-    uint8_t* buf = (uint8_t*)uLibMalloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    uint8_t* buf = (uint8_t*)ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
     USTREAM* bufferInterface =
-        uStreamCreate(
+        ustream_create(
             buf,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
             true);
@@ -240,16 +240,16 @@ TEST_FUNCTION(uStreamCreate_noMemoryToCreateInnerBufferFailed)
     ASSERT_IS_NULL(bufferInterface);
 
     ///cleanup
-    uLibFree(buf);
+    ulib_free(buf);
 }
 
-/* If the provided constant buffer is NULL, the uStreamCreate shall return NULL. */
-TEST_FUNCTION(uStreamCreate_NULLBufferFailed)
+/* If the provided constant buffer is NULL, the ustream_create shall return NULL. */
+TEST_FUNCTION(ustream_create_NULLBufferFailed)
 {
     ///arrange
 
     ///act
-    USTREAM* bufferInterface = uStreamCreate(NULL, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, true);
+    USTREAM* bufferInterface = ustream_create(NULL, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, true);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -258,13 +258,13 @@ TEST_FUNCTION(uStreamCreate_NULLBufferFailed)
     ///cleanup
 }
 
-/* If the provided buffer length is zero, the uStreamCreate shall return NULL. */
-TEST_FUNCTION(uStreamCreate_zeroLengthFailed)
+/* If the provided buffer length is zero, the ustream_create shall return NULL. */
+TEST_FUNCTION(ustream_create_zeroLengthFailed)
 {
     ///arrange
 
     ///act
-    USTREAM* bufferInterface = uStreamCreate(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, true);
+    USTREAM* bufferInterface = ustream_create(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, true);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -274,41 +274,41 @@ TEST_FUNCTION(uStreamCreate_zeroLengthFailed)
 }
 
 /*  The clone shall return NULL if there is not enough memory to control the new buffer. */
-TEST_FUNCTION(uStreamClone_noMemoryToCreateInterfaceFailed)
+TEST_FUNCTION(ustream_clone_noMemoryToCreateInterfaceFailed)
 {
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(uLibMalloc(sizeof(USTREAM))).SetReturn(NULL);
+    EXPECTED_CALL(ulib_malloc(sizeof(USTREAM))).SetReturn(NULL);
 
     ///act
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
 
     ///assert
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
-TEST_FUNCTION(uStreamClone_noMemoryToCreateInstanceFailed)
+TEST_FUNCTION(ustream_clone_noMemoryTocreate_instanceFailed)
 {
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(uLibMalloc(sizeof(USTREAM)));
-    EXPECTED_CALL(uLibMalloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(uLibFree(IGNORED_PTR_ARG));
+    EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    USTREAM* uStreamCloneInterface = uStreamClone(uStreamInstance, 0);
+    USTREAM* uStreamCloneInterface = ustream_clone(uStreamInstance, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
     ASSERT_IS_NULL(uStreamCloneInterface);
 
     ///cleanup
-    (void)uStreamDispose(uStreamInstance);
+    (void)ustream_dispose(uStreamInstance);
 }
 
 #include "ustream_compliance_ut.h"

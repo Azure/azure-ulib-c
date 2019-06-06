@@ -18,7 +18,7 @@ const char* const ULOG_TYPE_STRING[] =
     "INFO" 
 };
 
-void uLogPrint(ULOG_TYPE type, const char* const format, ...)
+void ulog_print(ULOG_TYPE type, const char* const format, ...)
 {
     char temp[ULIB_CONFIG_MAX_LOG_SIZE];
     va_list args;

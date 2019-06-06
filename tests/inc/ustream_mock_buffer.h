@@ -10,16 +10,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
-USTREAM* uStreamMockCreate(void);
+USTREAM* ustream_mock_create(void);
 
-void setSeekResult(ULIB_RESULT result);
-void setResetResult(ULIB_RESULT result);
-void setGetNextResult(ULIB_RESULT result);
-void setGetRemainingSizeResult(ULIB_RESULT result);
-void setGetCurrentPositionResult(ULIB_RESULT result);
-void setReleaseResult(ULIB_RESULT result);
-void setCloneResult(ULIB_RESULT result);
-void setDisposeResult(ULIB_RESULT result);
+void set_set_position_result(ULIB_RESULT result);
+void set_reset_result(ULIB_RESULT result);
+void set_read_result(ULIB_RESULT result);
+void set_get_remaining_size_result(ULIB_RESULT result);
+void set_get_position_result(ULIB_RESULT result);
+void set_release_result(ULIB_RESULT result);
+void set_clone_result(ULIB_RESULT result);
+void set_dispose_result(ULIB_RESULT result);
 
 #ifdef __cplusplus
 }
