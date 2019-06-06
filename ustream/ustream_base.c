@@ -3,6 +3,15 @@
 
 #include "ustream.h"
 
+extern inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t position);
+extern inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface);
+extern inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
+extern inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t* const size);
+extern inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* const position);
+extern inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position);
+extern inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset);
+extern inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface);
+
 ULIB_RESULT ustream_append(
     USTREAM* ustream_interface, 
     USTREAM* ustream_to_append)

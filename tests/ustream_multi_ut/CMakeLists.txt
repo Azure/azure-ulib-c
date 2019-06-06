@@ -14,6 +14,7 @@ include_directories(${SHARED_UTIL_REAL_TEST_FOLDER})
 set(${thisTestSuiteName}_c_files
     ../../ulog/ulog.c
     ../../ustream/ustream_multi.c
+    ../../ustream/ustream_base.c
     ../../ustream/ustream.c
     ../src/ustream_mock_buffer.c
 )
