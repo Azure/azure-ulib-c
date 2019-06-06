@@ -174,7 +174,7 @@ TEST_FUNCTION_CLEANUP(TestMethodCleanup)
 }
 
 /* The ustream_multi_create shall create an instance of the multi-buffer and initialize the interface. */
-TEST_FUNCTION(uStreamMultiCreate_succeed)
+TEST_FUNCTION(ustream_multi_create_succeed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
@@ -193,7 +193,7 @@ TEST_FUNCTION(uStreamMultiCreate_succeed)
 }
 
 /* The ustream_multi_create shall return NULL if there is no memory to create the multi-buffer interface. */
-TEST_FUNCTION(uStreamMultiCreate_noMemoryToCreateInterfaceFailed)
+TEST_FUNCTION(ustream_multi_create_noMemoryToCreateInterfaceFailed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM))).SetReturn(NULL);
@@ -208,7 +208,7 @@ TEST_FUNCTION(uStreamMultiCreate_noMemoryToCreateInterfaceFailed)
     ///cleanup
 }
 
-TEST_FUNCTION(uStreamMultiCreate_noMemoryTocreate_instanceFailed)
+TEST_FUNCTION(ustream_multi_create_noMemoryTocreate_instanceFailed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
@@ -226,7 +226,7 @@ TEST_FUNCTION(uStreamMultiCreate_noMemoryTocreate_instanceFailed)
 }
 
 /* The ustream_multi_append shall add the provided buffer to the multibuffer list. */
-TEST_FUNCTION(uStreamMultiAppend_newMultibufferSucceed)
+TEST_FUNCTION(ustream_multi_append_newMultibufferSucceed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -285,7 +285,7 @@ TEST_FUNCTION(uStreamMultiAppend_newMultibufferSucceed)
     (void)ustream_dispose(multibuffer);
 }
 
-TEST_FUNCTION(uStreamMultiAppend_partialReleasedMultibufferSucceed)
+TEST_FUNCTION(ustream_multi_append_partialReleasedMultibufferSucceed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -361,7 +361,7 @@ TEST_FUNCTION(uStreamMultiAppend_partialReleasedMultibufferSucceed)
     (void)ustream_dispose(multibuffer);
 }
 
-TEST_FUNCTION(uStreamMultiAppend_fullyReleasedMultibufferSucceed)
+TEST_FUNCTION(ustream_multi_append_fullyReleasedMultibufferSucceed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -435,7 +435,7 @@ TEST_FUNCTION(uStreamMultiAppend_fullyReleasedMultibufferSucceed)
 }
 
 /* If the provided handle is NULL, the ustream_multi_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(uStreamMultiAppend_nullMultibufferFailed)
+TEST_FUNCTION(ustream_multi_append_nullMultibufferFailed)
 {
     ///arrange
     USTREAM* testBuffer1 =
@@ -454,7 +454,7 @@ TEST_FUNCTION(uStreamMultiAppend_nullMultibufferFailed)
 }
 
 /* If the provided handle is not the implemented buffer type, the ustream_multi_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(uStreamMultiAppend_bufferIsNotTypeOfBufferFailed)
+TEST_FUNCTION(ustream_multi_append_bufferIsNotTypeOfBufferFailed)
 {
     ///arrange
     USTREAM* testBuffer1 =
@@ -478,7 +478,7 @@ TEST_FUNCTION(uStreamMultiAppend_bufferIsNotTypeOfBufferFailed)
 }
 
 /* If the provided buffer to add is NULL, the ustream_multi_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(uStreamMultiAppend_nullBufferToAddFailed)
+TEST_FUNCTION(ustream_multi_append_nullBufferToAddFailed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -503,7 +503,7 @@ TEST_FUNCTION(uStreamMultiAppend_nullBufferToAddFailed)
 }
 
 /* If there is no memory to control the new buffer, the ustream_multi_append shall return ULIB_OUT_OF_MEMORY_ERROR. */
-TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryFailed)
+TEST_FUNCTION(ustream_multi_append_notEnoughMemoryFailed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -527,7 +527,7 @@ TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryFailed)
 }
 
 /* If the ustream_multi_append failed to copy the buffer, it shall return ULIB_OUT_OF_MEMORY_ERROR. */
-TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryToCloneTheBufferFailed)
+TEST_FUNCTION(ustream_multi_append_notEnoughMemoryToCloneTheBufferFailed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -553,7 +553,7 @@ TEST_FUNCTION(uStreamMultiAppend_notEnoughMemoryToCloneTheBufferFailed)
 }
 
 /* If the ustream_multi_append failed to copy the buffer, it shall return ULIB_OUT_OF_MEMORY_ERROR. */
-TEST_FUNCTION(uStreamMultiAppend_newInnerBufferFailedOnGetRemainingSizeFailed)
+TEST_FUNCTION(ustream_multi_append_newInnerBufferFailedOnGetRemainingSizeFailed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -583,7 +583,7 @@ TEST_FUNCTION(uStreamMultiAppend_newInnerBufferFailedOnGetRemainingSizeFailed)
 }
 
 /* The dispose shall ulib_free all allocated resources. */
-TEST_FUNCTION(uStreamMultiDispose_multibufferWithoutBuffersFreeAllResourcesSucceed)
+TEST_FUNCTION(ustream_multi_dispose_multibufferWithoutBuffersFreeAllResourcesSucceed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -603,7 +603,7 @@ TEST_FUNCTION(uStreamMultiDispose_multibufferWithoutBuffersFreeAllResourcesSucce
 }
 
 /* If the multibuffer contains appended buffers, the dispose shall release all buffers on its list. */
-TEST_FUNCTION(uStreamMultiDispose_multibufferWithBuffersFreeAllResourcesSucceed)
+TEST_FUNCTION(ustream_multi_dispose_multibufferWithBuffersFreeAllResourcesSucceed)
 {
     ///arrange
     USTREAM* multibuffer = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -636,7 +636,7 @@ TEST_FUNCTION(uStreamMultiDispose_multibufferWithBuffersFreeAllResourcesSucceed)
 }
 
 /* The set_position shall bypass the error if the Inner uStream return not success for one of the needed operations. */
-TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetCurrentPositionFailed)
+TEST_FUNCTION(ustream_multi_seek_innerBufferFailedInGetCurrentPositionFailed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -671,7 +671,7 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetCurrentPositionFailed)
     (void)ustream_dispose(defaultBuffer2);
 }
 
-TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetRemainingSizeFailed)
+TEST_FUNCTION(ustream_multi_seek_innerBufferFailedInGetRemainingSizeFailed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -706,7 +706,7 @@ TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInGetRemainingSizeFailed)
     (void)ustream_dispose(defaultBuffer2);
 }
 
-TEST_FUNCTION(uStreamMultiSeek_innerBufferFailedInSeekFailed)
+TEST_FUNCTION(ustream_multi_seek_innerBufferFailedInSeekFailed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -943,7 +943,7 @@ TEST_FUNCTION(uStreamMultiClone_innerBufferFailedInGetRemainingSizeFailed)
 }
 
 /*  The clone shall return NULL if there is not enough memory to control the new buffer. */
-TEST_FUNCTION(uStreamClone_noMemoryToCreateInterfaceFailed)
+TEST_FUNCTION(ustream_clone_noMemoryToCreateInterfaceFailed)
 {
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -960,7 +960,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateInterfaceFailed)
     (void)ustream_dispose(uStreamInstance);
 }
 
-TEST_FUNCTION(uStreamClone_noMemoryTocreate_instanceFailed)
+TEST_FUNCTION(ustream_clone_noMemoryTocreate_instanceFailed)
 {
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -980,7 +980,7 @@ TEST_FUNCTION(uStreamClone_noMemoryTocreate_instanceFailed)
     (void)ustream_dispose(uStreamInstance);
 }
 
-TEST_FUNCTION(uStreamClone_noMemoryToCreateFirstNodeFailed)
+TEST_FUNCTION(ustream_clone_noMemoryToCreateFirstNodeFailed)
 {
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -1002,7 +1002,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateFirstNodeFailed)
     (void)ustream_dispose(uStreamInstance);
 }
 
-TEST_FUNCTION(uStreamClone_noMemoryToCloneFirstNodeFailed)
+TEST_FUNCTION(ustream_clone_noMemoryToCloneFirstNodeFailed)
 {
     ///arrange
     USTREAM* multibuffer = ustream_multi_create();
@@ -1032,7 +1032,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCloneFirstNodeFailed)
     (void)ustream_dispose(defaultBuffer2);
 }
 
-TEST_FUNCTION(uStreamClone_noMemoryToCreateSecondNodeFailed)
+TEST_FUNCTION(ustream_clone_noMemoryToCreateSecondNodeFailed)
 {
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;

@@ -135,7 +135,7 @@ TEST_FUNCTION_CLEANUP(TestMethodCleanup)
 
 /* The Append shall append the provided buffer at the end of the current one. */
 /* If current buffer is not a multibuffer, the Append shall convert the current buffer in a multibuffer. */
-TEST_FUNCTION(uStreamAppend_startFromEmptyMultibufferSucceed)
+TEST_FUNCTION(ustream_append_startFromEmptyMultibufferSucceed)
 {
     ///arrange
     USTREAM* defaultMultibuffer = ustream_multi_create();
@@ -182,7 +182,7 @@ TEST_FUNCTION(uStreamAppend_startFromEmptyMultibufferSucceed)
     ustream_dispose(defaultMultibuffer);
 }
 
-TEST_FUNCTION(uStreamAppend_appendMultipleBuffersSucceed)
+TEST_FUNCTION(ustream_append_appendMultipleBuffersSucceed)
 {
     ///arrange
     USTREAM* defaultBuffer1 =
@@ -224,7 +224,7 @@ TEST_FUNCTION(uStreamAppend_appendMultipleBuffersSucceed)
 }
 
 /* If the provided interface is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(uStreamAppend_nullInterfaceFailed)
+TEST_FUNCTION(ustream_append_nullInterfaceFailed)
 {
     ///arrange
     USTREAM* defaultBuffer =
@@ -244,7 +244,7 @@ TEST_FUNCTION(uStreamAppend_nullInterfaceFailed)
 }
 
 /* If the provided buffer to add is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(uStreamAppend_nullBufferToAddFailed)
+TEST_FUNCTION(ustream_append_nullBufferToAddFailed)
 {
     ///arrange
     USTREAM* defaultBuffer =
@@ -264,7 +264,7 @@ TEST_FUNCTION(uStreamAppend_nullBufferToAddFailed)
 }
 
 /* If there is not enough memory to append the buffer, the Append shall return ULIB_OUT_OF_MEMORY_ERROR. */
-TEST_FUNCTION(uStreamAppend_startingFromMultibufferWithNotEnoughMemoryFailed)
+TEST_FUNCTION(ustream_append_startingFromMultibufferWithNotEnoughMemoryFailed)
 {
     ///arrange
     USTREAM* defaultMultibuffer = ustream_multi_create();
@@ -291,7 +291,7 @@ TEST_FUNCTION(uStreamAppend_startingFromMultibufferWithNotEnoughMemoryFailed)
     ustream_dispose(defaultMultibuffer);
 }
 
-TEST_FUNCTION(uStreamAppend_notEnoughMemoryToCreateMultibufferFailed)
+TEST_FUNCTION(ustream_append_notEnoughMemoryToCreateMultibufferFailed)
 {
     ///arrange
     USTREAM* defaultBuffer1 =
@@ -332,7 +332,7 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToCreateMultibufferFailed)
     ustream_dispose(defaultBuffer2);
 }
 
-TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed)
+TEST_FUNCTION(ustream_append_notEnoughMemoryToAppendFirstBufferFailed)
 {
     ///arrange
     USTREAM* defaultBuffer1 =
@@ -380,7 +380,7 @@ TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendFirstBufferFailed)
     ustream_dispose(defaultBuffer2);
 }
 
-TEST_FUNCTION(uStreamAppend_notEnoughMemoryToAppendSecondBufferFailed)
+TEST_FUNCTION(ustream_append_notEnoughMemoryToAppendSecondBufferFailed)
 {
     ///arrange
     USTREAM* defaultBuffer1 =

@@ -138,7 +138,7 @@ TEST_FUNCTION_CLEANUP(TestMethodCleanup)
 }
 
 /* The ustream_const_create shall create an instance of the buffer and initialize the interface. */
-TEST_FUNCTION(uStreamConstCreate_succeed)
+TEST_FUNCTION(ustream_const_create_succeed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
@@ -160,7 +160,7 @@ TEST_FUNCTION(uStreamConstCreate_succeed)
 }
 
 /* The ustream_const_create shall return NULL if there is no memory to create the buffer. */
-TEST_FUNCTION(uStreamConstCreate_noMemoryToCreateInterfaceFailed)
+TEST_FUNCTION(ustream_const_create_noMemoryToCreateInterfaceFailed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
@@ -179,7 +179,7 @@ TEST_FUNCTION(uStreamConstCreate_noMemoryToCreateInterfaceFailed)
     ///cleanup
 }
 
-TEST_FUNCTION(uStreamConstCreate_noMemoryTocreate_instanceFailed)
+TEST_FUNCTION(ustream_const_create_noMemoryTocreate_instanceFailed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
@@ -200,7 +200,7 @@ TEST_FUNCTION(uStreamConstCreate_noMemoryTocreate_instanceFailed)
     ///cleanup
 }
 
-TEST_FUNCTION(uStreamConstCreate_noMemoryToCreateInnerBufferFailed)
+TEST_FUNCTION(ustream_const_create_noMemoryToCreateInnerBufferFailed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
@@ -218,7 +218,7 @@ TEST_FUNCTION(uStreamConstCreate_noMemoryToCreateInnerBufferFailed)
 }
 
 /* If the provided constant buffer is NULL, the ustream_const_create shall return NULL. */
-TEST_FUNCTION(uStreamConstCreate_NULLBufferFailed)
+TEST_FUNCTION(ustream_const_create_NULLBufferFailed)
 {
     ///arrange
 
@@ -233,7 +233,7 @@ TEST_FUNCTION(uStreamConstCreate_NULLBufferFailed)
 }
 
 /* If the provided buffer length is zero, the ustream_const_create shall return NULL. */
-TEST_FUNCTION(uStreamConstCreate_zeroLengthFailed)
+TEST_FUNCTION(ustream_const_create_zeroLengthFailed)
 {
     ///arrange
 
@@ -248,7 +248,7 @@ TEST_FUNCTION(uStreamConstCreate_zeroLengthFailed)
 }
 
 /*  The clone shall return NULL if there is not enough memory to control the new buffer. */
-TEST_FUNCTION(uStreamClone_noMemoryToCreateInterfaceFailed)
+TEST_FUNCTION(ustream_clone_noMemoryToCreateInterfaceFailed)
 {
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -265,7 +265,7 @@ TEST_FUNCTION(uStreamClone_noMemoryToCreateInterfaceFailed)
     (void)ustream_dispose(uStreamInstance);
 }
 
-TEST_FUNCTION(uStreamClone_noMemoryTocreate_instanceFailed)
+TEST_FUNCTION(ustream_clone_noMemoryTocreate_instanceFailed)
 {
     ///arrange
     USTREAM* uStreamInstance = USTREAM_COMPLIANCE_TARGET_FACTORY;

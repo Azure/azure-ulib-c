@@ -122,7 +122,7 @@ static ULIB_RESULT concrete_dispose(
     return result;
 }
 
-static const USTREAM_INTERFACE _api =
+static const USTREAM_INTERFACE api =
 {
         concrete_set_position,
         concrete_reset,
@@ -138,7 +138,7 @@ static const int TEST_DATA = 1;
 
 static const USTREAM USTREAM_COMPLIANCE_MOCK_BUFFER =
 {
-    (const USTREAM_INTERFACE*)&_api,
+    (const USTREAM_INTERFACE*)&api,
     (void*)&TEST_DATA
 };
 

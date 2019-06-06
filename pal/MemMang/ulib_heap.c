@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+#include "ulib_heap.h"
+
 void* ulib_malloc(size_t size)
 {
     return malloc(size);

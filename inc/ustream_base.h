@@ -367,7 +367,7 @@ struct USTREAM_INTERFACE_TAG
  *              reasons.
  *          - @b ULIB_SYSTEM_ERROR - if the set_position operation failed on the system level.
  */
-inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t position)
+static inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t position)
 {
     return ustream_interface->api->set_position(ustream_interface, position);
 }
@@ -405,7 +405,7 @@ inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t pos
  *              reasons.
  *          - @b ULIB_SYSTEM_ERROR - If the reset operation failed on the system level.
  */
-inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
+static inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
 {
     return ustream_interface->api->reset(ustream_interface);
 }
@@ -461,7 +461,7 @@ inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *          - @b ULIB_SECURITY_ERROR - If the read was denied for security reasons.
  *          - @b ULIB_SYSTEM_ERROR - If the read operation failed on the system level.
  */
-inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
+static inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
 {
     return ustream_interface->api->read(ustream_interface, buffer, buffer_length, size);
 }
@@ -496,7 +496,7 @@ inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffe
  *          - @b ULIB_SYSTEM_ERROR - If the get remaining size operation failed on the
  *              system level.
  */
-inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t* const size)
+static inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t* const size)
 {
     return ustream_interface->api->get_remaining_size(ustream_interface, size);
 }
@@ -531,7 +531,7 @@ inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t
  *          - @b ULIB_SYSTEM_ERROR - If the get logical current position operation failed on
  *              the system level.
  */
-inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* const position)
+static inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* const position)
 {
     return ustream_interface->api->get_position(ustream_interface, position);
 }
@@ -579,7 +579,7 @@ inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* co
  *          - @b ULIB_NO_SUCH_ELEMENT_ERROR - If the position is already released.
  *          - @b ULIB_SYSTEM_ERROR - If the release operation failed on the system level.
  */
-inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position)
+static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position)
 {
     return ustream_interface->api->release(ustream_interface, position);
 }
@@ -691,7 +691,7 @@ inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position
  *          - @b NULL - If one of the provided parameters is invalid or there is not enough memory to
  *              control the new buffer.
  */
-inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset)
+static inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset)
 {
     return ustream_interface->api->clone(ustream_interface, offset);
 }
@@ -718,7 +718,7 @@ inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset)
  *          - @b ULIB_SUCCESS - If the instance of the buffer was disposed with success.
  *          - @b ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
  */
-inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
+static inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
 {
     return ustream_interface->api->dispose(ustream_interface);
 }
