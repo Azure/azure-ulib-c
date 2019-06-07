@@ -166,7 +166,7 @@ TEST_FUNCTION_INITIALIZE(Test_method_initialize)
     umock_c_reset_all_calls();
 }
 
-TEST_FUNCTION_CLEANUP(Test_method_cleanup)
+TEST_FUNCTION_CLEANUP(test_method_cleanup)
 {
     ASSERT_ARE_EQUAL(int, 0, g_memory_counter, "Memory issue");
 
@@ -830,7 +830,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
     (void)ustream_dispose(default_buffer2);
 }
 
-/* The Release shall bypass the error if the Inner u_stream return not success for one of the needed operations. */
+/* The Release shall bypass the error if the Inner ustream return not success for one of the needed operations. */
 TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_failed)
 {
     ///arrange
@@ -911,7 +911,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_fa
     (void)ustream_dispose(default_buffer2);
 }
 
-/* The Clone shall bypass the error if the Inner u_stream return not success for one of the needed operations. */
+/* The Clone shall bypass the error if the Inner ustream return not success for one of the needed operations. */
 TEST_FUNCTION(ustream_multi_clone_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange

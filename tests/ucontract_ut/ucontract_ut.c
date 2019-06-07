@@ -73,13 +73,13 @@ static int require_not_null(void* ptr)
     return 0;
 }
 
-static int u_contract_with_one_arg(bool expression)
+static int ucontract_with_one_arg(bool expression)
 {
     UCONTRACT(UCONTRACT_REQUIRE(expression, -1, "Require invoked"));
     return 0;
 }
 
-static int u_contract_with_two_arg(void* ptr, bool expression)
+static int ucontract_with_two_arg(void* ptr, bool expression)
 {
     UCONTRACT(
         UCONTRACT_REQUIRE_NOT_NULL(ptr, -1),
@@ -87,7 +87,7 @@ static int u_contract_with_two_arg(void* ptr, bool expression)
     return 0;
 }
 
-static int u_contract_with_three_arg(void* ptr, bool expression, bool val_equals)
+static int ucontract_with_three_arg(void* ptr, bool expression, bool val_equals)
 {
     UCONTRACT(
         UCONTRACT_REQUIRE_NOT_NULL(ptr, -1),
@@ -96,7 +96,7 @@ static int u_contract_with_three_arg(void* ptr, bool expression, bool val_equals
     return 0;
 }
 
-static int u_contract_with_four_arg(void* ptr, bool expression, bool val_equals, int num)
+static int ucontract_with_four_arg(void* ptr, bool expression, bool val_equals, int num)
 {
     UCONTRACT(
         UCONTRACT_REQUIRE_NOT_NULL(ptr, -1),
@@ -124,7 +124,7 @@ TEST_FUNCTION_INITIALIZE(Test_method_initialize)
     umock_c_reset_all_calls();
 }
 
-TEST_FUNCTION_CLEANUP(Test_method_cleanup)
+TEST_FUNCTION_CLEANUP(test_method_cleanup)
 {
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
@@ -237,12 +237,12 @@ TEST_FUNCTION(UCONTRACT_REQUIRE_NOT_NULL_Failed)
 }
 
 /* The UCONTRACT shall do nothing if the required expressions return true. */
-TEST_FUNCTION(UCONTRACT_u_contract_with_one_arg_succeed)
+TEST_FUNCTION(UCONTRACT_ucontract_with_one_arg_succeed)
 {
     ///arrange
 
     ///act
-    int result = u_contract_with_one_arg(true);
+    int result = ucontract_with_one_arg(true);
 
     ///assert
     ASSERT_ARE_EQUAL(int, 0, result);
@@ -250,13 +250,13 @@ TEST_FUNCTION(UCONTRACT_u_contract_with_one_arg_succeed)
     ///cleanup
 }
 
-TEST_FUNCTION(UCONTRACT_u_contract_with_two_arg_succeed)
+TEST_FUNCTION(UCONTRACT_ucontract_with_two_arg_succeed)
 {
     ///arrange
     int i = 0;
 
     ///act
-    int result = u_contract_with_two_arg(&i, true);
+    int result = ucontract_with_two_arg(&i, true);
 
     ///assert
     ASSERT_ARE_EQUAL(int, 0, result);
@@ -264,13 +264,13 @@ TEST_FUNCTION(UCONTRACT_u_contract_with_two_arg_succeed)
     ///cleanup
 }
 
-TEST_FUNCTION(UCONTRACT_u_contract_with_three_arg_succeed)
+TEST_FUNCTION(UCONTRACT_ucontract_with_three_arg_succeed)
 {
     ///arrange
     int i = 0;
 
     ///act
-    int result = u_contract_with_three_arg(&i, true, true);
+    int result = ucontract_with_three_arg(&i, true, true);
 
     ///assert
     ASSERT_ARE_EQUAL(int, 0, result);
@@ -278,13 +278,13 @@ TEST_FUNCTION(UCONTRACT_u_contract_with_three_arg_succeed)
     ///cleanup
 }
 
-TEST_FUNCTION(UCONTRACT_u_contract_with_four_arg_succeed)
+TEST_FUNCTION(UCONTRACT_ucontract_with_four_arg_succeed)
 {
     ///arrange
     int i = 0;
 
     ///act
-    int result = u_contract_with_four_arg(&i, true, true, 5);
+    int result = ucontract_with_four_arg(&i, true, true, 5);
 
     ///assert
     ASSERT_ARE_EQUAL(int, 0, result);
@@ -293,12 +293,12 @@ TEST_FUNCTION(UCONTRACT_u_contract_with_four_arg_succeed)
 }
 
 /* The UCONTRACT_REQUIRE shall return `result` if at least one of the required expressions return false. */
-TEST_FUNCTION(UCONTRACT_REQUIRE_u_contract_with_one_arg_failed)
+TEST_FUNCTION(UCONTRACT_REQUIRE_ucontract_with_one_arg_failed)
 {
     ///arrange
 
     ///act
-    int result = u_contract_with_one_arg(false);
+    int result = ucontract_with_one_arg(false);
 
     ///assert
     ASSERT_ARE_EQUAL(int, -1, result);
@@ -306,12 +306,12 @@ TEST_FUNCTION(UCONTRACT_REQUIRE_u_contract_with_one_arg_failed)
     ///cleanup
 }
 
-TEST_FUNCTION(UCONTRACT_u_contract_with_two_arg_first_failed)
+TEST_FUNCTION(UCONTRACT_ucontract_with_two_arg_first_failed)
 {
     ///arrange
 
     ///act
-    int result = u_contract_with_two_arg(NULL, true);
+    int result = ucontract_with_two_arg(NULL, true);
 
     ///assert
     ASSERT_ARE_EQUAL(int, -1, result);
@@ -319,13 +319,13 @@ TEST_FUNCTION(UCONTRACT_u_contract_with_two_arg_first_failed)
     ///cleanup
 }
 
-TEST_FUNCTION(UCONTRACT_u_contract_with_two_arg_second_failed)
+TEST_FUNCTION(UCONTRACT_ucontract_with_two_arg_second_failed)
 {
     ///arrange
     int i = 0;
 
     ///act
-    int result = u_contract_with_two_arg(&i, false);
+    int result = ucontract_with_two_arg(&i, false);
 
     ///assert
     ASSERT_ARE_EQUAL(int, -2, result);
@@ -333,13 +333,13 @@ TEST_FUNCTION(UCONTRACT_u_contract_with_two_arg_second_failed)
     ///cleanup
 }
 
-TEST_FUNCTION(UCONTRACT_u_contract_with_three_arg_failed)
+TEST_FUNCTION(UCONTRACT_ucontract_with_three_arg_failed)
 {
     ///arrange
     int i = 0;
 
     ///act
-    int result = u_contract_with_three_arg(&i, true, false);
+    int result = ucontract_with_three_arg(&i, true, false);
 
     ///assert
     ASSERT_ARE_EQUAL(int, -3, result);
@@ -347,13 +347,13 @@ TEST_FUNCTION(UCONTRACT_u_contract_with_three_arg_failed)
     ///cleanup
 }
 
-TEST_FUNCTION(UCONTRACT_u_contract_with_four_arg_failed)
+TEST_FUNCTION(UCONTRACT_ucontract_with_four_arg_failed)
 {
     ///arrange
     int i = 0;
 
     ///act
-    int result = u_contract_with_four_arg(&i, true, true, 0);
+    int result = ucontract_with_four_arg(&i, true, true, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(int, -4, result);

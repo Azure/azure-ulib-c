@@ -133,7 +133,7 @@ TEST_FUNCTION_INITIALIZE(Test_method_initialize)
     umock_c_reset_all_calls();
 }
 
-TEST_FUNCTION_CLEANUP(Test_method_cleanup)
+TEST_FUNCTION_CLEANUP(test_method_cleanup)
 {
     ASSERT_ARE_EQUAL(int, 0, g_memory_counter, "Memory issue");
 
