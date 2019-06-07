@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 2.8.12)
 
-usePermissiveRulesForSamplesAndTests()
+use_permissive_rules_for_samples_and_tests()
 
 include_directories(./inc)
 

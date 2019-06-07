@@ -3,15 +3,15 @@
 
 cmake_minimum_required(VERSION 2.8.11)
 
-set(thisTestSuiteName ustream_const_ut)
+set(this_test_suite_name ustream_const_ut)
 
-set(${thisTestSuiteName}_test_files
-    ${thisTestSuiteName}.c
+set(${this_test_suite_name}_test_files
+    ${this_test_suite_name}.c
 )
 
 include_directories(${SHARED_UTIL_REAL_TEST_FOLDER})
 
-set(${thisTestSuiteName}_c_files
+set(${this_test_suite_name}_c_files
     ../../ulog/ulog.c
     ../../ustream/ustream.c
     ../../ustream/ustream_base.c
@@ -19,7 +19,7 @@ set(${thisTestSuiteName}_c_files
     ../src/ustream_mock_buffer.c
 )
 
-set(${thisTestSuiteName}_h_files
+set(${this_test_suite_name}_h_files
 	../../inc/ulog.h
 	../../inc/ustream.h
 	../../inc/ustream_base.h
@@ -28,6 +28,6 @@ set(${thisTestSuiteName}_h_files
     ../inc/ustream_mock_buffer.h
 )
 
-build_c_test_artifacts(${thisTestSuiteName} ON "tests/ustream_const_tests")
+build_c_test_artifacts(${this_test_suite_name} ON "tests/ustream_const_tests")
 
-compile_c_test_artifacts_as(${thisTestSuiteName} C99)
+compile_c_test_artifacts_as(${this_test_suite_name} C99)

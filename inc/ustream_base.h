@@ -44,7 +44,7 @@
  *  |    Provider    |        |    Consumer    |         |      uStream     |     |    HEAP    |
  *  +----------------+        +----------------+         +------------------+     +------------+
  *          |                         |                            |                    |
- *          |<--GetProviderContent()--+                            |                    |
+ *          |<-get_provider_content()-+                            |                    |
  *          +----------------------------malloc(content_size)-------------------------->|
  *          |<--------------------------------content_ptr-------------------------------+
  *   +------+                         |                            |                    |
@@ -54,7 +54,7 @@
  *          |       (content_ptr, content_size, take_ownership)--->|                    |
  *          |                         |                     +------+                    |
  *          |                         |                     | data_source = content_ptr |
- *          |                         |                     | data_sourceSize = content_size
+ *          |                         |                     | data_source_size = content_size
  *          |                         |                     | ownership = true          |
  *          |                         |                     +----->|                    |
  *          |<-----------------ustream_interface-------------------+                    |
@@ -117,9 +117,9 @@
  *      it, this consumer must first make a clone of the buffer, creating its own instance of it, and 
  *      then make the needed operations.
  * <p> Cloning a buffer creates a new set of controls for the buffer that will share the same content of
- *      the original buffer. The content itself is a smart pointer with a {@code refCount} that
+ *      the original buffer. The content itself is a smart pointer with a {@code ref_count} that
  *      controls the total number of instances.
- * <p> Disposing an instance of the buffer will decrease the {@code refCount} of this buffer. If the
+ * <p> Disposing an instance of the buffer will decrease the {@code ref_count} of this buffer. If the
  *      number of references reaches 0, the buffer will destroy itself, releasing all allocated memory.
  *      {@b Not disposing an instance of the buffer will leak memory}.
  * <p> Instances of the buffer can be created in 2 ways:
@@ -332,7 +332,7 @@ struct USTREAM_INTERFACE_TAG
  * <p> It will return true if the handle is valid and it is the same type of the API. It will
  *      return false if the handle is NULL or note the correct type.
  */
-#define USTREAM_IS_NOT_TYPE_OF(handle, typeApi)   ((handle == NULL) || (handle->api != &typeApi))
+#define USTREAM_IS_NOT_TYPE_OF(handle, type_api)   ((handle == NULL) || (handle->api != &type_api))
 
 /**
  * @brief   Change the current position of the buffer.
@@ -550,9 +550,9 @@ static inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offse
  *
  * <pre><code>
  * offset_t pos;
- * if(ustream_get_position(myBuffer, &pos) == ULIB_SUCCESS)
+ * if(ustream_get_position(my_buffer, &pos) == ULIB_SUCCESS)
  * {
- *     ustream_release(myBuffer, pos - 1);
+ *     ustream_release(my_buffer, pos - 1);
  * }
  * </code></pre>
  *

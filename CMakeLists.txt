@@ -98,7 +98,7 @@ include("build_all/configs/ulib_aux_functions.cmake")
 include("build_all/configs/ulib_build_rules.cmake")
 
 add_library(azure-ulib-c ${azure_ulib_c_files} ${azure_ulib_h_files})
-setTargetBuildProperties(azure-ulib-c)
+set_target_build_properties(azure-ulib-c)
 target_link_libraries(azure-ulib-c aziotsharedutil)
 
 if (${run_unittests})
@@ -109,4 +109,4 @@ if (NOT ${skip_samples})
     add_subdirectory(samples)
 endif()
 
-compileTargetAsC99(azure-ulib-c)
+compile_target_as_c99(azure-ulib-c)

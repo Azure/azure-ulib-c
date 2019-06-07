@@ -3,22 +3,22 @@
 
 cmake_minimum_required(VERSION 2.8.11)
 
-set(thisTestSuiteName ucontract_ut)
+set(this_test_suite_name ucontract_ut)
 
-set(${thisTestSuiteName}_test_files
-    ${thisTestSuiteName}.c
+set(${this_test_suite_name}_test_files
+    ${this_test_suite_name}.c
 )
 
 include_directories(${SHARED_UTIL_REAL_TEST_FOLDER})
 
-set(${thisTestSuiteName}_c_files
+set(${this_test_suite_name}_c_files
     ../../ulog/ulog.c
 )
 
-set(${thisTestSuiteName}_h_files
+set(${this_test_suite_name}_h_files
     ../../inc/ucontract.h
 )
 
-build_c_test_artifacts(${thisTestSuiteName} ON "tests/ucontract_tests")
+build_c_test_artifacts(${this_test_suite_name} ON "tests/ucontract_tests")
 
-compile_c_test_artifacts_as(${thisTestSuiteName} C99)
+compile_c_test_artifacts_as(${this_test_suite_name} C99)
