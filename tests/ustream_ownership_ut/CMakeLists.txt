@@ -20,9 +20,9 @@ set(${this_test_suite_name}_c_files
 )
 
 set(${this_test_suite_name}_h_files
-	../../inc/ulog.h
-	../../inc/ustream.h
-	../../inc/ustream_base.h
+    ../../inc/ulog.h
+    ../../inc/ustream.h
+    ../../inc/ustream_base.h
     ../inc/ustream_compliance_ut.h
     ../inc/ustream_ctest_aux.h
     ../inc/ustream_mock_buffer.h

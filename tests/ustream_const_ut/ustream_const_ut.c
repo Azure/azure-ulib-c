@@ -118,7 +118,7 @@ TEST_SUITE_CLEANUP(suite_cleanup)
     TEST_DEINITIALIZE_MEMORY_DEBUG(g_dll_by_dll);
 }
 
-TEST_FUNCTION_INITIALIZE(Test_method_initialize)
+TEST_FUNCTION_INITIALIZE(test_method_initialize)
 {
     if (TEST_MUTEX_ACQUIRE(g_test_by_test))
     {

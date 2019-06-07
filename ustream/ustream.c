@@ -71,7 +71,7 @@ static USTREAM* create_instance(
     else
     {
         USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ULIB_CONFIG_MALLOC(sizeof(USTREAM_INSTANCE));
-        /*[az_stdbuffer_clone_no_memory_tocreate_instance_failed]*/
+        /*[az_stdbuffer_clone_no_memory_to_create_instance_failed]*/
         if(instance != NULL)
         {
             ustream_interface->api = &api;
