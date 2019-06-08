@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 2.8.12)
 
-use_permissive_rules_for_samples_and_tests()
+usePermissiveRulesForSamplesAndTests()
 
 # add_unittest_directory(az_constbuffer_sample)
 # add_unittest_directory(az_multibuffer_sample)

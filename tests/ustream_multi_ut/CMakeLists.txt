@@ -3,15 +3,15 @@
 
 cmake_minimum_required(VERSION 2.8.11)
 
-set(this_test_suite_name ustream_multi_ut)
+set(thisTestSuiteName ustream_multi_ut)
 
-set(${this_test_suite_name}_test_files
-    ${this_test_suite_name}.c
+set(${thisTestSuiteName}_test_files
+    ${thisTestSuiteName}.c
 )
 
 include_directories(${SHARED_UTIL_REAL_TEST_FOLDER})
 
-set(${this_test_suite_name}_c_files
+set(${thisTestSuiteName}_c_files
     ../../ulog/ulog.c
     ../../ustream/ustream_multi.c
     ../../ustream/ustream_base.c
@@ -19,15 +19,15 @@ set(${this_test_suite_name}_c_files
     ../src/ustream_mock_buffer.c
 )
 
-set(${this_test_suite_name}_h_files
-    ../../inc/ulog.h
-    ../../inc/ustream.h
-    ../../inc/ustream_base.h
+set(${thisTestSuiteName}_h_files
+	../../inc/ulog.h
+	../../inc/ustream.h
+	../../inc/ustream_base.h
     ../inc/ustream_compliance_ut.h
     ../inc/ustream_ctest_aux.h
     ../inc/ustream_mock_buffer.h
 )
 
-build_c_test_artifacts(${this_test_suite_name} ON "tests/ustream_multi_tests")
+build_c_test_artifacts(${thisTestSuiteName} ON "tests/ustream_multi_tests")
 
-compile_c_test_artifacts_as(${this_test_suite_name} C99)
+compile_c_test_artifacts_as(${thisTestSuiteName} C99)
