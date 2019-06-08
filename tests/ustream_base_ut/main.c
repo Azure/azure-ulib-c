@@ -5,7 +5,7 @@
 
 int main(void)
 {
-    size_t failedTestCount = 0;
-    RUN_TEST_SUITE(ustream_base_ut, failedTestCount);
-    return failedTestCount;
+    size_t failed_test_count = 0;
+    RUN_TEST_SUITE(ustream_base_ut, failed_test_count);
+    return failed_test_count;
 }
