@@ -359,21 +359,22 @@ struct USTREAM_INTERFACE_TAG
  *      - If the provided interface is not the implemented buffer type, the set_position shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
- *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
- *                              implemented buffer type.
- * @param  position                The <tt>offset_t</tt> with the new current position in the buffer.
+ * @param   ustream_interface           The {@link USTREAM}* with the interface of the buffer. It
+ *                                      cannot be \p NULL, and it shall be a valid buffer that is the
+ *                                      implemented buffer type.
+ * @param   position                    The <tt>offset_t</tt> with the new current position in the buffer.
+ * 
  * @return The {@link ULIB_RESULT} with the result of the set_position operation.
- *          @retval ULIB_SUCCESS - If the buffer changed the current position with success.
- *          @retval ULIB_BUSY_ERROR - If the resource necessary for the set_position operation is busy.
- *          @retval ULIB_CANCELLED_ERROR - If the set_position operation was cancelled.
- *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          @retval ULIB_NO_SUCH_ELEMENT_ERROR - If the position is out of the buffer range.
- *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the
- *              set_position operation.
- *          @retval ULIB_SECURITY_ERROR - If the set_position operation was denied for security
- *              reasons.
- *          @retval ULIB_SYSTEM_ERROR - If the set_position operation failed on the system level.
+ *          @retval     ULIB_SUCCESS                If the buffer changed the current position with success.
+ *          @retval     ULIB_BUSY_ERROR             If the resource necessary for the set_position operation is busy.
+ *          @retval     ULIB_CANCELLED_ERROR        If the set_position operation was cancelled.
+ *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     ULIB_NO_SUCH_ELEMENT_ERROR  If the position is out of the buffer range.
+ *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
+ *                                                  set_position operation.
+ *          @retval     ULIB_SECURITY_ERROR         If the set_position operation was denied for security
+ *                                                  reasons.
+ *          @retval ULIB_SYSTEM_ERROR               If the set_position operation failed on the system level.
  */
 static inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t position)
 {
@@ -396,22 +397,23 @@ static inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offse
  *      - If the provided interface is not the implemented buffer type, the buffer reset shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
- *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
- *                              implemented buffer type.
+ * @param   ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
+ *                                  cannot be \p NULL, and it shall be a valid buffer that is the
+ *                                  implemented buffer type.
+ * 
  * @return The {@link ULIB_RESULT} with the result of the reset operation.
- *          @retval ULIB_SUCCESS - If the buffer changed the current position with success.
- *          @retval ULIB_BUSY_ERROR - If the resource necessary for the reset operation is
- *              busy.
- *          @retval ULIB_CANCELLED_ERROR - If the reset operation was cancelled.
- *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          @retval ULIB_NO_SUCH_ELEMENT_ERROR - If all previous bytes in the buffer were already
- *              released.
- *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the
- *              reset operation.
- *          @retval ULIB_SECURITY_ERROR - If the reset operation was denied for security
- *              reasons.
- *          @retval ULIB_SYSTEM_ERROR - If the reset operation failed on the system level.
+ *          @retval     ULIB_SUCCESS                If the buffer changed the current position with success.
+ *          @retval     ULIB_BUSY_ERROR             If the resource necessary for the reset operation is
+ *                                                  busy.
+ *          @retval     ULIB_CANCELLED_ERROR        If the reset operation was cancelled.
+ *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     ULIB_NO_SUCH_ELEMENT_ERROR  If all previous bytes in the buffer were already
+ *                                                  released.
+ *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
+ *                                                  reset operation.
+ *          @retval     ULIB_SECURITY_ERROR         If the reset operation was denied for security
+ *                                                  reasons.
+ *          @retval     ULIB_SYSTEM_ERROR           If the reset operation failed on the system level.
  */
 static inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
 {
@@ -449,24 +451,25 @@ static inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *          ULIB_ILLEGAL_ARGUMENT_ERROR and will not change the local buffer contents or the
  *          current position of the buffer.
  *
- * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
- *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
- *                              implemented buffer type.
- * @param  buffer                  The <tt>uint8_t* const} that points to the local buffer. It cannot be {@code NULL</tt>.
- * @param  buffer_length           The <tt>size_t</tt> with the size of the local buffer. It shall be
- *                              bigger than 0.
- * @param  size                    The <tt>size_t* const</tt> that points to the place where the read shall store
- *                              the number of valid <tt>uint8_t} values in the local buffer. It cannot be {@code NULL</tt>.
+ * @param   ustream_interface           The {@link USTREAM}* with the interface of the buffer. It
+ *                                      cannot be \p NULL, and it shall be a valid buffer that is the
+ *                                      implemented buffer type.
+ * @param   buffer                      The <tt>uint8_t* const} that points to the local buffer. It cannot be {@code NULL</tt>.
+ * @param   buffer_length               The <tt>size_t</tt> with the size of the local buffer. It shall be
+ *                                      bigger than 0.
+ * @param   size                        The <tt>size_t* const</tt> that points to the place where the read shall store
+ *                                      the number of valid <tt>uint8_t} values in the local buffer. It cannot be {@code NULL</tt>.
+ * 
  * @return The {@link ULIB_RESULT} with the result of the read operation.
- *          @retval ULIB_SUCCESS - If the buffer copied the content of the Data Source to the local buffer
- *              with success.
- *          @retval ULIB_BUSY_ERROR - If the resource necessary to copy the buffer content is busy.
- *          @retval ULIB_CANCELLED_ERROR - If the copy of the content was cancelled.
- *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          @retval ULIB_EOF - If there are no more <tt>uint8_t</tt> values in the Data Source to copy.
- *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the copy.
- *          @retval ULIB_SECURITY_ERROR - If the read was denied for security reasons.
- *          @retval ULIB_SYSTEM_ERROR - If the read operation failed on the system level.
+ *          @retval     ULIB_SUCCESS                If the buffer copied the content of the Data Source to the local buffer
+ *                                                  with success.
+ *          @retval     ULIB_BUSY_ERROR             If the resource necessary to copy the buffer content is busy.
+ *          @retval     ULIB_CANCELLED_ERROR        If the copy of the content was cancelled.
+ *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     ULIB_EOF                    If there are no more <tt>uint8_t</tt> values in the Data Source to copy.
+ *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the copy.
+ *          @retval     ULIB_SECURITY_ERROR         If the read was denied for security reasons.
+ *          @retval     ULIB_SYSTEM_ERROR           If the read operation failed on the system level.
  */
 static inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
 {
@@ -486,22 +489,23 @@ static inline ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* cons
  *          return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided size is NULL, the get_remaining_size shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
- *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
- *                              implemented buffer type.
- * @param  size                    The <tt>size_t* const} to returns the remaining number of {@code uint8_t</tt> values 
- *                              copied to the buffer. It cannot be <tt>NULL</tt>.
+ * @param   ustream_interface           The {@link USTREAM}* with the interface of the buffer. It
+ *                                      cannot be \p NULL, and it shall be a valid buffer that is the
+ *                                      implemented buffer type.
+ * @param   size                        The <tt>size_t* const} to returns the remaining number of {@code uint8_t</tt> values 
+ *                                      copied to the buffer. It cannot be \p NULL.
+ * 
  * @return The {@link ULIB_RESULT} with the result of the get_remaining_size operation.
- *          @retval ULIB_SUCCESS - If it succeeded to get the remaining size of the buffer.
- *          @retval ULIB_BUSY_ERROR - If the resource necessary to the get the remain size of
- *              the buffer is busy.
- *          @retval ULIB_CANCELLED_ERROR - If the get remaining size was cancelled.
- *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the get
- *              remaining size operation.
- *          @retval ULIB_SECURITY_ERROR - If the get remaining size was denied for security reasons.
- *          @retval ULIB_SYSTEM_ERROR - If the get remaining size operation failed on the
- *              system level.
+ *          @retval     ULIB_SUCCESS                If it succeeded to get the remaining size of the buffer.
+ *          @retval     ULIB_BUSY_ERROR             If the resource necessary to the get the remain size of
+ *                                                  the buffer is busy.
+ *          @retval     ULIB_CANCELLED_ERROR        If the get remaining size was cancelled.
+ *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the get
+ *                                                  remaining size operation.
+ *          @retval     ULIB_SECURITY_ERROR         If the get remaining size was denied for security reasons.
+ *          @retval     ULIB_SYSTEM_ERROR           If the get remaining size operation failed on the
+ *                                                  system level.
  */
 static inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t* const size)
 {
@@ -520,23 +524,24 @@ static inline ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface,
  *          shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided position is NULL, the get_position shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
- *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
- *                              implemented buffer type.
- * @param  position                The <tt>offset_t* const</tt> to returns the logical current position in the
- *                              buffer. It cannot be <tt>NULL</tt>.
+ * @param   ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
+ *                                  cannot be \p NULL, and it shall be a valid buffer that is the
+ *                                  implemented buffer type.
+ * @param   position                The <tt>offset_t* const</tt> to returns the logical current position in the
+ *                                  buffer. It cannot be \p NULL.
+ * 
  * @return The {@link ULIB_RESULT} with the result of the get_position operation.
- *          @retval ULIB_SUCCESS - If it provided the logical current position of the buffer.
- *          @retval ULIB_BUSY_ERROR - If the resource necessary for the getting the logical current
- *              position is busy.
- *          @retval ULIB_CANCELLED_ERROR - If the get logical current position was cancelled.
- *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is not enough memory to execute the get
- *              logical current position operation.
- *          @retval ULIB_SECURITY_ERROR - If the get logical current position was denied for
- *              security reasons.
- *          @retval ULIB_SYSTEM_ERROR - If the get logical current position operation failed on
- *              the system level.
+ *          @retval     ULIB_SUCCESS                If it provided the logical current position of the buffer.
+ *          @retval     ULIB_BUSY_ERROR             If the resource necessary for the getting the logical current
+ *                                                  position is busy.
+ *          @retval     ULIB_CANCELLED_ERROR        If the get logical current position was cancelled.
+ *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the get
+ *                                                  logical current position operation.
+ *          @retval     ULIB_SECURITY_ERROR         If the get logical current position was denied for
+ *                                                  security reasons.
+ *          @retval     ULIB_SYSTEM_ERROR           If the get logical current position operation failed on
+ *                                                  the system level.
  */
 static inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* const position)
 {
@@ -574,17 +579,18 @@ static inline ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offse
  *      - If the provided interface is not the implemented buffer type, the release shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
- *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is the
+ * @param  ustream_interface    The {@link USTREAM}* with the interface of the buffer. It
+ *                              cannot be \p NULL, and it shall be a valid buffer that is the
  *                              implemented buffer type.
- * @param  position                The <tt>offset_t</tt> with the position in the buffer to release. The
+ * @param  position             The <tt>offset_t</tt> with the position in the buffer to release. The
  *                              buffer will release the <tt>uint8_t} on the position and all {@code uint8_t</tt> 
  *                              before the position. It shall be bigger than 0.
+ * 
  * @return The {@link ULIB_RESULT} with the result of the release operation.
- *          @retval ULIB_SUCCESS - If the buffer releases the position with success.
- *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
- *          @retval ULIB_NO_SUCH_ELEMENT_ERROR - If the position is already released.
- *          @retval ULIB_SYSTEM_ERROR - If the release operation failed on the system level.
+ *          @retval     ULIB_SUCCESS                If the buffer releases the position with success.
+ *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     ULIB_NO_SUCH_ELEMENT_ERROR  If the position is already released.
+ *          @retval     ULIB_SYSTEM_ERROR           If the release operation failed on the system level.
  */
 static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position)
 {
@@ -688,15 +694,16 @@ static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t p
  *          shall return NULL.
  *      - The cloned buffer shall not interfere in the instance of the original buffer and vice versa.
  *
- * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer.
- *                              It cannot be <tt>NULL</tt>, and it shall be a valid buffer that is
- *                              type of the implemented buffer.
- * @param  offset                  The <tt>offset_t</tt> with the `Logical` position of the first byte in
- *                              the cloned buffer.
+ * @param   ustream_interface           The {@link USTREAM}* with the interface of the buffer.
+ *                                      It cannot be \p NULL, and it shall be a valid buffer that is
+ *                                      type of the implemented buffer.
+ * @param   offset                      The <tt>offset_t</tt> with the `Logical` position of the first byte in
+ *                                      the cloned buffer.
+ * 
  * @return The {@link USTREAM}* with the result of the clone operation.
- *          - @b not NULL - If the buffer was copied with success.
- *          - @b NULL - If one of the provided parameters is invalid or there is not enough memory to
- *              control the new buffer.
+ *          @retval    not NULL         If the buffer was copied with success.
+ *          @retval    NULL             If one of the provided parameters is invalid or there is not enough memory to
+ *                                      control the new buffer.
  */
 static inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset)
 {
@@ -718,12 +725,13 @@ static inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset
  *      - If the provided interface is not type of the implemented buffer, the dispose shall return
  *          ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param  ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
- *                              cannot be <tt>NULL</tt>, and it shall be a valid buffer that is type
- *                              of the implemented buffer.
+ * @param   ustream_interface       The {@link USTREAM}* with the interface of the buffer. It
+ *                                  cannot be \p NULL, and it shall be a valid buffer that is type
+ *                                  of the implemented buffer.
+ * 
  * @return The {@link ULIB_RESULT} with the result of the dispose operation.
- *          @retval ULIB_SUCCESS - If the instance of the buffer was disposed with success.
- *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
+ *          @retval ULIB_SUCCESS                    If the instance of the buffer was disposed with success.
+ *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR     If one of the provided parameters is invalid.
  */
 static inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
 {
@@ -747,14 +755,14 @@ static inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *         ULIB_OUT_OF_MEMORY_ERROR.
   *
   * @param  ustream_interface       The {@link USTREAM}* with the interface of 
-  *                             the buffer. It cannot be <tt>NULL</tt>, and it shall be a valid buffer.
+  *                                 the buffer. It cannot be \p NULL, and it shall be a valid buffer.
   * @param  ustream_to_append       The {@link USTREAM}* with the interface of 
-  *                             the buffer to be appended to the original buffer. It cannot be <tt>NULL</tt>, 
-  *                             and it shall be a valid buffer.
+  *                                 the buffer to be appended to the original buffer. It cannot be \p NULL, 
+  *                                 and it shall be a valid buffer.
   * @return The {@link ULIB_RESULT} with the result of the Append operation.
-  *          @retval ULIB_SUCCESS - If the buffer was appended with success.
-  *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR - If one of the provided parameters is invalid.
-  *          @retval ULIB_OUT_OF_MEMORY_ERROR - If there is no memory to append the buffer.
+  *          @retval    ULIB_SUCCESS                If the buffer was appended with success.
+  *          @retval    ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+  *          @retval    ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to append the buffer.
   */
 MOCKABLE_FUNCTION( , 
     ULIB_RESULT, ustream_append,
