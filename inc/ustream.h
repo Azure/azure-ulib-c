@@ -26,7 +26,7 @@ extern "C" {
 /**
  * @brief   Factory to create a new uStream.
  *
- * <p> This factory creates a uStream that handles the content of the provided buffer. As a result,
+ *  This factory creates a uStream that handles the content of the provided buffer. As a result,
  *      it will return a {@link USTREAM}* with this content. The new uStream can keep 
  *      or not keep the ownership of the memory pointed to by the <tt>*buffer</tt> depending on the state of the 
  *      boolean <tt>take_ownership</tt>. It can be:
@@ -62,7 +62,7 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
 /**
  * @brief   Factory to create a new uStream using constant content, which cannot be changed or released.
  *
- * <p> This factory creates a uStream that manages content in constant memory. In this case, 
+ *  This factory creates a uStream that manages content in constant memory. In this case, 
  *      this API will not copy the content to a internal buffer, or release the memory when the uStream 
  *      is disposed. To create a new uStream, a valid pointer to a constant memory address shall be provided, 
  *      and the number of bytes to handle. The factory will use the reference of the provided buffer as its
@@ -82,21 +82,21 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_const_create,
 /**
  * @brief   Factory to create a new uStreamMulti.
  *
- * <p> uStreamMulti is a buffer that handles multiple heterogeneous uStreams and exposes 
+ *  uStreamMulti is a buffer that handles multiple heterogeneous uStreams and exposes 
  *      it with a single interface. The sequence of the buffers is determined by the appended sequence:
  *      first in first out.
- * <p> Note that the <tt>read()</tt> API will return the content of the appended buffers as if
+ *  Note that the <tt>read()</tt> API will return the content of the appended buffers as if
  *      it was a single buffer. There is nothing that identifies where one buffer stops and the
  *      next one starts.
- * <p> Copying a uStreamMulti creates a new instance that has the same content of the original one
+ *  Copying a uStreamMulti creates a new instance that has the same content of the original one
  *      at the moment where the copy was made. Any change in the original uStreamMulti
  *      will **NOT** be reflected in its copies, and changes in the copies will not change the
  *      original uStreamMulti as well.
- * <p> The uStreamMulti creates its own copy of each appended buffer. It will enforce the immutable
+ *  The uStreamMulti creates its own copy of each appended buffer. It will enforce the immutable
  *      characteristic of the uStream.
- * <p> Because a uStreamMulti exposes a uStream interface, it can be appended to another
+ *  Because a uStreamMulti exposes a uStream interface, it can be appended to another
  *      uStreamMulti.
- * <p> Release part of a uStreamMulti will dispose the appended buffers that are not necessary anymore,
+ *  Release part of a uStreamMulti will dispose the appended buffers that are not necessary anymore,
  *      and the disposal of the uStreamMulti will dispose all appended buffers.
  *
  * @return The {@link USTREAM}* with the uStreamMulti interface.
@@ -108,7 +108,7 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_multi_create);
 /**
  * @brief   Append an existent buffer to the uStreamMulti.
  *
- * <p> Append will add a new buffer at the end of the list of buffers in the uStreamMulti. To maintain
+ *  Append will add a new buffer at the end of the list of buffers in the uStreamMulti. To maintain
  *      the immutability, every copy of the uStreamMulti will create an independent instance of it, which
  *      means that appending a new buffer in a current instance of the uStreamMulti will not affect the
  *      other instances.
