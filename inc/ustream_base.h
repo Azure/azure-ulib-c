@@ -5,7 +5,6 @@
 #define AZURE_ULIB_C_INC_USTREAM_BASE_H_
 
 /**
- * 
  * @file ustream_base.h
  * 
  * @brief uStream Interface
@@ -127,9 +126,9 @@
  *      {@b Not disposing an instance of the buffer will leak memory}.
  *  Instances of the buffer can be created in 2 ways:
  *      - @b Factory - when a producer exposes data using this buffer, it must create the buffer
- *          using a factory, so the operation buffer <tt>Create</tt> returns the first instance of the
+ *          using a factory, so the operation buffer <tt>create</tt> returns the first instance of the
  *          buffer.
- *      - @b Clone - when a consumer needs a copy of the buffer, it can use the {@link ustream_clone}.
+ *      - @b Clone - when a consumer needs a copy of the buffer, it can use the ustream_clone().
  *
  * <b>Thread safe</b>
  *  The uStream **IS NOT** thread safe for multiple accesses over the same instance. The ownership
@@ -145,7 +144,7 @@
  *  This interface only exposes read functions, so once created, the content of the buffer cannot
  *      be changed by the producer of any of the consumers. Changing the content of the data source will
  *      result in a data mismatch.
- *  Consumers can do a partial release of the buffer by calling {@link ustream_release}.
+ *  Consumers can do a partial release of the buffer by calling ustream_release().
  *      Calling the release does not imply that part of the memory will be immediately released. Once a
  *      buffer can handle multiple instances, a memory can only be free if all instances released it.
  *      A buffer implementation can or cannot have the ability to do partial releases. For instance, a
@@ -154,11 +153,11 @@
  *  Released data cannot be accessed, even if it is still available in the memory.
  *
  * <b>Appendable</b>
- *  New data can be appended at the end of the uStream by calling  {@link ustream_append}.
+ *  New data can be appended at the end of the uStream by calling ustream_append().
  *      This can include uStream's from other different medias. In this way, the uStream can
  *      be used as a Stream of data.
  *  To protect the immutability of the uStream, appending a new uStream to an existing one will
- *      only affect the instance that is calling the {@link ustream_append}.
+ *      only affect the instance that is calling the ustream_append().
  * 
  * <i><b>Example</b></i>
  *  A producer created 3 uStreams named A, B, and C. At this point, it handles one instance of each
@@ -170,21 +169,21 @@
  *
  * <b>Lazy</b>
  *  The buffer can contain the full content, bring it into memory when required, or even create the content
- *      when it is necessary. The implementation of the {@link ustream_read} function can be smart 
+ *      when it is necessary. The implementation of the ustream_read() function can be smart 
  *      enough to use the minimal amount of memory. 
  *  The only restriction is if a consumer accesses the same position of the buffer multiple times, it shall
  *      return the same data.
  * 
  * <i><b>Example</b></i>
  *  A random generator can expose random numbers using the uStream. To do that it shall generate a 
- *      new number when the consumer calls {@link ustream_read}. But to preserve the immutability,
- *      the implementation of the {@link ustream_read} shall store the number in a recover queue up
+ *      new number when the consumer calls ustream_read(). But to preserve the immutability,
+ *      the implementation of the ustream_read() shall store the number in a recover queue up
  *      to the point that the consumer releases this data. Because, if in some point in time, the consumer 
- *      seeks this old position, the {@link ustream_read} shall return the same value created in
- *      the first call of {@link ustream_read}.
+ *      seeks this old position, the ustream_read() shall return the same value created in
+ *      the first call of ustream_read().
  *
  * <b>Data conversion</b>
- *  When the data is copied from the data source to the local buffer, the {@link ustream_read}
+ *  When the data is copied from the data source to the local buffer, the ustream_read()
  *      may do a data conversion, which means that the content exposed on the local buffer is a function
  *      of the content in the data source. It directly implies that the number of bytes written in the
  *      local buffer may be different than the number of bytes read from the data source.
@@ -192,8 +191,8 @@
  * <i><b>Example</b></i>
  *  A uStream can have the data source in binary format with 36 bytes, but it shall expose the 
  *      content encoded in base64. The base64 creates 4 encoded bytes for each 3 bytes read. So, seeking the 
- *      beginning of the file, the {@link ustream_get_remaining_size} shall return 48 (= 36 / 3 * 4),
- *      instead of 36. If the consumer provides a local buffer of 16 bytes, the {@link ustream_read} 
+ *      beginning of the file, the ustream_get_remaining_size() shall return 48 (= 36 / 3 * 4),
+ *      instead of 36. If the consumer provides a local buffer of 16 bytes, the ustream_read() 
  *      shall read only 12 bytes from the data source, and encode it in base64 expanding the 12 bytes to 
  *      16 bytes on the local buffer.
  * <pre><code>
@@ -212,10 +211,10 @@
  * </code></pre>
  *
  * <b>Data offset</b>
- *  In the data source, each byte is associated with a position, called {@b inner position}. The first 
+ *  In the data source, each byte is associated with a position, called <tt>inner position</tt>. The first 
  *      byte is always placed in the inner position `0`, followed by the other bytes which are incremented
  *      in a sequential manner. The uStream assigns a sequential number to each byte
- *      in the local buffer as well, called {@b logical position}. When a new uStream is created,
+ *      in the local buffer as well, called <tt>logical position</tt>. When a new uStream is created,
  *      the logical position matches the inner position, both starting at position `0`.
  *  When the buffer is cloned, an offset shall be provided. This offset is the new first logical 
  *      position. The implementation of the uStream shall handle the difference between the inner
@@ -229,9 +228,9 @@
  *      `0` to `99`, and it matches the logical position. The consumer clones this buffer providing an
  *      offset of `1000`. The new instance contains the same content as the original one, but the 
  *      logical positions are now from `1000` to `1099`.
- *  If the owner of the first instance wants to set the position to position 10, it shall call {@link ustream_set_position}
+ *  If the owner of the first instance wants to set the position to position 10, it shall call ustream_set_position()
  *      with the logical position 10. For the cloned instance, to set the position to the same position 10, it shall call 
- *      {@link ustream_set_position} with the logical position 1010.
+ *      ustream_set_position() with the logical position 1010.
  *
  * <b>Sliding window</b>
  *  One of the target use cases of the uStream is to accelerate and simplify the implementation of 
@@ -254,7 +253,7 @@
  *      - @b Released - Sequence of bytes in the data source that is already acknowledged by the consumer, 
  *          and shall not be accessed anymore.
  *      - @b Pending - Sequence of bytes in the data source that is already read by the consumer, but not 
- *          acknowledged yet. The consumer can seek these bytes with {@link ustream_set_position} and read it again. This sequence starts at 
+ *          acknowledged yet. The consumer can seek these bytes with ustream_set_position() and read it again. This sequence starts at 
  *          the First Valid Position and ends at the last byte before the Current Position.
  *      - @b Read - Is the last read portion of the data source. On the read operation, the Read starts
  *          in the Current Position up to the read size. At the end of the read, this segment is 
@@ -272,12 +271,12 @@
  *      and get the same content using the read.
  *  The consumer may confirm that a portion of the data is not necessary anymore. For example, after transmitting
  *      multiple TCP packets, the receiver of these packets answers with an ACK for a sequence number. In this case,
- *      the consumer can release this data in the data source by calling the {@link ustream_release}, moving 
+ *      the consumer can release this data in the data source by calling the ustream_release(), moving 
  *      the First Valid Position to the next one after the released position.
  *  A common scenario is when the consumer needs to read over the data source starting on the first byte after
  *      the last released one. For example, when a timeout happens for a transmitted packet without ACK, the 
  *      sender shall retransmit the data starting from that point. In this case, the consumer can call the API
- *      {@link ustream_reset}. 
+ *      ustream_reset(). 
  *
  */
 
@@ -346,7 +345,7 @@ struct USTREAM_INTERFACE_TAG
  * @brief   Change the current position of the buffer.
  *
  *  The current position is the one that will be returned in the local buffer by the next
- *      {@link ustream_read}. Consumers can call this API to go back or forward, but it cannot be exceed
+ *      ustream_read(). Consumers can call this API to go back or forward, but it cannot be exceed
  *      the end of the buffer or precede the fist valid position (last released position + 1).
  *
  *  The <tt>ustream_set_position</tt> API shall follow these minimum requirements:
@@ -385,7 +384,7 @@ static inline ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offse
  * @brief   Changes the current position to the first valid position.
  *
  *  The current position is the one that will be returned in the local buffer by the next
- *      {@link ustream_read}. Reset will bring the current position to the first valid one, which
+ *      ustream_read(). Reset will bring the current position to the first valid one, which
  *      is the first byte after the released position.
  *
  *  The <tt>ustream_reset</tt> API shall follow the following minimum requirements:

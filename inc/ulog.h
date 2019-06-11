@@ -41,7 +41,7 @@ extern const char* const ULOG_TYPE_STRING[];
  * @brief log function for ulib_config
  * 
  * @param   type    ULOG_TYPE to signify error or info log
- * @param   format  Format prefix to the passed string in (...)
+ * @param   format  Format prefix for the passed string in (...)
  * @param   ...     Passed string (with any % formatting parameters) to print to the log
  */
 void ulog_print(ULOG_TYPE type, const char* const format, ...);
