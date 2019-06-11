@@ -26,22 +26,22 @@ extern "C" {
 /**
  * @brief   Macro to define contract for public function parameters.
  * 
- *          Parameters to this macro shall be a comma separated list of UCONTRACT_...
- *          macros as listed below.
+ *  Parameters to this macro shall be a comma separated list of UCONTRACT_...
+ *  macros as listed below.
  * 
- *          Each public function shall have one UCONTRACT() macro with the listed
- *          requirements inside.
+ *  Each public function shall have one UCONTRACT() macro with the listed
+ *  requirements inside.
  */
 #define UCONTRACT(...) do { MU_FOR_EACH_1(EVALUATE_REQUIRE, __VA_ARGS__) } while((void)0,0)
 
 /**
  * @brief   Macro to define assertion for internal functions
  * 
- *          Parameters to this macro shall be a comma separated list of UCONTRACT_...
- *          macros as listed below.
+ *  Parameters to this macro shall be a comma separated list of UCONTRACT_...
+ *  macros as listed below.
  * 
- *          Each public function shall have one UCONTRACT() macro with the listed
- *          requirements inside.
+ *  Each public function shall have one UCONTRACT() macro with the listed
+ *  requirements inside.
  */
 #ifdef NDEBUG
 #define UASSERT(...)
