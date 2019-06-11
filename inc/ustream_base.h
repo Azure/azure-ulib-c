@@ -15,9 +15,9 @@
  *      interface. This implementation shall follow the definition described in this file, which includes
  *      not only the prototype of the header, but the behavior as well.
  *  uStream defines a provider-consumer interface when:
- *      - @b Provider - is the module of code that handles data to be exposed. This module implements
+ *      - <b>Provider</b> - is the module of code that handles data to be exposed. This module implements
  *          the uStream interface to expose the data to the consumer.
- *      - @b Consumer - is the module of code that will use the data exposed by the provider.
+ *      - <b>Consumer</b> - is the module of code that will use the data exposed by the provider.
  *
  *  The uStream shall have a clear separation between the internal content (provider domain)
  *      and what it exposes as external content (consumer domain). The uStream shall never expose 
@@ -25,17 +25,18 @@
  *      exposed content shall be copied from the internal data source to some given external memory. To do
  *      that in a clear way, the uStream shall always work with the concept of two buffers, the 
  *      `data source` and the `local buffer`, adhering to the following definition:
- *      - @b Data source - is the place where the data is stored by the implementation of the buffer
+ *      - <b>Data source</b> - is the place where the data is stored by the implementation of the buffer
  *          interface. The data source is in the provider domain, and it shall be protected, immutable, 
  *          and non volatile. Consumers can read the data from the data source by the calling
- *          the {@link ustream_read} API, which will copy a snapshot of the data to the
+ *          the ustream_read() API, which will copy a snapshot of the data to the
  *          provided external memory, called local buffer.
- *      - @b Local buffer - is the consumer domain buffer, where the {@link ustream_read} API 
+ *      - <b>Local buffer</b> - is the consumer domain buffer, where the ustream_read() API 
  *          will copy the required bytes from the data source. The local buffer belongs to the consumer 
  *          of this interface, which means that the consumer shall allocate and free this memory, and the
  *          content of the local buffer can be changed and released.
  *
  * <i><b>Example</b></i>
+ * 
  *  A provider wants to create a uStream to expose data to the consumer. The provider will 
  *      store the content in the HEAP, and will create a uStream from it, passing the ownership of 
  *      the content to the uStream. Consumer will print the content of the uStream, using a 
@@ -88,7 +89,7 @@
  *          |                         |                            |                    |
  * </code></pre>
  *
- * <b>Heterogeneous buffer</b>
+ * <h2>Heterogeneous buffer</h2>
  *  Data can be stored in multiple, different medias, like RAM, flash, file, or cloud. Each media
  *      has its own read requirements. A simple way to unify it is copying it all to the RAM. For
  *      example, if an HTTP package contains a header that is in the flash, with some data in the RAM
@@ -96,21 +97,24 @@
  *      you can allocate a single area in the RAM that fits it all, and bring all the data to this
  *      memory. The problem with this approach is the amount of memory required for that, which can be
  *      multiple times the total RAM that you have for the entire system.
+ * 
  *  A second option to solve this problem is to make each component that needs to access this data
  *      understand each media and implement code to handle it. This approach will not require
  *      storing all data in the RAM, but will increase the size of the program itself, and
  *      is not easily portable, as different hardware will contain different media with different
  *      requirements.
- *  The `uStream` resolves this problem by creating a single interface that can handle any media,
+ * 
+ *  The uStream resolves this problem by creating a single interface that can handle any media,
  *      exposing it as a standard iterator. Whoever wants to expose a type of media as a uStream shall
  *      implement the functions described on the interface, handling all implementation details for
- *      each API. For example, the  {@link ustream_read} can be a simple copy of the flash to
+ *      each API. For example, the ustream_read() can be a simple copy of the flash to
  *      the RAM for a buffer that handles constants, or be as complex as creating a TCP/IP connection
  *      to bring the data for a buffer that handles data in the cloud.
+ * 
  *  The consumer of the uStream can use all kinds of media in the same way, and may easily
  *      concatenate it by exposing a uStream that handles multiple uStream's.
  *
- * <b>Ownership</b>
+ * <h2>Ownership</h2>
  *  The uStream is an owner-less buffer: every instance of the buffer has the same rights. They
  *      all can read the buffer content, release the parts that are not necessary anymore, and dispose
  *      it.
@@ -123,14 +127,14 @@
  *      controls the total number of instances.
  * <p> Disposing an instance of the buffer will decrease the <tt>ref_count</tt> of this buffer. If the
  *      number of references reaches 0, the buffer will destroy itself, releasing all allocated memory.
- *      {@b Not disposing an instance of the buffer will leak memory}.
+ *      <b>Not disposing an instance of the buffer will leak memory</b>.
  *  Instances of the buffer can be created in 2 ways:
  *      - @b Factory - when a producer exposes data using this buffer, it must create the buffer
- *          using a factory, so the operation buffer <tt>create</tt> returns the first instance of the
+ *          using a factory, so the operation <tt>buffer create</tt> returns the first instance of the
  *          buffer.
  *      - @b Clone - when a consumer needs a copy of the buffer, it can use the ustream_clone().
  *
- * <b>Thread safe</b>
+ * <h2>Thread safe</h2>
  *  The uStream **IS NOT** thread safe for multiple accesses over the same instance. The ownership
  *      of the instance of a uStream shall **NOT** be shared, especially not by consumers that run on 
  *      different threads. The owner thread shall create a clone of the uStream and pass it to the other 
@@ -138,21 +142,24 @@
  *  The uStream **IS** thread safe for accesses between instances. It means that any access to
  *      memory shared by multiple instances shall be thread safe.
  *
- * <b>Data retention</b>
+ * <h2>Data retention</h2>
  *  As with any buffer, this buffer shall be used to handle data that was created by the producer as a
  *      result of an operation.
+ * 
  *  This interface only exposes read functions, so once created, the content of the buffer cannot
  *      be changed by the producer of any of the consumers. Changing the content of the data source will
  *      result in a data mismatch.
+ * 
  *  Consumers can do a partial release of the buffer by calling ustream_release().
  *      Calling the release does not imply that part of the memory will be immediately released. Once a
  *      buffer can handle multiple instances, a memory can only be free if all instances released it.
  *      A buffer implementation can or cannot have the ability to do partial releases. For instance, a
  *      buffer that handles constant data stored in the flash will never release any memory on the
- *      {@link ustream_release} API.
+ *      ustream_release() API.
+ * 
  *  Released data cannot be accessed, even if it is still available in the memory.
  *
- * <b>Appendable</b>
+ * <h2>Appendable</h2>
  *  New data can be appended at the end of the uStream by calling ustream_append().
  *      This can include uStream's from other different medias. In this way, the uStream can
  *      be used as a Stream of data.
@@ -163,14 +170,16 @@
  *  A producer created 3 uStreams named A, B, and C. At this point, it handles one instance of each
  *      buffer. A consumer received an instance of the buffer A and C, and appends C to A creating a new buffer AC.
  *      After that, the producer will append B to A, creating the new AB buffer.
+ * 
  *  Observe the fact that the consumer appendeding C to A on its own instance didn't affect the buffer
  *      A on the producer, and when the producer appended B to A, it creates AB, not ACB, and it didn't change
  *      the consumer AB buffer creating ABC or ACB on it.
  *
- * <b>Lazy</b>
+ * <h2>Lazy</h2>
  *  The buffer can contain the full content, bring it into memory when required, or even create the content
  *      when it is necessary. The implementation of the ustream_read() function can be smart 
- *      enough to use the minimal amount of memory. 
+ *      enough to use the minimal amount of memory.
+ * 
  *  The only restriction is if a consumer accesses the same position of the buffer multiple times, it shall
  *      return the same data.
  * 
@@ -182,7 +191,7 @@
  *      seeks this old position, the ustream_read() shall return the same value created in
  *      the first call of ustream_read().
  *
- * <b>Data conversion</b>
+ * <h2>Data conversion</h2>
  *  When the data is copied from the data source to the local buffer, the ustream_read()
  *      may do a data conversion, which means that the content exposed on the local buffer is a function
  *      of the content in the data source. It directly implies that the number of bytes written in the
@@ -210,12 +219,13 @@
  *                                                      ::        size' = 16
  * </code></pre>
  *
- * <b>Data offset</b>
+ * <h2>Data offset</h2>
  *  In the data source, each byte is associated with a position, called <tt>inner position</tt>. The first 
  *      byte is always placed in the inner position `0`, followed by the other bytes which are incremented
  *      in a sequential manner. The uStream assigns a sequential number to each byte
  *      in the local buffer as well, called <tt>logical position</tt>. When a new uStream is created,
  *      the logical position matches the inner position, both starting at position `0`.
+ * 
  *  When the buffer is cloned, an offset shall be provided. This offset is the new first logical 
  *      position. The implementation of the uStream shall handle the difference between the inner
  *      and logical position, making the conversion in all the uStream API. Providing an offset to a 
@@ -228,15 +238,17 @@
  *      `0` to `99`, and it matches the logical position. The consumer clones this buffer providing an
  *      offset of `1000`. The new instance contains the same content as the original one, but the 
  *      logical positions are now from `1000` to `1099`.
+ * 
  *  If the owner of the first instance wants to set the position to position 10, it shall call ustream_set_position()
  *      with the logical position 10. For the cloned instance, to set the position to the same position 10, it shall call 
  *      ustream_set_position() with the logical position 1010.
  *
- * <b>Sliding window</b>
+ * <h2>Sliding window</h2>
  *  One of the target use cases of the uStream is to accelerate and simplify the implementation of 
  *      sliding window protocols, like TCP. As described in this document, the uStream associates 
  *      a single byte (octet) to a single position, which means that every byte can be accessed by its
  *      position. For the consumer, this position is the logical position.
+ * 
  *  To better understand the sliding window concept on the uStream, the Data source can be split
  *      in 4 segments.
  * <pre><code>
@@ -244,35 +256,38 @@
  *           Released                       Pending                          Future
  *       |----------------|---------------------:--------------------|---------------------|
  *       |\                \                    :       Read         |\                    |
- *       | 0           First valid position     :                    | Current position    |
+ *       | 0           First Valid Position     :                    | Current Position    |
  *       |                                      :                    |                     |
- *       |                                      :<--- read size ---->|                     |
+ *       |                                      :<--- Read Size ---->|                     |
  *       |                                                                                 |
- *       |<--------------------------- data source size ---------------------------------->|
+ *       |<--------------------------- Data Source Size ---------------------------------->|
  * </code></pre>
  *      - @b Released - Sequence of bytes in the data source that is already acknowledged by the consumer, 
  *          and shall not be accessed anymore.
  *      - @b Pending - Sequence of bytes in the data source that is already read by the consumer, but not 
  *          acknowledged yet. The consumer can seek these bytes with ustream_set_position() and read it again. This sequence starts at 
- *          the First Valid Position and ends at the last byte before the Current Position.
- *      - @b Read - Is the last read portion of the data source. On the read operation, the Read starts
- *          in the Current Position up to the read size. At the end of the read, this segment is 
- *          incorporated to Pending by changing the Current Position to the end of the Read.
+ *          the <tt>First Valid Position</tt> and ends at the last byte before the <tt>Current Position</tt>.
+ *      - @b Read - Is the last read portion of the data source. On the read operation, the <tt>Read</tt> starts
+ *          in the <tt>Current Position</tt> up to the <tt>Read Size</tt>. At the end of the read, this segment is 
+ *          incorporated to <tt>Pending</tt> by changing the <tt>Current Position</tt> to the end of the Read.
  *      - @b Future - Sequence of bytes in the data source that is not read by the consumer yet. It starts 
- *          at the Current Position and ends at the end of the data source, which has the position calculated
- *          by data source size - 1. 
+ *          at the <tt>Current Position</tt> and ends at the end of the data source, which has the position calculated
+ *          by <tt>Data Source Size - 1</tt>. 
  *
  *  To read a new portion of the data source, the consumer shall provide memory (the local buffer), where 
  *      the implementation of the buffer will write the bytes that were read and converted from the data source. 
  *      The consumer can use this data in its own context: for example, to transmit as a TCP packet. When
  *      the consumer finishes using the data in the local buffer, this data can be discarded
  *      and the local buffer recycled to get the next portion of the data source.
+ * 
  *  If at some point in the future, the consumer needs this data again, it can set the position to the needed position 
  *      and get the same content using the read.
+ * 
  *  The consumer may confirm that a portion of the data is not necessary anymore. For example, after transmitting
  *      multiple TCP packets, the receiver of these packets answers with an ACK for a sequence number. In this case,
  *      the consumer can release this data in the data source by calling the ustream_release(), moving 
- *      the First Valid Position to the next one after the released position.
+ *      the <tt>First Valid Position</tt> to the next one after the released position.
+ * 
  *  A common scenario is when the consumer needs to read over the data source starting on the first byte after
  *      the last released one. For example, when a timeout happens for a transmitted packet without ACK, the 
  *      sender shall retransmit the data starting from that point. In this case, the consumer can call the API
@@ -309,8 +324,8 @@ typedef struct USTREAM_INTERFACE_TAG USTREAM_INTERFACE;
  */
 typedef struct USTREAM_TAG
 {
-    const USTREAM_INTERFACE* api; /**<api handle for USTREAM instance */
-    void* handle;/**<handle to data control block */
+    const USTREAM_INTERFACE* api;   /**<api handle for USTREAM instance */
+    void* handle;                   /**<handle to data control block */
 } USTREAM;
 
 /**
@@ -322,14 +337,15 @@ typedef struct USTREAM_TAG
  */
 struct USTREAM_INTERFACE_TAG
 {
-    ULIB_RESULT(*set_position)(USTREAM* ustream_interface, offset_t position);/**<internal api \p set_position */
-    ULIB_RESULT(*reset)(USTREAM* ustream_interface);/**<internal api \p reset */
-    ULIB_RESULT(*read)(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);/**<internal api \p read */
-    ULIB_RESULT(*get_remaining_size)(USTREAM* ustream_interface, size_t* const size);/**<internal api \p get_remaining_size */
-    ULIB_RESULT(*get_position)(USTREAM* ustream_interface, offset_t* const position);/**<internal api \p get_position */
-    ULIB_RESULT(*release)(USTREAM* ustream_interface, offset_t position);/**<internal api \p release */
-    USTREAM*(*clone)(USTREAM* ustream_interface, offset_t offset);/**<internal api \p clone */
-    ULIB_RESULT(*dispose)(USTREAM* ustream_interface);/**<internal api \p dispose */
+    ULIB_RESULT(*set_position)(USTREAM* ustream_interface, offset_t position);          /**<internal \p set_position implementation*/
+    ULIB_RESULT(*reset)(USTREAM* ustream_interface);                                    /**<internal \p reset implementation*/
+    ULIB_RESULT(*read)(USTREAM* ustream_interface, uint8_t* const buffer, 
+                                            size_t buffer_length, size_t* const size);  /**<internal \p read implementation*/
+    ULIB_RESULT(*get_remaining_size)(USTREAM* ustream_interface, size_t* const size);   /**<internal \p get_remaining_size implementation*/
+    ULIB_RESULT(*get_position)(USTREAM* ustream_interface, offset_t* const position);   /**<internal \p get_position implementation*/
+    ULIB_RESULT(*release)(USTREAM* ustream_interface, offset_t position);               /**<internal \p release implementation*/
+    USTREAM*(*clone)(USTREAM* ustream_interface, offset_t offset);                      /**<internal \p clone implementation*/
+    ULIB_RESULT(*dispose)(USTREAM* ustream_interface);                                  /**<internal \p dispose implementation*/
 };
 
 
@@ -431,14 +447,14 @@ static inline ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *      <tt>uint8_t</tt>, and will **NOT** put any terminator at the end of the string. The size of 
  *      the content copied in the local buffer will be returned in the parameter `size`.
  * 
- *  The read API shall follow the following minimum requirements:
+ *  The <tt>ustream_read</tt> API shall follow the following minimum requirements:
  *      - The read shall copy the contents of the Data Source to the provided local buffer.
  *      - If the contents of the Data Source is bigger than the `buffer_length`, the read shall
  *          limit the copy size up to the buffer_length.
  *      - The read shall return the number of valid <tt>uint8_t</tt> values in the local buffer in 
  *          the provided `size`.
  *      - If there is no more content to return, the read shall return
- *          ULIB_EOF, size shall receive 0, and will not change the contents
+ *          #ULIB_EOF, size shall receive 0, and will not change the contents
  *          of the local buffer.
  *      - If the provided buffer_length is zero, the read shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided buffer_length is lower than the minimum number of bytes that the buffer can copy, the 
@@ -610,6 +626,7 @@ static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t p
  *      menus the current position.
  *
  * <i><b>Example 1</b></i>
+ * 
  *  Consider a buffer with 1500 bytes, that was created from the factory, with `Logical` and `Inner`
  *      positions as `0`. After some operations, 1000 bytes was read (from 0 to 999), so, the
  *      current position is `1000`, and 200 bytes was released (from 0 to 199), so the released
@@ -639,6 +656,7 @@ static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t p
  * </code></pre>
  *
  * <i><b>Example 2</b></i>
+ * 
  *  Consider a buffer with 5000 bytes, that was created from the factory, with `Logical` and `Inner`
  *      positions as `0`. After some operations, 250 bytes was read (from 0 to 249), so, the
  *      current position is `250`, and no release was made, so the released position is still `-1`.
@@ -661,6 +679,7 @@ static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t p
  * </code></pre>
  *
  * <i><b>Example 3</b></i>
+ * 
  *  From the previews cloned buffer, after some operations, the Logical current position is moved
  *      to `11000`, and the Logical released position is `10499`.
  *  For the following examples, the positions is represented by <tt>[Logical, Inner]</tt>.
@@ -747,19 +766,19 @@ static inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *         will only append the new buffer.
   *
   *  The <tt>ustream_append</tt> API shall follow the following requirements:
-  *      - The Append shall append the provided buffer at the end of the current one.
-  *      - If current buffer is not a multi-buffer, the Append shall convert the current buffer in a multi-buffer.
-  *      - If the provided interface is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
-  *      - If the provided buffer to add is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
-  *      - If there is not enough memory to append the buffer, the Append shall return 
+  *      - The append shall append the provided buffer at the end of the current one.
+  *      - If current buffer is not a multi-buffer, the append shall convert the current buffer in a multi-buffer.
+  *      - If the provided interface is NULL, the append shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
+  *      - If the provided buffer to add is NULL, the append shall return ULIB_ILLEGAL_ARGUMENT_ERROR.
+  *      - If there is not enough memory to append the buffer, the append shall return 
   *         ULIB_OUT_OF_MEMORY_ERROR.
   *
-  * @param[in, out]  ustream_interface  The {@link USTREAM}* with the interface of 
-  *                                     the buffer. It cannot be \p NULL, and it shall be a valid buffer.
-  * @param[in]  ustream_to_append       The {@link USTREAM}* with the interface of 
-  *                                     the buffer to be appended to the original buffer. It cannot be \p NULL, 
-  *                                     and it shall be a valid buffer.
-  * @return The {@link ULIB_RESULT} with the result of the Append operation.
+  * @param[in, out]     ustream_interface   The {@link USTREAM}* with the interface of 
+  *                                         the buffer. It cannot be \p NULL, and it shall be a valid buffer.
+  * @param[in]          ustream_to_append   The {@link USTREAM}* with the interface of 
+  *                                         the buffer to be appended to the original buffer. It cannot be \p NULL, 
+  *                                         and it shall be a valid buffer.
+  * @return The {@link ULIB_RESULT} with the result of the append operation.
   *          @retval    ULIB_SUCCESS                If the buffer was appended with success.
   *          @retval    ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
   *          @retval    ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to append the buffer.
