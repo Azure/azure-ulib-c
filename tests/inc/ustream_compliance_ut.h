@@ -873,7 +873,7 @@ TEST_FUNCTION(ustream_get_current_position_compliance_null_position_failed)
     (void)ustream_dispose(ustream_instance);
 }
 
-/* [1]The read shall copy the content in the provided buffer and return the number of valid {@code uint8_t} values in the local buffer in the provided `size`. */
+/* [1]The read shall copy the content in the provided buffer and return the number of valid <tt>uint8_t</tt> values in the local buffer in the provided `size`. */
 /* [2]If the length of the content is bigger than the `buffer_length`, the read shall limit the copy size to the buffer_length.*/
 /* [3]If there is no more content to return, the read shall return ULIB_NO_SUCH_ELEMENT_ERROR, size shall receive 0, and do not change the content of the local buffer. */
 TEST_FUNCTION(ustream_read_compliance_get_from_original_buffer_succeed)

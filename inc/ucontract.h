@@ -1,6 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+/**
+ * @file ucontract.h
+ */
+
 #ifndef AZURE_ULIB_C_INC_UCONTRACT_H_
 #define AZURE_ULIB_C_INC_UCONTRACT_H_
 
@@ -15,16 +19,26 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/*
- * Each public function shall have only one session of CONTRACT and must be
- * the first line of the function.
- */
+/// @cond INTERNAL
 #define EVALUATE_REQUIRE(x) x;
+/// @endcond
+
+/**
+ * @brief   Macro to define contract for public function parameters.
+ *
+ *  Parameters to this macro shall be a comma separated list of UCONTRACT_...
+ *  macros as listed below.
+ *
+ *  Each public function shall have one UCONTRACT() macro with the listed
+ *  requirements inside.
+ */
 #define UCONTRACT(...) do { MU_FOR_EACH_1(EVALUATE_REQUIRE, __VA_ARGS__) } while((void)0,0)
 
-/*
- * Each internal function may have only one session of ASSERT and must be
- * the first line of the function.
+/**
+ * @brief   Macro to define assertion for internal functions
+ *
+ *  Parameters to this macro shall be a comma separated list of UCONTRACT_...
+ *  macros as listed below.
  */
 #ifdef NDEBUG
 #define UASSERT(...)
@@ -32,6 +46,13 @@ extern "C" {
 #define UASSERT(...) UCONTRACT(__VA_ARGS__)
 #endif
 
+/**
+ * @brief   Contract macro to evaluation user expression.
+ *
+ * @param   expression  boolean expression to be evaluated
+ * @param   result      return value if expression is false
+ * @param   msg         message to log if expression is false
+ */
 #define UCONTRACT_REQUIRE(expression, result, msg) \
     do { \
         if(!(expression)) \
@@ -41,6 +62,13 @@ extern "C" {
         } \
     } while((void)0,0)
 
+/**
+ * @brief   Contract macro to evaluate if two values are equal.
+ *
+ * @param   val         value to check
+ * @param   expected    value expected
+ * @param   result      returned result if values are not equal
+ */
 #define UCONTRACT_REQUIRE_EQUALS(val, expected, result) \
     do { \
         if(val != expected) \
@@ -50,6 +78,13 @@ extern "C" {
         } \
     } while((void)0,0)
 
+/**
+ * @brief   Contract macro to evaluate if two values are not equal.
+ *
+ * @param   val         value to check
+ * @param   expected    value not expected
+ * @param   result      returned result if values are equal.
+ */
 #define UCONTRACT_REQUIRE_NOT_EQUALS(val, expected, result) \
     do { \
         if(val == expected) \
@@ -59,6 +94,12 @@ extern "C" {
         } \
     } while((void)0,0)
 
+/**
+ * @brief   Contract macro to evaluate if value is not <tt>NULL</tt>.
+ *
+ * @param   val         value to check
+ * @param   result      returned result if value is <tt>NULL</tt>
+ */
 #define UCONTRACT_REQUIRE_NOT_NULL(val, result) \
     do { \
         if(val == NULL) \
@@ -68,6 +109,14 @@ extern "C" {
         } \
     } while((void)0,0)
 
+/**
+ * @brief   Contract macro to evaluate user expression.
+ *
+ * @warning Throws hard fault if user expression is false
+ *
+ * @param   expression  expression to check
+ * @param   msg         message to log if expression is false
+ */
 #define UCONTRACT_REQUIRE_HARD_FAULT(expression, msg) \
     do { \
         if(!(expression)) \
@@ -77,6 +126,14 @@ extern "C" {
         } \
     } while((void)0,0)
 
+/**
+ * @brief   Contract macro to evaluate if two values are equal.
+ *
+ * @warning Throws hard fault if values are not equal
+ *
+ * @param   val         value to check
+ * @param   expected    value expected
+ */
 #define UCONTRACT_REQUIRE_EQUALS_HARD_FAULT(val, expected) \
     do { \
         if(val != expected) \
@@ -86,6 +143,14 @@ extern "C" {
         } \
     } while((void)0,0)
 
+/**
+ * @brief   Contract macro to evaluate if two values are not equal.
+ *
+ * @warning Throws hard fault if values are equal
+ *
+ * @param   val         value to check
+ * @param   expected    value not expected
+ */
 #define UCONTRACT_REQUIRE_NOT_EQUALS_HARD_FAULT(val, expected) \
     do { \
         if(val == expected) \
@@ -95,6 +160,13 @@ extern "C" {
         } \
     } while((void)0,0)
 
+/**
+ * @brief   Contract macro to evaluate if value is not <tt>NULL</tt>.
+ *
+ * @warning Throws hard fault if value is <tt>NULL</tt>
+ *
+ * @param   val         value to check
+ */
 #define UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT(val) \
     do { \
         if(val == NULL) \

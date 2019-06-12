@@ -9,33 +9,37 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * Define the heap 
+ * @file ulib_config.h
+ */
+
+/*
+ *  Define the heap 
  */
 
 /**
- * @brief   uLib malloc.
+ * @brief   uLib malloc
  *
- * <p> Defines the malloc function that the ulib shall use as its own way to dynamically allocate
+ *  Defines the malloc function that the ulib shall use as its own way to dynamically allocate
  *      memory from the HEAP. For simplicity, it can be defined as the malloc(size) from the `stdlib.h`.
  */
 #define ULIB_CONFIG_MALLOC(size)    ulib_malloc(size)
 
 /**
- * @brief   uLib free.
+ * @brief   uLib free
  *
- * <p> Defines the free function that the ulib shall use as its own way to release memory dynamic 
+ *  Defines the free function that the ulib shall use as its own way to release memory dynamic 
  *      allocated in the HEAP. For simplicity, it can be defined as the free(ptr) from the `stdlib.h`.
  */
 #define ULIB_CONFIG_FREE(ptr)       ulib_free(ptr)
 
-/**
+/*
  * Define log Function
  */
 
 /**
- * @brief   uLib logger.
+ * @brief   uLib logger
  *
- * <p> Defines the log function that the ulib shall use as its own way to print information in the
+ *  Defines the log function that the ulib shall use as its own way to print information in the
  *      log system.
  */
 #define ULIB_CONFIG_LOG(category, format, ...)  ulog_print(category, format, ##__VA_ARGS__)
@@ -43,7 +47,7 @@ extern "C" {
 /**
  * @brief   Maximum size of the uLib log.
  *
- * <p> Defines the maximum number of chars in each log line.
+ *  Defines the maximum number of chars in each log line.
  */
 #define ULIB_CONFIG_MAX_LOG_SIZE        256
 
