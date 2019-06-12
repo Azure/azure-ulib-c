@@ -25,10 +25,10 @@ extern "C" {
 
 /**
  * @brief   Macro to define contract for public function parameters.
- * 
+ *
  *  Parameters to this macro shall be a comma separated list of UCONTRACT_...
  *  macros as listed below.
- * 
+ *
  *  Each public function shall have one UCONTRACT() macro with the listed
  *  requirements inside.
  */
@@ -36,12 +36,9 @@ extern "C" {
 
 /**
  * @brief   Macro to define assertion for internal functions
- * 
+ *
  *  Parameters to this macro shall be a comma separated list of UCONTRACT_...
  *  macros as listed below.
- * 
- *  Each public function shall have one UCONTRACT() macro with the listed
- *  requirements inside.
  */
 #ifdef NDEBUG
 #define UASSERT(...)
@@ -51,7 +48,7 @@ extern "C" {
 
 /**
  * @brief   Contract macro to evaluation user expression.
- * 
+ *
  * @param   expression  boolean expression to be evaluated
  * @param   result      return value if expression is false
  * @param   msg         message to log if expression is false
@@ -67,7 +64,7 @@ extern "C" {
 
 /**
  * @brief   Contract macro to evaluate if two values are equal.
- * 
+ *
  * @param   val         value to check
  * @param   expected    value expected
  * @param   result      returned result if values are not equal
@@ -83,7 +80,7 @@ extern "C" {
 
 /**
  * @brief   Contract macro to evaluate if two values are not equal.
- * 
+ *
  * @param   val         value to check
  * @param   expected    value not expected
  * @param   result      returned result if values are equal.
@@ -99,7 +96,7 @@ extern "C" {
 
 /**
  * @brief   Contract macro to evaluate if value is not <tt>NULL</tt>.
- * 
+ *
  * @param   val         value to check
  * @param   result      returned result if value is <tt>NULL</tt>
  */
@@ -114,9 +111,9 @@ extern "C" {
 
 /**
  * @brief   Contract macro to evaluate user expression.
- * 
- * @warning Throws hard fault if user expression is not true
- * 
+ *
+ * @warning Throws hard fault if user expression is false
+ *
  * @param   expression  expression to check
  * @param   msg         message to log if expression is false
  */
@@ -131,9 +128,9 @@ extern "C" {
 
 /**
  * @brief   Contract macro to evaluate if two values are equal.
- * 
+ *
  * @warning Throws hard fault if values are not equal
- * 
+ *
  * @param   val         value to check
  * @param   expected    value expected
  */
@@ -148,9 +145,9 @@ extern "C" {
 
 /**
  * @brief   Contract macro to evaluate if two values are not equal.
- * 
+ *
  * @warning Throws hard fault if values are equal
- * 
+ *
  * @param   val         value to check
  * @param   expected    value not expected
  */
@@ -165,9 +162,9 @@ extern "C" {
 
 /**
  * @brief   Contract macro to evaluate if value is not <tt>NULL</tt>.
- * 
+ *
  * @warning Throws hard fault if value is <tt>NULL</tt>
- * 
+ *
  * @param   val         value to check
  */
 #define UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT(val) \
