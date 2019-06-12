@@ -260,7 +260,7 @@
  *      in 4 segments.
  *
  * <pre><code>
- *      <tt>Data Source</tt>:
+ *      Data Source:
  *           Released                       Pending                          Future
  *       |----------------|---------------------:--------------------|---------------------|
  *       |\                \                    :       Read         |\                    |
@@ -268,7 +268,7 @@
  *       |                                      :                    |                     |
  *       |                                      :<--- Read Size ---->|                     |
  *       |                                                                                 |
- *       |<--------------------------- <tt>Data Source Size</tt> ------------------------->|
+ *       |<------------------------------ Data Source Size ------------------------------->|
  * </code></pre>
  *      - @b Released - Sequence of bytes in the data source that is already acknowledged by the consumer, 
  *          and shall not be accessed anymore.
@@ -752,7 +752,7 @@ static inline ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t p
  *                                      the cloned uStream.
  *
  * @return The {@link USTREAM}* with the result of the clone operation.
- *          @retval    not NULL         If the uStream was cloned with success.
+ *          @retval    not-NULL         If the uStream was cloned with success.
  *          @retval    NULL             If one of the provided parameters is invalid or there is not enough memory to
  *                                      control the new uStream.
  */

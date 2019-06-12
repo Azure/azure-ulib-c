@@ -53,7 +53,7 @@ extern "C" {
  *                              the provided buffer in its own memory.
  *
  * @return The {@link USTREAM}* with the uStream interface.
- *          @retval not NULL    If the uStream was created with success.
+ *          @retval not-NULL    If the uStream was created with success.
  *          @retval NULL        If there is no memory to create the new uStream.
  */
 MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
@@ -75,7 +75,7 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
  * @param[in]   buffer_length   The <tt>size_tt</tt> with the number of <tt>uint8_t</tt> in the provided buffer. It cannot be zero.
  *
  * @return The {@link USTREAM}* with the uStream interface.
- *          @retval not NULL    If the uStream was created with success.
+ *          @retval not-NULL    If the uStream was created with success.
  *          @retval NULL        If there is no memory to create the new uStream.
  */
 MOCKABLE_FUNCTION(, USTREAM*, ustream_const_create,
@@ -108,7 +108,7 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_const_create,
  *      and the disposal of the uStreamMulti will dispose all appended uStreams.
  *
  * @return The {@link USTREAM}* with the uStreamMulti interface.
- *          @retval not NULL    If the uStreamMulti was created with success.
+ *          @retval not-NULL    If the uStreamMulti was created with success.
  *          @retval NULL        If there is no memory to create the new uStreamMulti.
  */
 MOCKABLE_FUNCTION(, USTREAM*, ustream_multi_create);
