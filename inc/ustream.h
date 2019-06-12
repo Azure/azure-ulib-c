@@ -45,7 +45,7 @@ extern "C" {
  *              buffer.
  *
  * @param[in]  buffer           The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
- *                              It cannot be \p NULL.
+ *                              It cannot be <tt>NULL</tt>.
  * @param[in]  buffer_length    The <tt>size_t</tt> with the number of <tt>uint8_t</tt> in the provided buffer.
  * @param[in]  take_ownership   The <tt>bool</tt> that indicates if the factory shall or shall not take ownership of the buffer.
  *                              If <tt>true</tt> the uStream will take ownership of the memory allocated for the
@@ -71,7 +71,7 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
  *      own inner buffer.
  *
  * @param[in]   buffer          The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
- *                              It cannot be \p NULL.
+ *                              It cannot be <tt>NULL</tt>.
  * @param[in]   buffer_length   The <tt>size_tt</tt> with the number of <tt>uint8_t</tt> in the provided buffer. It cannot be zero.
  * 
  * @return The {@link USTREAM}* with the uStream interface.
@@ -86,26 +86,26 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_const_create,
  * @brief   Factory to create a new uStreamMulti.
  *
  *  uStreamMulti is a buffer that handles multiple heterogeneous uStreams and exposes 
- *  it with a single interface. The sequence of the buffers is determined by the appended sequence:
- *  first in first out.
+ *      it with a single interface. The sequence of the buffers is determined by the appended sequence:
+ *      first in first out.
  * 
- *  Note that the \p read() API will return the content of the appended buffers as if
- *  it was a single buffer. There is nothing that identifies where one buffer stops and the
- *  next one starts.
+ *  Note that the <tt>read()</tt> API will return the content of the appended buffers as if
+ *      it was a single buffer. There is nothing that identifies where one buffer stops and the
+ *      next one starts.
  * 
  *  Copying a uStreamMulti creates a new instance that has the same content of the original one
- *  at the moment where the copy was made. Any change in the original uStreamMulti
- *  will **NOT** be reflected in its copies, and changes in the copies will not change the
- *  original uStreamMulti as well.
+ *      at the moment where the copy was made. Any change in the original uStreamMulti
+ *      will <b>NOT</b> be reflected in its copies, and changes in the copies will not change the
+ *      original uStreamMulti as well.
  * 
  *  The uStreamMulti creates its own copy of each appended buffer. It will enforce the immutable
- *  characteristic of the uStream.
+ *      characteristic of the uStream.
  * 
  *  Because a uStreamMulti exposes a uStream interface, it can be appended to another
- *  uStreamMulti.
+ *      uStreamMulti.
  * 
  *  Releasing part of a uStreamMulti will dispose the appended buffers that are not necessary anymore,
- *  and the disposal of the uStreamMulti will dispose all appended buffers.
+ *      and the disposal of the uStreamMulti will dispose all appended buffers.
  *
  * @return The {@link USTREAM}* with the uStreamMulti interface.
  *          @retval not NULL    If the uStreamMulti was created with success.
@@ -125,7 +125,7 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_multi_create);
  *                                      It cannot be <tt>NULL</tt>  and it shall be a valid buffer that is a
  *                                      type of uStreamMulti.
  * @param[in]       ustream_to_append   The {@link USTREAM}* with the handle of the buffer to add
- *                                      to the uStreamMulti. It cannot be \p NULL.
+ *                                      to the uStreamMulti. It cannot be <tt>NULL</tt>.
  * 
  * @return The {@link ULIB_RESULT} with the result of the append operation.
  *          @retval     ULIB_SUCCESS                If the uStreamMulti appended the provided buffer with success.
