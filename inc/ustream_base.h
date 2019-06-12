@@ -127,7 +127,9 @@
  *      controls the total number of instances.
  * <p> Disposing an instance of the buffer will decrease the <tt>ref_count</tt> of this buffer. If the
  *      number of references reaches 0, the buffer will destroy itself, releasing all allocated memory.
- *      <b>Not disposing an instance of the buffer will leak memory</b>.
+ * 
+ *  @warning Not disposing an instance of the buffer will leak memory.
+ * 
  *  Instances of the buffer can be created in 2 ways:
  *      - @b Factory - when a producer exposes data using this buffer, it must create the buffer
  *          using a factory, so the operation <tt>buffer create</tt> returns the first instance of the

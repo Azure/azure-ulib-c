@@ -98,10 +98,10 @@ extern "C" {
     } while((void)0,0)
 
 /**
- * @brief   Contract macro to evaluate if two values are not equal.
+ * @brief   Contract macro to evaluate if value is not <tt>NULL</tt>.
  * 
  * @param   val         value to check
- * @param   result      returned result if values are equal equal
+ * @param   result      returned result if value is <tt>NULL</tt>
  */
 #define UCONTRACT_REQUIRE_NOT_NULL(val, result) \
     do { \
@@ -113,7 +113,7 @@ extern "C" {
     } while((void)0,0)
 
 /**
- * @brief   Contract macro to evaluate if user expression is true.
+ * @brief   Contract macro to evaluate user expression.
  * 
  * @warning Throws hard fault if user expression is not true
  * 
@@ -164,9 +164,9 @@ extern "C" {
     } while((void)0,0)
 
 /**
- * @brief   Contract macro to evaluate if value is not NULL.
+ * @brief   Contract macro to evaluate if value is not <tt>NULL</tt>.
  * 
- * @warning Throws hard fault if values are equal
+ * @warning Throws hard fault if value is <tt>NULL</tt>
  * 
  * @param   val         value to check
  */
