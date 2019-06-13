@@ -37,7 +37,9 @@ typedef void (*USTREAM_INNER_FREE)(void*);
  * @brief   Factory to create a new uStream.
  *
  *  This factory creates a uStream that handles the content of the provided buffer. As a result,
- *      it will return a {@link USTREAM}* with this content.
+ *      it will return a {@link USTREAM}* with this content. The created uStream takes ownership of the
+ *      passed memory and will release the memory with the passed #USTREAM_INNER_FREE function when
+ *      the ref count goes to zero.
  *
  * @param[in]  buffer           The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
  *                              It cannot be <tt>NULL</tt>.
