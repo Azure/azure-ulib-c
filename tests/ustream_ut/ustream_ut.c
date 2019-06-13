@@ -190,7 +190,6 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_interface_failed)
     ASSERT_IS_NULL(buffer_interface);
 
     ///cleanup
-    // ulib_free(buf);
 }
 
 TEST_FUNCTION(ustream_create_no_memory_to_create_instance_failed)
@@ -217,7 +216,6 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_instance_failed)
     ASSERT_IS_NULL(buffer_interface);
 
     ///cleanup
-    // ulib_free(buf);
 }
 
 TEST_FUNCTION(ustream_create_no_memory_to_create_inner_buffer_failed)

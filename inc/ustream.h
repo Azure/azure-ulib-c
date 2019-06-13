@@ -23,6 +23,16 @@ extern "C" {
 #include <stdbool.h>
 #endif /* __cplusplus */
 
+
+/**
+ * @brief   Free function to release inner buffer
+ * 
+ * @param[in]   void*       void pointer to memory that needs to be free'd
+ * 
+ * @return  void
+ */
+typedef void (*USTREAM_INNER_FREE)(void*);
+
 /**
  * @brief   Factory to create a new uStream.
  *
@@ -32,8 +42,8 @@ extern "C" {
  * @param[in]  buffer           The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
  *                              It cannot be <tt>NULL</tt>.
  * @param[in]  buffer_length    The <tt>size_t</tt> with the number of <tt>uint8_t</tt> in the provided buffer.
- * @param[in]  inner_free       The release function that will be called for the inner buffer once all the references
- *                              to the uStream are released. If NULL is passed, the data is assumed to be constant with
+ * @param[in]  inner_free       The #USTREAM_INNER_FREE function that will be called for the inner buffer once all the references
+ *                              to the uStream are released. If <tt>NULL</tt> is passed, the data is assumed to be constant with
  *                              no need to be free'd.
  *
  * @return The {@link USTREAM}* with the uStream interface.
@@ -43,7 +53,7 @@ extern "C" {
 MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
         const uint8_t* const, buffer,
         size_t, buffer_length,
-        void, (*inner_free)(void*));
+        USTREAM_INNER_FREE, inner_free);
 
 
 /**

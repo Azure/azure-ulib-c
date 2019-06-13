@@ -93,7 +93,7 @@ static USTREAM* create_instance(
 static USTREAM_INNER_BUFFER* create_inner_buffer(
     const uint8_t* const buffer, 
     size_t buffer_length,
-    void(*inner_free)(void*))
+    USTREAM_INNER_FREE inner_free)
 {
     USTREAM_INNER_BUFFER* inner_buffer;
 
@@ -427,7 +427,7 @@ static ULIB_RESULT concrete_dispose(USTREAM* ustream_interface)
 USTREAM* ustream_create(
         const uint8_t* const buffer, 
         size_t buffer_length,
-        void(*inner_free)(void*))
+        USTREAM_INNER_FREE inner_free)
 {
     USTREAM* interface_result;
 
