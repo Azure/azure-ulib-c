@@ -457,7 +457,7 @@ USTREAM* ustream_create(
             /*[ustream_create_no_memory_to_create_instance_failed]*/
             if(interface_result == NULL)
             {
-                destroy_inner_buffer(inner_buffer);
+                ULIB_CONFIG_FREE(inner_buffer);
             }
         }
     }

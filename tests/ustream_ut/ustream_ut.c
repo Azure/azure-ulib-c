@@ -190,6 +190,7 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_interface_failed)
     ASSERT_IS_NULL(buffer_interface);
 
     ///cleanup
+    ulib_free(buf);
 }
 
 /* ustream_create shall return NULL if there is not enough memory to create the instance */
@@ -217,6 +218,7 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_instance_failed)
     ASSERT_IS_NULL(buffer_interface);
 
     ///cleanup
+    ulib_free(buf);
 }
 
 /* ustream_create shall return NULL if there is not enough memory to create the inner buffer */
