@@ -155,7 +155,7 @@ TEST_FUNCTION(ustream_create_const_succeed)
     (void)ustream_dispose(buffer_interface);
 }
 
-/* The ustream_create shall return NULL if there is no memory to create the buffer. */
+/* The ustream_create shall return NULL if there is not enough memory to create the buffer. */
 TEST_FUNCTION(ustream_create_const_no_memory_to_create_interface_failed)
 {
     ///arrange

@@ -192,7 +192,7 @@ TEST_FUNCTION(ustream_multi_create_succeed)
     (void)ustream_dispose(multibuffer);
 }
 
-/* The ustream_multi_create shall return NULL if there is no memory to create the multi-buffer interface. */
+/* The ustream_multi_create shall return NULL if there is not enough memory to create the multi-buffer interface. */
 TEST_FUNCTION(ustream_multi_create_no_memory_to_create_interface_failed)
 {
     ///arrange
@@ -502,7 +502,7 @@ TEST_FUNCTION(ustream_multi_append_null_buffer_to_add_failed)
     (void)ustream_dispose(multibuffer);
 }
 
-/* If there is no memory to control the new buffer, the ustream_multi_append shall return ULIB_OUT_OF_MEMORY_ERROR. */
+/* If there is not enough memory to control the new buffer, the ustream_multi_append shall return ULIB_OUT_OF_MEMORY_ERROR. */
 TEST_FUNCTION(ustream_multi_append_not_enough_memory_failed)
 {
     ///arrange

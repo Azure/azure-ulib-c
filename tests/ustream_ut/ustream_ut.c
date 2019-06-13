@@ -167,7 +167,7 @@ TEST_FUNCTION(ustream_create_succeed)
     (void)ustream_dispose(buffer_interface);
 }
 
-/* The ustream_create shall return NULL if there is no memory to create the buffer. */
+/* The ustream_create shall return NULL if there is not enough memory to create the buffer. */
 TEST_FUNCTION(ustream_create_no_memory_to_create_interface_failed)
 {
     ///arrange
@@ -192,7 +192,7 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_interface_failed)
     ///cleanup
 }
 
-/* The ustream_create shall return NULL if there is no memory to create the instance */
+/* The ustream_create shall return NULL if there is not enough memory to create the instance */
 TEST_FUNCTION(ustream_create_no_memory_to_create_instance_failed)
 {
     ///arrange
@@ -219,7 +219,7 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_instance_failed)
     ///cleanup
 }
 
-/* The ustream_create shall return NULL if there is no memory to create the inner buffer */
+/* The ustream_create shall return NULL if there is not enough memory to create the inner buffer */
 TEST_FUNCTION(ustream_create_no_memory_to_create_inner_buffer_failed)
 {
     ///arrange
