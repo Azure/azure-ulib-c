@@ -11,16 +11,13 @@
 #include "ulib_heap.h"
 #include "ulog.h"
 
-typedef uint8_t                                 USTREAM_FLAGS;
-#define USTREAM_FLAG_NONE                 (USTREAM_FLAGS)0x00
-#define USTREAM_FLAG_RELEASE_ON_DESTROY   (USTREAM_FLAGS)0x01
 
 typedef struct USTREAM_INNER_BUFFER_TAG
 {
     uint8_t* ptr;
     size_t length;
-    USTREAM_FLAGS flags;
     volatile uint32_t ref_count;
+    void(*inner_free)(void*);
 } USTREAM_INNER_BUFFER;
 
 typedef struct USTREAM_INSTANCE_TAG
@@ -61,7 +58,6 @@ static USTREAM* create_instance(
 {
     USTREAM* ustream_interface = (USTREAM*)ULIB_CONFIG_MALLOC(sizeof(USTREAM));
     /*[ustream_create_no_memory_to_create_interface_failed]*/
-    /*[ustream_const_create_no_memory_to_create_interface_failed]*/
     /*[ustream_clone_no_memory_to_create_interface_failed]*/
     /*[ustream_clone_no_memory_to_create_instance_failed]*/
     if(ustream_interface == NULL)
@@ -97,46 +93,20 @@ static USTREAM* create_instance(
 static USTREAM_INNER_BUFFER* create_inner_buffer(
     const uint8_t* const buffer, 
     size_t buffer_length,
-    bool take_ownership,
-    bool release_on_destroy)
+    void(*inner_free)(void*))
 {
-    uint8_t* ptr;
     USTREAM_INNER_BUFFER* inner_buffer;
 
-    if(take_ownership)
-    {
-        ptr = (uint8_t*)buffer;
-    }
-    else
-    {
-        if((ptr = (uint8_t*)ULIB_CONFIG_MALLOC(buffer_length * sizeof(uint8_t))) != NULL)
-        {
-            (void)memcpy(ptr, buffer, buffer_length);
-        }
-        else
-        {
-            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_OUT_OF_MEMORY_STRING, "inner buffer");
-        }
-    }
-
-    if(ptr == NULL)
-    {
-        inner_buffer = NULL;
-    }
-    else if((inner_buffer = (USTREAM_INNER_BUFFER*)ULIB_CONFIG_MALLOC(sizeof(USTREAM_INNER_BUFFER))) == NULL)
+    if((inner_buffer = (USTREAM_INNER_BUFFER*)ULIB_CONFIG_MALLOC(sizeof(USTREAM_INNER_BUFFER))) == NULL)
     {
         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_OUT_OF_MEMORY_STRING, "inner buffer control");
-        if(!take_ownership)
-        {
-            ULIB_CONFIG_FREE(ptr);
-        }
     }
     else
     {
-        inner_buffer->ptr = ptr;
+        inner_buffer->ptr = (uint8_t*)buffer;
         inner_buffer->length = buffer_length;
-        inner_buffer->flags = (release_on_destroy ? USTREAM_FLAG_RELEASE_ON_DESTROY : USTREAM_FLAG_NONE);
         inner_buffer->ref_count = 0;
+        inner_buffer->inner_free = inner_free;
     }
 
     return inner_buffer;
@@ -144,9 +114,9 @@ static USTREAM_INNER_BUFFER* create_inner_buffer(
 
 static void destroy_inner_buffer(USTREAM_INNER_BUFFER* inner_buffer)
 {
-    if((inner_buffer->flags & USTREAM_FLAG_RELEASE_ON_DESTROY) == USTREAM_FLAG_RELEASE_ON_DESTROY)
+    if(inner_buffer->inner_free != NULL)
     {
-        ULIB_CONFIG_FREE(inner_buffer->ptr);
+        inner_buffer->inner_free(inner_buffer->ptr);
     }
     ULIB_CONFIG_FREE(inner_buffer);
 }
@@ -457,7 +427,7 @@ static ULIB_RESULT concrete_dispose(USTREAM* ustream_interface)
 USTREAM* ustream_create(
         const uint8_t* const buffer, 
         size_t buffer_length,
-        bool take_ownership)
+        void(*inner_free)(void*))
 {
     USTREAM* interface_result;
 
@@ -476,7 +446,7 @@ USTREAM* ustream_create(
     else
     {
         /*[ustream_create_succeed]*/
-        USTREAM_INNER_BUFFER* inner_buffer = create_inner_buffer(buffer, buffer_length, take_ownership, true);
+        USTREAM_INNER_BUFFER* inner_buffer = create_inner_buffer(buffer, buffer_length, inner_free);
         /*[ustream_create_no_memory_to_create_protected_buffer_failed]*/
         /*[ustream_create_no_memory_to_create_inner_buffer_failed]*/
         if(inner_buffer == NULL)
@@ -489,55 +459,6 @@ USTREAM* ustream_create(
             /*[ustream_create_no_memory_to_create_instance_failed]*/
             if(interface_result == NULL)
             {
-                if(take_ownership)
-                {
-                    ULIB_CONFIG_FREE(inner_buffer);
-                }
-                else
-                {
-                    destroy_inner_buffer(inner_buffer);
-                }
-            }
-        }
-    }
-
-    return interface_result;
-}
-
-USTREAM* ustream_const_create(
-    const uint8_t* const buffer,
-    size_t buffer_length)
-{
-    USTREAM* interface_result;
-
-    if(buffer == NULL)
-    {
-        /*[ustream_const_create_null_buffer_failed]*/
-        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_NULL_STRING, "buffer");
-        interface_result = NULL;
-    }
-    else if(buffer_length == 0)
-    {
-        /*[ustream_const_create_zero_length_failed]*/
-        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_NOT_EQUALS_STRING, "buffer_length", "0");
-        interface_result = NULL;
-    }
-    else
-    {
-        /*[ustream_const_create_succeed]*/
-        USTREAM_INNER_BUFFER* inner_buffer = create_inner_buffer(buffer, buffer_length, true, false);
-        /*[ustream_const_create_no_memory_to_create_protected_buffer_failed]*/
-        /*[ustream_const_create_no_memory_to_create_inner_buffer_failed]*/
-        if(inner_buffer == NULL)
-        {
-            interface_result = NULL;
-        }
-        else
-        {
-            interface_result = create_instance(inner_buffer, 0, 0);
-            /*[ustream_const_create_no_memory_to_create_instance_failed]*/
-            if(interface_result == NULL)
-            {
                 destroy_inner_buffer(inner_buffer);
             }
         }
@@ -545,3 +466,4 @@ USTREAM* ustream_const_create(
 
     return interface_result;
 }
+

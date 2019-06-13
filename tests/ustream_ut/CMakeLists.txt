@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 2.8.11)
 
-set(thisTestSuiteName ustream_no_ownership_ut)
+set(thisTestSuiteName ustream_ut)
 
 set(${thisTestSuiteName}_test_files
     ${thisTestSuiteName}.c
@@ -28,6 +28,6 @@ set(${thisTestSuiteName}_h_files
     ../inc/ustream_mock_buffer.h
 )
 
-build_c_test_artifacts(${thisTestSuiteName} ON "tests/ustream_no_ownership_tests")
+build_c_test_artifacts(${thisTestSuiteName} ON "tests/ustream_ownership_tests")
 
 compile_c_test_artifacts_as(${thisTestSuiteName} C99)
