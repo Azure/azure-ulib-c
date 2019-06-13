@@ -140,7 +140,7 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* The ustream_create shall create an instance of the buffer and initialize the interface. */
+/* ustream_create shall create an instance of the buffer and initialize the interface. */
 TEST_FUNCTION(ustream_create_succeed)
 {
     ///arrange
@@ -167,7 +167,7 @@ TEST_FUNCTION(ustream_create_succeed)
     (void)ustream_dispose(buffer_interface);
 }
 
-/* The ustream_create shall return NULL if there is not enough memory to create the buffer. */
+/* ustream_create shall return NULL if there is not enough memory to create the buffer. */
 TEST_FUNCTION(ustream_create_no_memory_to_create_interface_failed)
 {
     ///arrange
@@ -192,7 +192,7 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_interface_failed)
     ///cleanup
 }
 
-/* The ustream_create shall return NULL if there is not enough memory to create the instance */
+/* ustream_create shall return NULL if there is not enough memory to create the instance */
 TEST_FUNCTION(ustream_create_no_memory_to_create_instance_failed)
 {
     ///arrange
@@ -219,7 +219,7 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_instance_failed)
     ///cleanup
 }
 
-/* The ustream_create shall return NULL if there is not enough memory to create the inner buffer */
+/* ustream_create shall return NULL if there is not enough memory to create the inner buffer */
 TEST_FUNCTION(ustream_create_no_memory_to_create_inner_buffer_failed)
 {
     ///arrange
@@ -243,7 +243,7 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_inner_buffer_failed)
     ulib_free(buf);
 }
 
-/* If the provided constant buffer is NULL, the ustream_create shall return NULL. */
+/* ustream_create shall return NULL if the provided constant buffer is NULL */
 TEST_FUNCTION(ustream_create_null_buffer_failed)
 {
     ///arrange
@@ -258,7 +258,7 @@ TEST_FUNCTION(ustream_create_null_buffer_failed)
     ///cleanup
 }
 
-/* If the provided buffer length is zero, the ustream_create shall return NULL. */
+/* ustream_create shall return NULL f the provided buffer length is zero */
 TEST_FUNCTION(ustream_create_zero_length_failed)
 {
     ///arrange
@@ -273,7 +273,7 @@ TEST_FUNCTION(ustream_create_zero_length_failed)
     ///cleanup
 }
 
-/*  The clone shall return NULL if there is not enough memory to control the new buffer. */
+/*  ustream_clone shall return NULL if there is not enough memory to control the new buffer. */
 TEST_FUNCTION(ustream_clone_no_memory_to_create_interface_failed)
 {
     ///arrange
@@ -291,7 +291,7 @@ TEST_FUNCTION(ustream_clone_no_memory_to_create_interface_failed)
     (void)ustream_dispose(ustream_instance);
 }
 
-/* ustream_clone shall return null if there is not enough memory to create the instance */
+/* ustream_clone shall return NULL if there is not enough memory to create the instance */
 TEST_FUNCTION(ustream_clone_no_memory_to_create_instance_failed)
 {
     ///arrange

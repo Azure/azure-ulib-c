@@ -17,7 +17,7 @@ typedef struct USTREAM_INNER_BUFFER_TAG
     uint8_t* ptr;
     size_t length;
     volatile uint32_t ref_count;
-    void(*inner_free)(void*);
+    USTREAM_INNER_FREE inner_free;
 } USTREAM_INNER_BUFFER;
 
 typedef struct USTREAM_INSTANCE_TAG

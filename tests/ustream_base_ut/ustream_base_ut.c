@@ -133,7 +133,7 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* The ustream_create shall create an instance of the buffer and initialize the interface. */
+/* ustream_create shall create an instance of the buffer and initialize the interface. */
 TEST_FUNCTION(ustream_create_const_succeed)
 {
     ///arrange
@@ -155,7 +155,7 @@ TEST_FUNCTION(ustream_create_const_succeed)
     (void)ustream_dispose(buffer_interface);
 }
 
-/* The ustream_create shall return NULL if there is not enough memory to create the buffer. */
+/* ustream_create shall return NULL if there is not enough memory to create the buffer. */
 TEST_FUNCTION(ustream_create_const_no_memory_to_create_interface_failed)
 {
     ///arrange
@@ -215,7 +215,7 @@ TEST_FUNCTION(ustream_create_const_no_memory_to_create_inner_buffer_failed)
     ///cleanup
 }
 
-/* If the provided constant buffer is NULL, the ustream_create shall return NULL. */
+/* ustream_create shall return NULL if the provided constant buffer is NULL */
 TEST_FUNCTION(ustream_create_const_null_buffer_failed)
 {
     ///arrange
@@ -230,7 +230,7 @@ TEST_FUNCTION(ustream_create_const_null_buffer_failed)
     ///cleanup
 }
 
-/* If the provided buffer length is zero, the ustream_create shall return NULL. */
+/* ustream_create shall return NULL ff the provided buffer length is zero */
 TEST_FUNCTION(ustream_create_const_zero_length_failed)
 {
     ///arrange
@@ -246,8 +246,8 @@ TEST_FUNCTION(ustream_create_const_zero_length_failed)
 }
 
 
-/* The Append shall append the provided buffer at the end of the current one. */
-/* If current buffer is not a multibuffer, the Append shall convert the current buffer in a multibuffer. */
+/* ustream_append shall append the second provided buffer at the end of the first one. */
+/* ustream_append shall convert the first provided buffer to a multibuffer if the first buffer is not a multibuffer */
 TEST_FUNCTION(ustream_append_start_from_empty_multibuffer_succeed)
 {
     ///arrange
@@ -337,7 +337,7 @@ TEST_FUNCTION(ustream_append_append_multiple_buffers_succeed)
     ustream_dispose(default_buffer1);
 }
 
-/* If the provided interface is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* ustream_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR if the provided interface is NULL */
 TEST_FUNCTION(ustream_append_null_interface_failed)
 {
     ///arrange
@@ -357,7 +357,7 @@ TEST_FUNCTION(ustream_append_null_interface_failed)
     ustream_dispose(default_buffer);
 }
 
-/* If the provided buffer to add is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* ustream_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR if the provided buffer to add is NULL */
 TEST_FUNCTION(ustream_append_null_buffer_to_add_failed)
 {
     ///arrange
@@ -377,7 +377,7 @@ TEST_FUNCTION(ustream_append_null_buffer_to_add_failed)
     ustream_dispose(default_buffer);
 }
 
-/* If there is not enough memory to append the buffer, the Append shall return ULIB_OUT_OF_MEMORY_ERROR. */
+/*  ustream_append shall return ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the buffer */
 TEST_FUNCTION(ustream_append_starting_from_multibuffer_with_not_enough_memory_failed)
 {
     ///arrange
@@ -447,7 +447,7 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_create_multibuffer_failed)
     ustream_dispose(default_buffer2);
 }
 
-/* ustream_append shall return ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the uStream */
+/* ustream_append shall return ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the first uStream */
 TEST_FUNCTION(ustream_append_not_enough_memory_to_append_first_buffer_failed)
 {
     ///arrange
