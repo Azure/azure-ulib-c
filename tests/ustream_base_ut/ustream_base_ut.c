@@ -133,7 +133,7 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* The ustream_const_create shall create an instance of the buffer and initialize the interface. */
+/* The ustream_create shall create an instance of the buffer and initialize the interface. */
 TEST_FUNCTION(ustream_create_const_succeed)
 {
     ///arrange
@@ -213,7 +213,7 @@ TEST_FUNCTION(ustream_create_const_no_memory_to_create_inner_buffer_failed)
     ///cleanup
 }
 
-/* If the provided constant buffer is NULL, the ustream_const_create shall return NULL. */
+/* If the provided constant buffer is NULL, the ustream_create shall return NULL. */
 TEST_FUNCTION(ustream_create_const_null_buffer_failed)
 {
     ///arrange
@@ -228,7 +228,7 @@ TEST_FUNCTION(ustream_create_const_null_buffer_failed)
     ///cleanup
 }
 
-/* If the provided buffer length is zero, the ustream_const_create shall return NULL. */
+/* If the provided buffer length is zero, the ustream_create shall return NULL. */
 TEST_FUNCTION(ustream_create_const_zero_length_failed)
 {
     ///arrange

@@ -67,7 +67,6 @@ static USTREAM* create_instance(
     else
     {
         USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ULIB_CONFIG_MALLOC(sizeof(USTREAM_INSTANCE));
-        /*[az_stdbuffer_clone_no_memory_to_create_instance_failed]*/
         if(instance != NULL)
         {
             ustream_interface->api = &api;
@@ -447,7 +446,6 @@ USTREAM* ustream_create(
     {
         /*[ustream_create_succeed]*/
         USTREAM_INNER_BUFFER* inner_buffer = create_inner_buffer(buffer, buffer_length, inner_free);
-        /*[ustream_create_no_memory_to_create_protected_buffer_failed]*/
         /*[ustream_create_no_memory_to_create_inner_buffer_failed]*/
         if(inner_buffer == NULL)
         {
