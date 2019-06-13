@@ -140,7 +140,7 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* ustream_create shall create an instance of the buffer and initialize the interface. */
+/* ustream_create shall create an instance of the uStream and initialize the interface. */
 TEST_FUNCTION(ustream_create_succeed)
 {
     ///arrange
@@ -167,7 +167,7 @@ TEST_FUNCTION(ustream_create_succeed)
     (void)ustream_dispose(buffer_interface);
 }
 
-/* ustream_create shall return NULL if there is not enough memory to create the buffer. */
+/* ustream_create shall return NULL if there is not enough memory to create the uStream. */
 TEST_FUNCTION(ustream_create_no_memory_to_create_interface_failed)
 {
     ///arrange
@@ -260,7 +260,7 @@ TEST_FUNCTION(ustream_create_null_buffer_failed)
     ///cleanup
 }
 
-/* ustream_create shall return NULL f the provided buffer length is zero */
+/* ustream_create shall return NULL if the provided buffer length is zero */
 TEST_FUNCTION(ustream_create_zero_length_failed)
 {
     ///arrange
@@ -275,7 +275,7 @@ TEST_FUNCTION(ustream_create_zero_length_failed)
     ///cleanup
 }
 
-/*  ustream_clone shall return NULL if there is not enough memory to control the new buffer. */
+/*  ustream_clone shall return NULL if there is not enough memory to control the new uStream. */
 TEST_FUNCTION(ustream_clone_no_memory_to_create_interface_failed)
 {
     ///arrange
