@@ -21,6 +21,7 @@ for %%i in ("%repo_root%") do set repo_root=%%~fi
 set CMAKE_DIR=azure-ulib-c
 set build-config=Debug
 set build-platform=Win32
+set run_ut=ON
 
 echo Build Root: %build-root%
 echo Repo Root: %repo_root%
@@ -32,12 +33,26 @@ if EXIST %build-root%\cmake\%CMAKE_DIR% (
     rem no error checking
 )
 
+:args-loop
+if "%1" equ "" goto args-done
+if "%1" equ "--disable-ut" goto args-run-ut
+
+:args-run-ut
+set run_ut=OFF
+goto args-continue
+
+:args-continue
+shift
+goto args-loop
+
+:args-done
+
 echo CMAKE Output Path: %build-root%\cmake\%CMAKE_DIR%
 mkdir %build-root%\cmake\%CMAKE_DIR%
 rem no error checking
 pushd %build-root%\cmake\%CMAKE_DIR%
 
-cmake %build-root% -Drun_unittests:BOOL=ON
+cmake %build-root% -Drun_ulib_unit_tests:BOOL=%run_ut%
 if not !ERRORLEVEL!==0 exit /b !ERRORLEVEL!
 
 msbuild /m azure-ulib-c.sln "/p:Configuration=%build-config%;Platform=%build-platform%"

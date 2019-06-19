@@ -13,6 +13,7 @@ phases:
       git \
       python-software-properties \
       build-essential \
+      cmake \
       pkg-config
       sudo curl -sL https://deb.nodesource.com/setup_6.x | bash -
       sudo apt-get install -y nodejs
@@ -49,7 +50,7 @@ phases:
     displayName: 'cleanup'
 - phase: gcc44
   variables:
-    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/linux-c-ubuntu-gcc4.4"
+    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/linux-c-ubuntu-gcc4.4:cmakev3.2"
   queue: Hosted Ubuntu 1604
   displayName: 'gcc4.4'
   steps:
@@ -64,7 +65,7 @@ phases:
     condition: always()
 - phase: gcc46
   variables:
-    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/gcc-4.6:latest"
+    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/gcc-4.6:cmakev3.2"
   queue: Hosted Ubuntu 1604
   displayName: 'gcc-4.6'
   steps:
