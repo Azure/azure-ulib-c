@@ -9,15 +9,8 @@ set(${this_test_suite_name}_test_files
     ${this_test_suite_name}.c
 )
 
-include_directories(${SHARED_UTIL_REAL_TEST_FOLDER})
-
 set(${this_test_suite_name}_c_files
     ../../ulog/ulog.c
 )
 
-set(${this_test_suite_name}_h_files
-    ../../inc/ucontract.h
-)
-
 build_c_test_target(${this_test_suite_name} "tests/ucontract_tests")
-

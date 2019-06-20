@@ -9,8 +9,6 @@ set(${this_test_suite_name}_test_files
     ${this_test_suite_name}.c
 )
 
-include_directories(${SHARED_UTIL_REAL_TEST_FOLDER})
-
 set(${this_test_suite_name}_c_files
     ../../ulog/ulog.c
     ../../ustream/ustream.c
@@ -19,15 +17,4 @@ set(${this_test_suite_name}_c_files
     ../src/ustream_mock_buffer.c
 )
 
-set(${this_test_suite_name}_h_files
-	../../inc/ulog.h
-	../../inc/ustream.h
-	../../inc/ustream_base.h
-    ../inc/ustream_compliance_ut.h
-    ../inc/ustream_ctest_aux.h
-    ../inc/ustream_mock_buffer.h
-)
-
 build_c_test_target(${this_test_suite_name} "tests/ustream_ownership_tests")
-
-
