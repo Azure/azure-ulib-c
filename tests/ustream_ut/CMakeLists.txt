@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-set(thisTestSuiteName ustream_ut)
+set(this_test_suite_name ustream_ut)
 
 set(${this_test_suite_name}_test_files
     ${this_test_suite_name}.c
@@ -17,4 +17,4 @@ set(${this_test_suite_name}_c_files
     ../../ustream/ustream_multi.c
 )
 
-build_c_test_target(${this_test_suite_name} "tests/ustream_ownership_tests")
+build_c_test_target(${this_test_suite_name} "tests/ustream_tests")
