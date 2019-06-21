@@ -7,7 +7,5 @@ usePermissiveRulesForSamplesAndTests()
 
 add_subdirectory(ucontract_ut)
 add_subdirectory(ustream_base_ut)
-add_subdirectory(ustream_const_ut)
 add_subdirectory(ustream_multi_ut)
-add_subdirectory(ustream_no_ownership_ut)
-add_subdirectory(ustream_ownership_ut)
+add_subdirectory(ustream_ut)
