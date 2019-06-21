@@ -129,6 +129,12 @@ endfunction()
 
 function(build_c_test_target what_is_building folder)
 
+    #Include repo directories
+    include_directories(${CMAKE_SOURCE_DIR}/inc)
+    include_directories(${CMAKE_SOURCE_DIR}/config)
+    include_directories(${CMAKE_SOURCE_DIR}/tests/inc)
+    include_directories(${CMAKE_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY})
+
     #Set shared utility include directories
     set(ulib_test_framework_includes ${sharedutil_include_directories} ${MACRO_UTILS_INC_FOLDER} ${UMOCK_C_INC_FOLDER} ${TESTRUNNERSWITCHER_INC_FOLDER} ${CTEST_INC_FOLDER})
     include_directories(${ulib_test_framework_includes})
