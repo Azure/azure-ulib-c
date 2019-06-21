@@ -93,7 +93,16 @@ phases:
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
     condition: always()    
-
+- phase: OSX
+  queue:
+    name: Hosted macOS
+  steps:
+  - script: |
+      ./build_all/osx_xcode_native.sh
+    displayName: 'build'
+  - script: sudo rm -rf $(Agent.BuildDirectory)/*
+    displayName: 'cleanup'
+    condition: always() 
 - phase: windowsdynamic
   queue:
     name: 'aziotbld-win03'
