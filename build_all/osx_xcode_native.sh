@@ -7,7 +7,7 @@ set -e
 
 script_dir=$(cd "$(dirname "$0")" && pwd)
 build_root=$(cd "${script_dir}/.." && pwd)
-build_folder=$build_root"/cmake/azure-ulib-c"
+build_folder=$build_root"/cmake/azure_ulib_c"
 
 CORES=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu)
 

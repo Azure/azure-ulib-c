@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(azure-ulib-c)
+project(azure_ulib_c)
 
 set(AZURE_ULIB_C_VERSION 1.0.1)
 
@@ -44,7 +44,7 @@ set(azure_ulib_c_files
 )
 
 #Add library of ulib c files
-add_library(azure-ulib-c ${azure_ulib_c_files})
+add_library(azure_ulib_c ${azure_ulib_c_files})
 
 #Set the include directories for this project
 set(azure_ulib_h_dir
@@ -54,8 +54,8 @@ set(azure_ulib_h_dir
 )
 
 #Add include directories for this target and anyone linking against it
-target_include_directories(azure-ulib-c PUBLIC ${azure_ulib_h_dir})
-target_include_directories(azure-ulib-c PRIVATE ./deps/umock-c/inc ./deps/azure-macro-utils-c/inc)
+target_include_directories(azure_ulib_c PUBLIC ${azure_ulib_h_dir})
+target_include_directories(azure_ulib_c PRIVATE ./deps/umock-c/inc ./deps/azure-macro-utils-c/inc)
 
 set(AZURE_ULIB_C_INC_FOLDER ${CMAKE_CURRENT_LIST_DIR}/inc CACHE INTERNAL "this is what needs to be included if using sharedLib lib" FORCE)
 
@@ -68,7 +68,7 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-ctest EXCLUDE_FROM_ALL)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-macro-utils-c EXCLUDE_FROM_ALL)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-c-testrunnerswitcher EXCLUDE_FROM_ALL)
 
-setTargetBuildProperties(azure-ulib-c)
+setTargetBuildProperties(azure_ulib_c)
 
 if (${run_ulib_unit_tests})
     add_subdirectory(tests)

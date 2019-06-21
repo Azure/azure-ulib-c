@@ -54,7 +54,7 @@ function(c_windows_unittests_add_dll what_is_building folder)
 
     #Link necessary libs to dll library
     target_link_libraries(${what_is_building}_dll  
-                PRIVATE umock_c ctest testrunnerswitcher ${what_is_building}_testsonly_lib
+                PRIVATE umock_c ctest testrunnerswitcher azure_ulib_c ${what_is_building}_testsonly_lib
     )
 
 endfunction()
@@ -79,7 +79,7 @@ function(c_windows_unittests_add_exe what_is_building folder)
     target_compile_definitions(${what_is_building}_exe PUBLIC USE_CTEST)
     target_include_directories(${what_is_building}_exe PUBLIC ${sharedutil_include_directories})
     target_link_libraries(${what_is_building}_exe
-                PRIVATE umock_c ctest testrunnerswitcher azure-ulib-c
+                PRIVATE umock_c ctest testrunnerswitcher azure_ulib_c
     )
 
     #Add test to ctest list
@@ -107,7 +107,7 @@ function(c_linux_unittests_add_exe what_is_building folder)
     target_compile_definitions(${what_is_building}_exe PUBLIC USE_CTEST)
     target_include_directories(${what_is_building}_exe PUBLIC ${sharedutil_include_directories})
     target_link_libraries(${what_is_building}_exe
-                PRIVATE umock_c ctest testrunnerswitcher azure-ulib-c
+                PRIVATE umock_c ctest testrunnerswitcher azure_ulib_c
     )
 
     #Add test to ctest list
@@ -130,8 +130,8 @@ endfunction()
 function(build_c_test_target what_is_building folder)
 
     #Set shared utility include directories
-    set(sharedutil_include_directories ${sharedutil_include_directories} ${UMOCK_C_INC_FOLDER} ${TESTRUNNERSWITCHER_INC_FOLDER} ${CTEST_INC_FOLDER})
-    include_directories(${sharedutil_include_directories})
+    set(ulib_test_framework_includes ${sharedutil_include_directories} ${MACRO_UTILS_INC_FOLDER} ${UMOCK_C_INC_FOLDER} ${TESTRUNNERSWITCHER_INC_FOLDER} ${CTEST_INC_FOLDER})
+    include_directories(${ulib_test_framework_includes})
 
     #Create Windows/Linux test executables
     if(WIN32)
@@ -163,7 +163,7 @@ function(c_windows_sample_add_exe what_is_building folder)
     target_compile_definitions(${what_is_building}_exe PUBLIC _CRT_SECURE_NO_WARNINGS)
     target_include_directories(${what_is_building}_exe PUBLIC ${sharedutil_include_directories})
     target_link_libraries(${what_is_building}_exe
-                PRIVATE azure-ulib-c
+                PRIVATE azure_ulib_c
     )
 
 endfunction()
@@ -185,7 +185,7 @@ function(c_linux_sample_add_exe what_is_building folder)
     #Define executable's compile definitions, linked libraries, and include dirs
     target_include_directories(${what_is_building}_exe PUBLIC ${sharedutil_include_directories})
     target_link_libraries(${what_is_building}_exe
-                PRIVATE azure-ulib-c
+                PRIVATE azure_ulib_c
     )
 
 endfunction()

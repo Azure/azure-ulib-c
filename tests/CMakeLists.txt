@@ -8,8 +8,6 @@ usePermissiveRulesForSamplesAndTests()
 include_directories(./inc)
 include_directories(${CMAKE_SOURCE_DIR}/inc)
 include_directories(${CMAKE_SOURCE_DIR}/config)
-include_directories(${CMAKE_SOURCE_DIR}/deps/azure-macro-utils-c/inc)
-include_directories(${CMAKE_SOURCE_DIR}/deps/umock-c/inc)
 include_directories(${CMAKE_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY})
 
 if(${run_ulib_unit_tests})

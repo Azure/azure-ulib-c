@@ -9,7 +9,7 @@ script_dir=$(cd "$(dirname "$0")" && pwd)
 build_root=$(cd "${script_dir}/.." && pwd)
 log_dir=$build_root
 make_install=
-build_folder=$build_root"/cmake/azure-ulib-c"
+build_folder=$build_root"/cmake/azure_ulib_c"
 run_ut=ON
 
 if [ -n "$1" ]; then
