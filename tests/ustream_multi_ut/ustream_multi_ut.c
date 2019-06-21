@@ -274,10 +274,10 @@ TEST_FUNCTION(ustream_multi_append_new_multibuffer_succeed)
     size_t size;
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(
-	    int, 
-	    strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 
-	    strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2) + 
-	    strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), size);
+        int, 
+        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 
+        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2) + 
+        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), size);
 
     ///cleanup
     (void)ustream_dispose(test_buffer1);
@@ -425,10 +425,10 @@ TEST_FUNCTION(ustream_multi_append_fully_released_multibuffer_succeed)
     size_t size;
     ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(
-	    int, 
-	    strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 
-	    strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2) + 
-	    strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), size);
+        int, 
+        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 
+        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2) + 
+        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), size);
 
     ///cleanup
     (void)ustream_dispose(test_buffer1);

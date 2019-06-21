@@ -65,7 +65,7 @@ static void uint8_t_ptr_to_string(
         size_t size)
 {
     size_t final_size = ((buffer_size - 1) < size) ? buffer_size - 1 : size;
-	size_t i;
+    size_t i;
 
     for(i = 0; i < final_size; i++)
     {
