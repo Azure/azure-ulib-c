@@ -1,9 +1,81 @@
+# Azure uLib C
 
-# Contributing
+[![Build Status](https://azure-iot-sdks.visualstudio.com/azure-iot-stuben/_apis/build/status/azure-iot-ulib/azure-iot-ulib-build?branchName=master)](https://azure-iot-sdks.visualstudio.com/azure-iot-stuben/_build/latest?definitionId=176&branchName=master)
+
+The intention of this repository is to provide developers useful tools to make developing for small, limited-resource devices easier.
+
+This repository contains the following:
+
+* **uStream**: avoid copying memory and expose large amounts of data without using a large amount of memory
+* **uLog**: a small logging system with constant strings for reduced memory footprint
+
+## Reference
+
+Documentation for API's are automatically generated with [doxygen](http://www.doxygen.nl/). You can find the documentation in the [docs](https://github.com/Azure/azure-ulib-c/tree/master/docs) directory.
+
+## Development Machine Requirements
+
+This repo is built using cmake. The minimum requirement is version 3.2. You can download and install the latest cmake version [here](https://cmake.org/).
+
+## Building the Repo
+
+1. Clone the repo into the directory of your choosing with the following command
+
+    ```bash
+    git clone --recursive https://github.com/Azure/azure-ulib-c
+    ```
+
+2. From here you can either use build scripts we have provided in `build_all\` or elect to build by yourself using the commands detailed in the following Command Line section.
+
+### Scripts
+
+1. Find the script for the OS on your dev machine and run it. By default, the tests will be compiled and then run at the end of the script.
+
+### Command Line
+
+1. Create the cmake directory to put all of your build files:
+
+    ```bash
+    mkdir cmake
+    ```
+
+2. cd into the cmake directory:
+
+    ```bash
+    cd cmake
+    ```
+
+3. Run cmake. Here you have the option of building the tests as well. If you would like to build the tests, run:
+
+    ```bash
+    cmake .. -Drun_unittests:bool=ON
+    ```
+
+    Otherwise, to just build the source files, run:
+
+    ```bash
+    cmake ..
+    ```
+
+4. Build with cmake
+
+    ```bash
+    cmake --build .
+    ```
+
+5. If you would like to run the tests and added the option from step 3, you can run the following:
+
+    ```bash
+    ctest -C "debug" -V
+    ```
+
+    The -C option chooses the build configuration to test and the -V turns on verbose output from the tests.
+
+## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
+the rights to use your contribution. For details, visit [Microsoft CLA](https://cla.microsoft.com).
 
 When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
