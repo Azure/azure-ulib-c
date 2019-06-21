@@ -17,7 +17,7 @@ typedef struct USTREAM_INNER_BUFFER_TAG
     uint8_t* ptr;
     size_t length;
     volatile uint32_t ref_count;
-    USTREAM_INNER_FREE inner_free;
+    USTREAM_BUFFER_RELEASE_CALLBACK inner_free;
 } USTREAM_INNER_BUFFER;
 
 typedef struct USTREAM_INSTANCE_TAG
@@ -92,7 +92,7 @@ static USTREAM* create_instance(
 static USTREAM_INNER_BUFFER* create_inner_buffer(
     const uint8_t* const buffer, 
     size_t buffer_length,
-    USTREAM_INNER_FREE inner_free)
+    USTREAM_BUFFER_RELEASE_CALLBACK inner_free)
 {
     USTREAM_INNER_BUFFER* inner_buffer;
 
@@ -426,7 +426,7 @@ static ULIB_RESULT concrete_dispose(USTREAM* ustream_interface)
 USTREAM* ustream_create(
         const uint8_t* const buffer, 
         size_t buffer_length,
-        USTREAM_INNER_FREE inner_free)
+        USTREAM_BUFFER_RELEASE_CALLBACK inner_free)
 {
     USTREAM* interface_result;
 

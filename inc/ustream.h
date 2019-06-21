@@ -25,28 +25,29 @@ extern "C" {
 
 
 /**
- * @brief   Free function to release inner buffer
+ * @brief   Signature of the function to release inner buffer
  * 
  * @param[in]   void*       void pointer to memory that needs to be free'd
  * 
  * @return  void
  */
-typedef void (*USTREAM_INNER_FREE)(void*);
+typedef void (*USTREAM_BUFFER_RELEASE_CALLBACK)(void*);
 
 /**
  * @brief   Factory to create a new uStream.
  *
  *  This factory creates a uStream that handles the content of the provided buffer. As a result,
  *      it will return a {@link USTREAM}* with this content. The created uStream takes ownership of the
- *      passed memory and will release the memory with the passed #USTREAM_INNER_FREE function when
+ *      passed memory and will release the memory with the passed #USTREAM_BUFFER_RELEASE_CALLBACK function when
  *      the ref count goes to zero.
  *
  * @param[in]  buffer           The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
  *                              It cannot be <tt>NULL</tt>.
  * @param[in]  buffer_length    The <tt>size_t</tt> with the number of <tt>uint8_t</tt> in the provided buffer.
- * @param[in]  inner_free       The #USTREAM_INNER_FREE function that will be called for the inner buffer once all the references
+ * @param[in]  inner_free       The #USTREAM_BUFFER_RELEASE_CALLBACK function that will be called for the inner buffer once all the references
  *                              to the uStream are released. If <tt>NULL</tt> is passed, the data is assumed to be constant with
- *                              no need to be free'd.
+ *                              no need to be free'd. In other words, there is no need for notification that the memory can be released.
+ *                              As a default, users may use the standard <tt>free</tt> to release malloc'd memory.
  *
  * @return The {@link USTREAM}* with the uStream interface.
  *          @retval not-NULL    If the uStream was created with success.
@@ -55,7 +56,7 @@ typedef void (*USTREAM_INNER_FREE)(void*);
 MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
         const uint8_t* const, buffer,
         size_t, buffer_length,
-        USTREAM_INNER_FREE, inner_free);
+        USTREAM_BUFFER_RELEASE_CALLBACK, inner_free);
 
 
 /**
