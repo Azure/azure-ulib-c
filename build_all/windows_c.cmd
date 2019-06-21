@@ -33,26 +33,12 @@ if EXIST %build-root%\cmake\%CMAKE_DIR% (
     rem no error checking
 )
 
-:args-loop
-if "%1" equ "" goto args-done
-if "%1" equ "--disable-ut" goto args-run-ut
-
-:args-run-ut
-set run_ut=OFF
-goto args-continue
-
-:args-continue
-shift
-goto args-loop
-
-:args-done
-
 echo CMAKE Output Path: %build-root%\cmake\%CMAKE_DIR%
 mkdir %build-root%\cmake\%CMAKE_DIR%
 rem no error checking
 pushd %build-root%\cmake\%CMAKE_DIR%
 
-cmake %build-root% -Drun_ulib_unit_tests:BOOL=%run_ut%
+cmake %build-root% -Drun_ulib_unit_tests:BOOL=ON
 if not !ERRORLEVEL!==0 exit /b !ERRORLEVEL!
 
 msbuild /m azure_ulib_c.sln "/p:Configuration=%build-config%;Platform=%build-platform%"
