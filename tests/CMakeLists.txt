@@ -9,7 +9,5 @@ include_directories(./inc)
 
 add_unittest_directory(ucontract_ut)
 add_unittest_directory(ustream_base_ut)
-add_unittest_directory(ustream_const_ut)
 add_unittest_directory(ustream_multi_ut)
-add_unittest_directory(ustream_no_ownership_ut)
-add_unittest_directory(ustream_ownership_ut)
+add_unittest_directory(ustream_ut)

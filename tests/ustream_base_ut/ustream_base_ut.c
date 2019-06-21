@@ -133,8 +133,8 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* The Append shall append the provided buffer at the end of the current one. */
-/* If current buffer is not a multibuffer, the Append shall convert the current buffer in a multibuffer. */
+/* ustream_append shall append the second provided uStream at the end of the first one. */
+/* ustream_append shall convert the first provided uStream to a multibuffer if the first uStream is not a multibuffer */
 TEST_FUNCTION(ustream_append_start_from_empty_multibuffer_succeed)
 {
     ///arrange
@@ -142,22 +142,22 @@ TEST_FUNCTION(ustream_append_start_from_empty_multibuffer_succeed)
     ASSERT_IS_NOT_NULL(default_multibuffer);
 
     USTREAM* default_buffer1 =
-        ustream_const_create(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
-            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
+            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
 
     USTREAM* default_buffer2 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
-            false);
+            NULL);
     ASSERT_IS_NOT_NULL(default_buffer2);
 
     USTREAM* default_buffer3 =
-        ustream_const_create(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_3,
-            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_3));
+            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(default_buffer3);
 
     ///act
@@ -182,26 +182,27 @@ TEST_FUNCTION(ustream_append_start_from_empty_multibuffer_succeed)
     ustream_dispose(default_multibuffer);
 }
 
+/* ustream_append shall return ULIB_SUCCESS if the uStreams were appended succesfully */
 TEST_FUNCTION(ustream_append_append_multiple_buffers_succeed)
 {
     ///arrange
     USTREAM* default_buffer1 =
-        ustream_const_create(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
-            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
+            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
 
     USTREAM* default_buffer2 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
-            false);
+            NULL);
     ASSERT_IS_NOT_NULL(default_buffer2);
 
     USTREAM* default_buffer3 =
-        ustream_const_create(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_3,
-            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_3));
+            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(default_buffer3);
 
     ///act
@@ -223,14 +224,14 @@ TEST_FUNCTION(ustream_append_append_multiple_buffers_succeed)
     ustream_dispose(default_buffer1);
 }
 
-/* If the provided interface is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* ustream_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream is NULL */
 TEST_FUNCTION(ustream_append_null_interface_failed)
 {
     ///arrange
     USTREAM* default_buffer =
-        ustream_const_create(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
-            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
+            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer);
 
     ///act
@@ -243,14 +244,14 @@ TEST_FUNCTION(ustream_append_null_interface_failed)
     ustream_dispose(default_buffer);
 }
 
-/* If the provided buffer to add is NULL, the Append shall return ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* ustream_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
 TEST_FUNCTION(ustream_append_null_buffer_to_add_failed)
 {
     ///arrange
     USTREAM* default_buffer =
-        ustream_const_create(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
-            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
+            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer);
 
     ///act
@@ -263,7 +264,7 @@ TEST_FUNCTION(ustream_append_null_buffer_to_add_failed)
     ustream_dispose(default_buffer);
 }
 
-/* If there is not enough memory to append the buffer, the Append shall return ULIB_OUT_OF_MEMORY_ERROR. */
+/*  ustream_append shall return ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the uStream */
 TEST_FUNCTION(ustream_append_starting_from_multibuffer_with_not_enough_memory_failed)
 {
     ///arrange
@@ -271,9 +272,9 @@ TEST_FUNCTION(ustream_append_starting_from_multibuffer_with_not_enough_memory_fa
     ASSERT_IS_NOT_NULL(default_multibuffer);
 
     USTREAM* default_buffer =
-        ustream_const_create(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
-            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
+            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer);
 
     umock_c_reset_all_calls();
@@ -291,20 +292,21 @@ TEST_FUNCTION(ustream_append_starting_from_multibuffer_with_not_enough_memory_fa
     ustream_dispose(default_multibuffer);
 }
 
+/* ustream_append shall return ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to create the multibuffer */
 TEST_FUNCTION(ustream_append_not_enough_memory_to_create_multibuffer_failed)
 {
     ///arrange
     USTREAM* default_buffer1 =
-        ustream_const_create(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
-            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
+            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
 
     USTREAM* default_buffer2 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
-            false);
+            NULL);
     ASSERT_IS_NOT_NULL(default_buffer2);
 
     umock_c_reset_all_calls();
@@ -332,20 +334,21 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_create_multibuffer_failed)
     ustream_dispose(default_buffer2);
 }
 
+/* ustream_append shall return ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the first uStream */
 TEST_FUNCTION(ustream_append_not_enough_memory_to_append_first_buffer_failed)
 {
     ///arrange
     USTREAM* default_buffer1 =
-        ustream_const_create(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
-            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
+            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
 
     USTREAM* default_buffer2 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
-            false);
+            NULL);
     ASSERT_IS_NOT_NULL(default_buffer2);
 
     umock_c_reset_all_calls();
@@ -380,20 +383,21 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_append_first_buffer_failed)
     ustream_dispose(default_buffer2);
 }
 
+/* ustream_append shall return ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the second uStream */
 TEST_FUNCTION(ustream_append_not_enough_memory_to_append_second_buffer_failed)
 {
     ///arrange
     USTREAM* default_buffer1 =
-        ustream_const_create(
+        ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
-            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1));
+            strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
 
     USTREAM* default_buffer2 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
-            false);
+            NULL);
     ASSERT_IS_NOT_NULL(default_buffer2);
 
     umock_c_reset_all_calls();

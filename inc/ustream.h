@@ -23,34 +23,31 @@ extern "C" {
 #include <stdbool.h>
 #endif /* __cplusplus */
 
+
+/**
+ * @brief   Signature of the function to release inner buffer
+ * 
+ * @param[in]   void*       void pointer to memory that needs to be free'd
+ * 
+ * @return  void
+ */
+typedef void (*USTREAM_BUFFER_RELEASE_CALLBACK)(void*);
+
 /**
  * @brief   Factory to create a new uStream.
  *
  *  This factory creates a uStream that handles the content of the provided buffer. As a result,
- *      it will return a {@link USTREAM}* with this content. The new uStream can keep 
- *      or not keep the ownership of the memory pointed to by the <tt>buffer</tt> depending on the state of the 
- *      boolean <tt>take_ownership</tt>. It can be:
- *
- *  - <b>true</b>   To inform the new uStream that it shall take ownership of the memory. This 
- *                  means that the uStream will copy only the reference of the memory, use it directly 
- *                  as its own inner buffer, and will free the memory when the uStream is disposed. 
- *                  The function that called this factory shall not release the provided buffer or directly 
- *                  change its content since this buffer now belongs to the uStream.
- *
- *  - <b>false</b>  To inform the new uStream that it shall not take the ownership of the memory.
- *                  This means that the uStream shall allocate its own memory and copy the content of
- *                  the provided buffer to this internal memory. The function that called this factory with
- *                  <tt>take_ownership = false</tt> may release or change the original buffer. When the 
- *                  uStream is disposed, it will only release the memory allocated to copy the original
- *                  buffer.
+ *      it will return a {@link USTREAM}* with this content. The created uStream takes ownership of the
+ *      passed memory and will release the memory with the passed #USTREAM_BUFFER_RELEASE_CALLBACK function when
+ *      the ref count goes to zero.
  *
  * @param[in]  buffer           The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
  *                              It cannot be <tt>NULL</tt>.
  * @param[in]  buffer_length    The <tt>size_t</tt> with the number of <tt>uint8_t</tt> in the provided buffer.
- * @param[in]  take_ownership   The <tt>bool</tt> that indicates if the factory shall or shall not take ownership of the buffer.
- *                              If <tt>true</tt> the uStream will take ownership of the memory allocated for the
- *                              provided buffer. If <tt>false</tt> the uStream will make a copy of the content of
- *                              the provided buffer in its own memory.
+ * @param[in]  inner_free       The #USTREAM_BUFFER_RELEASE_CALLBACK function that will be called for the inner buffer once all the references
+ *                              to the uStream are released. If <tt>NULL</tt> is passed, the data is assumed to be constant with
+ *                              no need to be free'd. In other words, there is no need for notification that the memory can be released.
+ *                              As a default, users may use the standard <tt>free</tt> to release malloc'd memory.
  *
  * @return The {@link USTREAM}* with the uStream interface.
  *          @retval not-NULL    If the uStream was created with success.
@@ -59,28 +56,8 @@ extern "C" {
 MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
         const uint8_t* const, buffer,
         size_t, buffer_length,
-        bool, take_ownership);
+        USTREAM_BUFFER_RELEASE_CALLBACK, inner_free);
 
-/**
- * @brief   Factory to create a new uStream using constant content, which cannot be changed or released.
- *
- *  This factory creates a uStream that manages content in constant memory. In this case, 
- *      this API will not copy the content to a internal buffer, or release the memory when the uStream 
- *      is disposed. To create a new uStream, a valid pointer to a constant memory address shall be provided, 
- *      and the number of bytes to handle. The factory will use the reference of the provided buffer as its
- *      own inner buffer.
- *
- * @param[in]   buffer          The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
- *                              It cannot be <tt>NULL</tt>.
- * @param[in]   buffer_length   The <tt>size_tt</tt> with the number of <tt>uint8_t</tt> in the provided buffer. It cannot be zero.
- *
- * @return The {@link USTREAM}* with the uStream interface.
- *          @retval not-NULL    If the uStream was created with success.
- *          @retval NULL        If there is no memory to create the new uStream.
- */
-MOCKABLE_FUNCTION(, USTREAM*, ustream_const_create,
-    const uint8_t* const, buffer,
-    size_t, buffer_length);
 
 /**
  * @brief   Factory to create a new uStreamMulti.
