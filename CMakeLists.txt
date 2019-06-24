@@ -36,11 +36,11 @@ endif()
 
 #Set ulib c files
 set(azure_ulib_c_files
+    ${CMAKE_SOURCE_DIR}/pal/MemMang/ulib_heap.c
     ${CMAKE_SOURCE_DIR}/ulog/ulog.c
     ${CMAKE_SOURCE_DIR}/ustream/ustream_base.c
     ${CMAKE_SOURCE_DIR}/ustream/ustream_multi.c
     ${CMAKE_SOURCE_DIR}/ustream/ustream.c
-    ${CMAKE_SOURCE_DIR}/pal/MemMang/ulib_heap.c
 )
 
 #Add library of ulib c files
