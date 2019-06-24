@@ -14,7 +14,7 @@ build_folder=$build_root"/cmake/azure_ulib_c"
 rm -r -f $build_folder
 mkdir -p $build_folder
 pushd $build_folder
-cmake ../.. -Drun_ulib_unit_tests:bool=ON -Drun_valgrind:BOOL=ON
+cmake ../.. -Drun_ulib_unit_tests:BOOL=ON -Drun_valgrind:BOOL=ON
 if [ $? != 0 ];then
 echo "Failure running cmake"
 fi

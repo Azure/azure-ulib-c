@@ -21,7 +21,6 @@ for %%i in ("%repo_root%") do set repo_root=%%~fi
 set CMAKE_DIR=azure_ulib_c
 set build-config=Debug
 set build-platform=Win32
-set run_ut=ON
 
 echo Build Root: %build-root%
 echo Repo Root: %repo_root%
