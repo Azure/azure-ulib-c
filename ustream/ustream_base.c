@@ -5,7 +5,7 @@
 
 
 ULIB_RESULT ustream_append(
-    USTREAM* ustream_interface,
+    USTREAM* ustream_interface, 
     USTREAM* ustream_to_append)
 {
     ULIB_RESULT result;
