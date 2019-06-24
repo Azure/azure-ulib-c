@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
+#include <string.h>
 #include "ustream.h"
 #include "ulib_result.h"
 #include "ulog.h"
@@ -19,9 +20,10 @@ static ULIB_RESULT print_buffer(USTREAM* ustream)
     ULIB_RESULT result;
     size_t returned_size;
     uint32_t printed_chars;
+    uint32_t ustream_read_iterations = 0;
 
     //Read ustream until receive ULIB_EOF
-    printf("\r\n---Printing the USTREAM---\r\n");
+    (void)printf("\r\n---Printing the USTREAM---\r\n");
     while((result = ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == ULIB_SUCCESS)
     {
         printed_chars = 0;
@@ -33,9 +35,10 @@ static ULIB_RESULT print_buffer(USTREAM* ustream)
             //Account for NULL terminator
             printed_chars++;
         }
+        ustream_read_iterations++;
     }
-    printf("-----------EOF------------\r\n");
-
+    (void)printf("-----------EOF------------\r\n");
+    (void)printf("ustream_read was called %i times\r\n", ustream_read_iterations);
     //Change return to ULIB_SUCCESS if last returned value was ULIB_EOF
     if(result == ULIB_EOF)
     {
@@ -76,7 +79,7 @@ int main(void)
         }
         else
         {
-            printf("Size of ustream_one: %lu\r\n", ustream_size);
+            (void)printf("Size of ustream_one: %lu\r\n", ustream_size);
 
             //Create the second USTREAM from the string in the heap, passing standard free function as inner free
             USTREAM* ustream_two;
@@ -91,7 +94,7 @@ int main(void)
             }
             else
             {
-                printf("Size of ustream_two: %lu\r\n", ustream_size);
+                (void)printf("Size of ustream_two: %lu\r\n", ustream_size);
 
                 //Append the second USTREAM to the first USTREAM
                 if(result = ustream_append(ustream_one, ustream_two) != ULIB_SUCCESS)
@@ -110,7 +113,7 @@ int main(void)
                 else
                 {
                     //Print the size of the appended ustream
-                    printf("Size of ustream_one after append: %lu\r\n", ustream_size);
+                    (void)printf("Size of ustream_one after append: %lu\r\n", ustream_size);
 
                     //Print the USTREAM contents
                     if(result = print_buffer(ustream_one) != ULIB_SUCCESS)
