@@ -199,6 +199,13 @@ endfunction()
 #Build Windows or Linux sample
 function(build_c_sample_target what_is_building folder)
 
+    #Include repo directories
+    include_directories(${MACRO_UTILS_INC_FOLDER})
+    include_directories(${UMOCK_C_INC_FOLDER})
+    include_directories(${CMAKE_SOURCE_DIR}/inc)
+    include_directories(${CMAKE_SOURCE_DIR}/config)
+    include_directories(${CMAKE_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY})
+
     if(WIN32)
         c_windows_sample_add_exe(${what_is_building} ${folder})
     else()

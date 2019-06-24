@@ -3,9 +3,5 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-include_directories(${CMAKE_SOURCE_DIR}/inc)
-include_directories(${CMAKE_SOURCE_DIR}/config)
-include_directories(${CMAKE_SOURCE_DIR}/deps/azure-macro-utils-c/inc)
-include_directories(${CMAKE_SOURCE_DIR}/deps/umock-c/inc)
-include_directories(${CMAKE_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY})
+add_subdirectory(./ustream_basic)
 

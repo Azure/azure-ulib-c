@@ -625,7 +625,6 @@ ULIB_RESULT ustream_multi_append(
     {
         /*[ustream_multi_append_null_multibuffer_failed]*/
         /*[ustream_multi_append_not_multibuffer_type_failed]*/
-        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(ustream_to_append == NULL)
