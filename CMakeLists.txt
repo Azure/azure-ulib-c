@@ -20,20 +20,6 @@ option(run_ulib_unit_tests "set run_ulib_unit_tests to ON to run unittests (defa
 option(skip_samples "set skip_samples to ON to skip building samples (default is OFF)[if possible, they are always built]" OFF)
 option(use_installed_dependencies "set use_installed_dependencies to ON to use installed packages instead of building dependencies from submodules" OFF)
 
-#making a global variable to know if we are on linux, windows, or macosx.
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(ULIB_PAL_DIRECTORY "MSBUILD/X86")
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    # on Linux, enable valgrind
-    # these commands (MEMORYCHECK...) need to apear BEFORE include(CTest) or they will not have any effect
-    find_program(MEMORYCHECK_COMMAND valgrind)
-    set(MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --error-exitcode=1")
-    set(ULIB_PAL_DIRECTORY "GCC/LINUX")
-elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    add_definitions(-DMACOSX)
-    set(ULIB_PAL_DIRECTORY "GCC/IOS")
-endif()
-
 #Set ulib c files
 set(azure_ulib_c_files
     ${CMAKE_SOURCE_DIR}/pal/MemMang/ulib_heap.c

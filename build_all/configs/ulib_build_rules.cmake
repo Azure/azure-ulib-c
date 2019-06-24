@@ -11,17 +11,31 @@ option(run_valgrind "set run_valgrind to ON if tests are to be run under valgrin
 option(compileOption_C "passes a string to the command line of the C compiler" OFF)
 option(compileOption_CXX "passes a string to the command line of the C++ compiler" OFF)
 
-#making a global variable to know if we are on linux, windows, or macosx.
+# Relax warnings when applicable
+function(usePermissiveRulesForSamplesAndTests)
+    if(NOT MSVC)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable  -Wno-unused-function -Wno-missing-braces -Wno-strict-aliasing")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-variable  -Wno-unused-function -Wno-missing-braces -Wno-strict-aliasing")
+        if(NOT APPLE AND NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable -Wno-clobbered")
+            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-but-set-variable -Wno-clobbered")
+        endif()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" PARENT_SCOPE)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}" PARENT_SCOPE)
+    endif()
+endfunction()
+
+# Global variable to know if we are on linux, windows, or macosx.
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(WINDOWS TRUE)
+    set(ULIB_PAL_DIRECTORY "MSBUILD/X86")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    set(LINUX TRUE)
-    #on Linux, enable valgrind
-    #these commands (MEMORYCHECK...) need to apear BEFORE include(CTest) or they will not have any effect
+    # Enable valgrind on Linux
     find_program(MEMORYCHECK_COMMAND valgrind)
     set(MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --error-exitcode=1")
+    set(ULIB_PAL_DIRECTORY "GCC/LINUX")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(MACOSX TRUE)
+    add_definitions(-DMACOSX)
+    set(ULIB_PAL_DIRECTORY "GCC/IOS")
 endif()
 
 #Enable testing for the target
@@ -30,39 +44,41 @@ include(CTest)
 set(use_cppunittest ON)
 
 #Provide stdint and stbool headers if necessary
-if ((NOT HAVE_STDINT_H) OR (NOT HAVE_STDBOOL_H))
+if((NOT HAVE_STDINT_H) OR (NOT HAVE_STDBOOL_H))
     include_directories(${UMOCK_C_INC_FOLDER}/umock_c/aux_inc)
 endif()
 
 # System-specific compiler flags
 if(MSVC)
-    if (WINCE) # Be lax with WEC 2013 compiler
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3")
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W3")
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    if(WINCE) # Be lax with WEC 2013 compiler
         add_definitions(-DWIN32) #WEC 2013
-    ELSE()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W4")
+        # Don't treat warning as errors for WEC 2013. WEC 2013 uses older compiler version
+        add_definitions(/WX-)
+    else()
+        # Make warning as error
+        add_definitions(/WX)
     endif()
-elseif(UNIX) #LINUX OR APPLE
+else()
+    # Make warning as error
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
-    if(NOT (IN_OPENWRT OR APPLE))
-        set (CMAKE_C_FLAGS "-D_POSIX_C_SOURCE=200112L ${CMAKE_C_FLAGS}")
+    if(NOT(IN_OPENWRT OR APPLE))
+        set(CMAKE_C_FLAGS "-D_POSIX_C_SOURCE=200112L ${CMAKE_C_FLAGS}")
     endif()
 endif()
 
 #Detect and set target architecture
 include(CheckSymbolExists)
 function(detect_architecture symbol arch)
-    if (NOT DEFINED ARCHITECTURE OR ARCHITECTURE STREQUAL "")
+    if(NOT DEFINED ARCHITECTURE OR ARCHITECTURE STREQUAL "")
         set(CMAKE_REQUIRED_QUIET 1)
         check_symbol_exists("${symbol}" "" ARCHITECTURE_${arch})
         unset(CMAKE_REQUIRED_QUIET)
 
         # The output variable needs to be unique across invocations otherwise
         # CMake's crazy scope rules will keep it defined
-        if (ARCHITECTURE_${arch})
+        if(ARCHITECTURE_${arch})
             set(ARCHITECTURE "${arch}" PARENT_SCOPE)
             set(ARCHITECTURE_${arch} 1 PARENT_SCOPE)
             add_definitions(-DARCHITECTURE_${arch}=1)
@@ -70,7 +86,7 @@ function(detect_architecture symbol arch)
     endif()
 endfunction()
 
-if (MSVC)
+if(MSVC)
     detect_architecture("_M_AMD64" x86_64)
     detect_architecture("_M_IX86" x86)
     detect_architecture("_M_ARM" ARM)
@@ -95,35 +111,6 @@ endif()
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" CXX_FLAG_CXX11)
-
-IF((WIN32) AND (NOT(MINGW)))
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-    IF(WINCE)
-        # Don't treat warning as errors for WEC 2013. WEC 2013 uses older compiler version
-        add_definitions(/WX-)
-    ELSE()
-        # Make warning as error
-        add_definitions(/WX)
-    ENDIF()
-ELSE()
-    # Make warning as error
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
-ENDIF()
-
-# Relax warnings when applicable
-function(usePermissiveRulesForSamplesAndTests)
-    if (NOT MSVC)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable  -Wno-unused-function -Wno-missing-braces -Wno-strict-aliasing")
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-variable  -Wno-unused-function -Wno-missing-braces -Wno-strict-aliasing")
-        if(NOT APPLE AND NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable -Wno-clobbered")
-            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-but-set-variable -Wno-clobbered")
-        endif()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" PARENT_SCOPE)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}" PARENT_SCOPE)
-    endif()
-endfunction()
 
 # For targets which set warning switches as project properties (e.g. XCode)
 function(setTargetBuildProperties stbp_target)
