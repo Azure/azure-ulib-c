@@ -7,14 +7,14 @@ set -e
 
 script_dir=$(cd "$(dirname "$0")" && pwd)
 build_root=$(cd "${script_dir}/.." && pwd)
-build_folder=$build_root"/cmake/azure-ulib-c"
+build_folder=$build_root"/cmake/azure_ulib_c"
 
 CORES=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu)
 
 rm -r -f $build_folder
 mkdir -p $build_folder
 pushd $build_folder
-cmake ../.. -Drun_unittests:bool=ON -G Xcode
+cmake ../.. -Drun_ulib_unit_tests:BOOL=ON -G Xcode
 cmake --build . -- --jobs=$CORES
 ctest -C "debug" -V
 popd
