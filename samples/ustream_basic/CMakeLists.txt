@@ -10,8 +10,7 @@ usePermissiveRulesForSamplesAndTests()
 set(this_sample_name ustream_basic)
 
 set(${this_sample_name}_c_files
-    ${azure_ulib_c_files}
-    src/main.c
+    ./src/main.c
 )
 
-build_c_sample_target(${this_sample_name} "sample/ustream_basic")
+build_c_sample_target(${this_sample_name} "samples/ustream_basic")
