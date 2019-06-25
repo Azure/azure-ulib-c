@@ -118,7 +118,7 @@ int main(void)
                     (void)printf("Size of ustream_one after append: %lu\r\n", ustream_size);
 
                     //Print the USTREAM contents
-                    if(result = print_buffer(ustream_one) != ULIB_SUCCESS)
+                    if((result = print_buffer(ustream_one)) != ULIB_SUCCESS)
                     {
                         ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "print_buffer", result);
                     }
