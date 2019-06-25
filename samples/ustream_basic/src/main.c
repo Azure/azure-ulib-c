@@ -14,12 +14,12 @@
 #define USTREAM_TWO_STRING "World\r\n"
 
 static const char USTREAM_ONE_STRING[] = "Hello ";
-static uint8_t user_buf[USER_BUFFER_SIZE];
 
 static ULIB_RESULT print_buffer(USTREAM* ustream)
 {
     ULIB_RESULT result;
     size_t returned_size;
+    uint8_t user_buf[USER_BUFFER_SIZE] = { 0 };
     uint32_t printed_chars;
     uint32_t ustream_read_iterations = 0;
 
@@ -83,7 +83,7 @@ int main(void)
         {
             (void)printf("Size of ustream_one: %lu\r\n", ustream_size);
 
-            //Create the second USTREAM from the string in the heap, passing standard free function as inner free
+            //Create the second USTREAM from the string in the heap, passing standard free function as release callback
             USTREAM* ustream_two;
             if((ustream_two = ustream_create((const uint8_t*)ustream_two_string, ustream_two_string_len, free)) == NULL)
             {
