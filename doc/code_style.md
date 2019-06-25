@@ -9,6 +9,7 @@ This document aims at capturing the engineering practices used in the Azure MCU 
 3.    [Security Development Lifecycle (SDL) Banned Function Calls](https://docs.microsoft.com/en-us/previous-versions/bb288454(v=msdn.10))
 4.    [Doxygen](http://www.doxygen.nl/index.html)
 5.    [Coding Horror](https://blog.codinghorror.com/new-programming-jargon/)
+6.    [Best practices for cloud applications](https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design)
 
 ## Updating this document
 In order to improve our engineering process, the following steps should be followed when something needs to be changed in this document:
@@ -59,7 +60,7 @@ Where:
 * **inc**: Contains the includes of the repo, all files on the root are the public API and should be part of the LTS (Long Term Support). The files in the `internal` are the ones that contains the signature of methods and data structs that are not part of the public API and Microsoft can change it without any previous note. The `internal` should not be part of the include path, include an internal file should always contains the internal path in the name, (ex: `#include “internal/bar_non_public.h”`).
 * **pal**: Contains the files with the port specific code.
 * **sample**: Contains samples and tutorials that users will use as reference to learn how to use the code in the repo.
-* **tests**: Contains the files with the tests for the libs (target code in the repo), each lib should have at least **ut** (unit test), **e2e** (end to end test), and **lh** (longhaul test).
+* **tests**: Contains the files with the tests for the libs (target code in the repo), each lib must have **ut** (unit test), it is very recommend to add **e2e** (end to end test), and **lh** (longhaul test) as well.
 * **LICENSE**: Is the file that describe the license of the code in the repo.
 * **README.md**: Is the file with the generic description of the repo, it can contain links for the lib documentation
 
@@ -77,7 +78,7 @@ The public API should be clearly identified with the initial of the name of the 
 An include (`.h`) that is not part of the public API should be placed in the `internal` directory.
 * *Example*: `bar_non_public.h`
 
-Spaces, dashes and other funky characters should be avoided. 
+The file name should use characters `a` to `z`, `0` to `9`, `_` (underscore) as name separator, and one `.` before the file extension. All other characters should be avoided. 
 
 Filenames should be concise enough, but they should convey the information of what the file contains. 
 
@@ -125,9 +126,11 @@ All files should start with the copyright information:
 
 ## Constants and macros
 
+Macros should be avoided wherever possible; C functions should be used instead to help the compiler help detect defects earlier.
+
 Magic numbers should be avoided. All constants should be defined using C macros (`#define`).
 
-Magic strings should be avoided. Strings can be defined as macros (`#define`) or constants (`static const CHAR*`).
+Magic strings should be avoided. Strings can be defined as macros (`#define`) or constants (`static const CHAR[]`).
 
 Constants should be defined at the beginning of the file, and the name should be full uppercase with underline separator. Unless other order makes more sense, they should also be sorted alphabetically for ease of reading when number of items increases:
 ```c
@@ -138,21 +141,6 @@ Macros should be named in full uppercase with underline separators:
 ```c
 #define COUNT_OF(a) (sizeof(a) / sizeof((a)[0]))
 ```
-The following macros should be used for the basic types 
-
-| Number of bits (ARM) | Common C type | Azure MCU macro | printf format |
-|:--------------------:|:--------------------:|:--------------------:|:--------------------:|
-| | `void` | **VOID** | - |
-| 8 Bits | `char` | **CHAR** | %c - for ascii <br/> %d - for decimal <br/>%x - for hexadecimal |
-| 8 Bits | `unsigned char` | **UCHAR** | %u - for decimal <br/>%x - for hexadecimal |
-| 16 Bits | `short` | **SHORT** | %d - for decimal <br/>%x - for hexadecimal |
-| 16 Bits | `unsigned short` | **USHORT** | %u - for decimal <br/>%x - for hexadecimal |
-| 32 Bits | `int` | **INT** | %d - for decimal <br/>%x - for hexadecimal |
-| 32 Bits | `unsigned int` | **UINT** | %u - for decimal <br/>%x - for hexadecimal |
-| 64 Bits | `long` | **LONG** | %l - for decimal <br/>%x - for hexadecimal |
-| 64 Bits | `unsigned long` | **ULONG** | %ul - for decimal <br/>%x - for hexadecimal |
-| 32 Bits | `void*` | **VOID*** | %p - for pointer in hexadecimal |
-| 32 Bits | `char*` | **CHAR*** | %p - for pointer in hexadecimal <br/> %s - for null terminated string |
 
 ## Function naming
 
@@ -162,7 +150,7 @@ LONG bar_add(INT a, INT b);
 ```
 All functions in the public API should start with the initial of the name of the module followed by the function name. The definition of the function should be placed in the *xx_api.h* file of the module (for the below example, the *bar_api.h*). 
 ```c
-UINT bar_do_something_create(BAR_HANDLE* handle, CHAR* name, ULONG entry,
+BAR_RESULT bar_do_something_create(BAR_HANDLE* handle, CHAR* name, ULONG entry,
                 VOID* buffer_start, ULONG buffer_size, UINT priority);
 ```
 A public API that should be implemented in multiple flavors, should have the flavors with the same name of the public API preceded by `_`. For the flavor without argument validation, the name should be the same of the public API, for the other flavors, a character should be added after the module initial to identify the flavor. For example, the flavor that tests the arguments may add `e` on the name, and the one that validate runtime error may add `r` in the name. For example, the three flavors of `bar_do_something_create` should be: 
@@ -170,8 +158,8 @@ A public API that should be implemented in multiple flavors, should have the fla
 /**
  *  bar_do_something_create documentation here.
  */
-inline UINT bar_do_something_create(BAR_HANDLE* handle, CHAR* name, ULONG entry,
-                VOID* buffer_start, ULONG buffer_size, UINT priority)
+inline BAR_RESULT bar_do_something_create(BAR_HANDLE* handle, CHAR* name, 
+                ULONG entry, VOID* buffer_start, ULONG buffer_size, UINT priority)
 {
 #ifdef BAR_DISABLE_ERROR_CHECKING
     return _bar_do_something_create(handle, name, entry, buffer_start, buffer_size, priority);
@@ -210,7 +198,7 @@ static UINT byte_counter = 10;
 ```
 Arguments and local variable names should use a fully lowercase name separated by `_`, without any prefix.
 ```c
-static UINT call_procedure(
+static BAR_RESULT call_procedure(
     const CHAR* const name, 
     const VOID* const procedure_model_in, 
     const VOID* procedure_model_out);
@@ -255,7 +243,7 @@ The header of a function should precede the function declaration in the header f
 * **@brief**: Contains a small description of the function. Other paragraphs can be added with more details about the function.
 * **@section: Visibility**: Explicitly defines if the function is part of the public API or not.
 * **@param**: Contains the name of the parameter and a description of it. It should contain details about the parameter, like if it is input or output, the memory ownership, any implicit type (ex: CHAR* should be a null terminated string), and the exception conditions (ex: a VOID* cannot be NULL). The header should contain one `@param` per argument in the function.
-* **@return**: Contains the expected return. It can contain implicit typed (ex: UINT with the error code). If applicable, the possible results should be listed, like `true` in the condition `a`, and `false` in the condition `b`, or a list of possible errors that it can return.
+* **@return**: Contains the expected return. It can contain implicit typed (ex: BAR_RESULT with the error code). If applicable, the possible results should be listed, like `true` in the condition `a`, and `false` in the condition `b`, or a list of possible errors that it can return.
 ```c
 /**
  * @brief: Allocate block of memory
@@ -302,7 +290,7 @@ The header of a function should precede the function declaration in the header f
  *                            parameter points. It cannot be NULL.
  * @param:  memory_size     [IN] Size of the block to be allocated in number 
  *                            of bytes. It shall be bigger than 0.
- * @return: The UINT with the error code
+ * @return: The BAR_RESULT with the error code
  *   -@b SUCCESS          (0x00)   Successful memory block allocation.
  *   -@b NO_MEMORY        (0x10)   Service was unable to allocate a block
  *                                  of memory.
@@ -369,7 +357,7 @@ Optionally, declarations placed in the internal header file may be explicitly do
 ```
 
 ## Test and requirements
-All components should be totally tested, it is highly recommended that the code have 100% of test coverage.
+All components must be totally tested, it is highly recommended that the code have 100% of test coverage.
 
 All code should contain, at least, requirements, unit tests, end-to-end tests, and samples. The requirements description should be placed in the unit test file, on top of the test function that verifies the requirement. The unit test name should be placed in the code as a comment, together with the code that implements that functionality. For example:
 

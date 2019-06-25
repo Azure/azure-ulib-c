@@ -1,7 +1,7 @@
 # Azure uLib c
 
 This repository contains the following:
-* **uStream**: An interface for a heterogeneous stream that helps other C code to expose large amounts of data without using a large amount of memory.
+* **uStream**: An interface for a heterogeneous stream that helps other C code expose large amounts of data without using a large amount of memory.
 * **uContract**: A set of macros to validate arguments in public APIs.
 
 ## Contribution, Feedback and Issues
