@@ -99,7 +99,7 @@ int main(void)
                 (void)printf("Size of ustream_two: %lu\r\n", ustream_size);
 
                 //Append the second USTREAM to the first USTREAM
-                if(result = ustream_append(ustream_one, ustream_two) != ULIB_SUCCESS)
+                if((result = ustream_append(ustream_one, ustream_two)) != ULIB_SUCCESS)
                 {
                     ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "ustream_append", result);
                 }
