@@ -40,6 +40,7 @@ static ULIB_RESULT print_buffer(USTREAM* ustream)
     }
     (void)printf("-----------EOF------------\r\n");
     (void)printf("ustream_read was called %i times\r\n", ustream_read_iterations);
+
     //Change return to ULIB_SUCCESS if last returned value was ULIB_EOF
     if(result == ULIB_EOF)
     {
