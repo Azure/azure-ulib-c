@@ -22,35 +22,6 @@
 #include "azure_macro_utils/macro_utils.h"
 #include "ustream_ctest_aux.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-static int g_memory_counter;
-void* my_malloc(size_t size)
-{
-    void* new_memo = malloc(size);
-    if(new_memo != NULL)
-    {
-        g_memory_counter++;
-    }
-    return new_memo;
-}
-
-void my_free(void* ptr)
-{
-    if(ptr != NULL)
-    {
-        g_memory_counter--;
-    }
-    free(ptr);
-}
-
-#ifdef __cplusplus
-}
-#endif
-
 static TEST_MUTEX_HANDLE g_test_by_test;
 static TEST_MUTEX_HANDLE g_dll_by_dll;
 
@@ -102,8 +73,8 @@ TEST_SUITE_INITIALIZE(suite_init)
 
     REGISTER_UMOCK_ALIAS_TYPE(USTREAM, void*);
 
-    REGISTER_GLOBAL_MOCK_HOOK(ulib_malloc, my_malloc);
-    REGISTER_GLOBAL_MOCK_HOOK(ulib_free, my_free);
+    REGISTER_GLOBAL_MOCK_HOOK(ulib_malloc, malloc);
+    REGISTER_GLOBAL_MOCK_HOOK(ulib_free, free);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -121,15 +92,11 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize)
         ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
     }
 
-    g_memory_counter = 0;
-
     umock_c_reset_all_calls();
 }
 
 TEST_FUNCTION_CLEANUP(test_method_cleanup)
 {
-    ASSERT_ARE_EQUAL(int, 0, g_memory_counter, "Memory issue");
-
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 

@@ -23,35 +23,6 @@
 #include "ustream_ctest_aux.h"
 #include "ustream_mock_buffer.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-static int g_memory_counter;
-void* my_malloc(size_t size)
-{
-    void* new_memo = malloc(size);
-    if(new_memo != NULL)
-    {
-        g_memory_counter++;
-    }
-    return new_memo;
-}
-
-void my_free(void* ptr)
-{
-    if(ptr != NULL)
-    {
-        g_memory_counter--;
-    }
-    free(ptr);
-}
-
-#ifdef __cplusplus
-}
-#endif
-
 static TEST_MUTEX_HANDLE g_test_by_test;
 static TEST_MUTEX_HANDLE g_dll_by_dll;
 
@@ -71,7 +42,7 @@ static USTREAM* ustream_factory()
 {
     uint8_t* buf = (uint8_t*)ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    return ustream_create(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, my_free);
+    return ustream_create(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
 }
 #define USTREAM_COMPLIANCE_TARGET_FACTORY         ustream_factory()
 
@@ -109,8 +80,8 @@ TEST_SUITE_INITIALIZE(suite_init)
 
     REGISTER_UMOCK_ALIAS_TYPE(USTREAM, void*);
 
-    REGISTER_GLOBAL_MOCK_HOOK(ulib_malloc, my_malloc);
-    REGISTER_GLOBAL_MOCK_HOOK(ulib_free, my_free);
+    REGISTER_GLOBAL_MOCK_HOOK(ulib_malloc, malloc);
+    REGISTER_GLOBAL_MOCK_HOOK(ulib_free, free);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -128,15 +99,11 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize)
         ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
     }
 
-    g_memory_counter = 0;
-
     umock_c_reset_all_calls();
 }
 
 TEST_FUNCTION_CLEANUP(test_method_cleanup)
 {
-    ASSERT_ARE_EQUAL(int, 0, g_memory_counter, "Memory issue");
-
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
@@ -268,7 +235,7 @@ TEST_FUNCTION(ustream_create_succeed)
         ustream_create(
             buf, 
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
-            my_free);
+            free);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -295,7 +262,7 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_interface_failed)
         ustream_create(
             buf,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
-            my_free);
+            free);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -323,7 +290,7 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_instance_failed)
         ustream_create(
             buf,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
-            my_free);
+            free);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -347,7 +314,7 @@ TEST_FUNCTION(ustream_create_no_memory_to_create_inner_buffer_failed)
         ustream_create(
             buf,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
-            my_free);
+            free);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -363,7 +330,7 @@ TEST_FUNCTION(ustream_create_null_buffer_failed)
     ///arrange
 
     ///act
-    USTREAM* buffer_interface = ustream_create(NULL, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, my_free);
+    USTREAM* buffer_interface = ustream_create(NULL, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -378,7 +345,7 @@ TEST_FUNCTION(ustream_create_zero_length_failed)
     ///arrange
 
     ///act
-    USTREAM* buffer_interface = ustream_create(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, my_free);
+    USTREAM* buffer_interface = ustream_create(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, free);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
