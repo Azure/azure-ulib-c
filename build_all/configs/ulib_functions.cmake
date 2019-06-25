@@ -151,59 +151,29 @@ function(build_c_test_target what_is_building folder)
 
 endfunction()
 
-#Add sample exe
-function(c_windows_sample_add_exe what_is_building folder)
-
-    #Define target
-    add_executable(${what_is_building}_exe
-        ${${what_is_building}_cpp_files}
-        ${${what_is_building}_c_files}
-    )
-
-    #Set the output folder for the target
-    set_target_properties(${what_is_building}_exe
-               PROPERTIES
-               FOLDER ${folder})
-
-    #Define executable's compile definitions, linked libraries, and include dirs
-    target_compile_definitions(${what_is_building}_exe PUBLIC _CRT_SECURE_NO_WARNINGS)
-    target_include_directories(${what_is_building}_exe PUBLIC ${sharedutil_include_directories})
-    target_link_libraries(${what_is_building}_exe
-                PRIVATE azure_ulib_c
-    )
-
-endfunction()
-
-#Build Linux sample
-function(c_linux_sample_add_exe what_is_building folder)
-
-    #Define target
-    add_executable(${what_is_building}_exe
-        ${${what_is_building}_cpp_files}
-        ${${what_is_building}_c_files}
-    )
-
-    #Set the output folder for the target
-    set_target_properties(${what_is_building}_exe
-               PROPERTIES
-               FOLDER ${folder})
-
-    #Define executable's compile definitions, linked libraries, and include dirs
-    target_include_directories(${what_is_building}_exe PUBLIC ${sharedutil_include_directories})
-    target_link_libraries(${what_is_building}_exe
-                PRIVATE azure_ulib_c
-    )
-
-endfunction()
-
-#Build Windows or Linux sample
+#Build sample
 function(build_c_sample_target what_is_building folder)
 
-    if(WIN32)
-        c_windows_sample_add_exe(${what_is_building} ${folder})
-    else()
-        c_linux_sample_add_exe(${what_is_building} ${folder})
-    endif()
+    #Define target
+    add_executable(${what_is_building}_exe
+        ${${what_is_building}_c_files}
+    )
+
+    #Set the output folder for the target
+    set_target_properties(${what_is_building}_exe
+               PROPERTIES
+               FOLDER ${folder})
+
+    #Define executable's compile definitions, linked libraries, and include dirs
+    target_include_directories(${what_is_building}_exe PUBLIC 
+                ${MACRO_UTILS_INC_FOLDER}
+                ${UMOCK_C_INC_FOLDER}
+                ${CMAKE_SOURCE_DIR}/inc
+                ${CMAKE_SOURCE_DIR}/config
+                ${CMAKE_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY})
+    target_link_libraries(${what_is_building}_exe
+                PRIVATE azure_ulib_c
+    )
 
 endfunction()
 
