@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
+#include <stdint.h>
 #include "ustream.h"
 #include "ulib_result.h"
 #include "ulog.h"
@@ -12,7 +13,7 @@
 #define USER_BUFFER_SIZE 5
 #define USTREAM_TWO_STRING "World\r\n"
 
-static const char ustream_one_string[] = "Hello ";
+static const char USTREAM_ONE_STRING[] = "Hello ";
 static uint8_t user_buf[USER_BUFFER_SIZE];
 
 static ULIB_RESULT print_buffer(USTREAM* ustream)
@@ -68,7 +69,7 @@ int main(void)
         //Create the first USTREAM from constant memory
         USTREAM* ustream_one;
         size_t ustream_size;
-        if((ustream_one = ustream_create((const uint8_t*)ustream_one_string, sizeof(ustream_one_string), NULL)) == NULL)
+        if((ustream_one = ustream_create((const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) == NULL)
         {
             ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "ustream_create", ULIB_SYSTEM_ERROR);
             result = ULIB_SYSTEM_ERROR;
