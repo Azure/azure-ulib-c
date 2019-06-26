@@ -11,7 +11,8 @@ This repository contains the following:
 
 ## Reference
 
-Documentation for API's are automatically generated with [doxygen](http://www.doxygen.nl/). You can find the documentation in the [docs](https://github.com/Azure/azure-ulib-c/tree/master/docs) directory.
+Documentation for API's are automatically generated with [doxygen](http://www.doxygen.nl/). You can find the generated documentation
+on the [Github Page](https://azure.github.io/azure-ulib-c) for this repo.
 
 ## Development Machine Requirements
 
