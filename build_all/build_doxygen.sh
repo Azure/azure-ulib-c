@@ -5,6 +5,8 @@ echo $script_dir
 repo_dir=$script_dir/..
 echo $repo_dir
 
+cd $repo_dir
+
 if [ ! -d doxy/ ]; then
     mkdir doxy
 fi
