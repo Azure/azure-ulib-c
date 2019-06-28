@@ -18,8 +18,10 @@ extern "C" {
 #include <stddef.h>
 #endif /* __cplusplus */
 
-MOCKABLE_FUNCTION(, void*, ulib_malloc, size_t, size);
-MOCKABLE_FUNCTION(, void, ulib_free, void*, ptr);
+MOCKABLE_FUNCTION(, void*, ulib_malloc,
+            size_t, size);
+MOCKABLE_FUNCTION(, void, ulib_free,
+            void*, ptr);
 
 #ifdef __cplusplus
 }
