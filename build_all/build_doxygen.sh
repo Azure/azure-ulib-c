@@ -32,7 +32,8 @@ do
         mkdir config
     fi
     file=${filename##*/}
-    perl -0pe 's/MOCKABLE_FUNCTION\(, (.*?), (.*?)(\);)/\1 \2();/g;
+    perl -0pe 's/MU_DEFINE_ENUM\(\s*?(\w*),([\s\w\W]*)\)/typedef enum \1_TAG {\2} \1;/g;
+                s/MOCKABLE_FUNCTION\(, (.*?), (.*?)(\);)/\1 \2();/g;
                 s/MOCKABLE_FUNCTION\(, (.*?), (.*?),\s*([\w\*_\s]*), (\w*)\);/\1 \2(\3 \4);/g;
                 s/MOCKABLE_FUNCTION\(, (.*?), (.*?),\s*([\w\*_\s]*), (\w*),\s*([\w\*_\s]*), (\w*)\);/\1 \2(\3 \4, \5 \6);/g;
                 s/MOCKABLE_FUNCTION\(, (.*?), (.*?),\s*([\w\*_\s]*), (\w*),\s*([\w\*_\s]*), (\w*),\s*([\w\*_\s]*), (\w*)\);/\1 \2(\3 \4, \5 \6, \7 \8);/g;
