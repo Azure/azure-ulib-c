@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>uLib: C:/repos/uLib-WIP/inc/ustream.h File Reference</title>
+<title>uLib: C:/repos/uLib-WIP/doxy/inc/ustream.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,14 +61,13 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_bfccd401955b95cf8c75461437045ac0.html">inc</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_0852b6145d5475d7a8e4df489fe46e4c.html">doxy</a></li><li class="navelem"><a class="el" href="dir_c37d36cfe6658755c708757fc9743def.html">inc</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">ustream.h File Reference</div>  </div>
 </div><!--header-->
@@ -84,46 +83,31 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a14b1b96c2d1f6844efef347f5667b3cb"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ustream_8h.html#a14b1b96c2d1f6844efef347f5667b3cb">USTREAM_BUFFER_RELEASE_CALLBACK</a>) (void *)</td></tr>
-<tr class="memdesc:a14b1b96c2d1f6844efef347f5667b3cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Signature of the function to release inner buffer.  <a href="#a14b1b96c2d1f6844efef347f5667b3cb">More...</a><br /></td></tr>
-<tr class="separator:a14b1b96c2d1f6844efef347f5667b3cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f1ae92a02b116d589e876905bb3e480"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ustream_8h.html#a4f1ae92a02b116d589e876905bb3e480">USTREAM_BUFFER_RELEASE_CALLBACK</a>) (void *)</td></tr>
+<tr class="memdesc:a4f1ae92a02b116d589e876905bb3e480"><td class="mdescLeft">&#160;</td><td class="mdescRight">Signature of the function to release inner buffer.  <a href="#a4f1ae92a02b116d589e876905bb3e480">More...</a><br /></td></tr>
+<tr class="separator:a4f1ae92a02b116d589e876905bb3e480"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a944d6e548bf77da57829e4af82323534"><td class="memItemLeft" align="right" valign="top">const uint8_t *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ustream_8h.html#a944d6e548bf77da57829e4af82323534">ustream_create</a> (__VAR_ARGS__) buffer</td></tr>
-<tr class="memdesc:a944d6e548bf77da57829e4af82323534"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory to create a new uStream.  <a href="#a944d6e548bf77da57829e4af82323534">More...</a><br /></td></tr>
-<tr class="separator:a944d6e548bf77da57829e4af82323534"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8541e3cae2257af134a1c9d32fb9d1d7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ustream_8h.html#a8541e3cae2257af134a1c9d32fb9d1d7">MOCKABLE_FUNCTION</a> (, <a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a> *, ustream_multi_create)</td></tr>
-<tr class="memdesc:a8541e3cae2257af134a1c9d32fb9d1d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory to create a new uStreamMulti.  <a href="#a8541e3cae2257af134a1c9d32fb9d1d7">More...</a><br /></td></tr>
-<tr class="separator:a8541e3cae2257af134a1c9d32fb9d1d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abaab0ad2e40cca31fbd01e139afb4e2a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ustream_8h.html#abaab0ad2e40cca31fbd01e139afb4e2a">ustream_multi_append</a> (__VAR_ARGS__) ustream_interface</td></tr>
-<tr class="memdesc:abaab0ad2e40cca31fbd01e139afb4e2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append an existent uStream to the uStreamMulti.  <a href="#abaab0ad2e40cca31fbd01e139afb4e2a">More...</a><br /></td></tr>
-<tr class="separator:abaab0ad2e40cca31fbd01e139afb4e2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a5f20c6ae0f26bfcb466351bd1a8408d8"><td class="memItemLeft" align="right" valign="top"><a id="a5f20c6ae0f26bfcb466351bd1a8408d8"></a>
-const uint8_t *const&#160;</td><td class="memItemRight" valign="bottom"><b>size_t</b></td></tr>
-<tr class="separator:a5f20c6ae0f26bfcb466351bd1a8408d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfa42adf3e4cd0850a0238ad1c92511d"><td class="memItemLeft" align="right" valign="top"><a id="adfa42adf3e4cd0850a0238ad1c92511d"></a>
-const uint8_t *const&#160;</td><td class="memItemRight" valign="bottom"><b>buffer_length</b></td></tr>
-<tr class="separator:adfa42adf3e4cd0850a0238ad1c92511d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd819a18df6a7dc1ac28382a3fd920c8"><td class="memItemLeft" align="right" valign="top"><a id="afd819a18df6a7dc1ac28382a3fd920c8"></a>
-const uint8_t *const&#160;</td><td class="memItemRight" valign="bottom"><b>inner_free</b></td></tr>
-<tr class="separator:afd819a18df6a7dc1ac28382a3fd920c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada5b2b1e9af2329582911b0444875085"><td class="memItemLeft" align="right" valign="top"><a id="ada5b2b1e9af2329582911b0444875085"></a>
-<a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a> <a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ustream_to_append</b></td></tr>
-<tr class="separator:ada5b2b1e9af2329582911b0444875085"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac06ee6ca23a47cb9ba8e877b271b715c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ustream_8h.html#ac06ee6ca23a47cb9ba8e877b271b715c">ustream_create</a> (const uint8_t *const buffer, size_t buffer_length, <a class="el" href="ustream_8h.html#a4f1ae92a02b116d589e876905bb3e480">USTREAM_BUFFER_RELEASE_CALLBACK</a> inner_free)</td></tr>
+<tr class="memdesc:ac06ee6ca23a47cb9ba8e877b271b715c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory to create a new uStream.  <a href="#ac06ee6ca23a47cb9ba8e877b271b715c">More...</a><br /></td></tr>
+<tr class="separator:ac06ee6ca23a47cb9ba8e877b271b715c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a615b9eab4a80dcfa9d2e9d6d33ae0bdc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ustream_8h.html#a615b9eab4a80dcfa9d2e9d6d33ae0bdc">ustream_multi_create</a> ()</td></tr>
+<tr class="memdesc:a615b9eab4a80dcfa9d2e9d6d33ae0bdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory to create a new uStreamMulti.  <a href="#a615b9eab4a80dcfa9d2e9d6d33ae0bdc">More...</a><br /></td></tr>
+<tr class="separator:a615b9eab4a80dcfa9d2e9d6d33ae0bdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a884c6ae69fbba86f381f5bc2264fa4ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ulib__result_8h.html#a7b4ea9b3f22e66373047cf21c547b6a8">ULIB_RESULT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ustream_8h.html#a884c6ae69fbba86f381f5bc2264fa4ad">ustream_multi_append</a> (<a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a> *ustream_interface, <a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a> *ustream_to_append)</td></tr>
+<tr class="memdesc:a884c6ae69fbba86f381f5bc2264fa4ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append an existent uStream to the uStreamMulti.  <a href="#a884c6ae69fbba86f381f5bc2264fa4ad">More...</a><br /></td></tr>
+<tr class="separator:a884c6ae69fbba86f381f5bc2264fa4ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="a14b1b96c2d1f6844efef347f5667b3cb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a14b1b96c2d1f6844efef347f5667b3cb">&#9670;&nbsp;</a></span>USTREAM_BUFFER_RELEASE_CALLBACK</h2>
+<a id="a4f1ae92a02b116d589e876905bb3e480"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f1ae92a02b116d589e876905bb3e480">&#9670;&nbsp;</a></span>USTREAM_BUFFER_RELEASE_CALLBACK</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const uint8_t *const USTREAM_BUFFER_RELEASE_CALLBACK</td>
+          <td class="memname">typedef void(* USTREAM_BUFFER_RELEASE_CALLBACK) (void *)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -142,28 +126,117 @@ const uint8_t *const&#160;</td><td class="memItemRight" valign="bottom"><b>inner
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a8541e3cae2257af134a1c9d32fb9d1d7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8541e3cae2257af134a1c9d32fb9d1d7">&#9670;&nbsp;</a></span>MOCKABLE_FUNCTION()</h2>
+<a id="ac06ee6ca23a47cb9ba8e877b271b715c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac06ee6ca23a47cb9ba8e877b271b715c">&#9670;&nbsp;</a></span>ustream_create()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">MOCKABLE_FUNCTION </td>
+          <td class="memname"><a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>* ustream_create </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a> *&#160;</td>
-          <td class="paramname">, </td>
+          <td class="paramtype">const uint8_t *const&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">ustream_multi_create&#160;</td>
-          <td class="paramname">&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>buffer_length</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="ustream_8h.html#a4f1ae92a02b116d589e876905bb3e480">USTREAM_BUFFER_RELEASE_CALLBACK</a>&#160;</td>
+          <td class="paramname"><em>inner_free</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Factory to create a new uStream. </p>
+<p>This factory creates a uStream that handles the content of the provided buffer. As a result, it will return a <a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>* with this content. The created uStream takes ownership of the passed memory and will release the memory with the passed <a class="el" href="ustream_8h.html#a4f1ae92a02b116d589e876905bb3e480" title="Signature of the function to release inner buffer.">USTREAM_BUFFER_RELEASE_CALLBACK</a> function when the ref count goes to zero.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">buffer</td><td>The <code>const uint8_t* const</code> that points to a memory position where the buffer starts. It cannot be <code>NULL</code>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">buffer_length</td><td>The <code>size_t</code> with the number of <code>uint8_t</code> in the provided buffer. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">inner_free</td><td>The <a class="el" href="ustream_8h.html#a4f1ae92a02b116d589e876905bb3e480" title="Signature of the function to release inner buffer.">USTREAM_BUFFER_RELEASE_CALLBACK</a> function that will be called for the inner buffer once all the references to the uStream are released. If <code>NULL</code> is passed, the data is assumed to be constant with no need to be free'd. In other words, there is no need for notification that the memory can be released. As a default, users may use the standard <code>free</code> to release malloc'd memory.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>* with the uStream interface. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">not-NULL</td><td>If the uStream was created with success. </td></tr>
+    <tr><td class="paramname">NULL</td><td>If there is no memory to create the new uStream. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a884c6ae69fbba86f381f5bc2264fa4ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a884c6ae69fbba86f381f5bc2264fa4ad">&#9670;&nbsp;</a></span>ustream_multi_append()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ulib__result_8h.html#a7b4ea9b3f22e66373047cf21c547b6a8">ULIB_RESULT</a> ustream_multi_append </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a> *&#160;</td>
+          <td class="paramname"><em>ustream_interface</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a> *&#160;</td>
+          <td class="paramname"><em>ustream_to_append</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Append an existent uStream to the uStreamMulti. </p>
+<p>Append will add a new uStream at the end of the list of uStreams in the uStreamMulti. To maintain the immutability, every copy of the uStreamMulti will create an independent instance of it, which means that appending a new uStream in a current instance of the uStreamMulti will not affect the other instances.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ustream_interface</td><td>The <a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>* with the handle of the uStreamMulti. It cannot be <code>NULL</code> and it shall be a valid uStream that is a type of uStreamMulti. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ustream_to_append</td><td>The <a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>* with the handle of the uStream to add to the uStreamMulti. It cannot be <code>NULL</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="ulib__result_8h.html#a7b4ea9b3f22e66373047cf21c547b6a8">ULIB_RESULT</a> with the result of the append operation. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">ULIB_SUCCESS</td><td>If the uStreamMulti appended the provided uStream with success. </td></tr>
+    <tr><td class="paramname">ULIB_ILLEGAL_ARGUMENT_ERROR</td><td>If the one of the provided parameters is invalid. </td></tr>
+    <tr><td class="paramname">ULIB_OUT_OF_MEMORY_ERROR</td><td>If there is no memory to append the uStream. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a615b9eab4a80dcfa9d2e9d6d33ae0bdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a615b9eab4a80dcfa9d2e9d6d33ae0bdc">&#9670;&nbsp;</a></span>ustream_multi_create()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>* ustream_multi_create </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -180,80 +253,6 @@ const uint8_t *const&#160;</td><td class="memItemRight" valign="bottom"><b>inner
   <table class="retval">
     <tr><td class="paramname">not-NULL</td><td>If the uStreamMulti was created with success. </td></tr>
     <tr><td class="paramname">NULL</td><td>If there is no memory to create the new uStreamMulti. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a944d6e548bf77da57829e4af82323534"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a944d6e548bf77da57829e4af82323534">&#9670;&nbsp;</a></span>ustream_create()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const uint8_t* const ustream_create </td>
-          <td>(</td>
-          <td class="paramtype">__VAR_ARGS__&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Factory to create a new uStream. </p>
-<p>This factory creates a uStream that handles the content of the provided buffer. As a result, it will return a <a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>* with this content. The created uStream takes ownership of the passed memory and will release the memory with the passed <a class="el" href="ustream_8h.html#a14b1b96c2d1f6844efef347f5667b3cb" title="Signature of the function to release inner buffer.">USTREAM_BUFFER_RELEASE_CALLBACK</a> function when the ref count goes to zero.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">buffer</td><td>The <code>const uint8_t* const</code> that points to a memory position where the buffer starts. It cannot be <code>NULL</code>. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">buffer_length</td><td>The <code>size_t</code> with the number of <code>uint8_t</code> in the provided buffer. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">inner_free</td><td>The <a class="el" href="ustream_8h.html#a14b1b96c2d1f6844efef347f5667b3cb" title="Signature of the function to release inner buffer.">USTREAM_BUFFER_RELEASE_CALLBACK</a> function that will be called for the inner buffer once all the references to the uStream are released. If <code>NULL</code> is passed, the data is assumed to be constant with no need to be free'd. In other words, there is no need for notification that the memory can be released. As a default, users may use the standard <code>free</code> to release malloc'd memory.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>* with the uStream interface. </dd></dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">not-NULL</td><td>If the uStream was created with success. </td></tr>
-    <tr><td class="paramname">NULL</td><td>If there is no memory to create the new uStream. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="abaab0ad2e40cca31fbd01e139afb4e2a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abaab0ad2e40cca31fbd01e139afb4e2a">&#9670;&nbsp;</a></span>ustream_multi_append()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>* ustream_multi_append </td>
-          <td>(</td>
-          <td class="paramtype">__VAR_ARGS__&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Append an existent uStream to the uStreamMulti. </p>
-<p>Append will add a new uStream at the end of the list of uStreams in the uStreamMulti. To maintain the immutability, every copy of the uStreamMulti will create an independent instance of it, which means that appending a new uStream in a current instance of the uStreamMulti will not affect the other instances.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">ustream_interface</td><td>The <a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>* with the handle of the uStreamMulti. It cannot be <code>NULL</code> and it shall be a valid uStream that is a type of uStreamMulti. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ustream_to_append</td><td>The <a class="el" href="ustream__base_8h.html#a0a5ccedc21cdc1edebc01278ce22d67b">USTREAM</a>* with the handle of the uStream to add to the uStreamMulti. It cannot be <code>NULL</code>.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="ulib__result_8h.html#a77cf398de96048194cbe431aea64794f">ULIB_RESULT</a> with the result of the append operation. </dd></dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">ULIB_SUCCESS</td><td>If the uStreamMulti appended the provided uStream with success. </td></tr>
-    <tr><td class="paramname">ULIB_ILLEGAL_ARGUMENT_ERROR</td><td>If the one of the provided parameters is invalid. </td></tr>
-    <tr><td class="paramname">ULIB_OUT_OF_MEMORY_ERROR</td><td>If there is no memory to append the uStream. </td></tr>
   </table>
   </dd>
 </dl>
