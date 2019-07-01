@@ -815,8 +815,7 @@ static inline ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *          @retval    ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
   *          @retval    ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to <tt>append</tt> the uStream.
   */
-MOCKABLE_FUNCTION( , 
-    ULIB_RESULT, ustream_append,
+MOCKABLE_FUNCTION(, ULIB_RESULT, ustream_append,
     USTREAM*, ustream_interface, 
     USTREAM*, ustream_to_append);
 
