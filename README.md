@@ -49,7 +49,7 @@ This repo is built using cmake. The minimum requirement is version 3.2. You can 
 3. Run cmake. Here you have the option of building the tests as well. If you would like to build the tests, run:
 
     ```bash
-    cmake .. -Drun_unittests:bool=ON
+    cmake .. -Drun_ulib_unit_tests:bool=ON
     ```
 
     Otherwise, to just build the source files, run:
