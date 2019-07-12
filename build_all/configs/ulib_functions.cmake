@@ -54,7 +54,7 @@ function(c_windows_unittests_add_dll what_is_building folder)
 
     #Link necessary libs to dll library
     target_link_libraries(${what_is_building}_dll  
-                PRIVATE umock_c ctest testrunnerswitcher azure_ulib_c ${what_is_building}_testsonly_lib
+                PRIVATE umock_c ctest testrunnerswitcher ${what_is_building}_testsonly_lib
     )
 
 endfunction()
