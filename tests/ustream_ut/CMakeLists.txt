@@ -17,4 +17,4 @@ set(${this_test_suite_name}_c_files
     ../../ustream/ustream_multi.c
 )
 
-build_c_test_target(${this_test_suite_name} "tests/ustream_tests")
+ulib_build_c_test_target(${this_test_suite_name} "tests/ustream_tests")

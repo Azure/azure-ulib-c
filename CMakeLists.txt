@@ -12,7 +12,7 @@ include("build_all/configs/ulib_functions.cmake")
 include("build_all/configs/ulib_build_rules.cmake")
 
 #Set the standards for C and C++
-add_standards()
+ulib_add_standards()
 
 #Specify user options
 option(run_ulib_e2e_tests "set run_ulib_e2e_tests to ON to run e2e tests (default is OFF)" OFF)
@@ -22,11 +22,11 @@ option(use_installed_dependencies "set use_installed_dependencies to ON to use i
 
 #Set ulib c files
 set(azure_ulib_c_files
-    ${CMAKE_SOURCE_DIR}/pal/MemMang/ulib_heap.c
-    ${CMAKE_SOURCE_DIR}/ulog/ulog.c
-    ${CMAKE_SOURCE_DIR}/ustream/ustream_base.c
-    ${CMAKE_SOURCE_DIR}/ustream/ustream_multi.c
-    ${CMAKE_SOURCE_DIR}/ustream/ustream.c
+    ${PROJECT_SOURCE_DIR}/pal/MemMang/ulib_heap.c
+    ${PROJECT_SOURCE_DIR}/ulog/ulog.c
+    ${PROJECT_SOURCE_DIR}/ustream/ustream_base.c
+    ${PROJECT_SOURCE_DIR}/ustream/ustream_multi.c
+    ${PROJECT_SOURCE_DIR}/ustream/ustream.c
 )
 
 #Add library of ulib c files
@@ -34,9 +34,9 @@ add_library(azure_ulib_c ${azure_ulib_c_files})
 
 #Set the include directories for this project
 set(azure_ulib_h_dir
-    ${CMAKE_SOURCE_DIR}/inc
-    ${CMAKE_SOURCE_DIR}/config
-    ${CMAKE_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY}
+    ${PROJECT_SOURCE_DIR}/inc
+    ${PROJECT_SOURCE_DIR}/config
+    ${PROJECT_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY}
 )
 
 #Add include directories for this target and anyone linking against it
@@ -54,7 +54,7 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-ctest EXCLUDE_FROM_ALL)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-macro-utils-c EXCLUDE_FROM_ALL)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-c-testrunnerswitcher EXCLUDE_FROM_ALL)
 
-setTargetBuildProperties(azure_ulib_c)
+ulib_set_target_build_properties(azure_ulib_c)
 
 if (${run_ulib_unit_tests})
     add_subdirectory(tests)

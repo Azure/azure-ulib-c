@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-usePermissiveRulesForSamplesAndTests()
+ulib_use_permissive_rules_for_samples_and_tests()
 
 add_subdirectory(ucontract_ut)
 add_subdirectory(ustream_base_ut)

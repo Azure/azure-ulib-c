@@ -2,7 +2,7 @@
 #Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #Macro to set C and Cpp standards for a given target
-macro(add_standards)
+macro(ulib_add_standards)
     set(CMAKE_C_STANDARD                99)
     set(CMAKE_C_STANDARD_REQUIRED       OFF)
     set(CMAKE_C_EXTENSIONS              OFF)
@@ -13,7 +13,7 @@ macro(add_standards)
 endmacro()
 
 #Add windows unittest dll
-function(c_windows_unittests_add_dll what_is_building folder)
+function(ulib_c_windows_unittests_add_dll what_is_building folder)
 
     link_directories(${what_is_building}_dll $ENV{VCInstallDir}UnitTest/lib)
 
@@ -60,7 +60,7 @@ function(c_windows_unittests_add_dll what_is_building folder)
 endfunction()
 
 #Add windows unit test exe
-function(c_windows_unittests_add_exe what_is_building folder)
+function(ulib_c_windows_unittests_add_exe what_is_building folder)
 
     #Define target
     add_executable(${what_is_building}_exe
@@ -88,7 +88,7 @@ function(c_windows_unittests_add_exe what_is_building folder)
 endfunction()
 
 #Build Linux unit tests with valgrind if enabled
-function(c_linux_unittests_add_exe what_is_building folder)
+function(ulib_c_linux_unittests_add_exe what_is_building folder)
 
     #Define target
     add_executable(${what_is_building}_exe
@@ -127,13 +127,13 @@ function(c_linux_unittests_add_exe what_is_building folder)
 
 endfunction()
 
-function(build_c_test_target what_is_building folder)
+function(ulib_build_c_test_target what_is_building folder)
 
     #Include repo directories
-    include_directories(${CMAKE_SOURCE_DIR}/inc)
-    include_directories(${CMAKE_SOURCE_DIR}/config)
-    include_directories(${CMAKE_SOURCE_DIR}/tests/inc)
-    include_directories(${CMAKE_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY})
+    include_directories(${PROJECT_SOURCE_DIR}/inc)
+    include_directories(${PROJECT_SOURCE_DIR}/config)
+    include_directories(${PROJECT_SOURCE_DIR}/tests/inc)
+    include_directories(${PROJECT_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY})
 
     #Set shared utility include directories
     set(ulib_test_framework_includes ${sharedutil_include_directories} ${MACRO_UTILS_INC_FOLDER} ${UMOCK_C_INC_FOLDER} ${TESTRUNNERSWITCHER_INC_FOLDER} ${CTEST_INC_FOLDER})
@@ -142,17 +142,17 @@ function(build_c_test_target what_is_building folder)
     #Create Windows/Linux test executables
     if(WIN32)
         if (${use_cppunittest})
-            c_windows_unittests_add_dll(${what_is_building} ${folder} ${ARGN})
+            ulib_c_windows_unittests_add_dll(${what_is_building} ${folder} ${ARGN})
         endif()
-        c_windows_unittests_add_exe(${what_is_building} ${folder} ${ARGN})
+        ulib_c_windows_unittests_add_exe(${what_is_building} ${folder} ${ARGN})
     else()
-        c_linux_unittests_add_exe(${what_is_building} ${folder} ${ARGN})
+        ulib_c_linux_unittests_add_exe(${what_is_building} ${folder} ${ARGN})
     endif()
 
 endfunction()
 
 #Build sample
-function(build_c_sample_target what_is_building folder)
+function(ulib_build_c_sample_target what_is_building folder)
 
     #Define target
     add_executable(${what_is_building}_exe
@@ -168,9 +168,9 @@ function(build_c_sample_target what_is_building folder)
     target_include_directories(${what_is_building}_exe PUBLIC 
                 ${MACRO_UTILS_INC_FOLDER}
                 ${UMOCK_C_INC_FOLDER}
-                ${CMAKE_SOURCE_DIR}/inc
-                ${CMAKE_SOURCE_DIR}/config
-                ${CMAKE_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY})
+                ${PROJECT_SOURCE_DIR}/inc
+                ${PROJECT_SOURCE_DIR}/config
+                ${PROJECT_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY})
     target_link_libraries(${what_is_building}_exe
                 PRIVATE azure_ulib_c
     )
