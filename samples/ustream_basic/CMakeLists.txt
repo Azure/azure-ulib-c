@@ -3,9 +3,9 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-add_standards()
+ulib_add_standards()
 
-usePermissiveRulesForSamplesAndTests()
+ulib_use_permissive_rules_for_samples_and_tests()
 
 set(this_sample_name ustream_basic)
 
@@ -13,4 +13,4 @@ set(${this_sample_name}_c_files
     ./src/main.c
 )
 
-build_c_sample_target(${this_sample_name} "samples/ustream_basic")
+ulib_build_c_sample_target(${this_sample_name} "samples/ustream_basic")
