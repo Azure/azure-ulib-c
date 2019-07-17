@@ -200,15 +200,15 @@ static AZIOT_ULIB_RESULT concrete_read(
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
-        /*[ustream_read_compliance_null_buffer_failed]*/
-        /*[ustream_read_compliance_non_type_of_buffer_api_failed]*/
+        /*[aziot_ustream_read_compliance_null_buffer_failed]*/
+        /*[aziot_ustream_read_compliance_non_type_of_buffer_api_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if((buffer == NULL) || (size == NULL))
     {
-        /*[ustream_read_compliance_null_return_buffer_failed]*/
-        /*[ustream_read_compliance_null_return_size_failed]*/
+        /*[aziot_ustream_read_compliance_null_return_buffer_failed]*/
+        /*[aziot_ustream_read_compliance_null_return_size_failed]*/
         ULIB_CONFIG_LOG(
             AZIOT_ULOG_TYPE_ERROR,
             AZIOT_ULOG_REQUIRE_NOT_NULL_STRING, 
@@ -217,7 +217,7 @@ static AZIOT_ULIB_RESULT concrete_read(
     }
     else if(buffer_length == 0)
     {
-        /*[ustream_read_compliance_buffer_with_zero_size_failed]*/
+        /*[aziot_ustream_read_compliance_buffer_with_zero_size_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_EQUALS_STRING, "buffer_length", "0");
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -228,23 +228,23 @@ static AZIOT_ULIB_RESULT concrete_read(
 
         if(instance->inner_current_position >= inner_buffer->length)
         {
-            /*[ustream_read_compliance_succeed_3]*/
+            /*[aziot_ustream_read_compliance_succeed_3]*/
             *size = 0;
             result = AZIOT_ULIB_EOF;
         }
         else
         {
-            /*[ustream_read_compliance_succeed_2]*/
+            /*[aziot_ustream_read_compliance_succeed_2]*/
             size_t remain_size = inner_buffer->length - (size_t)instance->inner_current_position;
             *size = (buffer_length < remain_size) ? buffer_length : remain_size;
-            /*[ustream_read_compliance_succeed_1]*/
-            /*[ustream_read_compliance_single_buffer_succeed]*/
-            /*[ustream_read_compliance_right_boundary_condition_succeed]*/
-            /*[ustream_read_compliance_boundary_condition_succeed]*/
-            /*[ustream_read_compliance_left_boundary_condition_succeed]*/
-            /*[ustream_read_compliance_single_byte_succeed]*/
-            /*[ustream_read_compliance_get_from_cloned_buffer_succeed]*/
-            /*[ustream_read_compliance_cloned_buffer_right_boundary_condition_succeed]*/
+            /*[aziot_ustream_read_compliance_succeed_1]*/
+            /*[aziot_ustream_read_compliance_single_buffer_succeed]*/
+            /*[aziot_ustream_read_compliance_right_boundary_condition_succeed]*/
+            /*[aziot_ustream_read_compliance_boundary_condition_succeed]*/
+            /*[aziot_ustream_read_compliance_left_boundary_condition_succeed]*/
+            /*[aziot_ustream_read_compliance_single_byte_succeed]*/
+            /*[aziot_ustream_read_compliance_get_from_cloned_buffer_succeed]*/
+            /*[aziot_ustream_read_compliance_cloned_buffer_right_boundary_condition_succeed]*/
             (void)memcpy(buffer, inner_buffer->ptr + instance->inner_current_position, *size);
             instance->inner_current_position += *size;
             result = AZIOT_ULIB_SUCCESS;

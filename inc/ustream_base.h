@@ -28,9 +28,9 @@
  *      - <b>Data source</b> - is the place where the data is stored by the implementation of the uStream
  *          interface. The data source is in the provider domain, and it shall be protected, immutable, 
  *          and non volatile. Consumers can read the data from the data source by the calling
- *          the ustream_read() API, which will copy a snapshot of the data to the
+ *          the aziot_ustream_read() API, which will copy a snapshot of the data to the
  *          provided external memory, called local buffer.
- *      - <b>Local buffer</b> - is the consumer domain buffer, where the ustream_read() API 
+ *      - <b>Local buffer</b> - is the consumer domain buffer, where the aziot_ustream_read() API 
  *          will copy the required bytes from the data source. The local buffer belongs to the consumer 
  *          of this interface, which means that the consumer shall allocate and free (if necessary) this memory,
  *          and the content of the local buffer can be changed and released.
@@ -67,14 +67,14 @@
  *
  *
  *  Now that the consumer has the uStream with the content, it will print it using the 
- *   iterator ustream_read().
+ *   iterator aziot_ustream_read().
  *
  * <pre><code>
  *
  *          |                         +------------------malloc(1024)------------------>|
  *          |                         |<-----------------local_buffer-------------------+
- *  .. while ustream_read return AZIOT_ULIB_SUCCESS ...............................................
- *  :       |                         +-ustream_read               |                    |         :
+ *  .. while aziot_ustream_read return AZIOT_ULIB_SUCCESS .........................................
+ *  :       |                         +--aziot_ustream_read        |                    |         :
  *  :       |                         |  (ustream_interface,       |                    |         :
  *  :       |                         |   local_buffer,            |                    |         :
  *  :       |                         |   1024)------------------->|                    |         :
@@ -112,7 +112,7 @@
  *  The uStream solves this problem by creating a single interface that can handle any media,
  *      exposing it as a standard iterator. Whoever wants to expose a type of media as a uStream shall
  *      implement the functions described on the interface, handling all implementation details for
- *      each API. For example, the ustream_read() can be a simple copy of the flash to
+ *      each API. For example, the aziot_ustream_read() can be a simple copy of the flash to
  *      the RAM for a buffer that handles constants, or be as complex as creating a TCP/IP connection
  *      to bring the data for a buffer that handles data in the cloud.
  *
@@ -184,7 +184,7 @@
  *
  * <h2>Lazy</h2>
  *  The uStream can contain the full content, bring it into memory when required, or even create the content
- *      when it is necessary. The implementation of the ustream_read() function can be smart 
+ *      when it is necessary. The implementation of the aziot_ustream_read() function can be smart 
  *      enough to use the minimal amount of memory.
  *
  *  The only restriction is if a consumer accesses the same position of the uStream multiple times, it shall
@@ -192,14 +192,14 @@
  *
  * <i><b>Example</b></i>
  *  A random number generator can expose random numbers using the uStream. To do that it shall generate a 
- *      new number when the consumer calls ustream_read(). But to preserve the immutability,
- *      the implementation of the ustream_read() shall store the number in a recover queue, up
+ *      new number when the consumer calls aziot_ustream_read(). But to preserve the immutability,
+ *      the implementation of the aziot_ustream_read() shall store the number in a recover queue, up
  *      to the point that the consumer releases this data. Because, if at some point in time, the consumer 
- *      seeks this old position, the ustream_read() shall return the same value created in
- *      the first call of ustream_read().
+ *      seeks this old position, the aziot_ustream_read() shall return the same value created in
+ *      the first call of aziot_ustream_read().
  *
  * <h2>Data conversion</h2>
- *  When the data is copied from the data source to the local buffer, the ustream_read()
+ *  When the data is copied from the data source to the local buffer, the aziot_ustream_read()
  *      may do a data conversion, which means that the content exposed on the local buffer is a function
  *      of the content in the data source. It directly implies that the number of bytes written in the
  *      local buffer may be different than the number of bytes read from the data source.
@@ -208,7 +208,7 @@
  *  A uStream can have the data source in binary format with 36 bytes, but it shall expose the 
  *      content encoded in base64. The base64 creates 4 encoded bytes for each 3 bytes read. So, seeking the 
  *      beginning of the file, the ustream_get_remaining_size() shall return 48 (= 36 / 3 * 4),
- *      instead of 36. If the consumer provides a local buffer of 16 bytes, the ustream_read() 
+ *      instead of 36. If the consumer provides a local buffer of 16 bytes, the aziot_ustream_read() 
  *      shall read only 12 bytes from the data source, and encode it in base64 expanding the 12 bytes to 
  *      16 bytes on the local buffer.
  * <pre><code>
@@ -370,7 +370,7 @@ struct AZIOT_USTREAM_INTERFACE_TAG
  * @brief   Change the current position of the uStream.
  *
  *  The current position is the one that will be returned in the local buffer by the next
- *      ustream_read(). Consumers can call this API to go back or forward, but it cannot exceed
+ *      aziot_ustream_read(). Consumers can call this API to go back or forward, but it cannot exceed
  *      the end of the uStream or precede the fist valid position (last released position + 1).
  *
  *  The <tt>aziot_ustream_set_position</tt> API shall follow these minimum requirements:
@@ -409,7 +409,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_set_position(AZIOT_USTREAM* ustrea
  * @brief   Changes the current position to the first valid position.
  *
  *  The current position is the one that will be returned in the local buffer by the next
- *      ustream_read(). Reset will bring the current position to the first valid one, which
+ *      aziot_ustream_read(). Reset will bring the current position to the first valid one, which
  *      is the first byte after the released position.
  *
  *  The <tt>aziot_ustream_reset</tt> API shall follow the following minimum requirements:
@@ -447,7 +447,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_reset(AZIOT_USTREAM* ustream_inter
 /**
  * @brief   Gets the next portion of the uStream starting at the current position.
  *
- * The <tt>ustream_read</tt> API will copy the contents of the Data source to the local buffer
+ * The <tt>aziot_ustream_read</tt> API will copy the contents of the Data source to the local buffer
  *      starting at the current position. The local buffer is the one referenced by the parameter
  *      <tt>buffer</tt>, and with the maximum size <tt>buffer_length</tt>.
  *
@@ -456,7 +456,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_reset(AZIOT_USTREAM* ustream_inter
  *      <tt>uint8_t</tt>, and will <b>NOT</b> put any terminator at the end of the string. The size of 
  *      the content copied in the local buffer will be returned in the parameter <tt>size</tt>.
  *
- *  The <tt>ustream_read</tt> API shall follow the following minimum requirements:
+ *  The <tt>aziot_ustream_read</tt> API shall follow the following minimum requirements:
  *      - The read shall copy the contents of the <tt>Data Source</tt> to the provided local buffer.
  *      - If the contents of the <tt>Data Source</tt> is bigger than the <tt>buffer_length</tt>, the read shall
  *          limit the copy size up to the buffer_length.
@@ -496,7 +496,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_reset(AZIOT_USTREAM* ustream_inter
  *          @retval     AZIOT_ULIB_SECURITY_ERROR         If the read was denied for security reasons.
  *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the read operation failed on the system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_read(AZIOT_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
+static inline AZIOT_ULIB_RESULT aziot_ustream_read(AZIOT_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
 {
     return ustream_interface->api->read(ustream_interface, buffer, buffer_length, size);
 }

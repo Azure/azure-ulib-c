@@ -105,7 +105,7 @@ static void check_buffer(
     if (offset < expected_content_length)
     {
         ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS,
-            ustream_read(az_buffer, buf_result, 256, &size_result));
+            aziot_ustream_read(az_buffer, buf_result, 256, &size_result));
 
         ASSERT_ARE_EQUAL(int, expected_content_length - offset, size_result);
         ASSERT_BUFFER_ARE_EQUAL(
@@ -119,7 +119,7 @@ static void check_buffer(
     ASSERT_ARE_EQUAL(
         int,
         AZIOT_ULIB_EOF,
-        ustream_read(az_buffer, buf_result, 256, &size_result));
+        aziot_ustream_read(az_buffer, buf_result, 256, &size_result));
     ASSERT_ARE_EQUAL(int, 0, size_result);
 }
 

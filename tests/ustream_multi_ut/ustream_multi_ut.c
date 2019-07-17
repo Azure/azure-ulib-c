@@ -736,7 +736,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
 
     ///act
     AZIOT_ULIB_RESULT result =
-        ustream_read(
+        aziot_ustream_read(
             multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
@@ -752,7 +752,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
     (void)ustream_dispose(default_buffer2);
 }
 
-/* ustream_read shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to read the requested bytes */
+/* aziot_ustream_read shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to read the requested bytes */
 TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
 {
     ///arrange
@@ -776,7 +776,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        ustream_read(
+        aziot_ustream_read(
             multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
@@ -787,7 +787,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
 
     ///act
     AZIOT_ULIB_RESULT result =
-        ustream_read(
+        aziot_ustream_read(
             multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
