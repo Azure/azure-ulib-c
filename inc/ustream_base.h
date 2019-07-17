@@ -542,7 +542,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_get_remaining_size(AZIOT_USTREAM* 
  *
  *  This API returns the logical current position.
  *
- *  The <tt>ustream_get_position</tt> API shall follow the following minimum requirements:
+ *  The <tt>aziot_ustream_get_position</tt> API shall follow the following minimum requirements:
  *      - The <tt>get_position</tt> shall return the logical current position of the uStream.
  *      - If the provided interface is <tt>NULL</tt>, the <tt>get_position</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented uStream type, the <tt>get_position</tt>
@@ -568,7 +568,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_get_remaining_size(AZIOT_USTREAM* 
  *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>get_position</tt> operation failed on
  *                                                        the system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_get_position(AZIOT_USTREAM* ustream_interface, offset_t* const position)
+static inline AZIOT_ULIB_RESULT aziot_ustream_get_position(AZIOT_USTREAM* ustream_interface, offset_t* const position)
 {
     return ustream_interface->api->get_position(ustream_interface, position);
 }
@@ -587,7 +587,7 @@ static inline AZIOT_ULIB_RESULT ustream_get_position(AZIOT_USTREAM* ustream_inte
  *
  * <pre><code>
  * offset_t pos;
- * if(ustream_get_position(my_buffer, &pos) == AZIOT_ULIB_SUCCESS)
+ * if(aziot_ustream_get_position(my_buffer, &pos) == AZIOT_ULIB_SUCCESS)
  * {
  *     ustream_release(my_buffer, pos - 1);
  * }

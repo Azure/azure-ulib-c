@@ -192,7 +192,7 @@ static AZIOT_ULIB_RESULT concrete_set_position(
                 {
                     offset_t current_position;
                     /*[ustream_multi_seek_inner_buffer_failed_in_get_current_position_failed]*/
-                    if((result = ustream_get_position(node->buffer, &current_position)) == AZIOT_ULIB_SUCCESS)
+                    if((result = aziot_ustream_get_position(node->buffer, &current_position)) == AZIOT_ULIB_SUCCESS)
                     {
                         size_t size;
                         if((result = aziot_ustream_get_remaining_size(node->buffer, &size)) == AZIOT_ULIB_SUCCESS)
@@ -471,7 +471,7 @@ static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offs
             result = AZIOT_ULIB_SUCCESS;
             offset_t last_position = 0;
             while((new_buffer_list_start != NULL) &&
-                    ((result = ustream_get_position(new_buffer_list_start->buffer, &last_position)) == AZIOT_ULIB_SUCCESS) && 
+                    ((result = aziot_ustream_get_position(new_buffer_list_start->buffer, &last_position)) == AZIOT_ULIB_SUCCESS) && 
                     (inner_position > last_position))
             {
                 new_buffer_list_start = new_buffer_list_start->next;
