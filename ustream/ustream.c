@@ -58,8 +58,8 @@ static AZIOT_USTREAM* create_instance(
 {
     AZIOT_USTREAM* ustream_interface = (AZIOT_USTREAM*)ULIB_CONFIG_MALLOC(sizeof(AZIOT_USTREAM));
     /*[ustream_create_no_memory_to_create_interface_failed]*/
-    /*[ustream_clone_no_memory_to_create_interface_failed]*/
-    /*[ustream_clone_no_memory_to_create_instance_failed]*/
+    /*[aziot_ustream_clone_no_memory_to_create_interface_failed]*/
+    /*[aziot_ustream_clone_no_memory_to_create_instance_failed]*/
     if(ustream_interface == NULL)
     {
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_OUT_OF_MEMORY_STRING, "ustream_interface");
@@ -361,8 +361,8 @@ static AZIOT_USTREAM* concrete_clone(AZIOT_USTREAM* ustream_interface, offset_t 
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
-        /*[ustream_clone_compliance_null_buffer_failed]*/
-        /*[ustream_clone_compliance_buffer_is_not_type_of_buffer_failed]*/
+        /*[aziot_ustream_clone_compliance_null_buffer_failed]*/
+        /*[aziot_ustream_clone_compliance_buffer_is_not_type_of_buffer_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         interface_result = NULL;
     }
@@ -372,18 +372,18 @@ static AZIOT_USTREAM* concrete_clone(AZIOT_USTREAM* ustream_interface, offset_t 
 
         if(offset > (UINT32_MAX - instance->inner_buffer->length))
         {
-            /*[ustream_clone_compliance_offset_exceed_size_failed]*/
+            /*[aziot_ustream_clone_compliance_offset_exceed_size_failed]*/
             interface_result = NULL;
         }
         else
         {
-            /*[ustream_clone_compliance_new_buffer_cloned_with_zero_offset_succeed]*/
-            /*[ustream_clone_compliance_new_buffer_cloned_with_offset_succeed]*/
-            /*[ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_positions_cloned_with_offset_succeed]*/
-            /*[ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_positions_cloned_with_negative_offset_succeed]*/
-            /*[ustream_clone_compliance_cloned_buffer_with_non_zero_current_and_released_positions_cloned_with_offset_succeed]*/
-            /*[ustream_clone_compliance_no_memory_to_create_instance_failed]*/
-            /*[ustream_clone_compliance_empty_buffer_succeed]*/
+            /*[aziot_ustream_clone_compliance_new_buffer_cloned_with_zero_offset_succeed]*/
+            /*[aziot_ustream_clone_compliance_new_buffer_cloned_with_offset_succeed]*/
+            /*[aziot_ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_positions_cloned_with_offset_succeed]*/
+            /*[aziot_ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_positions_cloned_with_negative_offset_succeed]*/
+            /*[aziot_ustream_clone_compliance_cloned_buffer_with_non_zero_current_and_released_positions_cloned_with_offset_succeed]*/
+            /*[aziot_ustream_clone_compliance_no_memory_to_create_instance_failed]*/
+            /*[aziot_ustream_clone_compliance_empty_buffer_succeed]*/
             interface_result = create_instance(instance->inner_buffer, instance->inner_current_position, offset);
         }
     }

@@ -884,7 +884,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_fa
     (void)ustream_dispose(default_buffer2);
 }
 
-/* ustream_clone shall bypass the error if the Inner ustream returns and error for one of the needed operations. */
+/* aziot_ustream_clone shall bypass the error if the Inner ustream returns and error for one of the needed operations. */
 TEST_FUNCTION(ustream_multi_clone_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange
@@ -904,7 +904,7 @@ TEST_FUNCTION(ustream_multi_clone_inner_buffer_failed_in_get_remaining_size_fail
     set_get_remaining_size_result(AZIOT_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZIOT_USTREAM* clone_result = ustream_clone(multibuffer, 0);
+    AZIOT_USTREAM* clone_result = aziot_ustream_clone(multibuffer, 0);
 
     ///assert
     ASSERT_IS_NULL(clone_result);
@@ -915,8 +915,8 @@ TEST_FUNCTION(ustream_multi_clone_inner_buffer_failed_in_get_remaining_size_fail
     (void)ustream_dispose(default_buffer2);
 }
 
-/*  ustream_clone shall return NULL if there is not enough memory to control the new buffer. */
-TEST_FUNCTION(ustream_clone_no_memory_to_create_interface_failed)
+/*  aziot_ustream_clone shall return NULL if there is not enough memory to control the new buffer. */
+TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_interface_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -924,17 +924,17 @@ TEST_FUNCTION(ustream_clone_no_memory_to_create_interface_failed)
     EXPECTED_CALL(ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
 
     ///assert
-    ASSERT_IS_NULL(ustream_clone_interface);
+    ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
 }
 
-/* ustream_clone shall return NULL if there is not enough memory to create an instance */
-TEST_FUNCTION(ustream_clone_no_memory_to_create_instance_failed)
+/* aziot_ustream_clone shall return NULL if there is not enough memory to create an instance */
+TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_instance_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -944,18 +944,18 @@ TEST_FUNCTION(ustream_clone_no_memory_to_create_instance_failed)
     STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_IS_NULL(ustream_clone_interface);
+    ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
 }
 
-/* ustream_clone shall return NULL if there is not enough memory to create the first node */
-TEST_FUNCTION(ustream_clone_no_memory_to_create_first_node_failed)
+/* aziot_ustream_clone shall return NULL if there is not enough memory to create the first node */
+TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_first_node_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -967,18 +967,18 @@ TEST_FUNCTION(ustream_clone_no_memory_to_create_first_node_failed)
     STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_IS_NULL(ustream_clone_interface);
+    ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
 }
 
-/* ustream_clone shall return NULL if there is not enough memory to clone the first node */
-TEST_FUNCTION(ustream_clone_no_memory_to_clone_first_node_failed)
+/* aziot_ustream_clone shall return NULL if there is not enough memory to clone the first node */
+TEST_FUNCTION(aziot_ustream_clone_no_memory_to_clone_first_node_failed)
 {
     ///arrange
     AZIOT_USTREAM* multibuffer = ustream_multi_create();
@@ -997,10 +997,10 @@ TEST_FUNCTION(ustream_clone_no_memory_to_clone_first_node_failed)
     set_clone_result(AZIOT_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(multibuffer, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(multibuffer, 0);
 
     ///assert
-    ASSERT_IS_NULL(ustream_clone_interface);
+    ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
     (void)ustream_dispose(multibuffer);
@@ -1008,8 +1008,8 @@ TEST_FUNCTION(ustream_clone_no_memory_to_clone_first_node_failed)
     (void)ustream_dispose(default_buffer2);
 }
 
-/* ustream_clone shall return NULL if there is not enough memory to create the second node */
-TEST_FUNCTION(ustream_clone_no_memory_to_create_second_node_failed)
+/* aziot_ustream_clone shall return NULL if there is not enough memory to create the second node */
+TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_second_node_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -1025,11 +1025,11 @@ TEST_FUNCTION(ustream_clone_no_memory_to_create_second_node_failed)
     STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_IS_NULL(ustream_clone_interface);
+    ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);

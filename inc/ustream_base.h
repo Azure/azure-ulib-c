@@ -139,7 +139,7 @@
  *      - @b Factory - when a producer exposes data using a uStream, it must create the uStream
  *          using a factory, so the operation <tt>uStream create</tt> returns the first instance of the
  *          uStream.
- *      - @b Clone - when a consumer needs a copy of the uStream, it can use the ustream_clone().
+ *      - @b Clone - when a consumer needs a copy of the uStream, it can use the aziot_ustream_clone().
  *
  * <h2>Thread safe</h2>
  *  The uStream <b>IS NOT</b> thread safe for multiple accesses over the same instance. The ownership
@@ -736,7 +736,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_release(AZIOT_USTREAM* ustream_int
  *  @note
  *  If the position is not important to the consumer, making the offset equal to <tt>0</tt> is a safe option.
  *
- *  The <tt>ustream_clone</tt> API shall follow the following minimum requirements:
+ *  The <tt>aziot_ustream_clone</tt> API shall follow the following minimum requirements:
  *      - The <tt>clone</tt> shall return a uStream with the same content of the original uStream.
  *      - If the provided interface is <tt>NULL</tt>, the <tt>clone</tt> shall return <tt>NULL</tt>.
  *      - If the provided interface is not a type of the implemented uStream, the <tt>clone</tt> shall return <tt>NULL</tt>.
@@ -756,7 +756,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_release(AZIOT_USTREAM* ustream_int
  *          @retval    NULL             If one of the provided parameters is invalid or there is not enough memory to
  *                                      control the new uStream.
  */
-static inline AZIOT_USTREAM* ustream_clone(AZIOT_USTREAM* ustream_interface, offset_t offset)
+static inline AZIOT_USTREAM* aziot_ustream_clone(AZIOT_USTREAM* ustream_interface, offset_t offset)
 {
     return ustream_interface->api->clone(ustream_interface, offset);
 }

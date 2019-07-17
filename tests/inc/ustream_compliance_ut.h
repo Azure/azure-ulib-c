@@ -32,21 +32,21 @@
 TEST_FUNCTION(ustream_dispose_compliance_cloned_instance_disposed_first_succeed)
 {
     ///arrange
-    offset_t ustream_clone_current_position;
+    offset_t aziot_ustream_clone_current_position;
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     ASSERT_IS_NOT_NULL(ustream_instance);
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
     ASSERT_IS_NOT_NULL(ustream_instance);
         
     ///act
-    AZIOT_ULIB_RESULT result = ustream_dispose(ustream_clone_interface);
+    AZIOT_ULIB_RESULT result = ustream_dispose(aziot_ustream_clone_interface);
         
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_instance, &ustream_clone_current_position));
+        aziot_ustream_get_position(ustream_instance, &aziot_ustream_clone_current_position));
         
     ///cleanup
     (void)ustream_dispose(ustream_instance);
@@ -55,10 +55,10 @@ TEST_FUNCTION(ustream_dispose_compliance_cloned_instance_disposed_first_succeed)
 TEST_FUNCTION(ustream_dispose_compliance_cloned_instance_disposed_second_succeed)
 {
     ///arrange
-    offset_t ustream_clone_current_position;
+    offset_t aziot_ustream_clone_current_position;
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     ASSERT_IS_NOT_NULL(ustream_instance);
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
     ASSERT_IS_NOT_NULL(ustream_instance);
         
     ///act
@@ -69,10 +69,10 @@ TEST_FUNCTION(ustream_dispose_compliance_cloned_instance_disposed_second_succeed
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
         
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 /* If there is no more instances of the buffer, the dispose shall release all allocated
@@ -131,37 +131,37 @@ TEST_FUNCTION(ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed)
 /* The clone shall move the current position to the start position. */
 /* The clone shall move the released position to the one immediately before the current position. */
 /* The cloned buffer shall not interfere in the instance of the original buffer and vice versa. */
-TEST_FUNCTION(ustream_clone_compliance_new_buffer_cloned_with_zero_offset_succeed)
+TEST_FUNCTION(aziot_ustream_clone_compliance_new_buffer_cloned_with_zero_offset_succeed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     ASSERT_IS_NOT_NULL(ustream_instance);
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
 
     ///assert
     /* clone succeed */
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
 
     /* current position was moved to the start of the buffer. */
-    offset_t ustream_clone_current_position;
+    offset_t aziot_ustream_clone_current_position;
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, 0, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, 0, aziot_ustream_clone_current_position);
 
     /* release position was moved to the start menus one. */
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_reset(ustream_clone_interface));
+        aziot_ustream_reset(aziot_ustream_clone_interface));
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, 0, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, 0, aziot_ustream_clone_current_position);
 
     /* Full content was copied. */
     uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -170,7 +170,7 @@ TEST_FUNCTION(ustream_clone_compliance_new_buffer_cloned_with_zero_offset_succee
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_read(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             buf_result, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
             &size_result));
@@ -190,37 +190,37 @@ TEST_FUNCTION(ustream_clone_compliance_new_buffer_cloned_with_zero_offset_succee
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
-TEST_FUNCTION(ustream_clone_compliance_new_buffer_cloned_with_offset_succeed)
+TEST_FUNCTION(aziot_ustream_clone_compliance_new_buffer_cloned_with_offset_succeed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     ASSERT_IS_NOT_NULL(ustream_instance);
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 10000);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 10000);
 
     ///assert
     /* clone succeed */
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
 
     /* current position was moved to the start of the buffer with the offset. */
-    offset_t ustream_clone_current_position;
+    offset_t aziot_ustream_clone_current_position;
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, 10000, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, 10000, aziot_ustream_clone_current_position);
 
     /* release position was moved to the start menus one. */
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(ustream_clone_interface));
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(aziot_ustream_clone_interface));
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, 10000, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, 10000, aziot_ustream_clone_current_position);
 
     /* Full content was copied. */
     uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -229,7 +229,7 @@ TEST_FUNCTION(ustream_clone_compliance_new_buffer_cloned_with_offset_succeed)
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_read(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             buf_result, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
             &size_result));
@@ -249,10 +249,10 @@ TEST_FUNCTION(ustream_clone_compliance_new_buffer_cloned_with_offset_succeed)
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
-TEST_FUNCTION(ustream_clone_compliance_empty_buffer_succeed)
+TEST_FUNCTION(aziot_ustream_clone_compliance_empty_buffer_succeed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -267,31 +267,31 @@ TEST_FUNCTION(ustream_clone_compliance_empty_buffer_succeed)
         aziot_ustream_release(ustream_instance, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1));
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
 
     ///assert
     /* clone succeed */
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
 
     /* current position was moved to the start of the buffer. */
-    offset_t ustream_clone_current_position;
+    offset_t aziot_ustream_clone_current_position;
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, 0, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, 0, aziot_ustream_clone_current_position);
 
     /* release position was moved to the start menus one. */
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(ustream_clone_interface));
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(aziot_ustream_clone_interface));
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, 0, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, 0, aziot_ustream_clone_current_position);
 
     /* Full content was copied. */
     check_buffer(
-        ustream_clone_interface, 
+        aziot_ustream_clone_interface, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
@@ -305,10 +305,10 @@ TEST_FUNCTION(ustream_clone_compliance_empty_buffer_succeed)
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
-TEST_FUNCTION(ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_positions_cloned_with_offset_succeed)
+TEST_FUNCTION(aziot_ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_positions_cloned_with_offset_succeed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -325,28 +325,28 @@ TEST_FUNCTION(ustream_clone_compliance_new_buffer_with_non_zero_current_and_rele
         aziot_ustream_release(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface =
-        ustream_clone(ustream_instance, 100);
+    AZIOT_USTREAM* aziot_ustream_clone_interface =
+        aziot_ustream_clone(ustream_instance, 100);
 
     ///assert
     /* clone succeed */
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
 
     /* current position was moved to the start of the buffer with the offset. */
-    offset_t ustream_clone_current_position;
+    offset_t aziot_ustream_clone_current_position;
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, 100, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, 100, aziot_ustream_clone_current_position);
 
     /* release position was moved to the start menus one. */
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(ustream_clone_interface));
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(aziot_ustream_clone_interface));
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, 100, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, 100, aziot_ustream_clone_current_position);
 
     /* Full content was copied. */
     uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -355,7 +355,7 @@ TEST_FUNCTION(ustream_clone_compliance_new_buffer_with_non_zero_current_and_rele
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_read(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             buf_result, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
             &size_result));
@@ -378,10 +378,10 @@ TEST_FUNCTION(ustream_clone_compliance_new_buffer_with_non_zero_current_and_rele
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
-TEST_FUNCTION(ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_positions_cloned_with_negative_offset_succeed)
+TEST_FUNCTION(aziot_ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_positions_cloned_with_negative_offset_succeed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -398,28 +398,28 @@ TEST_FUNCTION(ustream_clone_compliance_new_buffer_with_non_zero_current_and_rele
         aziot_ustream_release(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface =
-        ustream_clone(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1);
+    AZIOT_USTREAM* aziot_ustream_clone_interface =
+        aziot_ustream_clone(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1);
 
     ///assert
     /* clone succeed */
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
 
     /* current position was moved to the start of the buffer with the offset. */
-    offset_t ustream_clone_current_position;
+    offset_t aziot_ustream_clone_current_position;
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, USTREAM_COMPLIANCE_LENGTH_1, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, USTREAM_COMPLIANCE_LENGTH_1, aziot_ustream_clone_current_position);
 
     /* release position was moved to the start menus one. */
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(ustream_clone_interface));
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(aziot_ustream_clone_interface));
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, USTREAM_COMPLIANCE_LENGTH_1, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, USTREAM_COMPLIANCE_LENGTH_1, aziot_ustream_clone_current_position);
 
     /* Full content was copied. */
     uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -428,7 +428,7 @@ TEST_FUNCTION(ustream_clone_compliance_new_buffer_with_non_zero_current_and_rele
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_read(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             buf_result, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
             &size_result));
@@ -451,10 +451,10 @@ TEST_FUNCTION(ustream_clone_compliance_new_buffer_with_non_zero_current_and_rele
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
-TEST_FUNCTION(ustream_clone_compliance_cloned_buffer_with_non_zero_current_and_released_positions_cloned_with_offset_succeed)
+TEST_FUNCTION(aziot_ustream_clone_compliance_cloned_buffer_with_non_zero_current_and_released_positions_cloned_with_offset_succeed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -469,39 +469,39 @@ TEST_FUNCTION(ustream_clone_compliance_cloned_buffer_with_non_zero_current_and_r
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_release(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
-    AZIOT_USTREAM* ustream_clone1 = ustream_clone(ustream_instance, 100);
-    ASSERT_IS_NOT_NULL(ustream_clone1);
+    AZIOT_USTREAM* aziot_ustream_clone1 = aziot_ustream_clone(ustream_instance, 100);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone1);
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_read(ustream_clone1, buf, USTREAM_COMPLIANCE_LENGTH_1, &size));
+        aziot_ustream_read(aziot_ustream_clone1, buf, USTREAM_COMPLIANCE_LENGTH_1, &size));
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_release(ustream_clone1, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        aziot_ustream_release(aziot_ustream_clone1, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_clone1, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(aziot_ustream_clone1, 0);
 
     ///assert
     /* clone succeed */
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
 
     /* current position was moved to the start of the buffer with the offset. */
-    offset_t ustream_clone_current_position;
+    offset_t aziot_ustream_clone_current_position;
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, 0, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, 0, aziot_ustream_clone_current_position);
 
     /* release position was moved to the start menus one. */
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(ustream_clone_interface));
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(aziot_ustream_clone_interface));
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &ustream_clone_current_position));
-    ASSERT_ARE_EQUAL(int, 0, ustream_clone_current_position);
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &aziot_ustream_clone_current_position));
+    ASSERT_ARE_EQUAL(int, 0, aziot_ustream_clone_current_position);
 
     /* Full content was copied. */
     uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -510,7 +510,7 @@ TEST_FUNCTION(ustream_clone_compliance_cloned_buffer_with_non_zero_current_and_r
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_read(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             buf_result, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
             &size_result));
@@ -531,65 +531,65 @@ TEST_FUNCTION(ustream_clone_compliance_cloned_buffer_with_non_zero_current_and_r
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     check_buffer(
-        ustream_clone1, 
+        aziot_ustream_clone1, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
-    (void)ustream_dispose(ustream_clone_interface);
-    (void)ustream_dispose(ustream_clone1);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone1);
 }
 
 /* If the provided handle is NULL, the clone shall return NULL. */
-TEST_FUNCTION(ustream_clone_compliance_null_buffer_failed)
+TEST_FUNCTION(aziot_ustream_clone_compliance_null_buffer_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     ASSERT_IS_NOT_NULL(ustream_instance);
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_instance->api->clone(NULL, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = ustream_instance->api->clone(NULL, 0);
 
     ///assert
-    ASSERT_IS_NULL(ustream_clone_interface);
+    ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
 }
 
 /* If the provided handle is not the implemented buffer type, the clone shall return NULL. */
-TEST_FUNCTION(ustream_clone_compliance_buffer_is_not_type_of_buffer_failed)
+TEST_FUNCTION(aziot_ustream_clone_compliance_buffer_is_not_type_of_buffer_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     ASSERT_IS_NOT_NULL(ustream_instance);
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface =
+    AZIOT_USTREAM* aziot_ustream_clone_interface =
         ustream_instance->api->clone(ustream_mock_create(), 0);
 
     ///assert
-    ASSERT_IS_NULL(ustream_clone_interface);
+    ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
 }
 
 /* If the offset plus the buffer length bypass UINT32_MAX, the clone shall return NULL. */
-TEST_FUNCTION(ustream_clone_compliance_offset_exceed_size_failed)
+TEST_FUNCTION(aziot_ustream_clone_compliance_offset_exceed_size_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface =
-        ustream_clone(ustream_instance, UINT32_MAX - 2);
+    AZIOT_USTREAM* aziot_ustream_clone_interface =
+        aziot_ustream_clone(ustream_instance, UINT32_MAX - 2);
 
     ///assert
-    ASSERT_IS_NULL(ustream_clone_interface);
+    ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
@@ -659,19 +659,19 @@ TEST_FUNCTION(aziot_ustream_get_remaining_size_compliance_cloned_buffer_with_non
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_release(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 100);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 100);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_read(ustream_clone_interface, buf, USTREAM_COMPLIANCE_LENGTH_1, &size));
+        aziot_ustream_read(aziot_ustream_clone_interface, buf, USTREAM_COMPLIANCE_LENGTH_1, &size));
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_release(ustream_clone_interface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        aziot_ustream_release(aziot_ustream_clone_interface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_get_remaining_size(ustream_clone_interface, &size);
+    AZIOT_ULIB_RESULT result = aziot_ustream_get_remaining_size(aziot_ustream_clone_interface, &size);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
@@ -681,7 +681,7 @@ TEST_FUNCTION(aziot_ustream_get_remaining_size_compliance_cloned_buffer_with_non
         size);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
 }
 
@@ -799,26 +799,26 @@ TEST_FUNCTION(ustream_get_current_position_compliance_cloned_buffer_with_non_zer
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_release(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 100);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 100);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_read(ustream_clone_interface, buf, USTREAM_COMPLIANCE_LENGTH_1, &size));
+        aziot_ustream_read(aziot_ustream_clone_interface, buf, USTREAM_COMPLIANCE_LENGTH_1, &size));
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_release(ustream_clone_interface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        aziot_ustream_release(aziot_ustream_clone_interface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_get_position(ustream_clone_interface, &position);
+    AZIOT_ULIB_RESULT result = aziot_ustream_get_position(aziot_ustream_clone_interface, &position);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
     ASSERT_ARE_EQUAL(int, 100 + USTREAM_COMPLIANCE_LENGTH_1, position);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
 }
 
@@ -942,9 +942,9 @@ TEST_FUNCTION(aziot_ustream_read_compliance_get_from_cloned_buffer_succeed)
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_set_position(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
-    AZIOT_USTREAM* ustream_clone_interface = 
-        ustream_clone(ustream_instance, 100);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = 
+        aziot_ustream_clone(ustream_instance, 100);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
 
     uint8_t buf_result1[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -957,19 +957,19 @@ TEST_FUNCTION(aziot_ustream_read_compliance_get_from_cloned_buffer_succeed)
     ///act
     AZIOT_ULIB_RESULT result1 = 
         aziot_ustream_read(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             buf_result1, 
             USTREAM_COMPLIANCE_LENGTH_1, 
             &size_result1);
     AZIOT_ULIB_RESULT result2 = 
         aziot_ustream_read(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             buf_result2, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
             &size_result2);
     AZIOT_ULIB_RESULT result3 = 
         aziot_ustream_read(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             buf_result3, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
             &size_result3);
@@ -997,7 +997,7 @@ TEST_FUNCTION(aziot_ustream_read_compliance_get_from_cloned_buffer_succeed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_EOF, result3);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 TEST_FUNCTION(aziot_ustream_read_compliance_single_buffer_succeed)
@@ -1085,8 +1085,8 @@ TEST_FUNCTION(aziot_ustream_read_compliance_cloned_buffer_right_boundary_conditi
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_set_position(ustream_instance, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1095,7 +1095,7 @@ TEST_FUNCTION(aziot_ustream_read_compliance_cloned_buffer_right_boundary_conditi
     ///act
     AZIOT_ULIB_RESULT result = 
         aziot_ustream_read(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             buf_result, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
             &size_result);
@@ -1113,13 +1113,13 @@ TEST_FUNCTION(aziot_ustream_read_compliance_cloned_buffer_right_boundary_conditi
             int, 
             AZIOT_ULIB_EOF, 
             aziot_ustream_read(
-                ustream_clone_interface, 
+                aziot_ustream_clone_interface, 
                 buf_result, 
                 USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
                 &size_result));
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 TEST_FUNCTION(aziot_ustream_read_compliance_boundary_condition_succeed)
@@ -1527,29 +1527,29 @@ TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_back_to_beginn
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_set_position(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
     uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     size_t size_result;
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_read(ustream_clone_interface, buf_result, USTREAM_COMPLIANCE_LENGTH_1, &size_result));
+        aziot_ustream_read(aziot_ustream_clone_interface, buf_result, USTREAM_COMPLIANCE_LENGTH_1, &size_result));
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_set_position(ustream_clone_interface, 0);
+    AZIOT_ULIB_RESULT result = aziot_ustream_set_position(aziot_ustream_clone_interface, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
     check_buffer(
-        ustream_clone_interface, 
+        aziot_ustream_clone_interface, 
         USTREAM_COMPLIANCE_LENGTH_1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_back_position_succeed)
@@ -1561,8 +1561,8 @@ TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_back_position_
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_set_position(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
     uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     size_t size_result;
@@ -1570,25 +1570,25 @@ TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_back_position_
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_read(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             buf_result, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
             &size_result));
 
     ///act
     AZIOT_ULIB_RESULT result = 
-        aziot_ustream_set_position(ustream_clone_interface, USTREAM_COMPLIANCE_LENGTH_1);
+        aziot_ustream_set_position(aziot_ustream_clone_interface, USTREAM_COMPLIANCE_LENGTH_1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
     check_buffer(
-        ustream_clone_interface, 
+        aziot_ustream_clone_interface, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_forward_position_succeed)
@@ -1600,29 +1600,29 @@ TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_forward_positi
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_set_position(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
     uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     size_t size_result;
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_read(ustream_clone_interface, buf_result, USTREAM_COMPLIANCE_LENGTH_1, &size_result));
+        aziot_ustream_read(aziot_ustream_clone_interface, buf_result, USTREAM_COMPLIANCE_LENGTH_1, &size_result));
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_set_position(ustream_clone_interface, USTREAM_COMPLIANCE_LENGTH_2);
+    AZIOT_ULIB_RESULT result = aziot_ustream_set_position(aziot_ustream_clone_interface, USTREAM_COMPLIANCE_LENGTH_2);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
     check_buffer(
-        ustream_clone_interface, 
+        aziot_ustream_clone_interface, 
         USTREAM_COMPLIANCE_LENGTH_3, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_forward_to_the_end_position_succeed)
@@ -1634,26 +1634,26 @@ TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_forward_to_the
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_set_position(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 100);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 100);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
 
     ///act
     AZIOT_ULIB_RESULT result = 
         aziot_ustream_set_position(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_COMPLIANCE_LENGTH_1 + 100);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
     check_buffer(
-        ustream_clone_interface, 
+        aziot_ustream_clone_interface, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed)
@@ -1665,8 +1665,8 @@ TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_run_full_buffe
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_set_position(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
     uint8_t buf_result[1];
     size_t size_result;
@@ -1674,10 +1674,10 @@ TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_run_full_buffe
     for(offset_t i = 0; i < USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_COMPLIANCE_LENGTH_1; i++)
     {
         ///act - assert
-        ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_set_position(ustream_clone_interface, i));
+        ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_set_position(aziot_ustream_clone_interface, i));
         
         ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS,
-                aziot_ustream_read(ustream_clone_interface, buf_result, 1, &size_result));
+                aziot_ustream_read(aziot_ustream_clone_interface, buf_result, 1, &size_result));
 
         ASSERT_ARE_EQUAL(int, 1, size_result);
         ASSERT_ARE_EQUAL(
@@ -1686,13 +1686,13 @@ TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_run_full_buffe
                 *buf_result);
     }
     check_buffer(
-        ustream_clone_interface, 
+        aziot_ustream_clone_interface, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_reverse_order_succeed)
@@ -1704,8 +1704,8 @@ TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_run_full_buffe
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_set_position(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
     uint8_t buf_result[1];
     size_t size_result;
@@ -1713,10 +1713,10 @@ TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_run_full_buffe
     for(offset_t i = USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_COMPLIANCE_LENGTH_1 - 1; i > 0; i--)
     {
         ///act - assert
-        ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_set_position(ustream_clone_interface, i));
+        ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_set_position(aziot_ustream_clone_interface, i));
         
         ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS,
-                aziot_ustream_read(ustream_clone_interface, buf_result, 1, &size_result));
+                aziot_ustream_read(aziot_ustream_clone_interface, buf_result, 1, &size_result));
 
         ASSERT_ARE_EQUAL(int, 1, size_result);
         ASSERT_ARE_EQUAL(
@@ -1727,15 +1727,15 @@ TEST_FUNCTION(aziot_ustream_set_position_compliance_cloned_buffer_run_full_buffe
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_set_position(ustream_clone_interface, 0));
+        aziot_ustream_set_position(aziot_ustream_clone_interface, 0));
     check_buffer(
-        ustream_clone_interface, 
+        aziot_ustream_clone_interface, 
         USTREAM_COMPLIANCE_LENGTH_1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 /* If the provided position is out of the range of the buffer, the set_position shall return AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR, and do not change the current position. */
@@ -1927,34 +1927,34 @@ TEST_FUNCTION(aziot_ustream_release_compliance_cloned_buffer_succeed)
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_set_position(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
     uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     size_t size_result;
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_read(ustream_clone_interface, buf_result, USTREAM_COMPLIANCE_LENGTH_1, &size_result));
+        aziot_ustream_read(aziot_ustream_clone_interface, buf_result, USTREAM_COMPLIANCE_LENGTH_1, &size_result));
     offset_t current_position;
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_get_position(ustream_clone_interface, &current_position));
+        aziot_ustream_get_position(aziot_ustream_clone_interface, &current_position));
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_release(ustream_clone_interface, current_position - 1);
+    AZIOT_ULIB_RESULT result = aziot_ustream_release(aziot_ustream_clone_interface, current_position - 1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
     check_buffer(
-        ustream_clone_interface, 
+        aziot_ustream_clone_interface, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 TEST_FUNCTION(aziot_ustream_release_compliance_cloned_buffer_release_all_succeed)
@@ -1966,33 +1966,33 @@ TEST_FUNCTION(aziot_ustream_release_compliance_cloned_buffer_release_all_succeed
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_set_position(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 1000);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 1000);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
     ASSERT_ARE_EQUAL(
             int, 
             AZIOT_ULIB_SUCCESS, 
             aziot_ustream_set_position(
-                ustream_clone_interface, 
+                aziot_ustream_clone_interface, 
                 USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_COMPLIANCE_LENGTH_1 + 1000));
 
     ///act
     AZIOT_ULIB_RESULT result = 
         aziot_ustream_release(
-            ustream_clone_interface, 
+            aziot_ustream_clone_interface, 
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_COMPLIANCE_LENGTH_1 + 999);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(ustream_clone_interface));
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(aziot_ustream_clone_interface));
     check_buffer(
-        ustream_clone_interface, 
+        aziot_ustream_clone_interface, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 TEST_FUNCTION(aziot_ustream_release_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed)
@@ -2004,8 +2004,8 @@ TEST_FUNCTION(aziot_ustream_release_compliance_cloned_buffer_run_full_buffer_byt
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_set_position(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     (void)ustream_dispose(ustream_instance);
     uint8_t buf_result[1];
     size_t size_result;
@@ -2013,14 +2013,14 @@ TEST_FUNCTION(aziot_ustream_release_compliance_cloned_buffer_run_full_buffer_byt
     for(offset_t i = 1; i < USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_COMPLIANCE_LENGTH_1 - 1; i++)
     {
         ///act - assert
-        ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_set_position(ustream_clone_interface, i + 1));
+        ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_set_position(aziot_ustream_clone_interface, i + 1));
     
-        ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_release(ustream_clone_interface, i - 1));
+        ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_release(aziot_ustream_clone_interface, i - 1));
         
-        ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(ustream_clone_interface));
+        ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_reset(aziot_ustream_clone_interface));
     
         ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS,
-                aziot_ustream_read(ustream_clone_interface, buf_result, 1, &size_result));
+                aziot_ustream_read(aziot_ustream_clone_interface, buf_result, 1, &size_result));
 
         ASSERT_ARE_EQUAL(int, 1, size_result);
         ASSERT_ARE_EQUAL(
@@ -2029,13 +2029,13 @@ TEST_FUNCTION(aziot_ustream_release_compliance_cloned_buffer_run_full_buffer_byt
                 *buf_result);
     }
     check_buffer(
-        ustream_clone_interface, 
+        aziot_ustream_clone_interface, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 /* If the release position is after the current position, the release shall return AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR, and do not release any resource. */
@@ -2208,24 +2208,24 @@ TEST_FUNCTION(aziot_ustream_reset_compliance_cloned_buffer_succeed)
         int, 
         AZIOT_ULIB_SUCCESS, 
         aziot_ustream_release(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1 - 1));
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 100);
-    ASSERT_IS_NOT_NULL(ustream_clone_interface);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 100);
+    ASSERT_IS_NOT_NULL(aziot_ustream_clone_interface);
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_read(ustream_clone_interface, buf, USTREAM_COMPLIANCE_LENGTH_1, &size));
+        aziot_ustream_read(aziot_ustream_clone_interface, buf, USTREAM_COMPLIANCE_LENGTH_1, &size));
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_release(ustream_clone_interface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
+        aziot_ustream_release(aziot_ustream_clone_interface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_reset(ustream_clone_interface);
+    AZIOT_ULIB_RESULT result = aziot_ustream_reset(aziot_ustream_clone_interface);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
     check_buffer(
-        ustream_clone_interface, 
+        aziot_ustream_clone_interface, 
         USTREAM_COMPLIANCE_LENGTH_2, 
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
@@ -2237,7 +2237,7 @@ TEST_FUNCTION(aziot_ustream_reset_compliance_cloned_buffer_succeed)
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
-    (void)ustream_dispose(ustream_clone_interface);
+    (void)ustream_dispose(aziot_ustream_clone_interface);
 }
 
 /* If the provided handle is NULL, the reset shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR. */

@@ -354,8 +354,8 @@ TEST_FUNCTION(ustream_create_zero_length_failed)
     ///cleanup
 }
 
-/*  ustream_clone shall return NULL if there is not enough memory to control the new uStream. */
-TEST_FUNCTION(ustream_clone_no_memory_to_create_interface_failed)
+/*  aziot_ustream_clone shall return NULL if there is not enough memory to control the new uStream. */
+TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_interface_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -363,17 +363,17 @@ TEST_FUNCTION(ustream_clone_no_memory_to_create_interface_failed)
     EXPECTED_CALL(ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
 
     ///assert
-    ASSERT_IS_NULL(ustream_clone_interface);
+    ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
 }
 
-/* ustream_clone shall return NULL if there is not enough memory to create the instance */
-TEST_FUNCTION(ustream_clone_no_memory_to_create_instance_failed)
+/* aziot_ustream_clone shall return NULL if there is not enough memory to create the instance */
+TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_instance_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -383,11 +383,11 @@ TEST_FUNCTION(ustream_clone_no_memory_to_create_instance_failed)
     STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* ustream_clone_interface = ustream_clone(ustream_instance, 0);
+    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_IS_NULL(ustream_clone_interface);
+    ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
     (void)ustream_dispose(ustream_instance);
