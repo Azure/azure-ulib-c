@@ -211,7 +211,7 @@ static AZIOT_ULIB_RESULT concrete_set_position(
                 }
                 else
                 {
-                    (void)ustream_reset(node->buffer);
+                    (void)aziot_ustream_reset(node->buffer);
                     if(bypass_old_current_node == true)
                     {
                         break;
@@ -258,8 +258,8 @@ static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface)
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
-        /*[ustream_reset_compliance_null_buffer_failed]*/
-        /*[ustream_reset_compliance_non_type_of_buffer_api_failed]*/
+        /*[aziot_ustream_reset_compliance_null_buffer_failed]*/
+        /*[aziot_ustream_reset_compliance_non_type_of_buffer_api_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -267,8 +267,8 @@ static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface)
     {
         USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
-        /*[ustream_reset_compliance_back_to_beginning_succeed]*/
-        /*[ustream_reset_compliance_back_position_succeed]*/
+        /*[aziot_ustream_reset_compliance_back_to_beginning_succeed]*/
+        /*[aziot_ustream_reset_compliance_back_position_succeed]*/
         result = concrete_set_position(ustream_interface, 
                 (instance->inner_first_valid_position + instance->offset_diff));
     }
@@ -350,7 +350,7 @@ static AZIOT_ULIB_RESULT concrete_read(
                         if(node != NULL)
                         {
                             intermediate_result = AZIOT_ULIB_SUCCESS;
-                            (void)ustream_reset(node->buffer);
+                            (void)aziot_ustream_reset(node->buffer);
                         }
                     }
                     break;

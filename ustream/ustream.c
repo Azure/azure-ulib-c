@@ -172,8 +172,8 @@ static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface)
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
-        /*[ustream_reset_compliance_null_buffer_failed]*/
-        /*[ustream_reset_compliance_non_type_of_buffer_api_failed]*/
+        /*[aziot_ustream_reset_compliance_null_buffer_failed]*/
+        /*[aziot_ustream_reset_compliance_non_type_of_buffer_api_failed]*/
 
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -181,8 +181,8 @@ static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface)
     {
         USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ustream_interface->handle;
 
-        /*[ustream_reset_compliance_back_to_beginning_succeed]*/
-        /*[ustream_reset_compliance_back_position_succeed]*/
+        /*[aziot_ustream_reset_compliance_back_to_beginning_succeed]*/
+        /*[aziot_ustream_reset_compliance_back_position_succeed]*/
         instance->inner_current_position = instance->inner_first_valid_position;
         result = AZIOT_ULIB_SUCCESS;
     }

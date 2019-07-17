@@ -299,7 +299,7 @@
  *  A common scenario is when the consumer needs to read over the data source starting on the first byte after
  *      the last released one. For example, when a timeout happens for a transmitted packet without ACK, the 
  *      sender shall retransmit the data starting from that point. In this case, the consumer can call the API
- *      ustream_reset().
+ *      aziot_ustream_reset().
  *
  */
 
@@ -412,7 +412,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_set_position(AZIOT_USTREAM* ustrea
  *      ustream_read(). Reset will bring the current position to the first valid one, which
  *      is the first byte after the released position.
  *
- *  The <tt>ustream_reset</tt> API shall follow the following minimum requirements:
+ *  The <tt>aziot_ustream_reset</tt> API shall follow the following minimum requirements:
  *      - The <tt>reset</tt> shall change the current position of the uStream to the first byte after the
  *          released position.
  *      - If all bytes are already released, the uStream <tt>reset</tt> shall return
@@ -439,7 +439,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_set_position(AZIOT_USTREAM* ustrea
  *                                                        reasons.
  *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>reset</tt> operation failed on the system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_reset(AZIOT_USTREAM* ustream_interface)
+static inline AZIOT_ULIB_RESULT aziot_ustream_reset(AZIOT_USTREAM* ustream_interface)
 {
     return ustream_interface->api->reset(ustream_interface);
 }
