@@ -167,11 +167,11 @@
  *  Released data cannot be accessed, even if it is still available in the memory.
  *
  * <h2>Appendable</h2>
- *  New data can be appended at the end of the uStream by calling ustream_append().
+ *  New data can be appended at the end of the uStream by calling aziot_ustream_append().
  *      This can include uStream's from other different medias. In this way, the uStream can
  *      be used as a Stream of data.
  *  To protect the immutability of the uStream, appending a new uStream to an existing one will
- *      only affect the instance that is calling the ustream_append().
+ *      only affect the instance that is calling the aziot_ustream_append().
  *
  * <i><b>Example</b></i>
  *  A producer created 3 uStreams named A, B, and C. At this point, it handles one instance of each
@@ -797,7 +797,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_dispose(AZIOT_USTREAM* ustream_int
   *         to it. If <tt>ustream_interface</tt> is already an instance of a <tt>USTREAM_MULTI_INSTANCE</tt>, this API
   *         will only append <tt>ustream_to_append</tt>.
   *
-  *  The <tt>ustream_append</tt> API shall follow the following minimum requirements:
+  *  The <tt>aziot_ustream_append</tt> API shall follow the following minimum requirements:
   *      - The <tt>append</tt> shall append <tt>ustream_to_append</tt> to the end of <tt>ustream_interface</tt>.
   *      - If <tt>ustream_interface</tt> is not a <tt>USTREAM_MULTI_INSTANCE</tt>, the <tt>append</tt> shall convert it to a <tt>USTREAM_MULTI_INSTANCE</tt>.
   *      - If <tt>ustream_interface</tt> is <tt>NULL</tt>, the <tt>append</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
@@ -815,7 +815,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_dispose(AZIOT_USTREAM* ustream_int
   *          @retval    AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
   *          @retval    AZIOT_ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to <tt>append</tt> the uStream.
   */
-MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, ustream_append,
+MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_append,
     AZIOT_USTREAM*, ustream_interface, 
     AZIOT_USTREAM*, ustream_to_append);
 

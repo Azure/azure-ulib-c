@@ -99,9 +99,9 @@ int main(void)
                 (void)printf("Size of ustream_two: %lu\r\n", ustream_size);
 
                 //Append the second AZIOT_USTREAM to the first AZIOT_USTREAM
-                if((result = ustream_append(ustream_one, ustream_two)) != AZIOT_ULIB_SUCCESS)
+                if((result = aziot_ustream_append(ustream_one, ustream_two)) != AZIOT_ULIB_SUCCESS)
                 {
-                    ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_append", result);
+                    ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_append", result);
                 }
                 //Dispose of our instance of the second ustream (now the appended has the only instance)
                 else if((result = aziot_ustream_dispose(ustream_two)) != AZIOT_ULIB_SUCCESS)
