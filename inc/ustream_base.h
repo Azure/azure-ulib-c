@@ -246,9 +246,9 @@
  *      offset of <tt>1000</tt>. The new instance contains the same content as the original one, but the 
  *      logical positions are now from <tt>1000</tt> to <tt>1099</tt>.
  *
- *  If the owner of the first instance wants to set the position to position 10, it shall call ustream_set_position()
+ *  If the owner of the first instance wants to set the position to position 10, it shall call aziot_ustream_set_position()
  *      with the logical position 10. For the cloned instance, to set the position to the same position 10, it shall call 
- *      ustream_set_position() with the logical position 1010.
+ *      aziot_ustream_set_position() with the logical position 1010.
  *
  * <h2>Sliding window</h2>
  *  One of the target use cases of the uStream is to accelerate and simplify the implementation of 
@@ -273,8 +273,8 @@
  *      - @b Released - Sequence of bytes in the data source that is already acknowledged by the consumer, 
  *          and shall not be accessed anymore.
  *      - @b Pending - Sequence of bytes in the data source that is already read by the consumer, but not 
- *          acknowledged yet. The consumer can seek these bytes with ustream_set_position() and read it again. This sequence starts at 
- *          the <tt>First Valid Position</tt> and ends at the last byte before the <tt>Current Position</tt>.
+ *          acknowledged yet. The consumer can seek these bytes with aziot_ustream_set_position() and read it again. 
+ *          This sequence starts at the <tt>First Valid Position</tt> and ends at the last byte before the <tt>Current Position</tt>.
  *      - @b Read - The last read portion of the data source. On the read operation, the <tt>Read</tt> starts
  *          at the <tt>Current Position</tt> up to the <tt>Read Size</tt>. At the end of the read, this segment is 
  *          incorporated to <tt>Pending</tt> by changing the <tt>Current Position</tt> to the end of the Read.
@@ -373,7 +373,7 @@ struct AZIOT_USTREAM_INTERFACE_TAG
  *      ustream_read(). Consumers can call this API to go back or forward, but it cannot exceed
  *      the end of the uStream or precede the fist valid position (last released position + 1).
  *
- *  The <tt>ustream_set_position</tt> API shall follow these minimum requirements:
+ *  The <tt>aziot_ustream_set_position</tt> API shall follow these minimum requirements:
  *      - The <tt>set_position</tt> shall change the current position of the uStream.
  *      - If the provided position is out of the range of the uStream, the <tt>set_position</tt> shall return
  *          #AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
@@ -400,7 +400,7 @@ struct AZIOT_USTREAM_INTERFACE_TAG
  *                                                        reasons.
  *          @retval AZIOT_ULIB_SYSTEM_ERROR               If the <tt>set_position</tt> operation failed on the system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_set_position(AZIOT_USTREAM* ustream_interface, offset_t position)
+static inline AZIOT_ULIB_RESULT aziot_ustream_set_position(AZIOT_USTREAM* ustream_interface, offset_t position)
 {
     return ustream_interface->api->set_position(ustream_interface, position);
 }

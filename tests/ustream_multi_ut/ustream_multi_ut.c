@@ -284,7 +284,7 @@ TEST_FUNCTION(ustream_multi_append_partial_released_multibuffer_succeed)
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        ustream_set_position(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2)));
+        aziot_ustream_set_position(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2)));
     
     // release current - 1
     ASSERT_ARE_EQUAL(
@@ -359,7 +359,7 @@ TEST_FUNCTION(ustream_multi_append_fully_released_multibuffer_succeed)
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1)));
+        aziot_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1)));
     
     // release all
     ASSERT_ARE_EQUAL(
@@ -604,7 +604,7 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_
     ///cleanup
 }
 
-/* ustream_set_position shall bypass the error if the inner uStream returns an error for one of the needed operations */
+/* aziot_ustream_set_position shall bypass the error if the inner uStream returns an error for one of the needed operations */
 TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_current_position_failed)
 {
     ///arrange
@@ -624,7 +624,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_current_posi
 
     ///act
     AZIOT_ULIB_RESULT result = 
-        ustream_set_position(
+        aziot_ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
@@ -640,7 +640,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_current_posi
     (void)ustream_dispose(default_buffer2);
 }
 
-/* ustream_set_position shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to set the position */
+/* aziot_ustream_set_position shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to set the position */
 TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange
@@ -660,7 +660,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_si
 
     ///act
     AZIOT_ULIB_RESULT result = 
-        ustream_set_position(
+        aziot_ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
@@ -676,7 +676,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_si
     (void)ustream_dispose(default_buffer2);
 }
 
-/* ustream_set_position shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to set the position */
+/* aziot_ustream_set_position shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to set the position */
 TEST_FUNCTION(ustream_multi_seek_inner_buffer_failed_in_seek_failed)
 {
     ///arrange
@@ -696,7 +696,7 @@ TEST_FUNCTION(ustream_multi_seek_inner_buffer_failed_in_seek_failed)
 
     ///act
     AZIOT_ULIB_RESULT result = 
-        ustream_set_position(
+        aziot_ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
@@ -821,7 +821,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
+        aziot_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
 
     set_get_position_result(AZIOT_ULIB_SYSTEM_ERROR);
 
@@ -862,7 +862,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_fa
     ASSERT_ARE_EQUAL(
         int,
         AZIOT_ULIB_SUCCESS,
-        ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
+        aziot_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
 
     set_get_remaining_size_result(AZIOT_ULIB_SYSTEM_ERROR);
 

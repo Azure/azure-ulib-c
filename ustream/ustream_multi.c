@@ -142,8 +142,8 @@ static AZIOT_ULIB_RESULT concrete_set_position(
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
-        /*[ustream_set_position_compliance_null_buffer_failed]*/
-        /*[ustream_set_position_compliance_non_type_of_buffer_api_failed]*/
+        /*[aziot_ustream_set_position_compliance_null_buffer_failed]*/
+        /*[aziot_ustream_set_position_compliance_non_type_of_buffer_api_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -154,29 +154,29 @@ static AZIOT_ULIB_RESULT concrete_set_position(
 
         if(inner_position == instance->inner_current_position)
         {
-            /*[ustream_set_position_compliance_forward_to_the_end_position_succeed]*/
+            /*[aziot_ustream_set_position_compliance_forward_to_the_end_position_succeed]*/
             result = AZIOT_ULIB_SUCCESS;
         }
         else if((inner_position > (offset_t)(instance->length)) || 
                 (inner_position < instance->inner_first_valid_position))
         {
-            /*[ustream_set_position_compliance_forward_out_of_the_buffer_failed]*/
-            /*[ustream_set_position_compliance_back_before_first_valid_position_failed]*/
+            /*[aziot_ustream_set_position_compliance_forward_out_of_the_buffer_failed]*/
+            /*[aziot_ustream_set_position_compliance_back_before_first_valid_position_failed]*/
             result = AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR;
         }
         else
         {
-            /*[ustream_set_position_compliance_back_to_beginning_succeed]*/
-            /*[ustream_set_position_compliance_back_position_succeed]*/
-            /*[ustream_set_position_compliance_forward_position_succeed]*/
-            /*[ustream_set_position_compliance_run_full_buffer_byte_by_byte_succeed]*/
-            /*[ustream_set_position_compliance_run_full_buffer_byte_by_byte_reverse_order_succeed]*/
-            /*[ustream_set_position_compliance_cloned_buffer_back_to_beginning_succeed]*/
-            /*[ustream_set_position_compliance_cloned_buffer_back_position_succeed]*/
-            /*[ustream_set_position_compliance_cloned_buffer_forward_position_succeed]*/
-            /*[ustream_set_position_compliance_cloned_buffer_forward_to_the_end_position_succeed]*/
-            /*[ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed]*/
-            /*[ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_reverse_order_succeed]*/
+            /*[aziot_ustream_set_position_compliance_back_to_beginning_succeed]*/
+            /*[aziot_ustream_set_position_compliance_back_position_succeed]*/
+            /*[aziot_ustream_set_position_compliance_forward_position_succeed]*/
+            /*[aziot_ustream_set_position_compliance_run_full_buffer_byte_by_byte_succeed]*/
+            /*[aziot_ustream_set_position_compliance_run_full_buffer_byte_by_byte_reverse_order_succeed]*/
+            /*[aziot_ustream_set_position_compliance_cloned_buffer_back_to_beginning_succeed]*/
+            /*[aziot_ustream_set_position_compliance_cloned_buffer_back_position_succeed]*/
+            /*[aziot_ustream_set_position_compliance_cloned_buffer_forward_position_succeed]*/
+            /*[aziot_ustream_set_position_compliance_cloned_buffer_forward_to_the_end_position_succeed]*/
+            /*[aziot_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed]*/
+            /*[aziot_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_reverse_order_succeed]*/
             result = AZIOT_ULIB_SUCCESS;
             BUFFER_LIST_NODE* node = instance->buffer_list;
             BUFFER_LIST_NODE* new_current_node = NULL; 
@@ -200,11 +200,11 @@ static AZIOT_ULIB_RESULT concrete_set_position(
                             if((current_position + size) > inner_position)
                             {
                                 new_current_node = node;
-                                result = ustream_set_position(node->buffer, inner_position);
+                                result = aziot_ustream_set_position(node->buffer, inner_position);
                             }
                             else
                             {
-                                result = ustream_set_position(node->buffer, (current_position + (offset_t)size - (offset_t)1));
+                                result = aziot_ustream_set_position(node->buffer, (current_position + (offset_t)size - (offset_t)1));
                             }
                         }
                     }
@@ -230,7 +230,7 @@ static AZIOT_ULIB_RESULT concrete_set_position(
                 if(instance->current_node != NULL)
                 {
                     AZIOT_ULIB_RESULT rollback_result = 
-                        ustream_set_position(instance->current_node->buffer, instance->inner_current_position);
+                        aziot_ustream_set_position(instance->current_node->buffer, instance->inner_current_position);
                     if(rollback_result != AZIOT_ULIB_SUCCESS)
                     {
                         ULIB_CONFIG_LOG(
