@@ -596,7 +596,7 @@ TEST_FUNCTION(ustream_clone_compliance_offset_exceed_size_failed)
 }
 
 /* The get_remaining_size shall return the number of bytes between the current position and the end of the buffer. */
-TEST_FUNCTION(ustream_get_remaining_size_compliance_new_buffer_succeed)
+TEST_FUNCTION(aziot_ustream_get_remaining_size_compliance_new_buffer_succeed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -604,7 +604,7 @@ TEST_FUNCTION(ustream_get_remaining_size_compliance_new_buffer_succeed)
     size_t size;
 
     ///act
-    AZIOT_ULIB_RESULT result = ustream_get_remaining_size(ustream_instance, &size);
+    AZIOT_ULIB_RESULT result = aziot_ustream_get_remaining_size(ustream_instance, &size);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
@@ -614,7 +614,7 @@ TEST_FUNCTION(ustream_get_remaining_size_compliance_new_buffer_succeed)
     (void)ustream_dispose(ustream_instance);
 }
 
-TEST_FUNCTION(ustream_get_remaining_size_compliance_new_buffer_with_non_zero_current_position_succeed)
+TEST_FUNCTION(aziot_ustream_get_remaining_size_compliance_new_buffer_with_non_zero_current_position_succeed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -631,7 +631,7 @@ TEST_FUNCTION(ustream_get_remaining_size_compliance_new_buffer_with_non_zero_cur
         ustream_release(ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
 
     ///act
-    AZIOT_ULIB_RESULT result = ustream_get_remaining_size(ustream_instance, &size);
+    AZIOT_ULIB_RESULT result = aziot_ustream_get_remaining_size(ustream_instance, &size);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
@@ -644,7 +644,7 @@ TEST_FUNCTION(ustream_get_remaining_size_compliance_new_buffer_with_non_zero_cur
     (void)ustream_dispose(ustream_instance);
 }
 
-TEST_FUNCTION(ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_current_position_succeed)
+TEST_FUNCTION(aziot_ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_current_position_succeed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -671,7 +671,7 @@ TEST_FUNCTION(ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_
         ustream_release(ustream_clone_interface, 100 + USTREAM_COMPLIANCE_LENGTH_1 - 1));
 
     ///act
-    AZIOT_ULIB_RESULT result = ustream_get_remaining_size(ustream_clone_interface, &size);
+    AZIOT_ULIB_RESULT result = aziot_ustream_get_remaining_size(ustream_clone_interface, &size);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
@@ -686,7 +686,7 @@ TEST_FUNCTION(ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_
 }
 
 /* If the provided handle is NULL, the get_remaining_size shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(ustream_get_remaining_size_compliance_null_buffer_failed)
+TEST_FUNCTION(aziot_ustream_get_remaining_size_compliance_null_buffer_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -703,7 +703,7 @@ TEST_FUNCTION(ustream_get_remaining_size_compliance_null_buffer_failed)
 }
 
 /* If the provided handle is not the implemented buffer type, the get_remaining_size shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed)
+TEST_FUNCTION(aziot_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -721,13 +721,13 @@ TEST_FUNCTION(ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer
 }
 
 /* If the provided size is NULL, the get_remaining_size shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(ustream_get_remaining_size_compliance_null_size_failed)
+TEST_FUNCTION(aziot_ustream_get_remaining_size_compliance_null_size_failed)
 {
     ///arrange
     AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
 
     ///act
-    AZIOT_ULIB_RESULT result = ustream_get_remaining_size(ustream_instance, NULL);
+    AZIOT_ULIB_RESULT result = aziot_ustream_get_remaining_size(ustream_instance, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);

@@ -239,7 +239,7 @@ TEST_FUNCTION(ustream_multi_append_new_multibuffer_succeed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, ustream_get_remaining_size(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(
         int, 
         strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 
@@ -315,7 +315,7 @@ TEST_FUNCTION(ustream_multi_append_partial_released_multibuffer_succeed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, ustream_get_remaining_size(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(int, 
             (strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) +
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2) +
@@ -390,7 +390,7 @@ TEST_FUNCTION(ustream_multi_append_fully_released_multibuffer_succeed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, ustream_get_remaining_size(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(
         int, 
         strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 

@@ -260,14 +260,14 @@ static AZIOT_ULIB_RESULT concrete_get_remaining_size(AZIOT_USTREAM* ustream_inte
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
-        /*[ustream_get_remaining_size_compliance_null_buffer_failed]*/
-        /*[ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_null_buffer_failed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(size == NULL)
     {
-        /*[ustream_get_remaining_size_compliance_null_size_failed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_null_size_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_NULL_STRING, "size");
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -275,9 +275,9 @@ static AZIOT_ULIB_RESULT concrete_get_remaining_size(AZIOT_USTREAM* ustream_inte
     {
         USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ustream_interface->handle;
 
-        /*[ustream_get_remaining_size_compliance_new_buffer_succeed]*/
-        /*[ustream_get_remaining_size_compliance_new_buffer_with_non_zero_current_position_succeed]*/
-        /*[ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_new_buffer_succeed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_new_buffer_with_non_zero_current_position_succeed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
         *size = instance->inner_buffer->length - instance->inner_current_position;
         result = AZIOT_ULIB_SUCCESS;
     }

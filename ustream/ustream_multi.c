@@ -195,7 +195,7 @@ static AZIOT_ULIB_RESULT concrete_set_position(
                     if((result = ustream_get_position(node->buffer, &current_position)) == AZIOT_ULIB_SUCCESS)
                     {
                         size_t size;
-                        if((result = ustream_get_remaining_size(node->buffer, &size)) == AZIOT_ULIB_SUCCESS)
+                        if((result = aziot_ustream_get_remaining_size(node->buffer, &size)) == AZIOT_ULIB_SUCCESS)
                         {
                             if((current_position + size) > inner_position)
                             {
@@ -382,14 +382,14 @@ static AZIOT_ULIB_RESULT concrete_get_remaining_size(AZIOT_USTREAM* ustream_inte
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
-        /*[ustream_get_remaining_size_compliance_null_buffer_failed]*/
-        /*[ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_null_buffer_failed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(size == NULL)
     {
-        /*[ustream_get_remaining_size_compliance_null_size_failed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_null_size_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_NULL_STRING, "size");
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -397,9 +397,9 @@ static AZIOT_ULIB_RESULT concrete_get_remaining_size(AZIOT_USTREAM* ustream_inte
     {
         USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
-        /*[ustream_get_remaining_size_compliance_new_buffer_succeed]*/
-        /*[ustream_get_remaining_size_compliance_new_buffer_with_non_zero_current_position_succeed]*/
-        /*[ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_new_buffer_succeed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_new_buffer_with_non_zero_current_position_succeed]*/
+        /*[aziot_ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
         *size = instance->length - instance->inner_current_position;
         result = AZIOT_ULIB_SUCCESS;
     }
@@ -480,7 +480,7 @@ static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offs
             if(result == AZIOT_ULIB_SUCCESS)
             {
                 size_t size;
-                if((result = ustream_get_remaining_size(new_buffer_list_start->buffer, &size)) == AZIOT_ULIB_SUCCESS)
+                if((result = aziot_ustream_get_remaining_size(new_buffer_list_start->buffer, &size)) == AZIOT_ULIB_SUCCESS)
                 {
                     if((size == 0) && (inner_position == (last_position - 1)))
                     {
@@ -553,7 +553,7 @@ static AZIOT_USTREAM* concrete_clone(AZIOT_USTREAM* ustream_interface, offset_t 
                     {
                         fail = true;
                     }
-                    else if(ustream_get_remaining_size(new_node->buffer, &(new_buffer_size)) == AZIOT_ULIB_SUCCESS)
+                    else if(aziot_ustream_get_remaining_size(new_node->buffer, &(new_buffer_size)) == AZIOT_ULIB_SUCCESS)
                     {
                         // find insertion position in the list
                         *insert_position = new_node;
@@ -645,7 +645,7 @@ AZIOT_ULIB_RESULT ustream_multi_append(
         {
             result = AZIOT_ULIB_OUT_OF_MEMORY_ERROR;
         }
-        else if((result = ustream_get_remaining_size(new_node->buffer, &(new_buffer_size))) != AZIOT_ULIB_SUCCESS)
+        else if((result = aziot_ustream_get_remaining_size(new_node->buffer, &(new_buffer_size))) != AZIOT_ULIB_SUCCESS)
         {
             /*[ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size_failed]*/
             ULIB_CONFIG_LOG(

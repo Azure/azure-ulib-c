@@ -75,9 +75,9 @@ int main(void)
             ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
             result = AZIOT_ULIB_SYSTEM_ERROR;
         }
-        else if((result = ustream_get_remaining_size(ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
+        else if((result = aziot_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
         {
-            ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_get_remaining_size", result);
+            ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
         }
         else
         {
@@ -90,9 +90,9 @@ int main(void)
                 ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
                 result = AZIOT_ULIB_SYSTEM_ERROR;
             }
-            else if((result = ustream_get_remaining_size(ustream_two, &ustream_size)) != AZIOT_ULIB_SUCCESS)
+            else if((result = aziot_ustream_get_remaining_size(ustream_two, &ustream_size)) != AZIOT_ULIB_SUCCESS)
             {
-                ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_get_remaining_size", result);
+                ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
             }
             else
             {
@@ -108,9 +108,9 @@ int main(void)
                 {
                     ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_dispose", result);
                 }
-                else if((result = ustream_get_remaining_size(ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
+                else if((result = aziot_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
                 {
-                    ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_get_remaining_size", result);
+                    ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
                 }
                 else
                 {

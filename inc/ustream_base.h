@@ -207,7 +207,7 @@
  * <i><b>Example</b></i>
  *  A uStream can have the data source in binary format with 36 bytes, but it shall expose the 
  *      content encoded in base64. The base64 creates 4 encoded bytes for each 3 bytes read. So, seeking the 
- *      beginning of the file, the ustream_get_remaining_size() shall return 48 (= 36 / 3 * 4),
+ *      beginning of the file, the aziot_ustream_get_remaining_size() shall return 48 (= 36 / 3 * 4),
  *      instead of 36. If the consumer provides a local buffer of 16 bytes, the aziot_ustream_read() 
  *      shall read only 12 bytes from the data source, and encode it in base64 expanding the 12 bytes to 
  *      16 bytes on the local buffer.
@@ -506,7 +506,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_read(AZIOT_USTREAM* ustream_interf
  *
  *  This API returns the number of bytes between the current position and the end of the uStream.
  *
- *  The <tt>ustream_get_remaining_size</tt> API shall follow the following minimum requirements:
+ *  The <tt>aziot_ustream_get_remaining_size</tt> API shall follow the following minimum requirements:
  *      - The <tt>get_remaining_size</tt> shall return the number of bytes between the current position and the
  *          end of the uStream.
  *      - If the provided interface is <tt>NULL</tt>, the <tt>get_remaining_size</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
@@ -532,7 +532,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_read(AZIOT_USTREAM* ustream_interf
  *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>get_remaining_size</tt> operation failed on the
  *                                                        system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_get_remaining_size(AZIOT_USTREAM* ustream_interface, size_t* const size)
+static inline AZIOT_ULIB_RESULT aziot_ustream_get_remaining_size(AZIOT_USTREAM* ustream_interface, size_t* const size)
 {
     return ustream_interface->api->get_remaining_size(ustream_interface, size);
 }
