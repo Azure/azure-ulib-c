@@ -364,7 +364,7 @@ struct AZIOT_USTREAM_INTERFACE_TAG
  *  It will return true if the handle is valid and it is the same type of the API. It will
  *      return false if the handle is <tt>NULL</tt> or not the correct type.
  */
-#define USTREAM_IS_NOT_TYPE_OF(handle, type_api)   ((handle == NULL) || (handle->api != &type_api))
+#define AZIOT_USTREAM_IS_NOT_TYPE_OF(handle, type_api)   ((handle == NULL) || (handle->api != &type_api))
 
 /**
  * @brief   Change the current position of the uStream.

@@ -140,7 +140,7 @@ static AZIOT_ULIB_RESULT concrete_set_position(
 {
     AZIOT_ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
+    if(AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[aziot_ustream_set_position_compliance_null_buffer_failed]*/
         /*[aziot_ustream_set_position_compliance_non_type_of_buffer_api_failed]*/
@@ -256,7 +256,7 @@ static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface)
 {
     AZIOT_ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
+    if(AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[aziot_ustream_reset_compliance_null_buffer_failed]*/
         /*[aziot_ustream_reset_compliance_non_type_of_buffer_api_failed]*/
@@ -284,7 +284,7 @@ static AZIOT_ULIB_RESULT concrete_read(
 {
     AZIOT_ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
+    if(AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[aziot_ustream_read_compliance_null_buffer_failed]*/
         /*[aziot_ustream_read_compliance_non_type_of_buffer_api_failed]*/
@@ -380,7 +380,7 @@ static AZIOT_ULIB_RESULT concrete_get_remaining_size(AZIOT_USTREAM* ustream_inte
 {
     AZIOT_ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
+    if(AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[aziot_ustream_get_remaining_size_compliance_null_buffer_failed]*/
         /*[aziot_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed]*/
@@ -411,7 +411,7 @@ static AZIOT_ULIB_RESULT concrete_get_position(AZIOT_USTREAM* ustream_interface,
 {
     AZIOT_ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
+    if(AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[ustream_get_current_position_compliance_null_buffer_failed]*/
         /*[ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed]*/
@@ -442,7 +442,7 @@ static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offs
 {
     AZIOT_ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
+    if(AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[aziot_ustream_release_compliance_null_buffer_failed]*/
         /*[aziot_ustream_release_compliance_non_type_of_buffer_api_failed]*/
@@ -511,7 +511,7 @@ static AZIOT_USTREAM* concrete_clone(AZIOT_USTREAM* ustream_interface, offset_t 
 {
     AZIOT_USTREAM* interface_result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
+    if(AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[aziot_ustream_clone_compliance_null_buffer_failed]*/
         /*[aziot_ustream_clone_compliance_buffer_is_not_type_of_buffer_failed]*/
@@ -589,7 +589,7 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
 {
     AZIOT_ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
+    if(AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[aziot_ustream_dispose_compliance_null_buffer_failed]*/
         /*[aziot_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed]*/
@@ -621,7 +621,7 @@ AZIOT_ULIB_RESULT aziot_ustream_multi_append(
 {
     AZIOT_ULIB_RESULT result;
 
-    if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
+    if(AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[aziot_ustream_multi_append_null_multibuffer_failed]*/
         /*[aziot_ustream_multi_append_not_multibuffer_type_failed]*/
