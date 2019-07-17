@@ -615,7 +615,7 @@ AZIOT_USTREAM* aziot_ustream_multi_create(void)
     return create_instance();
 }
 
-AZIOT_ULIB_RESULT ustream_multi_append(
+AZIOT_ULIB_RESULT aziot_ustream_multi_append(
         AZIOT_USTREAM* ustream_interface,
         AZIOT_USTREAM* ustream_to_append)
 {
@@ -623,13 +623,13 @@ AZIOT_ULIB_RESULT ustream_multi_append(
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
-        /*[ustream_multi_append_null_multibuffer_failed]*/
-        /*[ustream_multi_append_not_multibuffer_type_failed]*/
+        /*[aziot_ustream_multi_append_null_multibuffer_failed]*/
+        /*[aziot_ustream_multi_append_not_multibuffer_type_failed]*/
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(ustream_to_append == NULL)
     {
-        /*[ustream_multi_append_null_buffer_to_add_failed]*/
+        /*[aziot_ustream_multi_append_null_buffer_to_add_failed]*/
         AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_NULL_STRING, "ustream_to_append");
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -639,25 +639,25 @@ AZIOT_ULIB_RESULT ustream_multi_append(
         BUFFER_LIST_NODE* new_node;
         USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
-        /*[ustream_multi_append_not_enough_memory_failed]*/
-        /*[ustream_multi_append_not_enough_memory_to_clone_the_buffer_failed]*/
+        /*[aziot_ustream_multi_append_not_enough_memory_failed]*/
+        /*[aziot_ustream_multi_append_not_enough_memory_to_clone_the_buffer_failed]*/
         if((new_node = create_buffer_node(ustream_to_append, (offset_t)(instance->length))) == NULL)
         {
             result = AZIOT_ULIB_OUT_OF_MEMORY_ERROR;
         }
         else if((result = aziot_ustream_get_remaining_size(new_node->buffer, &(new_buffer_size))) != AZIOT_ULIB_SUCCESS)
         {
-            /*[ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size_failed]*/
+            /*[aziot_ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size_failed]*/
             AZIOT_ULIB_CONFIG_LOG(
                 AZIOT_ULOG_TYPE_ERROR,
                 AZIOT_ULOG_REPORT_EXCEPTION_STRING,
-                "ustream_multi_append",
+                "aziot_ustream_multi_append",
                 result);
             destroy_buffer_node(new_node);
         }
         else
         {
-            /*[ustream_multi_append_succeed]*/
+            /*[aziot_ustream_multi_append_succeed]*/
             /* find insertion position in the list */
             BUFFER_LIST_NODE** insert_position = &(instance->buffer_list);
 

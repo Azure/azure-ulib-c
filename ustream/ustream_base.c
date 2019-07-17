@@ -18,7 +18,7 @@ AZIOT_ULIB_RESULT aziot_ustream_append(
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     /*[aziot_ustream_append_starting_from_multibuffer_with_not_enough_memory_failed]*/
-    else if((result = ustream_multi_append(ustream_interface, ustream_to_append)) == AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR)
+    else if((result = aziot_ustream_multi_append(ustream_interface, ustream_to_append)) == AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR)
     {
         AZIOT_USTREAM* new_multi_buffer = aziot_ustream_multi_create();
         if(new_multi_buffer == NULL)
@@ -26,12 +26,12 @@ AZIOT_ULIB_RESULT aziot_ustream_append(
             /*[aziot_ustream_append_not_enough_memory_to_create_multibuffer_failed]*/
             result = AZIOT_ULIB_OUT_OF_MEMORY_ERROR;
         }
-        else if ((result = ustream_multi_append(new_multi_buffer, ustream_interface)) != AZIOT_ULIB_SUCCESS)
+        else if ((result = aziot_ustream_multi_append(new_multi_buffer, ustream_interface)) != AZIOT_ULIB_SUCCESS)
         {
             /*[aziot_ustream_append_not_enough_memory_to_append_first_buffer_failed]*/
             aziot_ustream_dispose(new_multi_buffer);
         }
-        else if ((result = ustream_multi_append(new_multi_buffer, ustream_to_append)) != AZIOT_ULIB_SUCCESS)
+        else if ((result = aziot_ustream_multi_append(new_multi_buffer, ustream_to_append)) != AZIOT_ULIB_SUCCESS)
         {
             /*[aziot_ustream_append_not_enough_memory_to_append_second_buffer_failed]*/
             aziot_ustream_dispose(new_multi_buffer);

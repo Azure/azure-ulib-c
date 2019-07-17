@@ -110,7 +110,7 @@ MOCKABLE_FUNCTION(, AZIOT_USTREAM*, aziot_ustream_multi_create);
  *          @retval     AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If the one of the provided parameters is invalid.
  *          @retval     AZIOT_ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to append the uStream.
  */
-MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, ustream_multi_append,
+MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_multi_append,
     AZIOT_USTREAM*, ustream_interface,
     AZIOT_USTREAM*, ustream_to_append);
 
