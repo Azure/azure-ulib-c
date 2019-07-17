@@ -290,7 +290,7 @@ TEST_FUNCTION(ustream_multi_append_partial_released_multibuffer_succeed)
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        ustream_release(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2) - 1));
+        aziot_ustream_release(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2) - 1));
 
     umock_c_reset_all_calls();
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
@@ -365,7 +365,7 @@ TEST_FUNCTION(ustream_multi_append_fully_released_multibuffer_succeed)
     ASSERT_ARE_EQUAL(
         int, 
         AZIOT_ULIB_SUCCESS, 
-        ustream_release(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) - 1));
+        aziot_ustream_release(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) - 1));
 
     umock_c_reset_all_calls();
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
@@ -827,7 +827,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_
 
     ///act
     AZIOT_ULIB_RESULT result =
-        ustream_release(
+        aziot_ustream_release(
             multibuffer,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
@@ -843,7 +843,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_
     (void)ustream_dispose(default_buffer2);
 }
 
-/* ustream_release shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to release the requested bytes */
+/* aziot_ustream_release shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to release the requested bytes */
 TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange
@@ -868,7 +868,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_fa
 
     ///act
     AZIOT_ULIB_RESULT result =
-        ustream_release(
+        aziot_ustream_release(
             multibuffer,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 

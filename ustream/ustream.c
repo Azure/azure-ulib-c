@@ -322,8 +322,8 @@ static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offs
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
-        /*[ustream_release_compliance_null_buffer_failed]*/
-        /*[ustream_release_compliance_non_type_of_buffer_api_failed]*/
+        /*[aziot_ustream_release_compliance_null_buffer_failed]*/
+        /*[aziot_ustream_release_compliance_non_type_of_buffer_api_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -335,18 +335,18 @@ static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offs
         if((inner_position >= instance->inner_current_position) ||
                 (inner_position < instance->inner_first_valid_position))
         {
-            /*[ustream_release_compliance_release_after_current_failed]*/
-            /*[ustream_release_compliance_release_position_already_released_failed]*/
+            /*[aziot_ustream_release_compliance_release_after_current_failed]*/
+            /*[aziot_ustream_release_compliance_release_position_already_released_failed]*/
             result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
         }
         else
         {
-            /*[ustream_release_compliance_succeed]*/
-            /*[ustream_release_compliance_release_all_succeed]*/
-            /*[ustream_release_compliance_run_full_buffer_byte_by_byte_succeed]*/
-            /*[ustream_release_compliance_cloned_buffer_succeed]*/
-            /*[ustream_release_compliance_cloned_buffer_release_all_succeed]*/
-            /*[ustream_release_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed]*/
+            /*[aziot_ustream_release_compliance_succeed]*/
+            /*[aziot_ustream_release_compliance_release_all_succeed]*/
+            /*[aziot_ustream_release_compliance_run_full_buffer_byte_by_byte_succeed]*/
+            /*[aziot_ustream_release_compliance_cloned_buffer_succeed]*/
+            /*[aziot_ustream_release_compliance_cloned_buffer_release_all_succeed]*/
+            /*[aziot_ustream_release_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed]*/
             instance->inner_first_valid_position = inner_position + (offset_t)1;
             result = AZIOT_ULIB_SUCCESS;
         }

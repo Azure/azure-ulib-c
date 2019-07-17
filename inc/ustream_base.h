@@ -157,12 +157,12 @@
  *      be changed by the producer of any of the consumers. Changing the content of the data source will
  *      result in a data mismatch.
  *
- *  Consumers can do a partial release of the uStream by calling ustream_release().
+ *  Consumers can do a partial release of the uStream by calling aziot_ustream_release().
  *      Calling the release does not imply that part of the memory will be immediately released. Once a
  *      uStream can handle multiple instances, a memory can only be free'd if all instances release it.
  *      A uStream implementation can or cannot have the ability to do partial releases. For instance, a
  *      uStream that handles constant data stored in the flash will never release any memory on the
- *      ustream_release() API.
+ *      aziot_ustream_release() API.
  *
  *  Released data cannot be accessed, even if it is still available in the memory.
  *
@@ -293,7 +293,7 @@
  *
  *  The consumer may confirm that a portion of the data is not necessary anymore. For example, after transmitting
  *      multiple TCP packets, the receiver of these packets answers with an ACK for a sequence number. In this case,
- *      the consumer can release this data in the data source by calling the ustream_release(), moving 
+ *      the consumer can release this data in the data source by calling the aziot_ustream_release(), moving 
  *      the <tt>First Valid Position</tt> to the next one after the released position.
  *
  *  A common scenario is when the consumer needs to read over the data source starting on the first byte after
@@ -589,11 +589,11 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_get_position(AZIOT_USTREAM* ustrea
  * offset_t pos;
  * if(aziot_ustream_get_position(my_buffer, &pos) == AZIOT_ULIB_SUCCESS)
  * {
- *     ustream_release(my_buffer, pos - 1);
+ *     aziot_ustream_release(my_buffer, pos - 1);
  * }
  * </code></pre>
  *
- *  The <tt>ustream_release</tt> API shall follow the following minimum requirements:
+ *  The <tt>aziot_ustream_release</tt> API shall follow the following minimum requirements:
  *      - The <tt>release</tt> shall dispose all resources necessary to handle the content of uStream before and 
  *          including the release position.
  *      - If the release position is after the current position or the uStream size, the <tt>release</tt> shall
@@ -617,7 +617,7 @@ static inline AZIOT_ULIB_RESULT aziot_ustream_get_position(AZIOT_USTREAM* ustrea
  *          @retval     AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR  If the position is already released.
  *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>release</tt> operation failed on the system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_release(AZIOT_USTREAM* ustream_interface, offset_t position)
+static inline AZIOT_ULIB_RESULT aziot_ustream_release(AZIOT_USTREAM* ustream_interface, offset_t position)
 {
     return ustream_interface->api->release(ustream_interface, position);
 }
