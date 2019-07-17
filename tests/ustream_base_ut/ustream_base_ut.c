@@ -73,8 +73,8 @@ TEST_SUITE_INITIALIZE(suite_init)
 
     REGISTER_UMOCK_ALIAS_TYPE(AZIOT_USTREAM, void*);
 
-    REGISTER_GLOBAL_MOCK_HOOK(ulib_malloc, malloc);
-    REGISTER_GLOBAL_MOCK_HOOK(ulib_free, free);
+    REGISTER_GLOBAL_MOCK_HOOK(aziot_ulib_malloc, malloc);
+    REGISTER_GLOBAL_MOCK_HOOK(aziot_ulib_free, free);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -245,7 +245,7 @@ TEST_FUNCTION(aziot_ustream_append_starting_from_multibuffer_with_not_enough_mem
     ASSERT_IS_NOT_NULL(default_buffer);
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
     AZIOT_ULIB_RESULT result = aziot_ustream_append(default_multibuffer, default_buffer);
@@ -277,7 +277,7 @@ TEST_FUNCTION(aziot_ustream_append_not_enough_memory_to_create_multibuffer_faile
     ASSERT_IS_NOT_NULL(default_buffer2);
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
 
     ///act
     AZIOT_ULIB_RESULT result = aziot_ustream_append(default_buffer1, default_buffer2);
@@ -320,13 +320,13 @@ TEST_FUNCTION(aziot_ustream_append_not_enough_memory_to_append_first_buffer_fail
 
     umock_c_reset_all_calls();
     /* Create multibuffer */
-    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
+    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
     /* Append first buffer */
-    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
     /* Release multibuffer */
-    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
 
     ///act
     AZIOT_ULIB_RESULT result = aziot_ustream_append(default_buffer1, default_buffer2);
@@ -369,20 +369,20 @@ TEST_FUNCTION(aziot_ustream_append_not_enough_memory_to_append_second_buffer_fai
 
     umock_c_reset_all_calls();
     /* Create multibuffer */
-    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
+    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
     /* Append first buffer */
-    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
+    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
     /* Append second buffer */
-    STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
     /* Release multibuffer */
-    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
 
     ///act
     AZIOT_ULIB_RESULT result = aziot_ustream_append(default_buffer1, default_buffer2);

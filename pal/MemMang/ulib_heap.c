@@ -5,12 +5,12 @@
 
 #include "ulib_heap.h"
 
-void* ulib_malloc(size_t size)
+void* aziot_ulib_malloc(size_t size)
 {
     return malloc(size);
 }
 
-void ulib_free(void* ptr)
+void aziot_ulib_free(void* ptr)
 {
     free(ptr);
 }

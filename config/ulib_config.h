@@ -22,7 +22,7 @@ extern "C" {
  *  Defines the malloc function that the ulib shall use as its own way to dynamically allocate
  *      memory from the HEAP. For simplicity, it can be defined as the malloc(size) from the `stdlib.h`.
  */
-#define ULIB_CONFIG_MALLOC(size)    ulib_malloc(size)
+#define ULIB_CONFIG_MALLOC(size)    aziot_ulib_malloc(size)
 
 /**
  * @brief   uLib free
@@ -30,7 +30,7 @@ extern "C" {
  *  Defines the free function that the ulib shall use as its own way to release memory dynamic 
  *      allocated in the HEAP. For simplicity, it can be defined as the free(ptr) from the `stdlib.h`.
  */
-#define ULIB_CONFIG_FREE(ptr)       ulib_free(ptr)
+#define ULIB_CONFIG_FREE(ptr)       aziot_ulib_free(ptr)
 
 /*
  * Define log Function

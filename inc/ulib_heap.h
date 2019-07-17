@@ -23,7 +23,7 @@ extern "C" {
  * 
  * The developer can use whatever malloc function they want. By default stdlib <tt>malloc</tt> is used
  */
-MOCKABLE_FUNCTION(, void*, ulib_malloc,
+MOCKABLE_FUNCTION(, void*, aziot_ulib_malloc,
             size_t, size);
 
 /**
@@ -31,7 +31,7 @@ MOCKABLE_FUNCTION(, void*, ulib_malloc,
  * 
  * The developer can use whatever free function they want. By default stdlib <tt>free</tt> is used
  */
-MOCKABLE_FUNCTION(, void, ulib_free,
+MOCKABLE_FUNCTION(, void, aziot_ulib_free,
             void*, ptr);
 
 #ifdef __cplusplus
