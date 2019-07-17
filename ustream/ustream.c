@@ -57,7 +57,7 @@ static AZIOT_USTREAM* create_instance(
     offset_t offset)
 {
     AZIOT_USTREAM* ustream_interface = (AZIOT_USTREAM*)AZIOT_ULIB_CONFIG_MALLOC(sizeof(AZIOT_USTREAM));
-    /*[ustream_create_no_memory_to_create_interface_failed]*/
+    /*[aziot_ustream_create_no_memory_to_create_interface_failed]*/
     /*[aziot_ustream_clone_no_memory_to_create_interface_failed]*/
     /*[aziot_ustream_clone_no_memory_to_create_instance_failed]*/
     if(ustream_interface == NULL)
@@ -423,7 +423,7 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
     return result;
 }
 
-AZIOT_USTREAM* ustream_create(
+AZIOT_USTREAM* aziot_ustream_create(
         const uint8_t* const buffer, 
         size_t buffer_length,
         AZIOT_USTREAM_BUFFER_RELEASE_CALLBACK inner_free)
@@ -432,21 +432,21 @@ AZIOT_USTREAM* ustream_create(
 
     if(buffer == NULL)
     {
-        /*[ustream_create_null_buffer_failed]*/
+        /*[aziot_ustream_create_null_buffer_failed]*/
         AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_NULL_STRING, "buffer");
         interface_result = NULL;
     }
     else if(buffer_length == 0)
     {
-        /*[ustream_create_zero_length_failed]*/
+        /*[aziot_ustream_create_zero_length_failed]*/
         AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_EQUALS_STRING, "buffer_length", "0");
         interface_result = NULL;
     }
     else
     {
-        /*[ustream_create_succeed]*/
+        /*[aziot_ustream_create_succeed]*/
         USTREAM_INNER_BUFFER* inner_buffer = create_inner_buffer(buffer, buffer_length, inner_free);
-        /*[ustream_create_no_memory_to_create_inner_buffer_failed]*/
+        /*[aziot_ustream_create_no_memory_to_create_inner_buffer_failed]*/
         if(inner_buffer == NULL)
         {
             interface_result = NULL;
@@ -454,7 +454,7 @@ AZIOT_USTREAM* ustream_create(
         else
         {
             interface_result = create_instance(inner_buffer, 0, 0);
-            /*[ustream_create_no_memory_to_create_instance_failed]*/
+            /*[aziot_ustream_create_no_memory_to_create_instance_failed]*/
             if(interface_result == NULL)
             {
                 AZIOT_ULIB_CONFIG_FREE(inner_buffer);

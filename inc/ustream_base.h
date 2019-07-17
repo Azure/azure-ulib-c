@@ -53,7 +53,7 @@
  *   +------+                         |                            |                    |
  *   | generate the content and store in the content_ptr           |                    |
  *   +----->|                         |                            |                    |
- *          +-----ustream_create                                   |                    |
+ *          +-----aziot_ustream_create                             |                    |
  *          |       (content_ptr, content_size, take_ownership)--->|                    |
  *          |                         |                     +------+                    |
  *          |                         |                     | data_source = content_ptr |

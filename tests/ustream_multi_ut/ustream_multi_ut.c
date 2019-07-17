@@ -47,14 +47,14 @@ static AZIOT_USTREAM* create_test_default_multibuffer()
     ASSERT_IS_NOT_NULL(default_multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, ustream_multi_append(default_multibuffer, default_buffer1));
 
     AZIOT_USTREAM* default_buffer2 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2),
             NULL);
@@ -62,7 +62,7 @@ static AZIOT_USTREAM* create_test_default_multibuffer()
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, ustream_multi_append(default_multibuffer, default_buffer2));
 
     AZIOT_USTREAM* default_buffer3 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(default_buffer3);
@@ -201,17 +201,17 @@ TEST_FUNCTION(ustream_multi_append_new_multibuffer_succeed)
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* test_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(test_buffer1);
     AZIOT_USTREAM* test_buffer2 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2), NULL);
     ASSERT_IS_NOT_NULL(test_buffer2);
     AZIOT_USTREAM* test_buffer3 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(test_buffer3);
@@ -261,17 +261,17 @@ TEST_FUNCTION(ustream_multi_append_partial_released_multibuffer_succeed)
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* test_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(test_buffer1);
     AZIOT_USTREAM* test_buffer2 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2), NULL);
     ASSERT_IS_NOT_NULL(test_buffer2);
     AZIOT_USTREAM* test_buffer3 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(test_buffer3);
@@ -338,17 +338,17 @@ TEST_FUNCTION(ustream_multi_append_fully_released_multibuffer_succeed)
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* test_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(test_buffer1);
     AZIOT_USTREAM* test_buffer2 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2), NULL);
     ASSERT_IS_NOT_NULL(test_buffer2);
     AZIOT_USTREAM* test_buffer3 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(test_buffer3);
@@ -409,7 +409,7 @@ TEST_FUNCTION(ustream_multi_append_null_multibuffer_failed)
 {
     ///arrange
     AZIOT_USTREAM* test_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
 
@@ -428,11 +428,11 @@ TEST_FUNCTION(ustream_multi_append_buffer_is_not_type_of_buffer_failed)
 {
     ///arrange
     AZIOT_USTREAM* test_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     AZIOT_USTREAM* test_buffer2 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2), NULL);
 
@@ -454,7 +454,7 @@ TEST_FUNCTION(ustream_multi_append_null_buffer_to_add_failed)
     AZIOT_USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     AZIOT_USTREAM* test_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ustream_multi_append(multibuffer, test_buffer1);
@@ -479,7 +479,7 @@ TEST_FUNCTION(ustream_multi_append_not_enough_memory_failed)
     AZIOT_USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     AZIOT_USTREAM* test_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     umock_c_reset_all_calls();
@@ -503,7 +503,7 @@ TEST_FUNCTION(ustream_multi_append_not_enough_memory_to_clone_the_buffer_failed)
     AZIOT_USTREAM* multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     AZIOT_USTREAM* test_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     umock_c_reset_all_calls();
@@ -530,7 +530,7 @@ TEST_FUNCTION(ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
@@ -612,7 +612,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_current_posi
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
@@ -648,7 +648,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_si
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
@@ -684,7 +684,7 @@ TEST_FUNCTION(ustream_multi_seek_inner_buffer_failed_in_seek_failed)
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
@@ -720,7 +720,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
@@ -760,7 +760,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
@@ -810,7 +810,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
@@ -851,7 +851,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_fa
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
@@ -892,7 +892,7 @@ TEST_FUNCTION(ustream_multi_clone_inner_buffer_failed_in_get_remaining_size_fail
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
@@ -985,7 +985,7 @@ TEST_FUNCTION(aziot_ustream_clone_no_memory_to_clone_first_node_failed)
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
-        ustream_create(
+        aziot_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);

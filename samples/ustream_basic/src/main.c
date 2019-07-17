@@ -70,9 +70,9 @@ int main(void)
         //Create the first AZIOT_USTREAM from constant memory
         AZIOT_USTREAM* ustream_one;
         size_t ustream_size;
-        if((ustream_one = ustream_create((const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) == NULL)
+        if((ustream_one = aziot_ustream_create((const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) == NULL)
         {
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
+            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
             result = AZIOT_ULIB_SYSTEM_ERROR;
         }
         else if((result = aziot_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
@@ -85,9 +85,9 @@ int main(void)
 
             //Create the second AZIOT_USTREAM from the string in the heap, passing standard free function as release callback
             AZIOT_USTREAM* ustream_two;
-            if((ustream_two = ustream_create((const uint8_t*)ustream_two_string, ustream_two_string_len, free)) == NULL)
+            if((ustream_two = aziot_ustream_create((const uint8_t*)ustream_two_string, ustream_two_string_len, free)) == NULL)
             {
-                AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
+                AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
                 result = AZIOT_ULIB_SYSTEM_ERROR;
             }
             else if((result = aziot_ustream_get_remaining_size(ustream_two, &ustream_size)) != AZIOT_ULIB_SUCCESS)

@@ -54,7 +54,7 @@ typedef void (*AZIOT_USTREAM_BUFFER_RELEASE_CALLBACK)(void*);
  *          @retval not-NULL    If the uStream was created with success.
  *          @retval NULL        If there is no memory to create the new uStream.
  */
-MOCKABLE_FUNCTION(, AZIOT_USTREAM*, ustream_create,
+MOCKABLE_FUNCTION(, AZIOT_USTREAM*, aziot_ustream_create,
         const uint8_t* const, buffer,
         size_t, buffer_length,
         AZIOT_USTREAM_BUFFER_RELEASE_CALLBACK, release_buffer);
