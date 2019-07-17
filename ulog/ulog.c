@@ -12,19 +12,19 @@ const char* const ULOG_REQUIRE_TYPE_OF_USTREAM_STRING = "ustream is not the corr
 const char* const ULOG_OUT_OF_MEMORY_STRING = "Not enough memory to create the %s\r\n";
 const char* const ULOG_REPORT_EXCEPTION_STRING = "%s got exception [%d]\r\n";
 
-const char* const ULOG_TYPE_STRING[] = 
+const char* const AZIOT_ULOG_TYPE_STRING[] = 
 { 
     "ERROR", 
     "INFO" 
 };
 
-void ulog_print(ULOG_TYPE type, const char* const format, ...)
+void ulog_print(AZIOT_ULOG_TYPE type, const char* const format, ...)
 {
     char temp[ULIB_CONFIG_MAX_LOG_SIZE];
     va_list args;
     va_start(args, format);
     vsnprintf(temp, ULIB_CONFIG_MAX_LOG_SIZE, format, args);
-    printf("[%s]%s", ULOG_TYPE_STRING[type], temp);
+    printf("[%s]%s", AZIOT_ULOG_TYPE_STRING[type], temp);
     va_end(args);
 }
 

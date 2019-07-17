@@ -26,25 +26,25 @@ extern const char* const ULOG_REPORT_EXCEPTION_STRING;
 /**
  * @brief   enum to select the log type
  */
-typedef enum ULOG_TYPE_TAG
+typedef enum AZIOT_ULOG_TYPE_TAG
 {
-    ULOG_TYPE_ERROR = 0,    /**<error log message */
-    ULOG_TYPE_INFO = 1      /**<info log message */
-} ULOG_TYPE;
+    AZIOT_ULOG_TYPE_ERROR = 0,    /**<error log message */
+    AZIOT_ULOG_TYPE_INFO = 1      /**<info log message */
+} AZIOT_ULOG_TYPE;
 
 /**
- * @brief   ULOG_TYPE string values
+ * @brief   AZIOT_ULOG_TYPE string values
  */
-extern const char* const ULOG_TYPE_STRING[];
+extern const char* const AZIOT_ULOG_TYPE_STRING[];
 
 /**
  * @brief log function for ulib_config
  *
- * @param   type    ULOG_TYPE to signify error or info log
+ * @param   type    AZIOT_ULOG_TYPE to signify error or info log
  * @param   format  Format prefix for the passed string in (...)
  * @param   ...     Passed string (with any % formatting parameters) to print to the log
  */
-void ulog_print(ULOG_TYPE type, const char* const format, ...);
+void ulog_print(AZIOT_ULOG_TYPE type, const char* const format, ...);
 
 #ifdef __cplusplus
 }
