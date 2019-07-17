@@ -42,7 +42,7 @@ extern "C" {
  *  Defines the log function that the ulib shall use as its own way to print information in the
  *      log system.
  */
-#define ULIB_CONFIG_LOG(category, format, ...)  ulog_print(category, format, ##__VA_ARGS__)
+#define ULIB_CONFIG_LOG(category, format, ...)  aziot_ulog_print(category, format, ##__VA_ARGS__)
 
 /**
  * @brief   Maximum size of the uLib log.

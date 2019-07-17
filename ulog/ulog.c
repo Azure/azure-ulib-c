@@ -18,7 +18,7 @@ const char* const AZIOT_ULOG_TYPE_STRING[] =
     "INFO" 
 };
 
-void ulog_print(AZIOT_ULOG_TYPE type, const char* const format, ...)
+void aziot_ulog_print(AZIOT_ULOG_TYPE type, const char* const format, ...)
 {
     char temp[ULIB_CONFIG_MAX_LOG_SIZE];
     va_list args;

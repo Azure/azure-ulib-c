@@ -44,7 +44,7 @@ extern const char* const AZIOT_ULOG_TYPE_STRING[];
  * @param   format  Format prefix for the passed string in (...)
  * @param   ...     Passed string (with any % formatting parameters) to print to the log
  */
-void ulog_print(AZIOT_ULOG_TYPE type, const char* const format, ...);
+void aziot_ulog_print(AZIOT_ULOG_TYPE type, const char* const format, ...);
 
 #ifdef __cplusplus
 }
