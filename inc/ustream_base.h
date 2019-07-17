@@ -323,18 +323,18 @@ extern "C" {
 typedef size_t offset_t;
 
 /**
- * @brief   Forward declaration of USTREAM_INTERFACE
+ * @brief   Forward declaration of AZIOT_USTREAM_INTERFACE
  */
-typedef struct USTREAM_INTERFACE_TAG USTREAM_INTERFACE;
+typedef struct AZIOT_USTREAM_INTERFACE_TAG AZIOT_USTREAM_INTERFACE;
 
 /**
  * @brief   Interface description.
  */
-typedef struct USTREAM_TAG
+typedef struct AZIOT_USTREAM_TAG
 {
-    const USTREAM_INTERFACE* api;   /**<api handle for USTREAM instance */
+    const AZIOT_USTREAM_INTERFACE* api;   /**<api handle for AZIOT_USTREAM instance */
     void* handle;                   /**<handle to data control block */
-} USTREAM;
+} AZIOT_USTREAM;
 
 /**
  * @brief   vTable with the uStream APIs.
@@ -344,17 +344,17 @@ typedef struct USTREAM_TAG
  *  Any code that will use an exposed uStream shall call the APIs using the <tt>ustream_...</tt>
  *      inline functions.
  */
-struct USTREAM_INTERFACE_TAG
+struct AZIOT_USTREAM_INTERFACE_TAG
 {
-    AZIOT_ULIB_RESULT(*set_position)(USTREAM* ustream_interface, offset_t position);          /**<internal <tt>set_position</tt> implementation*/
-    AZIOT_ULIB_RESULT(*reset)(USTREAM* ustream_interface);                                    /**<internal <tt>reset</tt> implementation*/
-    AZIOT_ULIB_RESULT(*read)(USTREAM* ustream_interface, uint8_t* const buffer, 
-                                            size_t buffer_length, size_t* const size);  /**<internal <tt>read</tt> implementation*/
-    AZIOT_ULIB_RESULT(*get_remaining_size)(USTREAM* ustream_interface, size_t* const size);   /**<internal <tt>get_remaining_size</tt> implementation*/
-    AZIOT_ULIB_RESULT(*get_position)(USTREAM* ustream_interface, offset_t* const position);   /**<internal <tt>get_position</tt> implementation*/
-    AZIOT_ULIB_RESULT(*release)(USTREAM* ustream_interface, offset_t position);               /**<internal <tt>release</tt> implementation*/
-    USTREAM*(*clone)(USTREAM* ustream_interface, offset_t offset);                      /**<internal <tt>clone</tt> implementation*/
-    AZIOT_ULIB_RESULT(*dispose)(USTREAM* ustream_interface);                                  /**<internal <tt>dispose</tt> implementation*/
+    AZIOT_ULIB_RESULT(*set_position)(AZIOT_USTREAM* ustream_interface, offset_t position);          /**<internal <tt>set_position</tt> implementation*/
+    AZIOT_ULIB_RESULT(*reset)(AZIOT_USTREAM* ustream_interface);                                    /**<internal <tt>reset</tt> implementation*/
+    AZIOT_ULIB_RESULT(*read)(AZIOT_USTREAM* ustream_interface, uint8_t* const buffer, 
+                                            size_t buffer_length, size_t* const size);              /**<internal <tt>read</tt> implementation*/
+    AZIOT_ULIB_RESULT(*get_remaining_size)(AZIOT_USTREAM* ustream_interface, size_t* const size);   /**<internal <tt>get_remaining_size</tt> implementation*/
+    AZIOT_ULIB_RESULT(*get_position)(AZIOT_USTREAM* ustream_interface, offset_t* const position);   /**<internal <tt>get_position</tt> implementation*/
+    AZIOT_ULIB_RESULT(*release)(AZIOT_USTREAM* ustream_interface, offset_t position);               /**<internal <tt>release</tt> implementation*/
+    AZIOT_USTREAM*(*clone)(AZIOT_USTREAM* ustream_interface, offset_t offset);                      /**<internal <tt>clone</tt> implementation*/
+    AZIOT_ULIB_RESULT(*dispose)(AZIOT_USTREAM* ustream_interface);                                  /**<internal <tt>dispose</tt> implementation*/
 };
 
 
@@ -383,7 +383,7 @@ struct USTREAM_INTERFACE_TAG
  *      - If the provided interface is not the implemented uStream type, the <tt>set_position</tt> shall return
  *          #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]   ustream_interface       The {@link USTREAM}* with the interface of the uStream. It
+ * @param[in]   ustream_interface       The {@link AZIOT_USTREAM}* with the interface of the uStream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid uStream that is the
  *                                      implemented uStream type.
  * @param[in]   position                The <tt>offset_t</tt> with the new current position in the uStream.
@@ -400,7 +400,7 @@ struct USTREAM_INTERFACE_TAG
  *                                                        reasons.
  *          @retval AZIOT_ULIB_SYSTEM_ERROR               If the <tt>set_position</tt> operation failed on the system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t position)
+static inline AZIOT_ULIB_RESULT ustream_set_position(AZIOT_USTREAM* ustream_interface, offset_t position)
 {
     return ustream_interface->api->set_position(ustream_interface, position);
 }
@@ -421,7 +421,7 @@ static inline AZIOT_ULIB_RESULT ustream_set_position(USTREAM* ustream_interface,
  *      - If the provided interface is not the implemented uStream type, the uStream <tt>reset</tt> shall return
  *          #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]   ustream_interface       The {@link USTREAM}* with the interface of the uStream. It
+ * @param[in]   ustream_interface       The {@link AZIOT_USTREAM}* with the interface of the uStream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid uStream that is the
  *                                      implemented uStream type.
  *
@@ -439,7 +439,7 @@ static inline AZIOT_ULIB_RESULT ustream_set_position(USTREAM* ustream_interface,
  *                                                        reasons.
  *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>reset</tt> operation failed on the system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
+static inline AZIOT_ULIB_RESULT ustream_reset(AZIOT_USTREAM* ustream_interface)
 {
     return ustream_interface->api->reset(ustream_interface);
 }
@@ -476,7 +476,7 @@ static inline AZIOT_ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *          #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR and will not change the local buffer contents or the
  *          current position of the buffer.
  *
- * @param[in]       ustream_interface       The {@link USTREAM}* with the interface of the uStream. It
+ * @param[in]       ustream_interface       The {@link AZIOT_USTREAM}* with the interface of the uStream. It
  *                                          cannot be <tt>NULL</tt>, and it shall be a valid uStream that is the
  *                                          implemented uStream type.
  * @param[in,out]   buffer                  The <tt>uint8_t* const</tt> that points to the local buffer. It cannot be <tt>NULL</tt>.
@@ -496,7 +496,7 @@ static inline AZIOT_ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *          @retval     AZIOT_ULIB_SECURITY_ERROR         If the read was denied for security reasons.
  *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the read operation failed on the system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
+static inline AZIOT_ULIB_RESULT ustream_read(AZIOT_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
 {
     return ustream_interface->api->read(ustream_interface, buffer, buffer_length, size);
 }
@@ -514,7 +514,7 @@ static inline AZIOT_ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t
  *          return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided size is <tt>NULL</tt>, the <tt>get_remaining_size</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]   ustream_interface       The {@link USTREAM}* with the interface of the uStream. It
+ * @param[in]   ustream_interface       The {@link AZIOT_USTREAM}* with the interface of the uStream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid uStream that is the
  *                                      implemented uStream type.
  * @param[out]  size                    The <tt>size_t* const</tt> to return the remaining number of <tt>uint8_t</tt> values 
@@ -532,7 +532,7 @@ static inline AZIOT_ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t
  *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>get_remaining_size</tt> operation failed on the
  *                                                        system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t* const size)
+static inline AZIOT_ULIB_RESULT ustream_get_remaining_size(AZIOT_USTREAM* ustream_interface, size_t* const size)
 {
     return ustream_interface->api->get_remaining_size(ustream_interface, size);
 }
@@ -549,7 +549,7 @@ static inline AZIOT_ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_inte
  *          shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided position is <tt>NULL</tt>, the <tt>get_position</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]   ustream_interface   The {@link USTREAM}* with the interface of the uStream. It
+ * @param[in]   ustream_interface   The {@link AZIOT_USTREAM}* with the interface of the uStream. It
  *                                  cannot be <tt>NULL</tt>, and it shall be a valid uStream that is the
  *                                  implemented uStream type.
  * @param[out]  position            The <tt>offset_t* const</tt> to return the logical current position in the
@@ -568,7 +568,7 @@ static inline AZIOT_ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_inte
  *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>get_position</tt> operation failed on
  *                                                        the system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* const position)
+static inline AZIOT_ULIB_RESULT ustream_get_position(AZIOT_USTREAM* ustream_interface, offset_t* const position)
 {
     return ustream_interface->api->get_position(ustream_interface, position);
 }
@@ -604,7 +604,7 @@ static inline AZIOT_ULIB_RESULT ustream_get_position(USTREAM* ustream_interface,
  *      - If the provided interface is not the implemented uStream type, the <tt>release</tt> shall return
  *          #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]  ustream_interface    The {@link USTREAM}* with the interface of the uStream. It
+ * @param[in]  ustream_interface    The {@link AZIOT_USTREAM}* with the interface of the uStream. It
  *                                  cannot be <tt>NULL</tt>, and it shall be a valid uStream that is the
  *                                  implemented uStream type.
  * @param[in]  position             The <tt>offset_t</tt> with the position in the uStream to release. The
@@ -617,7 +617,7 @@ static inline AZIOT_ULIB_RESULT ustream_get_position(USTREAM* ustream_interface,
  *          @retval     AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR  If the position is already released.
  *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>release</tt> operation failed on the system level.
  */
-static inline AZIOT_ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position)
+static inline AZIOT_ULIB_RESULT ustream_release(AZIOT_USTREAM* ustream_interface, offset_t position)
 {
     return ustream_interface->api->release(ustream_interface, position);
 }
@@ -745,18 +745,18 @@ static inline AZIOT_ULIB_RESULT ustream_release(USTREAM* ustream_interface, offs
  *          shall return <tt>NULL</tt>.
  *      - The cloned uStream shall not interfere with the instance of the original uStream and vice versa.
  *
- * @param[in]   ustream_interface       The {@link USTREAM}* with the interface of the uStream.
+ * @param[in]   ustream_interface       The {@link AZIOT_USTREAM}* with the interface of the uStream.
  *                                      It cannot be <tt>NULL</tt>, and it shall be a valid uStream that is
  *                                      type of the implemented uStream.
  * @param[out]  offset                  The <tt>offset_t</tt> with the <tt>Logical</tt> position of the first byte in
  *                                      the cloned uStream.
  *
- * @return The {@link USTREAM}* with the result of the clone operation.
+ * @return The {@link AZIOT_USTREAM}* with the result of the clone operation.
  *          @retval    not-NULL         If the uStream was cloned with success.
  *          @retval    NULL             If one of the provided parameters is invalid or there is not enough memory to
  *                                      control the new uStream.
  */
-static inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset)
+static inline AZIOT_USTREAM* ustream_clone(AZIOT_USTREAM* ustream_interface, offset_t offset)
 {
     return ustream_interface->api->clone(ustream_interface, offset);
 }
@@ -776,7 +776,7 @@ static inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset
  *      - If the provided interface is not the type of the implemented uStream, the <tt>dispose</tt> shall return
  *          #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]   ustream_interface       The {@link USTREAM}* with the interface of the uStream. It
+ * @param[in]   ustream_interface       The {@link AZIOT_USTREAM}* with the interface of the uStream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid uStream that is a type
  *                                      of the implemented uStream.
  *
@@ -784,7 +784,7 @@ static inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset
  *          @retval AZIOT_ULIB_SUCCESS                    If the instance of the uStream was disposed with success.
  *          @retval AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR     If one of the provided parameters is invalid.
  */
-static inline AZIOT_ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
+static inline AZIOT_ULIB_RESULT ustream_dispose(AZIOT_USTREAM* ustream_interface)
 {
     return ustream_interface->api->dispose(ustream_interface);
 }
@@ -805,9 +805,9 @@ static inline AZIOT_ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *      - If there is not enough memory to append the uStream, the <tt>append</tt> shall return 
   *         #AZIOT_ULIB_OUT_OF_MEMORY_ERROR.
   *
-  * @param[in, out]     ustream_interface   The {@link USTREAM}* with the interface of 
+  * @param[in, out]     ustream_interface   The {@link AZIOT_USTREAM}* with the interface of 
   *                                         the uStream. It cannot be <tt>NULL</tt>, and it shall be a valid uStream.
-  * @param[in]          ustream_to_append   The {@link USTREAM}* with the interface of 
+  * @param[in]          ustream_to_append   The {@link AZIOT_USTREAM}* with the interface of 
   *                                         the uStream to be appended to the original uStream. It cannot be <tt>NULL</tt>, 
   *                                         and it shall be a valid uStream.
   * @return The {@link AZIOT_ULIB_RESULT} with the result of the <tt>append</tt> operation.
@@ -816,8 +816,8 @@ static inline AZIOT_ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *          @retval    AZIOT_ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to <tt>append</tt> the uStream.
   */
 MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, ustream_append,
-    USTREAM*, ustream_interface, 
-    USTREAM*, ustream_to_append);
+    AZIOT_USTREAM*, ustream_interface, 
+    AZIOT_USTREAM*, ustream_to_append);
 
 #ifdef __cplusplus
 }

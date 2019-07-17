@@ -71,7 +71,7 @@ TEST_SUITE_INITIALIZE(suite_init)
     result = umocktypes_bool_register_types();
     ASSERT_ARE_EQUAL(int, 0, result);
 
-    REGISTER_UMOCK_ALIAS_TYPE(USTREAM, void*);
+    REGISTER_UMOCK_ALIAS_TYPE(AZIOT_USTREAM, void*);
 
     REGISTER_GLOBAL_MOCK_HOOK(ulib_malloc, malloc);
     REGISTER_GLOBAL_MOCK_HOOK(ulib_free, free);
@@ -105,23 +105,23 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
 TEST_FUNCTION(ustream_append_start_from_empty_multibuffer_succeed)
 {
     ///arrange
-    USTREAM* default_multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* default_multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(default_multibuffer);
 
-    USTREAM* default_buffer1 =
+    AZIOT_USTREAM* default_buffer1 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
 
-    USTREAM* default_buffer2 =
+    AZIOT_USTREAM* default_buffer2 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
             NULL);
     ASSERT_IS_NOT_NULL(default_buffer2);
 
-    USTREAM* default_buffer3 =
+    AZIOT_USTREAM* default_buffer3 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_3), NULL);
@@ -153,20 +153,20 @@ TEST_FUNCTION(ustream_append_start_from_empty_multibuffer_succeed)
 TEST_FUNCTION(ustream_append_append_multiple_buffers_succeed)
 {
     ///arrange
-    USTREAM* default_buffer1 =
+    AZIOT_USTREAM* default_buffer1 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
 
-    USTREAM* default_buffer2 =
+    AZIOT_USTREAM* default_buffer2 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
             NULL);
     ASSERT_IS_NOT_NULL(default_buffer2);
 
-    USTREAM* default_buffer3 =
+    AZIOT_USTREAM* default_buffer3 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_3), NULL);
@@ -195,7 +195,7 @@ TEST_FUNCTION(ustream_append_append_multiple_buffers_succeed)
 TEST_FUNCTION(ustream_append_null_interface_failed)
 {
     ///arrange
-    USTREAM* default_buffer =
+    AZIOT_USTREAM* default_buffer =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
@@ -215,7 +215,7 @@ TEST_FUNCTION(ustream_append_null_interface_failed)
 TEST_FUNCTION(ustream_append_null_buffer_to_add_failed)
 {
     ///arrange
-    USTREAM* default_buffer =
+    AZIOT_USTREAM* default_buffer =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
@@ -235,10 +235,10 @@ TEST_FUNCTION(ustream_append_null_buffer_to_add_failed)
 TEST_FUNCTION(ustream_append_starting_from_multibuffer_with_not_enough_memory_failed)
 {
     ///arrange
-    USTREAM* default_multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* default_multibuffer = ustream_multi_create();
     ASSERT_IS_NOT_NULL(default_multibuffer);
 
-    USTREAM* default_buffer =
+    AZIOT_USTREAM* default_buffer =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
@@ -263,13 +263,13 @@ TEST_FUNCTION(ustream_append_starting_from_multibuffer_with_not_enough_memory_fa
 TEST_FUNCTION(ustream_append_not_enough_memory_to_create_multibuffer_failed)
 {
     ///arrange
-    USTREAM* default_buffer1 =
+    AZIOT_USTREAM* default_buffer1 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
 
-    USTREAM* default_buffer2 =
+    AZIOT_USTREAM* default_buffer2 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
@@ -277,7 +277,7 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_create_multibuffer_failed)
     ASSERT_IS_NOT_NULL(default_buffer2);
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
 
     ///act
     AZIOT_ULIB_RESULT result = ustream_append(default_buffer1, default_buffer2);
@@ -305,13 +305,13 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_create_multibuffer_failed)
 TEST_FUNCTION(ustream_append_not_enough_memory_to_append_first_buffer_failed)
 {
     ///arrange
-    USTREAM* default_buffer1 =
+    AZIOT_USTREAM* default_buffer1 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
 
-    USTREAM* default_buffer2 =
+    AZIOT_USTREAM* default_buffer2 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
@@ -320,7 +320,7 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_append_first_buffer_failed)
 
     umock_c_reset_all_calls();
     /* Create multibuffer */
-    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(AZIOT_USTREAM)));
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
     /* Append first buffer */
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
@@ -354,13 +354,13 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_append_first_buffer_failed)
 TEST_FUNCTION(ustream_append_not_enough_memory_to_append_second_buffer_failed)
 {
     ///arrange
-    USTREAM* default_buffer1 =
+    AZIOT_USTREAM* default_buffer1 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
 
-    USTREAM* default_buffer2 =
+    AZIOT_USTREAM* default_buffer2 =
         ustream_create(
             USTREAM_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2),
@@ -369,11 +369,11 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_append_second_buffer_failed)
 
     umock_c_reset_all_calls();
     /* Create multibuffer */
-    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(AZIOT_USTREAM)));
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
     /* Append first buffer */
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(USTREAM)));
+    STRICT_EXPECTED_CALL(ulib_malloc(sizeof(AZIOT_USTREAM)));
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
     /* Append second buffer */
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);

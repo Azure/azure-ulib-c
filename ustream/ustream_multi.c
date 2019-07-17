@@ -12,7 +12,7 @@
 typedef struct BUFFER_LIST_NODE_TAG
 {
     struct BUFFER_LIST_NODE_TAG* next;
-    USTREAM* buffer;
+    AZIOT_USTREAM* buffer;
 } BUFFER_LIST_NODE;
 
 typedef struct USTREAM_MULTI_INSTANCE_TAG
@@ -28,15 +28,15 @@ typedef struct USTREAM_MULTI_INSTANCE_TAG
     offset_t inner_first_valid_position;
 } USTREAM_MULTI_INSTANCE;
 
-static AZIOT_ULIB_RESULT concrete_set_position(USTREAM* ustream_interface, offset_t position);
-static AZIOT_ULIB_RESULT concrete_reset(USTREAM* ustream_interface);
-static AZIOT_ULIB_RESULT concrete_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
-static AZIOT_ULIB_RESULT concrete_get_remaining_size(USTREAM* ustream_interface, size_t* const size);
-static AZIOT_ULIB_RESULT concrete_get_position(USTREAM* ustream_interface, offset_t* const position);
-static AZIOT_ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t position);
-static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset);
-static AZIOT_ULIB_RESULT concrete_dispose(USTREAM* ustream_interface);
-static const USTREAM_INTERFACE api =
+static AZIOT_ULIB_RESULT concrete_set_position(AZIOT_USTREAM* ustream_interface, offset_t position);
+static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface);
+static AZIOT_ULIB_RESULT concrete_read(AZIOT_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
+static AZIOT_ULIB_RESULT concrete_get_remaining_size(AZIOT_USTREAM* ustream_interface, size_t* const size);
+static AZIOT_ULIB_RESULT concrete_get_position(AZIOT_USTREAM* ustream_interface, offset_t* const position);
+static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offset_t position);
+static AZIOT_USTREAM* concrete_clone(AZIOT_USTREAM* ustream_interface, offset_t offset);
+static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface);
+static const AZIOT_USTREAM_INTERFACE api =
 {
         concrete_set_position,
         concrete_reset,
@@ -49,7 +49,7 @@ static const USTREAM_INTERFACE api =
 };
 
 static BUFFER_LIST_NODE* create_buffer_node(
-    USTREAM* buffer, 
+    AZIOT_USTREAM* buffer, 
     offset_t offset)
 {
     BUFFER_LIST_NODE* new_node = (BUFFER_LIST_NODE*)ULIB_CONFIG_MALLOC(sizeof(BUFFER_LIST_NODE));
@@ -90,9 +90,9 @@ static void destroy_full_buffer_list(BUFFER_LIST_NODE* node)
     }
 }
 
-static USTREAM* create_instance(void)
+static AZIOT_USTREAM* create_instance(void)
 {
-    USTREAM* ustream_interface = (USTREAM*)ULIB_CONFIG_MALLOC(sizeof(USTREAM));
+    AZIOT_USTREAM* ustream_interface = (AZIOT_USTREAM*)ULIB_CONFIG_MALLOC(sizeof(AZIOT_USTREAM));
     /*[ustream_multi_create_no_memory_to_create_instance_failed]*/
     /*[ustream_clone_no_memory_to_create_interface_failed]*/
     if(ustream_interface == NULL)
@@ -125,7 +125,7 @@ static USTREAM* create_instance(void)
     return ustream_interface;
 }
 
-static void destroy_instance(USTREAM* ustream_interface)
+static void destroy_instance(AZIOT_USTREAM* ustream_interface)
 {
     USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
@@ -135,7 +135,7 @@ static void destroy_instance(USTREAM* ustream_interface)
 }
 
 static AZIOT_ULIB_RESULT concrete_set_position(
-        USTREAM* ustream_interface, 
+        AZIOT_USTREAM* ustream_interface, 
         offset_t position)
 {
     AZIOT_ULIB_RESULT result;
@@ -252,7 +252,7 @@ static AZIOT_ULIB_RESULT concrete_set_position(
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_reset(USTREAM* ustream_interface)
+static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface)
 {
     AZIOT_ULIB_RESULT result;
 
@@ -277,7 +277,7 @@ static AZIOT_ULIB_RESULT concrete_reset(USTREAM* ustream_interface)
 }
 
 static AZIOT_ULIB_RESULT concrete_read(
-        USTREAM* ustream_interface,
+        AZIOT_USTREAM* ustream_interface,
         uint8_t* const buffer,
         size_t buffer_length,
         size_t* const size)
@@ -376,7 +376,7 @@ static AZIOT_ULIB_RESULT concrete_read(
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_get_remaining_size(USTREAM* ustream_interface, size_t* const size)
+static AZIOT_ULIB_RESULT concrete_get_remaining_size(AZIOT_USTREAM* ustream_interface, size_t* const size)
 {
     AZIOT_ULIB_RESULT result;
 
@@ -407,7 +407,7 @@ static AZIOT_ULIB_RESULT concrete_get_remaining_size(USTREAM* ustream_interface,
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_get_position(USTREAM* ustream_interface, offset_t* const position)
+static AZIOT_ULIB_RESULT concrete_get_position(AZIOT_USTREAM* ustream_interface, offset_t* const position)
 {
     AZIOT_ULIB_RESULT result;
 
@@ -438,7 +438,7 @@ static AZIOT_ULIB_RESULT concrete_get_position(USTREAM* ustream_interface, offse
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t position)
+static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offset_t position)
 {
     AZIOT_ULIB_RESULT result;
 
@@ -507,9 +507,9 @@ static AZIOT_ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t p
     return result;
 }
 
-static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset)
+static AZIOT_USTREAM* concrete_clone(AZIOT_USTREAM* ustream_interface, offset_t offset)
 {
-    USTREAM* interface_result;
+    AZIOT_USTREAM* interface_result;
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
@@ -585,7 +585,7 @@ static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset)
     return interface_result;
 }
 
-static AZIOT_ULIB_RESULT concrete_dispose(USTREAM* ustream_interface)
+static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
 {
     AZIOT_ULIB_RESULT result;
 
@@ -608,7 +608,7 @@ static AZIOT_ULIB_RESULT concrete_dispose(USTREAM* ustream_interface)
     return result;
 }
 
-USTREAM* ustream_multi_create(void)
+AZIOT_USTREAM* ustream_multi_create(void)
 {
     /*[ustream_multi_create_succeed]*/
     /*[ustream_multi_create_no_memory_to_create_interface_failed]*/
@@ -616,8 +616,8 @@ USTREAM* ustream_multi_create(void)
 }
 
 AZIOT_ULIB_RESULT ustream_multi_append(
-        USTREAM* ustream_interface,
-        USTREAM* ustream_to_append)
+        AZIOT_USTREAM* ustream_interface,
+        AZIOT_USTREAM* ustream_to_append)
 {
     AZIOT_ULIB_RESULT result;
 

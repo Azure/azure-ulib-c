@@ -10,7 +10,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-USTREAM* ustream_mock_create(void);
+AZIOT_USTREAM* ustream_mock_create(void);
 
 void set_set_position_result(AZIOT_ULIB_RESULT result);
 void set_reset_result(AZIOT_ULIB_RESULT result);

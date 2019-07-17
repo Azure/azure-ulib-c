@@ -94,7 +94,7 @@ do { \
  * Check buffer
  */
 static void check_buffer(
-        USTREAM* az_buffer, 
+        AZIOT_USTREAM* az_buffer, 
         uint8_t offset, 
         const uint8_t* const expected_content, 
         uint8_t expected_content_length)

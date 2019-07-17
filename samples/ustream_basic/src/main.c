@@ -15,7 +15,7 @@
 
 static const char USTREAM_ONE_STRING[] = "Hello ";
 
-static AZIOT_ULIB_RESULT print_buffer(USTREAM* ustream)
+static AZIOT_ULIB_RESULT print_buffer(AZIOT_USTREAM* ustream)
 {
     AZIOT_ULIB_RESULT result;
     size_t returned_size;
@@ -24,7 +24,7 @@ static AZIOT_ULIB_RESULT print_buffer(USTREAM* ustream)
     uint32_t ustream_read_iterations = 0;
 
     //Read ustream until receive AZIOT_ULIB_EOF
-    (void)printf("\r\n---Printing the USTREAM---\r\n");
+    (void)printf("\r\n---Printing the AZIOT_USTREAM---\r\n");
     while((result = ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == AZIOT_ULIB_SUCCESS)
     {
         printed_chars = 0;
@@ -67,8 +67,8 @@ int main(void)
     {
         memcpy(ustream_two_string, USTREAM_TWO_STRING, ustream_two_string_len);
 
-        //Create the first USTREAM from constant memory
-        USTREAM* ustream_one;
+        //Create the first AZIOT_USTREAM from constant memory
+        AZIOT_USTREAM* ustream_one;
         size_t ustream_size;
         if((ustream_one = ustream_create((const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) == NULL)
         {
@@ -83,8 +83,8 @@ int main(void)
         {
             (void)printf("Size of ustream_one: %lu\r\n", ustream_size);
 
-            //Create the second USTREAM from the string in the heap, passing standard free function as release callback
-            USTREAM* ustream_two;
+            //Create the second AZIOT_USTREAM from the string in the heap, passing standard free function as release callback
+            AZIOT_USTREAM* ustream_two;
             if((ustream_two = ustream_create((const uint8_t*)ustream_two_string, ustream_two_string_len, free)) == NULL)
             {
                 ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
@@ -98,7 +98,7 @@ int main(void)
             {
                 (void)printf("Size of ustream_two: %lu\r\n", ustream_size);
 
-                //Append the second USTREAM to the first USTREAM
+                //Append the second AZIOT_USTREAM to the first AZIOT_USTREAM
                 if((result = ustream_append(ustream_one, ustream_two)) != AZIOT_ULIB_SUCCESS)
                 {
                     ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_append", result);
@@ -117,12 +117,12 @@ int main(void)
                     //Print the size of the appended ustream
                     (void)printf("Size of ustream_one after append: %lu\r\n", ustream_size);
 
-                    //Print the USTREAM contents
+                    //Print the AZIOT_USTREAM contents
                     if((result = print_buffer(ustream_one)) != AZIOT_ULIB_SUCCESS)
                     {
                         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "print_buffer", result);
                     }
-                    //Dispose of the USTREAM (original ustream_one and original ustream_two)
+                    //Dispose of the AZIOT_USTREAM (original ustream_one and original ustream_two)
                     //At this point the memory malloc'd for ustream_two will be free'd
                     else if((result = ustream_dispose(ustream_one)) != AZIOT_ULIB_SUCCESS)
                     {

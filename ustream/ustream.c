@@ -31,15 +31,15 @@ typedef struct USTREAM_INSTANCE_TAG
     offset_t inner_first_valid_position;
 } USTREAM_INSTANCE;
 
-static AZIOT_ULIB_RESULT concrete_set_position(USTREAM* ustream_interface, offset_t position);
-static AZIOT_ULIB_RESULT concrete_reset(USTREAM* ustream_interface);
-static AZIOT_ULIB_RESULT concrete_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
-static AZIOT_ULIB_RESULT concrete_get_remaining_size(USTREAM* ustream_interface, size_t* const size);
-static AZIOT_ULIB_RESULT concrete_get_position(USTREAM* ustream_interface, offset_t* const position);
-static AZIOT_ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t position);
-static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset);
-static AZIOT_ULIB_RESULT concrete_dispose(USTREAM* ustream_interface);
-static const USTREAM_INTERFACE api =
+static AZIOT_ULIB_RESULT concrete_set_position(AZIOT_USTREAM* ustream_interface, offset_t position);
+static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface);
+static AZIOT_ULIB_RESULT concrete_read(AZIOT_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
+static AZIOT_ULIB_RESULT concrete_get_remaining_size(AZIOT_USTREAM* ustream_interface, size_t* const size);
+static AZIOT_ULIB_RESULT concrete_get_position(AZIOT_USTREAM* ustream_interface, offset_t* const position);
+static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offset_t position);
+static AZIOT_USTREAM* concrete_clone(AZIOT_USTREAM* ustream_interface, offset_t offset);
+static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface);
+static const AZIOT_USTREAM_INTERFACE api =
 {
         concrete_set_position,
         concrete_reset,
@@ -51,12 +51,12 @@ static const USTREAM_INTERFACE api =
         concrete_dispose
 };
 
-static USTREAM* create_instance(
+static AZIOT_USTREAM* create_instance(
     USTREAM_INNER_BUFFER* inner_buffer,
     offset_t inner_current_position,
     offset_t offset)
 {
-    USTREAM* ustream_interface = (USTREAM*)ULIB_CONFIG_MALLOC(sizeof(USTREAM));
+    AZIOT_USTREAM* ustream_interface = (AZIOT_USTREAM*)ULIB_CONFIG_MALLOC(sizeof(AZIOT_USTREAM));
     /*[ustream_create_no_memory_to_create_interface_failed]*/
     /*[ustream_clone_no_memory_to_create_interface_failed]*/
     /*[ustream_clone_no_memory_to_create_instance_failed]*/
@@ -120,7 +120,7 @@ static void destroy_inner_buffer(USTREAM_INNER_BUFFER* inner_buffer)
     ULIB_CONFIG_FREE(inner_buffer);
 }
 
-static AZIOT_ULIB_RESULT concrete_set_position(USTREAM* ustream_interface, offset_t position)
+static AZIOT_ULIB_RESULT concrete_set_position(AZIOT_USTREAM* ustream_interface, offset_t position)
 {
     AZIOT_ULIB_RESULT result;
 
@@ -166,7 +166,7 @@ static AZIOT_ULIB_RESULT concrete_set_position(USTREAM* ustream_interface, offse
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_reset(USTREAM* ustream_interface)
+static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface)
 {
     AZIOT_ULIB_RESULT result;
 
@@ -191,7 +191,7 @@ static AZIOT_ULIB_RESULT concrete_reset(USTREAM* ustream_interface)
 }
 
 static AZIOT_ULIB_RESULT concrete_read(
-        USTREAM* ustream_interface,
+        AZIOT_USTREAM* ustream_interface,
         uint8_t* const buffer,
         size_t buffer_length,
         size_t* const size)
@@ -254,7 +254,7 @@ static AZIOT_ULIB_RESULT concrete_read(
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_get_remaining_size(USTREAM* ustream_interface, size_t* const size)
+static AZIOT_ULIB_RESULT concrete_get_remaining_size(AZIOT_USTREAM* ustream_interface, size_t* const size)
 {
     AZIOT_ULIB_RESULT result;
 
@@ -285,7 +285,7 @@ static AZIOT_ULIB_RESULT concrete_get_remaining_size(USTREAM* ustream_interface,
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_get_position(USTREAM* ustream_interface, offset_t* const position)
+static AZIOT_ULIB_RESULT concrete_get_position(AZIOT_USTREAM* ustream_interface, offset_t* const position)
 {
     AZIOT_ULIB_RESULT result;
 
@@ -316,7 +316,7 @@ static AZIOT_ULIB_RESULT concrete_get_position(USTREAM* ustream_interface, offse
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t position)
+static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offset_t position)
 {
     AZIOT_ULIB_RESULT result;
 
@@ -355,9 +355,9 @@ static AZIOT_ULIB_RESULT concrete_release(USTREAM* ustream_interface, offset_t p
     return result;
 }
 
-static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset)
+static AZIOT_USTREAM* concrete_clone(AZIOT_USTREAM* ustream_interface, offset_t offset)
 {
-    USTREAM* interface_result;
+    AZIOT_USTREAM* interface_result;
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
@@ -391,7 +391,7 @@ static USTREAM* concrete_clone(USTREAM* ustream_interface, offset_t offset)
     return interface_result;
 }
 
-static AZIOT_ULIB_RESULT concrete_dispose(USTREAM* ustream_interface)
+static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
 {
     AZIOT_ULIB_RESULT result;
 
@@ -423,12 +423,12 @@ static AZIOT_ULIB_RESULT concrete_dispose(USTREAM* ustream_interface)
     return result;
 }
 
-USTREAM* ustream_create(
+AZIOT_USTREAM* ustream_create(
         const uint8_t* const buffer, 
         size_t buffer_length,
         AZIOT_USTREAM_BUFFER_RELEASE_CALLBACK inner_free)
 {
-    USTREAM* interface_result;
+    AZIOT_USTREAM* interface_result;
 
     if(buffer == NULL)
     {
