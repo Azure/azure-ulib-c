@@ -5,8 +5,8 @@
  * @file ulog.h
  */
 
-#ifndef AZURE_ULIB_C_INC_ULOG_H_
-#define AZURE_ULIB_C_INC_ULOG_H_
+#ifndef AZIOT_ULOG_H_
+#define AZIOT_ULOG_H_
 
 #include "ulib_config.h"
 
@@ -16,12 +16,12 @@
 extern "C" {
 #endif /* __cplusplus */
 
-extern const char* const ULOG_REQUIRE_EQUALS_STRING;
-extern const char* const ULOG_REQUIRE_NOT_EQUALS_STRING;
-extern const char* const ULOG_REQUIRE_NOT_NULL_STRING;
-extern const char* const ULOG_REQUIRE_TYPE_OF_USTREAM_STRING;
-extern const char* const ULOG_OUT_OF_MEMORY_STRING;
-extern const char* const ULOG_REPORT_EXCEPTION_STRING;
+extern const char* const AZIOT_ULOG_REQUIRE_EQUALS_STRING;
+extern const char* const AZIOT_ULOG_REQUIRE_NOT_EQUALS_STRING;
+extern const char* const AZIOT_ULOG_REQUIRE_NOT_NULL_STRING;
+extern const char* const AZIOT_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING;
+extern const char* const AZIOT_ULOG_OUT_OF_MEMORY_STRING;
+extern const char* const AZIOT_ULOG_REPORT_EXCEPTION_STRING;
 
 /**
  * @brief   enum to select the log type
@@ -50,4 +50,4 @@ void aziot_ulog_print(AZIOT_ULOG_TYPE type, const char* const format, ...);
 }
 #endif /* __cplusplus */
 
-#endif /* AZURE_ULIB_C_INC_ULOG_H_ */
+#endif /* AZIOT_ULOG_H_ */
