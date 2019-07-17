@@ -25,7 +25,7 @@ extern "C" {
 
 
 /**
- * @brief   Signature of the function to release inner buffer
+ * @brief   Signature of the function to release the inner buffer
  * 
  * @param[in]   void*       void pointer to memory that needs to be free'd
  * 
@@ -92,7 +92,7 @@ MOCKABLE_FUNCTION(, AZIOT_USTREAM*, aziot_ustream_create,
 MOCKABLE_FUNCTION(, AZIOT_USTREAM*, aziot_ustream_multi_create);
 
 /**
- * @brief   Append an existent uStream to the uStreamMulti.
+ * @brief   Append an existing uStream to the uStreamMulti.
  *
  *  Append will add a new uStream at the end of the list of uStreams in the uStreamMulti. To maintain
  *      the immutability, every copy of the uStreamMulti will create an independent instance of it, which
@@ -106,8 +106,8 @@ MOCKABLE_FUNCTION(, AZIOT_USTREAM*, aziot_ustream_multi_create);
  *                                      to the uStreamMulti. It cannot be <tt>NULL</tt>.
  *
  * @return The {@link AZIOT_ULIB_RESULT} with the result of the append operation.
- *          @retval     AZIOT_ULIB_SUCCESS                If the uStreamMulti appended the provided uStream with success.
- *          @retval     AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If the one of the provided parameters is invalid.
+ *          @retval     AZIOT_ULIB_SUCCESS                If the <tt>ustream_to_append</tt> was appended with success.
+ *          @retval     AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
  *          @retval     AZIOT_ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to append the uStream.
  */
 MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_multi_append,

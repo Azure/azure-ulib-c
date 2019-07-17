@@ -332,8 +332,8 @@ typedef struct AZIOT_USTREAM_INTERFACE_TAG AZIOT_USTREAM_INTERFACE;
  */
 typedef struct AZIOT_USTREAM_TAG
 {
-    const AZIOT_USTREAM_INTERFACE* api;   /**<api handle for AZIOT_USTREAM instance */
-    void* handle;                   /**<handle to data control block */
+    const AZIOT_USTREAM_INTERFACE* api; /**<api handle for AZIOT_USTREAM instance */
+    void* handle;                       /**<handle to data control block */
 } AZIOT_USTREAM;
 
 /**
