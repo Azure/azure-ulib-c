@@ -5,8 +5,8 @@
  * @file ulib_result.h
  */
 
-#ifndef AZURE_ULIB_C_INC_ULIB_RESULT_H_
-#define AZURE_ULIB_C_INC_ULIB_RESULT_H_
+#ifndef AZURE_ULIB_C_INC_AZIOT_ULIB_RESULT_H_
+#define AZURE_ULIB_C_INC_AZIOT_ULIB_RESULT_H_
 
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
@@ -24,11 +24,11 @@ extern "C" {
  * @brief   Enumeration of uLib results.
  */
 MU_DEFINE_ENUM(
-    ULIB_RESULT,
+    AZIOT_ULIB_RESULT,
 
     //SUCCESS RESULTS
-    ULIB_SUCCESS                        = 0,                        /**<Successful return */
-    ULIB_EOF                            = 1,                        /**<End of fle (no more data to read) */
+    ULIB_SUCCESS                    = 0,                        /**<Successful return */
+    ULIB_EOF                        = 1,                        /**<End of fle (no more data to read) */
 
     //ERROR RESULTS
     ULIB_OUT_OF_MEMORY_ERROR            = (ULIB_ERROR_FLAG | 0),    /**<Out of memory error */
@@ -45,4 +45,4 @@ MU_DEFINE_ENUM(
 }
 #endif  //__cplusplus
 
-#endif  //AZURE_ULIB_C_INC_ULIB_RESULT_H_
+#endif  //AZURE_ULIB_C_INC_AZIOT_ULIB_RESULT_H_

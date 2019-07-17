@@ -12,14 +12,14 @@ extern "C" {
 
 USTREAM* ustream_mock_create(void);
 
-void set_set_position_result(ULIB_RESULT result);
-void set_reset_result(ULIB_RESULT result);
-void set_read_result(ULIB_RESULT result);
-void set_get_remaining_size_result(ULIB_RESULT result);
-void set_get_position_result(ULIB_RESULT result);
-void set_release_result(ULIB_RESULT result);
-void set_clone_result(ULIB_RESULT result);
-void set_dispose_result(ULIB_RESULT result);
+void set_set_position_result(AZIOT_ULIB_RESULT result);
+void set_reset_result(AZIOT_ULIB_RESULT result);
+void set_read_result(AZIOT_ULIB_RESULT result);
+void set_get_remaining_size_result(AZIOT_ULIB_RESULT result);
+void set_get_position_result(AZIOT_ULIB_RESULT result);
+void set_release_result(AZIOT_ULIB_RESULT result);
+void set_clone_result(AZIOT_ULIB_RESULT result);
+void set_dispose_result(AZIOT_ULIB_RESULT result);
 
 #ifdef __cplusplus
 }

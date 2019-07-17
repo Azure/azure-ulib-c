@@ -4,11 +4,11 @@
 #include "ustream.h"
 
 
-ULIB_RESULT ustream_append(
+AZIOT_ULIB_RESULT ustream_append(
     USTREAM* ustream_interface, 
     USTREAM* ustream_to_append)
 {
-    ULIB_RESULT result;
+    AZIOT_ULIB_RESULT result;
 
     if((ustream_to_append == NULL) || 
         (ustream_interface == NULL)) 

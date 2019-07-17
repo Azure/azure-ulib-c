@@ -18,8 +18,19 @@ extern "C" {
 #include <stddef.h>
 #endif /* __cplusplus */
 
+/**
+ * @brief   User defined malloc function to be used in ulib.
+ * 
+ * The developer can use whatever malloc function they want. By default stdlib <tt>malloc</tt> is used
+ */
 MOCKABLE_FUNCTION(, void*, ulib_malloc,
             size_t, size);
+
+/**
+ * @brief   User defined free function to be used in ulib.
+ * 
+ * The developer can use whatever free function they want. By default stdlib <tt>free</tt> is used
+ */
 MOCKABLE_FUNCTION(, void, ulib_free,
             void*, ptr);
 

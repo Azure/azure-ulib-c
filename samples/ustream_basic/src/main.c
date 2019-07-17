@@ -15,9 +15,9 @@
 
 static const char USTREAM_ONE_STRING[] = "Hello ";
 
-static ULIB_RESULT print_buffer(USTREAM* ustream)
+static AZIOT_ULIB_RESULT print_buffer(USTREAM* ustream)
 {
-    ULIB_RESULT result;
+    AZIOT_ULIB_RESULT result;
     size_t returned_size;
     uint8_t user_buf[USER_BUFFER_SIZE] = { 0 };
     uint32_t printed_chars;
@@ -52,7 +52,7 @@ static ULIB_RESULT print_buffer(USTREAM* ustream)
 
 int main(void)
 {
-    ULIB_RESULT result;
+    AZIOT_ULIB_RESULT result;
     size_t ustream_two_string_len;
     char* ustream_two_string;
 

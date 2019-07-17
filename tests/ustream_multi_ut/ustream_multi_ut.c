@@ -228,9 +228,9 @@ TEST_FUNCTION(ustream_multi_append_new_multibuffer_succeed)
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    ULIB_RESULT result1 = ustream_multi_append(multibuffer, test_buffer1);
-    ULIB_RESULT result2 = ustream_multi_append(multibuffer, test_buffer2);
-    ULIB_RESULT result3 = ustream_multi_append(multibuffer, test_buffer3);
+    AZIOT_ULIB_RESULT result1 = ustream_multi_append(multibuffer, test_buffer1);
+    AZIOT_ULIB_RESULT result2 = ustream_multi_append(multibuffer, test_buffer2);
+    AZIOT_ULIB_RESULT result3 = ustream_multi_append(multibuffer, test_buffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -304,9 +304,9 @@ TEST_FUNCTION(ustream_multi_append_partial_released_multibuffer_succeed)
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    ULIB_RESULT result1 = ustream_multi_append(multibuffer, test_buffer1);
-    ULIB_RESULT result2 = ustream_multi_append(multibuffer, test_buffer2);
-    ULIB_RESULT result3 = ustream_multi_append(multibuffer, test_buffer3);
+    AZIOT_ULIB_RESULT result1 = ustream_multi_append(multibuffer, test_buffer1);
+    AZIOT_ULIB_RESULT result2 = ustream_multi_append(multibuffer, test_buffer2);
+    AZIOT_ULIB_RESULT result3 = ustream_multi_append(multibuffer, test_buffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -379,9 +379,9 @@ TEST_FUNCTION(ustream_multi_append_fully_released_multibuffer_succeed)
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    ULIB_RESULT result1 = ustream_multi_append(multibuffer, test_buffer1);
-    ULIB_RESULT result2 = ustream_multi_append(multibuffer, test_buffer2);
-    ULIB_RESULT result3 = ustream_multi_append(multibuffer, test_buffer3);
+    AZIOT_ULIB_RESULT result1 = ustream_multi_append(multibuffer, test_buffer1);
+    AZIOT_ULIB_RESULT result2 = ustream_multi_append(multibuffer, test_buffer2);
+    AZIOT_ULIB_RESULT result3 = ustream_multi_append(multibuffer, test_buffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -414,7 +414,7 @@ TEST_FUNCTION(ustream_multi_append_null_multibuffer_failed)
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
 
     ///act
-    ULIB_RESULT result = ustream_multi_append(NULL, test_buffer1);
+    AZIOT_ULIB_RESULT result = ustream_multi_append(NULL, test_buffer1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -437,7 +437,7 @@ TEST_FUNCTION(ustream_multi_append_buffer_is_not_type_of_buffer_failed)
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2), NULL);
 
     ///act
-    ULIB_RESULT result = ustream_multi_append(test_buffer1, test_buffer2);
+    AZIOT_ULIB_RESULT result = ustream_multi_append(test_buffer1, test_buffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -462,7 +462,7 @@ TEST_FUNCTION(ustream_multi_append_null_buffer_to_add_failed)
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    ULIB_RESULT result = ustream_multi_append(multibuffer, NULL);
+    AZIOT_ULIB_RESULT result = ustream_multi_append(multibuffer, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -486,7 +486,7 @@ TEST_FUNCTION(ustream_multi_append_not_enough_memory_failed)
     STRICT_EXPECTED_CALL(ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
-    ULIB_RESULT result = ustream_multi_append(multibuffer, test_buffer1);
+    AZIOT_ULIB_RESULT result = ustream_multi_append(multibuffer, test_buffer1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
@@ -512,7 +512,7 @@ TEST_FUNCTION(ustream_multi_append_not_enough_memory_to_clone_the_buffer_failed)
     STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    ULIB_RESULT result = ustream_multi_append(multibuffer, test_buffer1);
+    AZIOT_ULIB_RESULT result = ustream_multi_append(multibuffer, test_buffer1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
@@ -541,7 +541,7 @@ TEST_FUNCTION(ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size
     set_get_remaining_size_result(ULIB_SYSTEM_ERROR);
 
     ///act
-    ULIB_RESULT result = ustream_multi_append(multibuffer, default_buffer2);
+    AZIOT_ULIB_RESULT result = ustream_multi_append(multibuffer, default_buffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(int, ULIB_SYSTEM_ERROR, result);
@@ -563,7 +563,7 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_without_buffers_free_all_resourc
     STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    ULIB_RESULT result = ustream_dispose(multibuffer);
+    AZIOT_ULIB_RESULT result = ustream_dispose(multibuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -595,7 +595,7 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_
     STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    ULIB_RESULT result = ustream_dispose(multibuffer);
+    AZIOT_ULIB_RESULT result = ustream_dispose(multibuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -623,7 +623,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_current_posi
     set_get_position_result(ULIB_SYSTEM_ERROR);
 
     ///act
-    ULIB_RESULT result = 
+    AZIOT_ULIB_RESULT result = 
         ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
@@ -659,7 +659,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_si
     set_get_remaining_size_result(ULIB_SYSTEM_ERROR);
 
     ///act
-    ULIB_RESULT result = 
+    AZIOT_ULIB_RESULT result = 
         ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
@@ -695,7 +695,7 @@ TEST_FUNCTION(ustream_multi_seek_inner_buffer_failed_in_seek_failed)
     set_set_position_result(ULIB_SYSTEM_ERROR);
 
     ///act
-    ULIB_RESULT result = 
+    AZIOT_ULIB_RESULT result = 
         ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
@@ -735,7 +735,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
 
 
     ///act
-    ULIB_RESULT result =
+    AZIOT_ULIB_RESULT result =
         ustream_read(
             multibuffer,
             buf_result,
@@ -786,7 +786,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
     set_read_result(ULIB_SYSTEM_ERROR);
 
     ///act
-    ULIB_RESULT result =
+    AZIOT_ULIB_RESULT result =
         ustream_read(
             multibuffer,
             buf_result,
@@ -826,7 +826,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_
     set_get_position_result(ULIB_SYSTEM_ERROR);
 
     ///act
-    ULIB_RESULT result =
+    AZIOT_ULIB_RESULT result =
         ustream_release(
             multibuffer,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
@@ -867,7 +867,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_fa
     set_get_remaining_size_result(ULIB_SYSTEM_ERROR);
 
     ///act
-    ULIB_RESULT result =
+    AZIOT_ULIB_RESULT result =
         ustream_release(
             multibuffer,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
