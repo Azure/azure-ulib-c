@@ -126,7 +126,7 @@ TEST_FUNCTION(ustream_create_const_succeed)
     ASSERT_IS_NOT_NULL(buffer_interface->api);
 
     ///cleanup
-    (void)ustream_dispose(buffer_interface);
+    (void)aziot_ustream_dispose(buffer_interface);
 }
 
 /* ustream_create shall return NULL if there is not enough memory to create the uStream. */
@@ -243,7 +243,7 @@ TEST_FUNCTION(ustream_create_succeed)
     ASSERT_IS_NOT_NULL(buffer_interface->api);
 
     ///cleanup
-    (void)ustream_dispose(buffer_interface);
+    (void)aziot_ustream_dispose(buffer_interface);
 }
 
 /* ustream_create shall return NULL if there is not enough memory to create the uStream. */
@@ -369,7 +369,7 @@ TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_interface_failed)
     ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
-    (void)ustream_dispose(ustream_instance);
+    (void)aziot_ustream_dispose(ustream_instance);
 }
 
 /* aziot_ustream_clone shall return NULL if there is not enough memory to create the instance */
@@ -390,7 +390,7 @@ TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_instance_failed)
     ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
-    (void)ustream_dispose(ustream_instance);
+    (void)aziot_ustream_dispose(ustream_instance);
 }
 
 #include "ustream_compliance_ut.h"

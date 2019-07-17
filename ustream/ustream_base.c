@@ -29,12 +29,12 @@ AZIOT_ULIB_RESULT ustream_append(
         else if ((result = ustream_multi_append(new_multi_buffer, ustream_interface)) != AZIOT_ULIB_SUCCESS)
         {
             /*[ustream_append_not_enough_memory_to_append_first_buffer_failed]*/
-            ustream_dispose(new_multi_buffer);
+            aziot_ustream_dispose(new_multi_buffer);
         }
         else if ((result = ustream_multi_append(new_multi_buffer, ustream_to_append)) != AZIOT_ULIB_SUCCESS)
         {
             /*[ustream_append_not_enough_memory_to_append_second_buffer_failed]*/
-            ustream_dispose(new_multi_buffer);
+            aziot_ustream_dispose(new_multi_buffer);
         }
         else
         {
@@ -50,7 +50,7 @@ AZIOT_ULIB_RESULT ustream_append(
             new_multi_buffer->api = aux.api;
             new_multi_buffer->handle = aux.handle;
 
-            ustream_dispose(new_multi_buffer);
+            aziot_ustream_dispose(new_multi_buffer);
         }
     }
 

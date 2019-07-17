@@ -397,8 +397,8 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
-        /*[ustream_dispose_compliance_null_buffer_failed]*/
-        /*[ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed]*/
+        /*[aziot_ustream_dispose_compliance_null_buffer_failed]*/
+        /*[aziot_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -407,9 +407,9 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
         USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ustream_interface->handle;
         USTREAM_INNER_BUFFER* inner_buffer = instance->inner_buffer;
 
-        /*[ustream_dispose_compliance_cloned_instance_disposed_first_succeed]*/
-        /*[ustream_dispose_compliance_cloned_instance_disposed_second_succeed]*/
-        /*[ustream_dispose_compliance_single_instance_succeed]*/
+        /*[aziot_ustream_dispose_compliance_cloned_instance_disposed_first_succeed]*/
+        /*[aziot_ustream_dispose_compliance_cloned_instance_disposed_second_succeed]*/
+        /*[aziot_ustream_dispose_compliance_single_instance_succeed]*/
         ULIB_PORT_ATOMIC_DEC_W(&(inner_buffer->ref_count));
         if(inner_buffer->ref_count == 0)
         {

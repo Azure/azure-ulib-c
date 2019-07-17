@@ -88,7 +88,7 @@
  *  :       |                  +----->|                            |                    |         :
  *  ...............................................................................................
  *          |                         +---------------free(local_buffer)--------------->|
- *          |                         +-ustream_dispose            |                    |
+ *          |                         +-aziot_ustream_dispose            |              |
  *          |                         |       (ustream_interface)->|                    |
  *          |                         |                            +-free(data_source)->|
  *          |                         |                            |                    |
@@ -768,7 +768,7 @@ static inline AZIOT_USTREAM* aziot_ustream_clone(AZIOT_USTREAM* ustream_interfac
  *      If there are no more references to the uStream, the dispose will release all resources
  *      allocated to control the uStream.
  *
- *  The <tt>ustream_dispose</tt> API shall follow the following minimum requirements:
+ *  The <tt>aziot_ustream_dispose</tt> API shall follow the following minimum requirements:
  *      - The <tt>dispose</tt> shall free all allocated resources for the instance of the uStream.
  *      - If there are no more instances of the uStream, the <tt>dispose</tt> shall release all allocated
  *          resources to control the uStream.
@@ -784,7 +784,7 @@ static inline AZIOT_USTREAM* aziot_ustream_clone(AZIOT_USTREAM* ustream_interfac
  *          @retval AZIOT_ULIB_SUCCESS                    If the instance of the uStream was disposed with success.
  *          @retval AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR     If one of the provided parameters is invalid.
  */
-static inline AZIOT_ULIB_RESULT ustream_dispose(AZIOT_USTREAM* ustream_interface)
+static inline AZIOT_ULIB_RESULT aziot_ustream_dispose(AZIOT_USTREAM* ustream_interface)
 {
     return ustream_interface->api->dispose(ustream_interface);
 }

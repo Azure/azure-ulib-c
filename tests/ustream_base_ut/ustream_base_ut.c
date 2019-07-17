@@ -136,9 +136,9 @@ TEST_FUNCTION(ustream_append_start_from_empty_multibuffer_succeed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result1);
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result2);
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result3);
-    ustream_dispose(default_buffer1);
-    ustream_dispose(default_buffer2);
-    ustream_dispose(default_buffer3);
+    aziot_ustream_dispose(default_buffer1);
+    aziot_ustream_dispose(default_buffer2);
+    aziot_ustream_dispose(default_buffer3);
     check_buffer(
         default_multibuffer,
         0, 
@@ -146,7 +146,7 @@ TEST_FUNCTION(ustream_append_start_from_empty_multibuffer_succeed)
         USTREAM_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    ustream_dispose(default_multibuffer);
+    aziot_ustream_dispose(default_multibuffer);
 }
 
 /* ustream_append shall return AZIOT_ULIB_SUCCESS if the uStreams were appended succesfully */
@@ -179,8 +179,8 @@ TEST_FUNCTION(ustream_append_append_multiple_buffers_succeed)
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result1);
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result2);
-    ustream_dispose(default_buffer2);
-    ustream_dispose(default_buffer3);
+    aziot_ustream_dispose(default_buffer2);
+    aziot_ustream_dispose(default_buffer3);
     check_buffer(
         default_buffer1,
         0,
@@ -188,7 +188,7 @@ TEST_FUNCTION(ustream_append_append_multiple_buffers_succeed)
         USTREAM_EXPECTED_CONTENT_LENGTH);
 
     ///cleanup
-    ustream_dispose(default_buffer1);
+    aziot_ustream_dispose(default_buffer1);
 }
 
 /* ustream_append shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream is NULL */
@@ -208,7 +208,7 @@ TEST_FUNCTION(ustream_append_null_interface_failed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    ustream_dispose(default_buffer);
+    aziot_ustream_dispose(default_buffer);
 }
 
 /* ustream_append shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
@@ -228,7 +228,7 @@ TEST_FUNCTION(ustream_append_null_buffer_to_add_failed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    ustream_dispose(default_buffer);
+    aziot_ustream_dispose(default_buffer);
 }
 
 /*  ustream_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the uStream */
@@ -255,8 +255,8 @@ TEST_FUNCTION(ustream_append_starting_from_multibuffer_with_not_enough_memory_fa
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
-    ustream_dispose(default_buffer);
-    ustream_dispose(default_multibuffer);
+    aziot_ustream_dispose(default_buffer);
+    aziot_ustream_dispose(default_multibuffer);
 }
 
 /* ustream_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to create the multibuffer */
@@ -297,8 +297,8 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_create_multibuffer_failed)
         (uint8_t)strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2));
 
     ///cleanup
-    ustream_dispose(default_buffer1);
-    ustream_dispose(default_buffer2);
+    aziot_ustream_dispose(default_buffer1);
+    aziot_ustream_dispose(default_buffer2);
 }
 
 /* ustream_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the first uStream */
@@ -346,8 +346,8 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_append_first_buffer_failed)
         (uint8_t)strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2));
 
     ///cleanup
-    ustream_dispose(default_buffer1);
-    ustream_dispose(default_buffer2);
+    aziot_ustream_dispose(default_buffer1);
+    aziot_ustream_dispose(default_buffer2);
 }
 
 /* ustream_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the second uStream */
@@ -402,8 +402,8 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_append_second_buffer_failed)
         (uint8_t)strlen((const char*)USTREAM_LOCAL_EXPECTED_CONTENT_2));
 
     ///cleanup
-    ustream_dispose(default_buffer1);
-    ustream_dispose(default_buffer2);
+    aziot_ustream_dispose(default_buffer1);
+    aziot_ustream_dispose(default_buffer2);
 }
 
 END_TEST_SUITE(ustream_base_ut)

@@ -68,9 +68,9 @@ static AZIOT_USTREAM* create_test_default_multibuffer()
     ASSERT_IS_NOT_NULL(default_buffer3);
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, ustream_multi_append(default_multibuffer, default_buffer3));
 
-    (void)ustream_dispose(default_buffer1);
-    (void)ustream_dispose(default_buffer2);
-    (void)ustream_dispose(default_buffer3);
+    (void)aziot_ustream_dispose(default_buffer1);
+    (void)aziot_ustream_dispose(default_buffer2);
+    (void)aziot_ustream_dispose(default_buffer3);
 
     return default_multibuffer;
 }
@@ -156,7 +156,7 @@ TEST_FUNCTION(ustream_multi_create_succeed)
     ASSERT_IS_NOT_NULL(multibuffer->api);
 
     ///cleanup
-    (void)ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(multibuffer);
 }
 
 /* ustream_multi_create shall return NULL if there is not enough memory to create the multi-buffer interface. */
@@ -247,10 +247,10 @@ TEST_FUNCTION(ustream_multi_append_new_multibuffer_succeed)
         strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), size);
 
     ///cleanup
-    (void)ustream_dispose(test_buffer1);
-    (void)ustream_dispose(test_buffer2);
-    (void)ustream_dispose(test_buffer3);
-    (void)ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(test_buffer1);
+    (void)aziot_ustream_dispose(test_buffer2);
+    (void)aziot_ustream_dispose(test_buffer3);
+    (void)aziot_ustream_dispose(multibuffer);
 }
 
 /* ustream_multi_append shall release part of the multibuffer and return AZIOT_ULIB_SUCCESS */
@@ -324,10 +324,10 @@ TEST_FUNCTION(ustream_multi_append_partial_released_multibuffer_succeed)
         size);
 
     ///cleanup
-    (void)ustream_dispose(test_buffer1);
-    (void)ustream_dispose(test_buffer2);
-    (void)ustream_dispose(test_buffer3);
-    (void)ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(test_buffer1);
+    (void)aziot_ustream_dispose(test_buffer2);
+    (void)aziot_ustream_dispose(test_buffer3);
+    (void)aziot_ustream_dispose(multibuffer);
 }
 
 /* ustream_multi_append shall release an entire internal uStream and return AZIOT_ULIB_SUCCESS */
@@ -398,10 +398,10 @@ TEST_FUNCTION(ustream_multi_append_fully_released_multibuffer_succeed)
         strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), size);
 
     ///cleanup
-    (void)ustream_dispose(test_buffer1);
-    (void)ustream_dispose(test_buffer2);
-    (void)ustream_dispose(test_buffer3);
-    (void)ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(test_buffer1);
+    (void)aziot_ustream_dispose(test_buffer2);
+    (void)aziot_ustream_dispose(test_buffer3);
+    (void)aziot_ustream_dispose(multibuffer);
 }
 
 /* ustream_multi_append shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided handle is NULL */
@@ -420,7 +420,7 @@ TEST_FUNCTION(ustream_multi_append_null_multibuffer_failed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)ustream_dispose(test_buffer1);
+    (void)aziot_ustream_dispose(test_buffer1);
 }
 
 /* ustream_multi_append shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided handle is not the implemented uStream type */
@@ -443,8 +443,8 @@ TEST_FUNCTION(ustream_multi_append_buffer_is_not_type_of_buffer_failed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)ustream_dispose(test_buffer1);
-    (void)ustream_dispose(test_buffer2);
+    (void)aziot_ustream_dispose(test_buffer1);
+    (void)aziot_ustream_dispose(test_buffer2);
 }
 
 /* ustream_multi_append shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
@@ -468,8 +468,8 @@ TEST_FUNCTION(ustream_multi_append_null_buffer_to_add_failed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)ustream_dispose(test_buffer1);
-    (void)ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(test_buffer1);
+    (void)aziot_ustream_dispose(multibuffer);
 }
 
 /* ustream_multi_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to control the new uStream */
@@ -492,8 +492,8 @@ TEST_FUNCTION(ustream_multi_append_not_enough_memory_failed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
-    (void)ustream_dispose(test_buffer1);
-    (void)ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(test_buffer1);
+    (void)aziot_ustream_dispose(multibuffer);
 }
 
 /* ustream_multi_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if it failed to clone the buffer */
@@ -518,8 +518,8 @@ TEST_FUNCTION(ustream_multi_append_not_enough_memory_to_clone_the_buffer_failed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
-    (void)ustream_dispose(test_buffer1);
-    (void)ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(test_buffer1);
+    (void)aziot_ustream_dispose(multibuffer);
 }
 
 /* ustream_multi_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if it failed to copy the buffer */
@@ -547,9 +547,9 @@ TEST_FUNCTION(ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    (void)ustream_dispose(default_buffer1);
-    (void)ustream_dispose(default_buffer2);
-    (void)ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(default_buffer1);
+    (void)aziot_ustream_dispose(default_buffer2);
+    (void)aziot_ustream_dispose(multibuffer);
 }
 
 /* ustream_multi_dispose shall ulib_free all allocated resources. */
@@ -563,7 +563,7 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_without_buffers_free_all_resourc
     STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_ULIB_RESULT result = ustream_dispose(multibuffer);
+    AZIOT_ULIB_RESULT result = aziot_ustream_dispose(multibuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -572,7 +572,7 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_without_buffers_free_all_resourc
     ///cleanup
 }
 
-/* ustream_dispose shall release all buffers in its list if the multibuffer contains appended buffers */
+/* aziot_ustream_dispose shall release all buffers in its list if the multibuffer contains appended buffers */
 TEST_FUNCTION(ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_succeed)
 {
     ///arrange
@@ -595,7 +595,7 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_
     STRICT_EXPECTED_CALL(ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_ULIB_RESULT result = ustream_dispose(multibuffer);
+    AZIOT_ULIB_RESULT result = aziot_ustream_dispose(multibuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -635,9 +635,9 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_current_posi
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
-    (void)ustream_dispose(multibuffer);
-    (void)ustream_dispose(default_buffer1);
-    (void)ustream_dispose(default_buffer2);
+    (void)aziot_ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(default_buffer1);
+    (void)aziot_ustream_dispose(default_buffer2);
 }
 
 /* aziot_ustream_set_position shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to set the position */
@@ -671,9 +671,9 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_si
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
-    (void)ustream_dispose(multibuffer);
-    (void)ustream_dispose(default_buffer1);
-    (void)ustream_dispose(default_buffer2);
+    (void)aziot_ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(default_buffer1);
+    (void)aziot_ustream_dispose(default_buffer2);
 }
 
 /* aziot_ustream_set_position shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to set the position */
@@ -707,9 +707,9 @@ TEST_FUNCTION(ustream_multi_seek_inner_buffer_failed_in_seek_failed)
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
-    (void)ustream_dispose(multibuffer);
-    (void)ustream_dispose(default_buffer1);
-    (void)ustream_dispose(default_buffer2);
+    (void)aziot_ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(default_buffer1);
+    (void)aziot_ustream_dispose(default_buffer2);
 }
 
 /* ustream_multi_read shall return partial result if one of the internal buffers failed. */
@@ -747,9 +747,9 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
     ASSERT_BUFFER_ARE_EQUAL(uint8_t_ptr, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1, buf_result, size_result);
 
     ///cleanup
-    (void)ustream_dispose(multibuffer);
-    (void)ustream_dispose(default_buffer1);
-    (void)ustream_dispose(default_buffer2);
+    (void)aziot_ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(default_buffer1);
+    (void)aziot_ustream_dispose(default_buffer2);
 }
 
 /* aziot_ustream_read shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to read the requested bytes */
@@ -797,9 +797,9 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    (void)ustream_dispose(multibuffer);
-    (void)ustream_dispose(default_buffer1);
-    (void)ustream_dispose(default_buffer2);
+    (void)aziot_ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(default_buffer1);
+    (void)aziot_ustream_dispose(default_buffer2);
 }
 
 /* ustream_multi_release shall bypass the error if the Inner ustream return not success for one of the needed operations. */
@@ -838,9 +838,9 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
     ///cleanup
-    (void)ustream_dispose(multibuffer);
-    (void)ustream_dispose(default_buffer1);
-    (void)ustream_dispose(default_buffer2);
+    (void)aziot_ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(default_buffer1);
+    (void)aziot_ustream_dispose(default_buffer2);
 }
 
 /* aziot_ustream_release shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to release the requested bytes */
@@ -879,9 +879,9 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_fa
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
     ///cleanup
-    (void)ustream_dispose(multibuffer);
-    (void)ustream_dispose(default_buffer1);
-    (void)ustream_dispose(default_buffer2);
+    (void)aziot_ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(default_buffer1);
+    (void)aziot_ustream_dispose(default_buffer2);
 }
 
 /* aziot_ustream_clone shall bypass the error if the Inner ustream returns and error for one of the needed operations. */
@@ -910,9 +910,9 @@ TEST_FUNCTION(ustream_multi_clone_inner_buffer_failed_in_get_remaining_size_fail
     ASSERT_IS_NULL(clone_result);
 
     ///cleanup
-    (void)ustream_dispose(multibuffer);
-    (void)ustream_dispose(default_buffer1);
-    (void)ustream_dispose(default_buffer2);
+    (void)aziot_ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(default_buffer1);
+    (void)aziot_ustream_dispose(default_buffer2);
 }
 
 /*  aziot_ustream_clone shall return NULL if there is not enough memory to control the new buffer. */
@@ -930,7 +930,7 @@ TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_interface_failed)
     ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
-    (void)ustream_dispose(ustream_instance);
+    (void)aziot_ustream_dispose(ustream_instance);
 }
 
 /* aziot_ustream_clone shall return NULL if there is not enough memory to create an instance */
@@ -951,7 +951,7 @@ TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_instance_failed)
     ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
-    (void)ustream_dispose(ustream_instance);
+    (void)aziot_ustream_dispose(ustream_instance);
 }
 
 /* aziot_ustream_clone shall return NULL if there is not enough memory to create the first node */
@@ -974,7 +974,7 @@ TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_first_node_failed)
     ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
-    (void)ustream_dispose(ustream_instance);
+    (void)aziot_ustream_dispose(ustream_instance);
 }
 
 /* aziot_ustream_clone shall return NULL if there is not enough memory to clone the first node */
@@ -1003,9 +1003,9 @@ TEST_FUNCTION(aziot_ustream_clone_no_memory_to_clone_first_node_failed)
     ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
-    (void)ustream_dispose(multibuffer);
-    (void)ustream_dispose(default_buffer1);
-    (void)ustream_dispose(default_buffer2);
+    (void)aziot_ustream_dispose(multibuffer);
+    (void)aziot_ustream_dispose(default_buffer1);
+    (void)aziot_ustream_dispose(default_buffer2);
 }
 
 /* aziot_ustream_clone shall return NULL if there is not enough memory to create the second node */
@@ -1032,7 +1032,7 @@ TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_second_node_failed)
     ASSERT_IS_NULL(aziot_ustream_clone_interface);
 
     ///cleanup
-    (void)ustream_dispose(ustream_instance);
+    (void)aziot_ustream_dispose(ustream_instance);
 }
 
 #include "ustream_compliance_ut.h"

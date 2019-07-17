@@ -104,9 +104,9 @@ int main(void)
                     ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_append", result);
                 }
                 //Dispose of our instance of the second ustream (now the appended has the only instance)
-                else if((result = ustream_dispose(ustream_two)) != AZIOT_ULIB_SUCCESS)
+                else if((result = aziot_ustream_dispose(ustream_two)) != AZIOT_ULIB_SUCCESS)
                 {
-                    ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_dispose", result);
+                    ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_dispose", result);
                 }
                 else if((result = aziot_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
                 {
@@ -124,9 +124,9 @@ int main(void)
                     }
                     //Dispose of the AZIOT_USTREAM (original ustream_one and original ustream_two)
                     //At this point the memory malloc'd for ustream_two will be free'd
-                    else if((result = ustream_dispose(ustream_one)) != AZIOT_ULIB_SUCCESS)
+                    else if((result = aziot_ustream_dispose(ustream_one)) != AZIOT_ULIB_SUCCESS)
                     {
-                        ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_dispose", result);
+                        ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_dispose", result);
                     }
                 }
             }

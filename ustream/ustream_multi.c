@@ -74,7 +74,7 @@ static BUFFER_LIST_NODE* create_buffer_node(
 
 static void destroy_buffer_node(BUFFER_LIST_NODE* node)
 {
-    ustream_dispose(node->buffer);
+    aziot_ustream_dispose(node->buffer);
     ULIB_CONFIG_FREE(node);
 }
 
@@ -591,16 +591,16 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
 
     if(USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
-        /*[ustream_dispose_compliance_null_buffer_failed]*/
-        /*[ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed]*/
+        /*[aziot_ustream_dispose_compliance_null_buffer_failed]*/
+        /*[aziot_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed]*/
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
-        /*[ustream_dispose_compliance_cloned_instance_disposed_first_succeed]*/
-        /*[ustream_dispose_compliance_cloned_instance_disposed_second_succeed]*/
-        /*[ustream_dispose_compliance_single_instance_succeed]*/
+        /*[aziot_ustream_dispose_compliance_cloned_instance_disposed_first_succeed]*/
+        /*[aziot_ustream_dispose_compliance_cloned_instance_disposed_second_succeed]*/
+        /*[aziot_ustream_dispose_compliance_single_instance_succeed]*/
         destroy_instance(ustream_interface);
         result = AZIOT_ULIB_SUCCESS;
     }
