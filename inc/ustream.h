@@ -59,7 +59,6 @@ MOCKABLE_FUNCTION(, AZIOT_USTREAM*, aziot_ustream_create,
         size_t, buffer_length,
         AZIOT_USTREAM_BUFFER_RELEASE_CALLBACK, release_buffer);
 
-
 /**
  * @brief   Factory to create a new uStreamMulti.
  *
