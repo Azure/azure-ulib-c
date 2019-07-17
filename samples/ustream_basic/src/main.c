@@ -60,7 +60,7 @@ int main(void)
     ustream_two_string_len = sizeof(USTREAM_TWO_STRING);
     if((ustream_two_string = (char*)malloc(ustream_two_string_len)) == NULL)
     {
-        ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_OUT_OF_MEMORY_STRING, "string");
+        AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_OUT_OF_MEMORY_STRING, "string");
         result = AZIOT_ULIB_OUT_OF_MEMORY_ERROR;
     }
     else
@@ -72,12 +72,12 @@ int main(void)
         size_t ustream_size;
         if((ustream_one = ustream_create((const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) == NULL)
         {
-            ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
+            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
             result = AZIOT_ULIB_SYSTEM_ERROR;
         }
         else if((result = aziot_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
         {
-            ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
+            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
         }
         else
         {
@@ -87,12 +87,12 @@ int main(void)
             AZIOT_USTREAM* ustream_two;
             if((ustream_two = ustream_create((const uint8_t*)ustream_two_string, ustream_two_string_len, free)) == NULL)
             {
-                ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
+                AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
                 result = AZIOT_ULIB_SYSTEM_ERROR;
             }
             else if((result = aziot_ustream_get_remaining_size(ustream_two, &ustream_size)) != AZIOT_ULIB_SUCCESS)
             {
-                ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
+                AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
             }
             else
             {
@@ -101,16 +101,16 @@ int main(void)
                 //Append the second AZIOT_USTREAM to the first AZIOT_USTREAM
                 if((result = aziot_ustream_append(ustream_one, ustream_two)) != AZIOT_ULIB_SUCCESS)
                 {
-                    ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_append", result);
+                    AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_append", result);
                 }
                 //Dispose of our instance of the second ustream (now the appended has the only instance)
                 else if((result = aziot_ustream_dispose(ustream_two)) != AZIOT_ULIB_SUCCESS)
                 {
-                    ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_dispose", result);
+                    AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_dispose", result);
                 }
                 else if((result = aziot_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
                 {
-                    ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
+                    AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
                 }
                 else
                 {
@@ -120,13 +120,13 @@ int main(void)
                     //Print the AZIOT_USTREAM contents
                     if((result = print_buffer(ustream_one)) != AZIOT_ULIB_SUCCESS)
                     {
-                        ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "print_buffer", result);
+                        AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "print_buffer", result);
                     }
                     //Dispose of the AZIOT_USTREAM (original ustream_one and original ustream_two)
                     //At this point the memory malloc'd for ustream_two will be free'd
                     else if((result = aziot_ustream_dispose(ustream_one)) != AZIOT_ULIB_SUCCESS)
                     {
-                        ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_dispose", result);
+                        AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_dispose", result);
                     }
                 }
             }

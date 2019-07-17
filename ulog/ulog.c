@@ -20,10 +20,10 @@ const char* const AZIOT_ULOG_TYPE_STRING[] =
 
 void aziot_ulog_print(AZIOT_ULOG_TYPE type, const char* const format, ...)
 {
-    char temp[ULIB_CONFIG_MAX_LOG_SIZE];
+    char temp[AZIOT_ULIB_CONFIG_MAX_LOG_SIZE];
     va_list args;
     va_start(args, format);
-    vsnprintf(temp, ULIB_CONFIG_MAX_LOG_SIZE, format, args);
+    vsnprintf(temp, AZIOT_ULIB_CONFIG_MAX_LOG_SIZE, format, args);
     printf("[%s]%s", AZIOT_ULOG_TYPE_STRING[type], temp);
     va_end(args);
 }
