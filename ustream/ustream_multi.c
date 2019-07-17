@@ -93,7 +93,7 @@ static void destroy_full_buffer_list(BUFFER_LIST_NODE* node)
 static AZIOT_USTREAM* create_instance(void)
 {
     AZIOT_USTREAM* ustream_interface = (AZIOT_USTREAM*)AZIOT_ULIB_CONFIG_MALLOC(sizeof(AZIOT_USTREAM));
-    /*[ustream_multi_create_no_memory_to_create_instance_failed]*/
+    /*[aziot_ustream_multi_create_no_memory_to_create_instance_failed]*/
     /*[aziot_ustream_clone_no_memory_to_create_interface_failed]*/
     if(ustream_interface == NULL)
     {
@@ -608,10 +608,10 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
     return result;
 }
 
-AZIOT_USTREAM* ustream_multi_create(void)
+AZIOT_USTREAM* aziot_ustream_multi_create(void)
 {
-    /*[ustream_multi_create_succeed]*/
-    /*[ustream_multi_create_no_memory_to_create_interface_failed]*/
+    /*[aziot_ustream_multi_create_succeed]*/
+    /*[aziot_ustream_multi_create_no_memory_to_create_interface_failed]*/
     return create_instance();
 }
 

@@ -20,7 +20,7 @@ AZIOT_ULIB_RESULT aziot_ustream_append(
     /*[aziot_ustream_append_starting_from_multibuffer_with_not_enough_memory_failed]*/
     else if((result = ustream_multi_append(ustream_interface, ustream_to_append)) == AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR)
     {
-        AZIOT_USTREAM* new_multi_buffer = ustream_multi_create();
+        AZIOT_USTREAM* new_multi_buffer = aziot_ustream_multi_create();
         if(new_multi_buffer == NULL)
         {
             /*[aziot_ustream_append_not_enough_memory_to_create_multibuffer_failed]*/

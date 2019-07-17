@@ -105,7 +105,7 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
 TEST_FUNCTION(aziot_ustream_append_start_from_empty_multibuffer_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* default_multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* default_multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(default_multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
@@ -235,7 +235,7 @@ TEST_FUNCTION(aziot_ustream_append_null_buffer_to_add_failed)
 TEST_FUNCTION(aziot_ustream_append_starting_from_multibuffer_with_not_enough_memory_failed)
 {
     ///arrange
-    AZIOT_USTREAM* default_multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* default_multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(default_multibuffer);
 
     AZIOT_USTREAM* default_buffer =

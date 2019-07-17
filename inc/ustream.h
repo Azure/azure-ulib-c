@@ -89,7 +89,7 @@ MOCKABLE_FUNCTION(, AZIOT_USTREAM*, aziot_ustream_create,
  *          @retval not-NULL    If the uStreamMulti was created with success.
  *          @retval NULL        If there is no memory to create the new uStreamMulti.
  */
-MOCKABLE_FUNCTION(, AZIOT_USTREAM*, ustream_multi_create);
+MOCKABLE_FUNCTION(, AZIOT_USTREAM*, aziot_ustream_multi_create);
 
 /**
  * @brief   Append an existent uStream to the uStreamMulti.

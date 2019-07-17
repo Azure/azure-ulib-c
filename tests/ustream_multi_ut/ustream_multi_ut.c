@@ -43,7 +43,7 @@ static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3 =
 
 static AZIOT_USTREAM* create_test_default_multibuffer()
 {
-    AZIOT_USTREAM* default_multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* default_multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(default_multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
@@ -140,15 +140,15 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* ustream_multi_create shall create an instance of the multi-buffer and initialize the interface. */
-TEST_FUNCTION(ustream_multi_create_succeed)
+/* aziot_ustream_multi_create shall create an instance of the multi-buffer and initialize the interface. */
+TEST_FUNCTION(aziot_ustream_multi_create_succeed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
     STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -159,14 +159,14 @@ TEST_FUNCTION(ustream_multi_create_succeed)
     (void)aziot_ustream_dispose(multibuffer);
 }
 
-/* ustream_multi_create shall return NULL if there is not enough memory to create the multi-buffer interface. */
-TEST_FUNCTION(ustream_multi_create_no_memory_to_create_interface_failed)
+/* aziot_ustream_multi_create shall return NULL if there is not enough memory to create the multi-buffer interface. */
+TEST_FUNCTION(aziot_ustream_multi_create_no_memory_to_create_interface_failed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
 
     ///act
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -175,8 +175,8 @@ TEST_FUNCTION(ustream_multi_create_no_memory_to_create_interface_failed)
     ///cleanup
 }
 
-/* ustream_multi_create shall return NULL if there is not enough memory to create the multi-buffer instance */
-TEST_FUNCTION(ustream_multi_create_no_memory_to_create_instance_failed)
+/* aziot_ustream_multi_create shall return NULL if there is not enough memory to create the multi-buffer instance */
+TEST_FUNCTION(aziot_ustream_multi_create_no_memory_to_create_instance_failed)
 {
     ///arrange
     STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
@@ -184,7 +184,7 @@ TEST_FUNCTION(ustream_multi_create_no_memory_to_create_instance_failed)
     STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -197,7 +197,7 @@ TEST_FUNCTION(ustream_multi_create_no_memory_to_create_instance_failed)
 TEST_FUNCTION(ustream_multi_append_new_multibuffer_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* test_buffer1 =
@@ -257,7 +257,7 @@ TEST_FUNCTION(ustream_multi_append_new_multibuffer_succeed)
 TEST_FUNCTION(ustream_multi_append_partial_released_multibuffer_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* test_buffer1 =
@@ -334,7 +334,7 @@ TEST_FUNCTION(ustream_multi_append_partial_released_multibuffer_succeed)
 TEST_FUNCTION(ustream_multi_append_fully_released_multibuffer_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* test_buffer1 =
@@ -451,7 +451,7 @@ TEST_FUNCTION(ustream_multi_append_buffer_is_not_type_of_buffer_failed)
 TEST_FUNCTION(ustream_multi_append_null_buffer_to_add_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     AZIOT_USTREAM* test_buffer1 =
         aziot_ustream_create(
@@ -476,7 +476,7 @@ TEST_FUNCTION(ustream_multi_append_null_buffer_to_add_failed)
 TEST_FUNCTION(ustream_multi_append_not_enough_memory_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     AZIOT_USTREAM* test_buffer1 =
         aziot_ustream_create(
@@ -500,7 +500,7 @@ TEST_FUNCTION(ustream_multi_append_not_enough_memory_failed)
 TEST_FUNCTION(ustream_multi_append_not_enough_memory_to_clone_the_buffer_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     AZIOT_USTREAM* test_buffer1 =
         aziot_ustream_create(
@@ -526,7 +526,7 @@ TEST_FUNCTION(ustream_multi_append_not_enough_memory_to_clone_the_buffer_failed)
 TEST_FUNCTION(ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
@@ -556,7 +556,7 @@ TEST_FUNCTION(ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size
 TEST_FUNCTION(ustream_multi_dispose_multibuffer_without_buffers_free_all_resources_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     umock_c_reset_all_calls();
     STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
@@ -608,7 +608,7 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_
 TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_current_position_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
@@ -644,7 +644,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_current_posi
 TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
@@ -680,7 +680,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_si
 TEST_FUNCTION(ustream_multi_seek_inner_buffer_failed_in_seek_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
@@ -716,7 +716,7 @@ TEST_FUNCTION(ustream_multi_seek_inner_buffer_failed_in_seek_failed)
 TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_content_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
@@ -756,7 +756,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
 TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
@@ -806,7 +806,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
 TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
@@ -847,7 +847,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_
 TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
@@ -888,7 +888,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_fa
 TEST_FUNCTION(ustream_multi_clone_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
@@ -981,7 +981,7 @@ TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_first_node_failed)
 TEST_FUNCTION(aziot_ustream_clone_no_memory_to_clone_first_node_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = ustream_multi_create();
+    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
     AZIOT_USTREAM* default_buffer1 =
