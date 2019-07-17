@@ -133,9 +133,9 @@ TEST_FUNCTION(ustream_append_start_from_empty_multibuffer_succeed)
     AZIOT_ULIB_RESULT result3 = ustream_append(default_multibuffer, default_buffer3);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result2);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result3);
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result3);
     ustream_dispose(default_buffer1);
     ustream_dispose(default_buffer2);
     ustream_dispose(default_buffer3);
@@ -149,7 +149,7 @@ TEST_FUNCTION(ustream_append_start_from_empty_multibuffer_succeed)
     ustream_dispose(default_multibuffer);
 }
 
-/* ustream_append shall return ULIB_SUCCESS if the uStreams were appended succesfully */
+/* ustream_append shall return AZIOT_ULIB_SUCCESS if the uStreams were appended succesfully */
 TEST_FUNCTION(ustream_append_append_multiple_buffers_succeed)
 {
     ///arrange
@@ -177,8 +177,8 @@ TEST_FUNCTION(ustream_append_append_multiple_buffers_succeed)
     AZIOT_ULIB_RESULT result2 = ustream_append(default_buffer1, default_buffer3);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, ULIB_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result2);
     ustream_dispose(default_buffer2);
     ustream_dispose(default_buffer3);
     check_buffer(
@@ -191,7 +191,7 @@ TEST_FUNCTION(ustream_append_append_multiple_buffers_succeed)
     ustream_dispose(default_buffer1);
 }
 
-/* ustream_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream is NULL */
+/* ustream_append shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream is NULL */
 TEST_FUNCTION(ustream_append_null_interface_failed)
 {
     ///arrange
@@ -205,13 +205,13 @@ TEST_FUNCTION(ustream_append_null_interface_failed)
     AZIOT_ULIB_RESULT result = ustream_append(NULL, default_buffer);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
     ustream_dispose(default_buffer);
 }
 
-/* ustream_append shall return ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
+/* ustream_append shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
 TEST_FUNCTION(ustream_append_null_buffer_to_add_failed)
 {
     ///arrange
@@ -225,13 +225,13 @@ TEST_FUNCTION(ustream_append_null_buffer_to_add_failed)
     AZIOT_ULIB_RESULT result = ustream_append(default_buffer, NULL);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
     ustream_dispose(default_buffer);
 }
 
-/*  ustream_append shall return ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the uStream */
+/*  ustream_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the uStream */
 TEST_FUNCTION(ustream_append_starting_from_multibuffer_with_not_enough_memory_failed)
 {
     ///arrange
@@ -252,14 +252,14 @@ TEST_FUNCTION(ustream_append_starting_from_multibuffer_with_not_enough_memory_fa
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
     ustream_dispose(default_buffer);
     ustream_dispose(default_multibuffer);
 }
 
-/* ustream_append shall return ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to create the multibuffer */
+/* ustream_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to create the multibuffer */
 TEST_FUNCTION(ustream_append_not_enough_memory_to_create_multibuffer_failed)
 {
     ///arrange
@@ -284,7 +284,7 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_create_multibuffer_failed)
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_OUT_OF_MEMORY_ERROR, result);
     check_buffer(
         default_buffer1,
         0,
@@ -301,7 +301,7 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_create_multibuffer_failed)
     ustream_dispose(default_buffer2);
 }
 
-/* ustream_append shall return ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the first uStream */
+/* ustream_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the first uStream */
 TEST_FUNCTION(ustream_append_not_enough_memory_to_append_first_buffer_failed)
 {
     ///arrange
@@ -333,7 +333,7 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_append_first_buffer_failed)
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_OUT_OF_MEMORY_ERROR, result);
     check_buffer(
         default_buffer1,
         0,
@@ -350,7 +350,7 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_append_first_buffer_failed)
     ustream_dispose(default_buffer2);
 }
 
-/* ustream_append shall return ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the second uStream */
+/* ustream_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the second uStream */
 TEST_FUNCTION(ustream_append_not_enough_memory_to_append_second_buffer_failed)
 {
     ///arrange
@@ -389,7 +389,7 @@ TEST_FUNCTION(ustream_append_not_enough_memory_to_append_second_buffer_failed)
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, ULIB_OUT_OF_MEMORY_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_OUT_OF_MEMORY_ERROR, result);
     check_buffer(
         default_buffer1,
         0,

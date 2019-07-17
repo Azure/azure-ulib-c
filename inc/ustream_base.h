@@ -73,7 +73,7 @@
  *
  *          |                         +------------------malloc(1024)------------------>|
  *          |                         |<-----------------local_buffer-------------------+
- *  .. while ustream_read return ULIB_SUCCESS .....................................................
+ *  .. while ustream_read return AZIOT_ULIB_SUCCESS ...............................................
  *  :       |                         +-ustream_read               |                    |         :
  *  :       |                         |  (ustream_interface,       |                    |         :
  *  :       |                         |   local_buffer,            |                    |         :
@@ -82,7 +82,7 @@
  *  :       |                         |                     | copy the next 1024 bytes from the   :
  *  :       |                         |                     |  data_source to the local_buffer.   :
  *  :       |                         |                     +----->|                    |         :
- *  :       |                         |<---ULIB_SUCCESS---------+                       |         :
+ *  :       |                         |<---AZIOT_ULIB_SUCCESS------+                    |         :
  *  :       |                  +------+                            |                    |         :
  *  :       |                  | use the content in the local_buffer                    |         :
  *  :       |                  +----->|                            |                    |         :
@@ -376,12 +376,12 @@ struct USTREAM_INTERFACE_TAG
  *  The <tt>ustream_set_position</tt> API shall follow these minimum requirements:
  *      - The <tt>set_position</tt> shall change the current position of the uStream.
  *      - If the provided position is out of the range of the uStream, the <tt>set_position</tt> shall return
- *          #ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
+ *          #AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
  *      - If the provided position is already released, the <tt>set_position</tt> shall return
- *          #ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
- *      - If the provided interface is <tt>NULL</tt>, the <tt>set_position</tt> shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *          #AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
+ *      - If the provided interface is <tt>NULL</tt>, the <tt>set_position</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented uStream type, the <tt>set_position</tt> shall return
- *          #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *          #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param[in]   ustream_interface       The {@link USTREAM}* with the interface of the uStream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid uStream that is the
@@ -389,16 +389,16 @@ struct USTREAM_INTERFACE_TAG
  * @param[in]   position                The <tt>offset_t</tt> with the new current position in the uStream.
  *
  * @return The {@link AZIOT_ULIB_RESULT} with the result of the <tt>set_position</tt> operation.
- *          @retval     ULIB_SUCCESS                If the uStream changed the current position with success.
- *          @retval     ULIB_BUSY_ERROR             If the resource necessary for the <tt>set_position</tt> operation is busy.
- *          @retval     ULIB_CANCELLED_ERROR        If the <tt>set_position</tt> operation was cancelled.
- *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     ULIB_NO_SUCH_ELEMENT_ERROR  If the position is out of the uStream range.
- *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
- *                                                  <tt>set_position</tt> operation.
- *          @retval     ULIB_SECURITY_ERROR         If the <tt>set_position</tt> operation was denied for security
- *                                                  reasons.
- *          @retval ULIB_SYSTEM_ERROR               If the <tt>set_position</tt> operation failed on the system level.
+ *          @retval     AZIOT_ULIB_SUCCESS                If the uStream changed the current position with success.
+ *          @retval     AZIOT_ULIB_BUSY_ERROR             If the resource necessary for the <tt>set_position</tt> operation is busy.
+ *          @retval     AZIOT_ULIB_CANCELLED_ERROR        If the <tt>set_position</tt> operation was cancelled.
+ *          @retval     AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR  If the position is out of the uStream range.
+ *          @retval     AZIOT_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
+ *                                                        <tt>set_position</tt> operation.
+ *          @retval     AZIOT_ULIB_SECURITY_ERROR         If the <tt>set_position</tt> operation was denied for security
+ *                                                        reasons.
+ *          @retval AZIOT_ULIB_SYSTEM_ERROR               If the <tt>set_position</tt> operation failed on the system level.
  */
 static inline AZIOT_ULIB_RESULT ustream_set_position(USTREAM* ustream_interface, offset_t position)
 {
@@ -416,28 +416,28 @@ static inline AZIOT_ULIB_RESULT ustream_set_position(USTREAM* ustream_interface,
  *      - The <tt>reset</tt> shall change the current position of the uStream to the first byte after the
  *          released position.
  *      - If all bytes are already released, the uStream <tt>reset</tt> shall return
- *          #ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
- *      - If the provided interface is <tt>NULL</tt>, the uStream <tt>reset</tt> shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *          #AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
+ *      - If the provided interface is <tt>NULL</tt>, the uStream <tt>reset</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented uStream type, the uStream <tt>reset</tt> shall return
- *          #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *          #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param[in]   ustream_interface       The {@link USTREAM}* with the interface of the uStream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid uStream that is the
  *                                      implemented uStream type.
  *
  * @return The {@link AZIOT_ULIB_RESULT} with the result of the <tt>reset</tt> operation.
- *          @retval     ULIB_SUCCESS                If the uStream changed the current position with success.
- *          @retval     ULIB_BUSY_ERROR             If the resource necessary for the <tt>reset</tt> operation is
- *                                                  busy.
- *          @retval     ULIB_CANCELLED_ERROR        If the <tt>reset</tt> operation was cancelled.
- *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     ULIB_NO_SUCH_ELEMENT_ERROR  If all previous bytes in the uStream were already
- *                                                  released.
- *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
- *                                                  <tt>reset</tt> operation.
- *          @retval     ULIB_SECURITY_ERROR         If the <tt>reset</tt> operation was denied for security
- *                                                  reasons.
- *          @retval     ULIB_SYSTEM_ERROR           If the <tt>reset</tt> operation failed on the system level.
+ *          @retval     AZIOT_ULIB_SUCCESS                If the uStream changed the current position with success.
+ *          @retval     AZIOT_ULIB_BUSY_ERROR             If the resource necessary for the <tt>reset</tt> operation is
+ *                                                        busy.
+ *          @retval     AZIOT_ULIB_CANCELLED_ERROR        If the <tt>reset</tt> operation was cancelled.
+ *          @retval     AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR  If all previous bytes in the uStream were already
+ *                                                        released.
+ *          @retval     AZIOT_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
+ *                                                        <tt>reset</tt> operation.
+ *          @retval     AZIOT_ULIB_SECURITY_ERROR         If the <tt>reset</tt> operation was denied for security
+ *                                                        reasons.
+ *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>reset</tt> operation failed on the system level.
  */
 static inline AZIOT_ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
 {
@@ -463,17 +463,17 @@ static inline AZIOT_ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *      - The read shall return the number of valid <tt>uint8_t</tt> values in the local buffer in 
  *          the provided <tt>size</tt>.
  *      - If there is no more content to return, the read shall return
- *          #ULIB_EOF, size shall be set to 0, and will not change the contents
+ *          #AZIOT_ULIB_EOF, size shall be set to 0, and will not change the contents
  *          of the local buffer.
- *      - If the provided buffer_length is zero, the read shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided buffer_length is zero, the read shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided buffer_length is lower than the minimum number of bytes that the uStream can copy, the 
- *          read shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
- *      - If the provided interface is <tt>NULL</tt>, the read shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *          read shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided interface is <tt>NULL</tt>, the read shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented uStream type, the read shall return
- *          #ULIB_ILLEGAL_ARGUMENT_ERROR.
- *      - If the provided local buffer is <tt>NULL</tt>, the read shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *          #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided local buffer is <tt>NULL</tt>, the read shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided return size pointer is <tt>NULL</tt>, the read shall return
- *          #ULIB_ILLEGAL_ARGUMENT_ERROR and will not change the local buffer contents or the
+ *          #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR and will not change the local buffer contents or the
  *          current position of the buffer.
  *
  * @param[in]       ustream_interface       The {@link USTREAM}* with the interface of the uStream. It
@@ -486,15 +486,15 @@ static inline AZIOT_ULIB_RESULT ustream_reset(USTREAM* ustream_interface)
  *                                          the number of valid <tt>uint8_t</tt> values returned in the local buffer. It cannot be <tt>NULL</tt>.
  *
  * @return The {@link AZIOT_ULIB_RESULT} with the result of the read operation.
- *          @retval     ULIB_SUCCESS                If the uStream copied the content of the <tt>Data Source</tt> to the local buffer
- *                                                  with success.
- *          @retval     ULIB_BUSY_ERROR             If the resource necessary to read the uStream content is busy.
- *          @retval     ULIB_CANCELLED_ERROR        If the read of the content was cancelled.
- *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     ULIB_EOF                    If there are no more <tt>uint8_t</tt> values in the <tt>Data Source</tt> to read.
- *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the read.
- *          @retval     ULIB_SECURITY_ERROR         If the read was denied for security reasons.
- *          @retval     ULIB_SYSTEM_ERROR           If the read operation failed on the system level.
+ *          @retval     AZIOT_ULIB_SUCCESS                If the uStream copied the content of the <tt>Data Source</tt> to the local buffer
+ *                                                        with success.
+ *          @retval     AZIOT_ULIB_BUSY_ERROR             If the resource necessary to read the uStream content is busy.
+ *          @retval     AZIOT_ULIB_CANCELLED_ERROR        If the read of the content was cancelled.
+ *          @retval     AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     AZIOT_ULIB_EOF                    If there are no more <tt>uint8_t</tt> values in the <tt>Data Source</tt> to read.
+ *          @retval     AZIOT_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the read.
+ *          @retval     AZIOT_ULIB_SECURITY_ERROR         If the read was denied for security reasons.
+ *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the read operation failed on the system level.
  */
 static inline AZIOT_ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
 {
@@ -509,10 +509,10 @@ static inline AZIOT_ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t
  *  The <tt>ustream_get_remaining_size</tt> API shall follow the following minimum requirements:
  *      - The <tt>get_remaining_size</tt> shall return the number of bytes between the current position and the
  *          end of the uStream.
- *      - If the provided interface is <tt>NULL</tt>, the <tt>get_remaining_size</tt> shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided interface is <tt>NULL</tt>, the <tt>get_remaining_size</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented uStream type, the <tt>get_remaining_size</tt> shall
- *          return #ULIB_ILLEGAL_ARGUMENT_ERROR.
- *      - If the provided size is <tt>NULL</tt>, the <tt>get_remaining_size</tt> shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *          return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided size is <tt>NULL</tt>, the <tt>get_remaining_size</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param[in]   ustream_interface       The {@link USTREAM}* with the interface of the uStream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid uStream that is the
@@ -521,16 +521,16 @@ static inline AZIOT_ULIB_RESULT ustream_read(USTREAM* ustream_interface, uint8_t
  *                                      It cannot be <tt>NULL</tt>.
  *
  * @return The {@link AZIOT_ULIB_RESULT} with the result of the <tt>get_remaining_size</tt> operation.
- *          @retval     ULIB_SUCCESS                If it succeeded to get the remaining size of the uStream.
- *          @retval     ULIB_BUSY_ERROR             If the resource necessary to get the remaining size of
- *                                                  the uStream is busy.
- *          @retval     ULIB_CANCELLED_ERROR        If the <tt>get_remaining_size</tt> was cancelled.
- *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
- *                                                  <tt>get_remaining_size</tt> operation.
- *          @retval     ULIB_SECURITY_ERROR         If the <tt>get_remaining_size</tt> was denied for security reasons.
- *          @retval     ULIB_SYSTEM_ERROR           If the <tt>get_remaining_size</tt> operation failed on the
- *                                                  system level.
+ *          @retval     AZIOT_ULIB_SUCCESS                If it succeeded to get the remaining size of the uStream.
+ *          @retval     AZIOT_ULIB_BUSY_ERROR             If the resource necessary to get the remaining size of
+ *                                                        the uStream is busy.
+ *          @retval     AZIOT_ULIB_CANCELLED_ERROR        If the <tt>get_remaining_size</tt> was cancelled.
+ *          @retval     AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     AZIOT_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
+ *                                                        <tt>get_remaining_size</tt> operation.
+ *          @retval     AZIOT_ULIB_SECURITY_ERROR         If the <tt>get_remaining_size</tt> was denied for security reasons.
+ *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>get_remaining_size</tt> operation failed on the
+ *                                                        system level.
  */
 static inline AZIOT_ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_interface, size_t* const size)
 {
@@ -544,10 +544,10 @@ static inline AZIOT_ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_inte
  *
  *  The <tt>ustream_get_position</tt> API shall follow the following minimum requirements:
  *      - The <tt>get_position</tt> shall return the logical current position of the uStream.
- *      - If the provided interface is <tt>NULL</tt>, the <tt>get_position</tt> shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided interface is <tt>NULL</tt>, the <tt>get_position</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented uStream type, the <tt>get_position</tt>
- *          shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
- *      - If the provided position is <tt>NULL</tt>, the <tt>get_position</tt> shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *          shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided position is <tt>NULL</tt>, the <tt>get_position</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param[in]   ustream_interface   The {@link USTREAM}* with the interface of the uStream. It
  *                                  cannot be <tt>NULL</tt>, and it shall be a valid uStream that is the
@@ -556,17 +556,17 @@ static inline AZIOT_ULIB_RESULT ustream_get_remaining_size(USTREAM* ustream_inte
  *                                  uStream. It cannot be <tt>NULL</tt>.
  *
  * @return The {@link AZIOT_ULIB_RESULT} with the result of the <tt>get_position</tt> operation.
- *          @retval     ULIB_SUCCESS                If it provided the position of the uStream.
- *          @retval     ULIB_BUSY_ERROR             If the resource necessary for getting the
- *                                                  position is busy.
- *          @retval     ULIB_CANCELLED_ERROR        If the <tt>get_position</tt> was cancelled.
- *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
- *                                                  <tt>get_position</tt> operation.
- *          @retval     ULIB_SECURITY_ERROR         If the <tt>get_position</tt> was denied for
- *                                                  security reasons.
- *          @retval     ULIB_SYSTEM_ERROR           If the <tt>get_position</tt> operation failed on
- *                                                  the system level.
+ *          @retval     AZIOT_ULIB_SUCCESS                If it provided the position of the uStream.
+ *          @retval     AZIOT_ULIB_BUSY_ERROR             If the resource necessary for getting the
+ *                                                        position is busy.
+ *          @retval     AZIOT_ULIB_CANCELLED_ERROR        If the <tt>get_position</tt> was cancelled.
+ *          @retval     AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     AZIOT_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
+ *                                                        <tt>get_position</tt> operation.
+ *          @retval     AZIOT_ULIB_SECURITY_ERROR         If the <tt>get_position</tt> was denied for
+ *                                                        security reasons.
+ *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>get_position</tt> operation failed on
+ *                                                        the system level.
  */
 static inline AZIOT_ULIB_RESULT ustream_get_position(USTREAM* ustream_interface, offset_t* const position)
 {
@@ -587,7 +587,7 @@ static inline AZIOT_ULIB_RESULT ustream_get_position(USTREAM* ustream_interface,
  *
  * <pre><code>
  * offset_t pos;
- * if(ustream_get_position(my_buffer, &pos) == ULIB_SUCCESS)
+ * if(ustream_get_position(my_buffer, &pos) == AZIOT_ULIB_SUCCESS)
  * {
  *     ustream_release(my_buffer, pos - 1);
  * }
@@ -597,12 +597,12 @@ static inline AZIOT_ULIB_RESULT ustream_get_position(USTREAM* ustream_interface,
  *      - The <tt>release</tt> shall dispose all resources necessary to handle the content of uStream before and 
  *          including the release position.
  *      - If the release position is after the current position or the uStream size, the <tt>release</tt> shall
- *          return #ULIB_ILLEGAL_ARGUMENT_ERROR, and do not release any resource.
+ *          return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, and do not release any resource.
  *      - If the release position is already released, the <tt>release</tt> shall return
- *          #ULIB_NO_SUCH_ELEMENT_ERROR, and do not release any resource.
- *      - If the provided interface is <tt>NULL</tt>, the <tt>release</tt> shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *          #AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR, and do not release any resource.
+ *      - If the provided interface is <tt>NULL</tt>, the <tt>release</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented uStream type, the <tt>release</tt> shall return
- *          #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *          #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param[in]  ustream_interface    The {@link USTREAM}* with the interface of the uStream. It
  *                                  cannot be <tt>NULL</tt>, and it shall be a valid uStream that is the
@@ -612,10 +612,10 @@ static inline AZIOT_ULIB_RESULT ustream_get_position(USTREAM* ustream_interface,
  *                                  before the position. It shall be bigger than 0.
  *
  * @return The {@link AZIOT_ULIB_RESULT} with the result of the <tt>release</tt> operation.
- *          @retval     ULIB_SUCCESS                If the uStream releases the position with success.
- *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     ULIB_NO_SUCH_ELEMENT_ERROR  If the position is already released.
- *          @retval     ULIB_SYSTEM_ERROR           If the <tt>release</tt> operation failed on the system level.
+ *          @retval     AZIOT_ULIB_SUCCESS                If the uStream releases the position with success.
+ *          @retval     AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR  If the position is already released.
+ *          @retval     AZIOT_ULIB_SYSTEM_ERROR           If the <tt>release</tt> operation failed on the system level.
  */
 static inline AZIOT_ULIB_RESULT ustream_release(USTREAM* ustream_interface, offset_t position)
 {
@@ -772,17 +772,17 @@ static inline USTREAM* ustream_clone(USTREAM* ustream_interface, offset_t offset
  *      - The <tt>dispose</tt> shall free all allocated resources for the instance of the uStream.
  *      - If there are no more instances of the uStream, the <tt>dispose</tt> shall release all allocated
  *          resources to control the uStream.
- *      - If the provided interface is <tt>NULL</tt>, the <tt>dispose</tt> shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *      - If the provided interface is <tt>NULL</tt>, the <tt>dispose</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the type of the implemented uStream, the <tt>dispose</tt> shall return
- *          #ULIB_ILLEGAL_ARGUMENT_ERROR.
+ *          #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
  * @param[in]   ustream_interface       The {@link USTREAM}* with the interface of the uStream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid uStream that is a type
  *                                      of the implemented uStream.
  *
  * @return The {@link AZIOT_ULIB_RESULT} with the result of the <tt>dispose</tt> operation.
- *          @retval ULIB_SUCCESS                    If the instance of the uStream was disposed with success.
- *          @retval ULIB_ILLEGAL_ARGUMENT_ERROR     If one of the provided parameters is invalid.
+ *          @retval AZIOT_ULIB_SUCCESS                    If the instance of the uStream was disposed with success.
+ *          @retval AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR     If one of the provided parameters is invalid.
  */
 static inline AZIOT_ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
 {
@@ -800,10 +800,10 @@ static inline AZIOT_ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *  The <tt>ustream_append</tt> API shall follow the following minimum requirements:
   *      - The <tt>append</tt> shall append <tt>ustream_to_append</tt> to the end of <tt>ustream_interface</tt>.
   *      - If <tt>ustream_interface</tt> is not a <tt>USTREAM_MULTI_INSTANCE</tt>, the <tt>append</tt> shall convert it to a <tt>USTREAM_MULTI_INSTANCE</tt>.
-  *      - If <tt>ustream_interface</tt> is <tt>NULL</tt>, the <tt>append</tt> shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
-  *      - If <tt>ustream_to_append</tt> is <tt>NULL</tt>, the <tt>append</tt> shall return #ULIB_ILLEGAL_ARGUMENT_ERROR.
+  *      - If <tt>ustream_interface</tt> is <tt>NULL</tt>, the <tt>append</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
+  *      - If <tt>ustream_to_append</tt> is <tt>NULL</tt>, the <tt>append</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
   *      - If there is not enough memory to append the uStream, the <tt>append</tt> shall return 
-  *         #ULIB_OUT_OF_MEMORY_ERROR.
+  *         #AZIOT_ULIB_OUT_OF_MEMORY_ERROR.
   *
   * @param[in, out]     ustream_interface   The {@link USTREAM}* with the interface of 
   *                                         the uStream. It cannot be <tt>NULL</tt>, and it shall be a valid uStream.
@@ -811,9 +811,9 @@ static inline AZIOT_ULIB_RESULT ustream_dispose(USTREAM* ustream_interface)
   *                                         the uStream to be appended to the original uStream. It cannot be <tt>NULL</tt>, 
   *                                         and it shall be a valid uStream.
   * @return The {@link AZIOT_ULIB_RESULT} with the result of the <tt>append</tt> operation.
-  *          @retval    ULIB_SUCCESS                If the uStream was appended with success.
-  *          @retval    ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
-  *          @retval    ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to <tt>append</tt> the uStream.
+  *          @retval    AZIOT_ULIB_SUCCESS                If the uStream was appended with success.
+  *          @retval    AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+  *          @retval    AZIOT_ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to <tt>append</tt> the uStream.
   */
 MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, ustream_append,
     USTREAM*, ustream_interface, 

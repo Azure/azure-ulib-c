@@ -106,9 +106,9 @@ MOCKABLE_FUNCTION(, USTREAM*, ustream_multi_create);
  *                                      to the uStreamMulti. It cannot be <tt>NULL</tt>.
  *
  * @return The {@link AZIOT_ULIB_RESULT} with the result of the append operation.
- *          @retval     ULIB_SUCCESS                If the uStreamMulti appended the provided uStream with success.
- *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If the one of the provided parameters is invalid.
- *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to append the uStream.
+ *          @retval     AZIOT_ULIB_SUCCESS                If the uStreamMulti appended the provided uStream with success.
+ *          @retval     AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If the one of the provided parameters is invalid.
+ *          @retval     AZIOT_ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to append the uStream.
  */
 MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, ustream_multi_append,
     USTREAM*, ustream_interface,
