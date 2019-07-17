@@ -56,7 +56,7 @@ static AZIOT_USTREAM* create_instance(
     offset_t inner_current_position,
     offset_t offset)
 {
-    AZIOT_USTREAM* ustream_interface = (AZIOT_USTREAM*)ULIB_CONFIG_MALLOC(sizeof(AZIOT_USTREAM));
+    AZIOT_USTREAM* ustream_interface = (AZIOT_USTREAM*)AZIOT_ULIB_CONFIG_MALLOC(sizeof(AZIOT_USTREAM));
     /*[ustream_create_no_memory_to_create_interface_failed]*/
     /*[aziot_ustream_clone_no_memory_to_create_interface_failed]*/
     /*[aziot_ustream_clone_no_memory_to_create_instance_failed]*/
@@ -66,7 +66,7 @@ static AZIOT_USTREAM* create_instance(
     }
     else
     {
-        USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)ULIB_CONFIG_MALLOC(sizeof(USTREAM_INSTANCE));
+        USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)AZIOT_ULIB_CONFIG_MALLOC(sizeof(USTREAM_INSTANCE));
         if(instance != NULL)
         {
             ustream_interface->api = &api;
@@ -81,7 +81,7 @@ static AZIOT_USTREAM* create_instance(
         else
         {
             ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_OUT_OF_MEMORY_STRING, "ustream_instance");
-            ULIB_CONFIG_FREE(ustream_interface);
+            AZIOT_ULIB_CONFIG_FREE(ustream_interface);
             ustream_interface = NULL;
         }
     }
@@ -96,7 +96,7 @@ static USTREAM_INNER_BUFFER* create_inner_buffer(
 {
     USTREAM_INNER_BUFFER* inner_buffer;
 
-    if((inner_buffer = (USTREAM_INNER_BUFFER*)ULIB_CONFIG_MALLOC(sizeof(USTREAM_INNER_BUFFER))) == NULL)
+    if((inner_buffer = (USTREAM_INNER_BUFFER*)AZIOT_ULIB_CONFIG_MALLOC(sizeof(USTREAM_INNER_BUFFER))) == NULL)
     {
         ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_OUT_OF_MEMORY_STRING, "inner buffer control");
     }
@@ -117,7 +117,7 @@ static void destroy_inner_buffer(USTREAM_INNER_BUFFER* inner_buffer)
     {
         inner_buffer->inner_free(inner_buffer->ptr);
     }
-    ULIB_CONFIG_FREE(inner_buffer);
+    AZIOT_ULIB_CONFIG_FREE(inner_buffer);
 }
 
 static AZIOT_ULIB_RESULT concrete_set_position(AZIOT_USTREAM* ustream_interface, offset_t position)
@@ -415,8 +415,8 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
         {
             destroy_inner_buffer(inner_buffer);
         }
-        ULIB_CONFIG_FREE(instance);
-        ULIB_CONFIG_FREE(ustream_interface);
+        AZIOT_ULIB_CONFIG_FREE(instance);
+        AZIOT_ULIB_CONFIG_FREE(ustream_interface);
         result = AZIOT_ULIB_SUCCESS;
     }
 
@@ -457,7 +457,7 @@ AZIOT_USTREAM* ustream_create(
             /*[ustream_create_no_memory_to_create_instance_failed]*/
             if(interface_result == NULL)
             {
-                ULIB_CONFIG_FREE(inner_buffer);
+                AZIOT_ULIB_CONFIG_FREE(inner_buffer);
             }
         }
     }

@@ -52,7 +52,7 @@ static BUFFER_LIST_NODE* create_buffer_node(
     AZIOT_USTREAM* buffer, 
     offset_t offset)
 {
-    BUFFER_LIST_NODE* new_node = (BUFFER_LIST_NODE*)ULIB_CONFIG_MALLOC(sizeof(BUFFER_LIST_NODE));
+    BUFFER_LIST_NODE* new_node = (BUFFER_LIST_NODE*)AZIOT_ULIB_CONFIG_MALLOC(sizeof(BUFFER_LIST_NODE));
     if(new_node == NULL)
     {
         /*[aziot_ustream_clone_no_memory_to_create_first_node_failed]*/
@@ -65,7 +65,7 @@ static BUFFER_LIST_NODE* create_buffer_node(
         if(new_node->buffer == NULL)
         {
             /*[aziot_ustream_clone_no_memory_to_clone_first_node_failed]*/
-            ULIB_CONFIG_FREE(new_node);
+            AZIOT_ULIB_CONFIG_FREE(new_node);
             new_node = NULL;
         }
     }
@@ -75,7 +75,7 @@ static BUFFER_LIST_NODE* create_buffer_node(
 static void destroy_buffer_node(BUFFER_LIST_NODE* node)
 {
     aziot_ustream_dispose(node->buffer);
-    ULIB_CONFIG_FREE(node);
+    AZIOT_ULIB_CONFIG_FREE(node);
 }
 
 static void destroy_full_buffer_list(BUFFER_LIST_NODE* node)
@@ -92,7 +92,7 @@ static void destroy_full_buffer_list(BUFFER_LIST_NODE* node)
 
 static AZIOT_USTREAM* create_instance(void)
 {
-    AZIOT_USTREAM* ustream_interface = (AZIOT_USTREAM*)ULIB_CONFIG_MALLOC(sizeof(AZIOT_USTREAM));
+    AZIOT_USTREAM* ustream_interface = (AZIOT_USTREAM*)AZIOT_ULIB_CONFIG_MALLOC(sizeof(AZIOT_USTREAM));
     /*[ustream_multi_create_no_memory_to_create_instance_failed]*/
     /*[aziot_ustream_clone_no_memory_to_create_interface_failed]*/
     if(ustream_interface == NULL)
@@ -101,12 +101,12 @@ static AZIOT_USTREAM* create_instance(void)
     }
     else
     {
-        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ULIB_CONFIG_MALLOC(sizeof(USTREAM_MULTI_INSTANCE));
+        USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)AZIOT_ULIB_CONFIG_MALLOC(sizeof(USTREAM_MULTI_INSTANCE));
         if(instance == NULL)
         {
             /*[aziot_ustream_clone_no_memory_to_create_instance_failed]*/
             ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_OUT_OF_MEMORY_STRING, "ustream_instance");
-            ULIB_CONFIG_FREE(ustream_interface);
+            AZIOT_ULIB_CONFIG_FREE(ustream_interface);
             ustream_interface = NULL;
         }
         else
@@ -130,8 +130,8 @@ static void destroy_instance(AZIOT_USTREAM* ustream_interface)
     USTREAM_MULTI_INSTANCE* instance = (USTREAM_MULTI_INSTANCE*)ustream_interface->handle;
 
     destroy_full_buffer_list(instance->buffer_list);
-    ULIB_CONFIG_FREE(instance);
-    ULIB_CONFIG_FREE(ustream_interface);
+    AZIOT_ULIB_CONFIG_FREE(instance);
+    AZIOT_ULIB_CONFIG_FREE(ustream_interface);
 }
 
 static AZIOT_ULIB_RESULT concrete_set_position(

@@ -5,8 +5,8 @@
  * @file ulib_heap.h
  */
 
-#ifndef AZURE_ULIB_C_INC_ULIB_HEAP_H_
-#define AZURE_ULIB_C_INC_ULIB_HEAP_H_
+#ifndef AZIOT_ULIB_HEAP_H_
+#define AZIOT_ULIB_HEAP_H_
 
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
@@ -38,4 +38,4 @@ MOCKABLE_FUNCTION(, void, aziot_ulib_free,
 }
 #endif /* __cplusplus */
 
-#endif /* AZURE_ULIB_C_INC_ULIB_HEAP_H_ */
+#endif /* AZIOT_ULIB_HEAP_H_ */
