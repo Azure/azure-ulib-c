@@ -34,8 +34,7 @@ var menudata={children:[
 {text:"Globals",url:"globals.html",children:[
 {text:"All",url:"globals.html",children:[
 {text:"a",url:"globals.html#index_a"},
-{text:"o",url:"globals.html#index_o"},
-{text:"u",url:"globals.html#index_u"}]},
+{text:"o",url:"globals.html#index_o"}]},
 {text:"Functions",url:"globals_func.html"},
 {text:"Variables",url:"globals_vars.html"},
 {text:"Typedefs",url:"globals_type.html"},
