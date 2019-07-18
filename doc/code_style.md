@@ -64,19 +64,54 @@ Where:
 * **LICENSE**: Is the file that describe the license of the code in the repo.
 * **README.md**: Is the file with the generic description of the repo, it can contain links for the lib documentation
 
+## Naming standard
+As a standard, all names on C should be a composition of the same name in C++, that will concatenate `namespace`, `class_name`, and `function_name`, exceptions may happen if the meaning of the name is different in C and C++. So, the C++ code:
+```cpp
+namespace aziot
+{
+    class credential
+    {
+    public:
+        credential();
+        ~credential();
+        void do_something(void);
+    };
+}
+```
+
+will result in the C code:
+```c
+void aziot_credential_init(AZIOT_CREDENTIAL* credential)
+{
+    // constructor implementation.
+}
+
+void aziot_credential_deinit(AZIOT_CREDENTIAL* credential)
+{
+    // destructor implementation.
+}
+
+void aziot_credential_do_something(AZIOT_CREDENTIAL* credential)
+{
+    // do something implementation.
+}
+```
+
+Each team in Microsoft should define its own namespace, and use it on all of its naming to avoid naming conflict. The usage of this naming will be detailed below on this document.
+
 ## Filename
 All filenames should be full lowercase to avoid casing issues across platforms.
 
-A source (`.c`/`.cpp`) filename should be made of the initial of the name of the module that it implements, followed by the name of the file. 
-* *Example*: `bar_non_public_create.c`
+A source (`.c`/`.cpp`) filename should be made of the namespace, followed by the class name. 
+* *Example*: `aziot_credential.c`
  
 Words in filenames should be separated by `_`. 
 
-The public API should be clearly identified with the initial of the name of the module followed by the name `api` 
-* *Example*: `bar_api.h`
+The public API should be clearly identified with the namespace followed by the class name and the name `api` 
+* *Example*: `aziot_credential_api.h`
 
-An include (`.h`) that is not part of the public API should be placed in the `internal` directory.
-* *Example*: `bar_non_public.h`
+An include (`.h`) that is not part of the public API should be placed in the `internal` directory, and shall not contains the namespace on the name. The path `internal` should not be included as standard include directory.
+* *Example*: `internal/credential.h`
 
 The file name should use characters `a` to `z`, `0` to `9`, `_` (underscore) as name separator, and one `.` before the file extension. All other characters should be avoided. 
 
@@ -84,7 +119,7 @@ Filenames should be concise enough, but they should convey the information of wh
 
 **Bad**: `ih.c`, `the_iot_hub_client_thingie.c` 
 
-**Good**: `bar_byte_malloc.c`
+**Good**: `aziot_memorymanager_byte_malloc.c`
 
 ## General C conventions
 The following apply to C language:
@@ -130,12 +165,12 @@ Macros should be avoided wherever possible; C functions should be used instead t
 
 Magic numbers should be avoided. All constants should be defined using C macros (`#define`).
 
-Magic strings should be avoided. Strings can be defined as macros (`#define`) or constants (`static const CHAR[]`).
+Magic strings should be avoided. Strings can be defined as macros (`#define`) or constants (`static const char[]`).
 
 Constants should be defined at the beginning of the file, and the name should be full uppercase with underline separator. Unless other order makes more sense, they should also be sorted alphabetically for ease of reading when number of items increases:
 ```c
 #define MAX_QUEUE_SIZE 256f
-static const CHAR* PROGRAM_FILE_FORMAT = "c:/program_file/%s_%s";
+static const char PROGRAM_FILE_FORMAT[] = "c:/program_file/%s_%s";
 ```
 Macros should be named in full uppercase with underline separators:
 ```c
@@ -146,99 +181,203 @@ Macros should be named in full uppercase with underline separators:
 
 All functions should use full lowercase name for the functions. The words should be separated by `_`. 
 ```c
-LONG bar_add(INT a, INT b);
+int64_t bar_add(int32_t a, int32_t b);
 ```
-All functions in the public API should start with the initial of the name of the module followed by the function name. The definition of the function should be placed in the *xx_api.h* file of the module (for the below example, the *bar_api.h*). 
+All functions in the public API should start with the namespace followed by the class name and the function name. The definition of the function should be placed in the *xx_api.h* file of the module (for the below example, the *aziot_barclass_api.h*). 
 ```c
-BAR_RESULT bar_do_something_create(BAR_HANDLE* handle, CHAR* name, ULONG entry,
-                VOID* buffer_start, ULONG buffer_size, UINT priority);
+AZIOT_RESULT aziot_barclass_init(AZIOT_BARCLASS* my_barclass, 
+        const char* const name, uint32_t entry, void* buffer_start, 
+        size_t buffer_size, uint8_t priority);
 ```
-A public API that should be implemented in multiple flavors, should have the flavors with the same name of the public API preceded by `_`. For the flavor without argument validation, the name should be the same of the public API, for the other flavors, a character should be added after the module initial to identify the flavor. For example, the flavor that tests the arguments may add `e` on the name, and the one that validate runtime error may add `r` in the name. For example, the three flavors of `bar_do_something_create` should be: 
+A public API that should be implemented in multiple flavors, should have the flavors with the same name of the public API preceded by `_`. For the flavor without argument validation, the name should be the same of the public API followed by `_no_test`. For example, the two flavors of `aziot_credential_create_from_connection_string` should be: 
 ```c
 /**
- *  bar_do_something_create documentation here.
+ * @brief   Create a credential component from connection string.
  */
-inline BAR_RESULT bar_do_something_create(BAR_HANDLE* handle, CHAR* name, 
-                ULONG entry, VOID* buffer_start, ULONG buffer_size, UINT priority)
+static inline AZ_IOT_ULIB_RESULT aziot_credential_create_from_connection_string(
+    AZIOT_CREDENTIAL* credential,
+    const char* const connection_string)
 {
-#ifdef BAR_DISABLE_ERROR_CHECKING
-    return _bar_do_something_create(handle, name, entry, buffer_start, buffer_size, priority);
+#ifdef AZIOT_CREDENTIAL_VALIDATE_ARGUMENTS
+    return _aziot_credential_create_from_connection_string(
+        credential,
+        connection_string);
 #else
-  #ifdef BAR_ENABLE_RUNTIME_ERROR_CHECKING
-    return _barr_do_something_create(handle, name, entry, buffer_start, buffer_size, priority);
-  #else
-    return _bare_do_something_create(handle, name, entry, buffer_start, buffer_size, priority);
-  #endif
-#endif
+    return _aziot_credential_create_from_connection_string_no_test(
+        credential,
+        connection_string);
+#endif // AZIOT_CREDENTIAL_VALIDATE_ARGUMENTS
 }
 ```
-All functions that are not `static` but not part of the public API should start with the initial of the name of the module followed by the function name. The definition of the function should be placed in the header file of the module, inside of the `internal` directory. 
+All functions that are not `static` but not part of the public API should start with `_` followed by the namespace, the class name, and the function name. The definition of the function should be placed in the header file of the module, inside of the `internal` directory. **These function should be strongly avoided**. 
 
 All functions whose purpose is only inside of the source code (`.c`/`.cpp`) should be set as `static`. The static function should contain only the function name, without any prefix. For example:
 ```c
-static LONG sum(INT a, INT b)
+static int64_t sum(int32_t a, int32_t b)
 {
-    return a + b;
+    return (int64_t)a + (int64_t)b;
 }
 ```
 
 ## Variable naming
 All variables should use full lowercase name. The words should be separated by `_`.
-Global variables should start with `g_` followed by the initial of the name of the module, and the variable name.
+Global variables should start with `g_` followed by the namespace, and the variable name. **Global variables should be strongly avoided**. 
 ```c
-UINT g_bar_byte_counter;
+uint32_t g_aziot_byte_counter;
 ```
-All variables that are not `static` but not part of the public API should start with the initial of the name of the module followed by the variable name. The definition of the variable should be placed in the header file of the module, inside of the `internal` directory.
+All variables that are not `static` but not part of the public API should start with `_` followed by the namespace, the class name, and the variable name. The definition of the variable should be placed in the header file of the module, inside of the `internal` directory. **These variable should be strongly avoided**. 
 ```c
-UINT bar_byte_counter;
+uint32_t _aziot_bar_byte_counter;
 ```
 All variables whose propose is only inside of the source code (`.c`/`.cpp`) should be set as `static`. The static variable should not have any prefix, only the variable name.
 ```c
-static UINT byte_counter = 10;
+static uint32_t byte_counter = 10;
 ```
 Arguments and local variable names should use a fully lowercase name separated by `_`, without any prefix.
 ```c
-static BAR_RESULT call_procedure(
-    const CHAR* const name, 
-    const VOID* const procedure_model_in, 
-    const VOID* procedure_model_out);
+static AZIOT_BAR_RESULT call_procedure(
+    const char* const name, 
+    const void* const procedure_model_in, 
+    const void* procedure_model_out);
 {
-    UINT byte_counter = 10;
+    uint32_t byte_counter = 10;
     ...
 }
 ```
 
 ## Structures
-Structures should be defined with typedef, the structure name should be uppercase with `_` separator, it should start with the initial of the name of the module that it implements, and end with `_STRUCT`, the same name should be used as the type name, but without the `_STRUCT`.
+Structures should be defined with typedef, the structure name should be uppercase with `_` separator, 
+
+### *Internal structures*
+Internal structures should be placed in the source code file (`.c`, `.cpp`) and may contains only the structure name, and end with `_TAG`, the same name should be used as the type name, but without the `_TAG`.
 ```c
-typedef struct BAR_HEADER_DATA_STRUCT
+typedef struct HEADER_DATA_TAG
 {
-    BAR_DEVICE_HANDLE bar_device_handle;
-    BAR_SCHEMA_MODEL bar_schema_model;
-    UINT bar_data_size;
-    UCHAR* bar_data;
-} BAR_HEADER_DATA;
+    AZIOT_BAR_DEVICE* bar_device;
+    AZIOT_BAR_SCHEMA_MODEL bar_schema_model;
+    size_t size;
+    uint8_t* data;
+} HEADER_DATA;
 ```
-To avoid user misunderstanding, private structures should be placed in the header file in the `internal` directory. So, in this case, if a module needs to have a private structure exposed as a handle, without exposing the internal fields, it should create the structure in the `internal` directory and only a typedef for it in the xx_api.h. For example, the `bar_do_something` control block, should be defined in the *bar_do_something.h* as:
+### *Internal structure with public size*
+To avoid memory allocation, `C` APIs may require pre-allocated memory for some internal structures. To do that, the caller shall know the size of the structure. So, this is a privet structure with public size.
+
+As any privet structure, its definition should be placed in the source code file (`.c`, `.cpp`). For example, the `AZIOT_HTTP` may be have its own control block defined in the *aziot_http.c* file as: 
 ```c
-typedef struct BAR_INTERNAL_DO_SOMETHING_STRUCT
+typedef struct HTTP_CONTROL_BLOCK_TAG
 {
-    ULONG   bar_do_something_id;             /* Control block ID         */
-    ULONG   bar_run_count;                   /* Run counter              */
-    VOID    *bar_buffer_ptr;                 /* Buffer pointer           */
-    VOID    *bar_buffer_size;                /* Buffer size              */
+    AZIOT_TRANSPORT_ENDPOINT* endpoint;
+    AZIOT_TRANSPORT_STATE logic_state;
+    AZIOT_CREDENTIAL* credential;
+    AZIOT_I_TRANSPORT_CLIENT* clients[AZIOT_ULIB_CONFIG_HTTP_MAX_CLIENT];
     ...
-} BAR_INTERNAL_DO_SOMETHING;
+} HTTP_CONTROL_BLOCK;
 ```
-And the public definition placed in the *bar_api.h* as:
+To create a strong type with the correct size, a dummy structure will be placed in the API header (`.h`), the public name in the header should start with the namespace followed by the class name, and the type name, the content of the public structure should contains a `dummy` array with the size of the internal structure. For the above example, the following code should be in the *aziot_http_api.h*.
 ```c
-typedef struct BAR_INTERNAL_DO_SOMETHING_STRUCT         BAR_DO_SOMETHING;
+#define AZIOT_HTTP_CONTROL_BLOCK_SIZE    \
+( \
+    sizeof(void*) + \
+    sizeof(AZIOT_TRANSPORT_STATE) + \
+    sizeof(void*) + \
+    (sizeof(void*) * AZIOT_ULIB_CONFIG_HTTP_MAX_CLIENT) \
+    ... \
+)
+
+typedef struct AZIOT_HTTP_TAG
+{
+    uint8_t dummy[AZIOT_HTTP_CONTROL_BLOCK_SIZE];
+} AZIOT_HTTP;
+```
+To make sure that the internal structure fits the dummy external structure, on the source code, immediately after the structure definition, a check should be added. A simple way to check the structure size on compilation time may be created with the following macro:
+```c
+#define AZIOT_CONTRACT_REQUEST_STRUCT_SIZE(tag, size) \
+    typedef char MU_C2(tag, _check_size)[(sizeof(tag) == MU_C1(size) ? 1 : -1)]
+```
+Both `MU_C1` and `MU_C2` came from *azure_macro_utils/macro_utils.h*. On the above example, in the *aziot_http.c*, we can check the `HTTP_CONTROL_BLOCK_TAG` size with the following code:
+```c
+// Check if the size of the dummy AZ_HTTP fits the HTTP.
+AZIOT_CONTRACT_REQUEST_STRUCT_SIZE(HTTP_CONTROL_BLOCK, AZIOT_HTTP_CONTROL_BLOCK_SIZE);
+```
+User shall use the public definition of the structure to create it, and pass to the public API that should cast to the internal definition to access the internal fields.
+
+### *Public structures*
+Public structures name should start with the namespace followed by the class name, the type name and `_TAG`. The type shall have the same name,but without the `_TAG`. The structure shall be defined in the API header, for example, an aziot http class expose a data structure with the connection statistics, in this case, the following definition should be in *aziot_http_api.h*:
+```c
+typedef struct AZIOT_HTTP_STATISTICS_TAG
+{
+    uint32_t average_tx_message_per_second;
+    uint32_t average_rx_message_per_second;
+    uint32_t average_tx_message_size;
+    uint32_t average_rx_message_size;
+    ...
+} AZIOT_HTTP_STATISTICS;
+```
+
+## Others
+### *Callbacks*
+Functions that request a callback with a context should ordering the callback first and than the callback context. For example:
+```c
+AZIOT_RESULT aziot_client_send_async(AZIOT_CLIENT* client, 
+        AZIOT_MESSAGE* message, AZIOT_RELEASE_CALLBACK release_message, 
+        AZIOT_CLIENT_RESULT_CALLBACK callback, AZIOT_CLIENT_RESULT_CONTEXT context)
+```
+
+All callbacks that has context should receive the context as the first argument. For example:
+```c
+static void on_client_result(AZIOT_CLIENT_RESULT_CONTEXT context, 
+        AZIOT_RESULT result, AZIOT_MESSAGE_RECEIVED message)
+```
+
+### *Operator `this`*
+The handle of an object, which is equivalent to the `this` pointer in the C++, should be the first argument in all the functions that belongs to an abject.
+```c
+AZIOT_RESULT aziot_client_init(AZIOT_CLIENT* client);
+AZIOT_RESULT aziot_client_deinit(AZIOT_CLIENT* client);
+AZIOT_RESULT aziot_client_send_async(AZIOT_CLIENT* client, 
+        AZIOT_MESSAGE* message, AZIOT_RELEASE_CALLBACK release_message, 
+        AZIOT_CLIENT_RESULT_CALLBACK callback, AZIOT_CLIENT_RESULT_CONTEXT context);
+```
+
+### *Memory policy*
+Clients should avoid any usage of heap. If it is necessary, the system shall provide the means for the customer to decide each function to call to `allocate` and `free` memory. This option should be in a config file that can be replaced by the the developer. It should contains the following definitions:
+```c
+/**
+ * @brief   uLib malloc
+ *
+ *  Defines the malloc function that the ulib shall use as its own way to dynamically allocate
+ *      memory from the HEAP. For simplicity, it can be defined as the malloc(size) from the `stdlib.h`.
+ */
+#define AZIOT_ULIB_CONFIG_MALLOC(size)    malloc(size)
+
+/**
+ * @brief   uLib free
+ *
+ *  Defines the free function that the ulib shall use as its own way to release memory dynamic 
+ *      allocated in the HEAP. For simplicity, it can be defined as the free(ptr) from the `stdlib.h`.
+ */
+#define AZIOT_ULIB_CONFIG_FREE(ptr)       free(ptr)
+```
+
+#### Memory for the control block
+The memory to all the control block should be allocated by the user of the API, and provided as part of the argument. On this way, the user may decide to allocate it on the .BSS, Stack, or Heap. 
+
+#### Passing pre-allocate buffer
+To avoid multiple copies of the same content, functions that receive a buffer may require a pointer to a release function. The object that receives the buffer may keep it for the time frame that is needed, when it is not necessary anymore, it shall call the release function. The release function should came after the buffer in the list of arguments, and the name should be `release_` following you the buffer name. For example:
+```c
+AZIOT_RESULT aziot_client_send_async(AZIOT_CLIENT* client, 
+        AZIOT_MESSAGE* message, AZIOT_RELEASE_CALLBACK release_message, 
+        AZIOT_CLIENT_RESULT_CALLBACK callback, AZIOT_CLIENT_RESULT_CONTEXT context);
+```
+The signature of the release function should be:
+```c
+void release(void* ptr); 
 ```
 
 ## Headers
 The final **MSDN** documentation will be auto generated based on the header comments in the code. As a standard, all headers should be written using **Doxygen** [[4]](http://www.doxygen.nl/index.html).
 
-### Functions
+### *Functions*
 The header of a function should precede the function declaration in the header file (`.h`). All function headers should contain, at least:
 * **@brief**: Contains a small description of the function. Other paragraphs can be added with more details about the function.
 * **@section: Visibility**: Explicitly defines if the function is part of the public API or not.
@@ -265,13 +404,13 @@ The header of a function should precede the function declaration in the header f
  * @example:
  * <pre><code>
  *   BAR_HEAP my_heap;
- *   UCHAR* memory_ptr;
- *   UINT status;
+ *   uint8_t* memory_ptr;
+ *   uint32_t status;
  *
  *   // Allocate a memory block from my_heap. Assume that the
  *   //   heap has already been created with a call to
  *   //   bar_heap_create.
- *   status = bar_heap_malloc(&my_heap, (VOID **) &memory_ptr, 100);
+ *   status = bar_heap_malloc(&my_heap, (void **) &memory_ptr, 100);
  *
  *   // If status equals SUCCESS, memory_ptr contains the
  *   //   address of the allocated block of memory.
@@ -300,7 +439,7 @@ The header of a function should precede the function declaration in the header f
  */
 ```
 
-### Types (Structures, enumerators, strong types, etc)
+### *Types (Structures, enumerators, strong types, etc)*
 The header of a type should precede the type declaration. All type headers should contain, at least:
 * **@brief**: Contains a small description of the type. Other paragraphs can be added with more details about the type 
 * **@section: Visibility**: Explicitly defines if the type is part of the public API (`Public API`) or not (`Internal only`).
@@ -321,7 +460,7 @@ The header of a type should precede the type declaration. All type headers shoul
  */
 ```
 
-### Internals
+### *Internals*
 All header files in the `internal` directory should be documented as “`Internal only`” immediately after the Microsoft Copyright. The comment should contain the following information: 
 ```c
 /**
@@ -361,7 +500,7 @@ All components must be totally tested, it is highly recommended that the code ha
 
 All code should contain, at least, requirements, unit tests, end-to-end tests, and samples. The requirements description should be placed in the unit test file, on top of the test function that verifies the requirement. The unit test name should be placed in the code as a comment, together with the code that implements that functionality. For example:
 
-### On the code:
+### *On the code:*
 ```c
 void foo_tcp_manager_destroy(TCP_HANDLE handle)
 {
@@ -380,7 +519,7 @@ void foo_tcp_manager_destroy(TCP_HANDLE handle)
     }
 }
 ```
-### On the unit test file:
+### *On the unit test file:*
 ```c
 /* If the provided TCP_HANDLE is NULL, the foo_tcp_manager_destroy shall do nothing. */
 TEST_FUNCTION(foo_tcp_manager_destroy_does_nothing_on_null_handle)
@@ -416,7 +555,7 @@ TEST_FUNCTION(foo_tcp_manager_destroy_succeed_on_free_all_resources)
 
 If a single unit test tests more than one requirement, it should be sequentially enumerated in the UT file, and the same number should be added to the test name in the code comment. For example:
 
-### On the UT file:
+### *On the UT file:*
 ```c
 /*[1]The foo_tcp_manager_create shall create a new instance of the TCP_INSTANCE 
         and return it as TCP_HANDLE.*/
@@ -431,7 +570,7 @@ TEST_FUNCTION(foo_tcp_manager_create_createAndReturnInstanceSucceed)
     ...
 }
 ```
-### On the code:
+### *On the code:*
 ```c
     /*[foo_tcp_manager_create_createAndReturnInstanceSucceed_1]*/
     TCP_INSTANCE* instance = (TCP_INSTANCE*)malloc(sizeof(TCP_INSTANCE));
