@@ -341,7 +341,7 @@ typedef struct AZIOT_USTREAM_TAG
  *
  *  Any module that exposes the uStream shall implement the functions on this vTable.
  *
- *  Any code that will use an exposed uStream shall call the APIs using the <tt>ustream_...</tt>
+ *  Any code that will use an exposed uStream shall call the APIs using the <tt>aziot_ustream_...</tt>
  *      inline functions.
  */
 struct AZIOT_USTREAM_INTERFACE_TAG
