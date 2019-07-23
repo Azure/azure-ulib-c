@@ -76,7 +76,7 @@ static AZIOT_USTREAM* create_instance(
             instance->inner_first_valid_position = inner_current_position;
             instance->offset_diff = offset - inner_current_position;
             instance->inner_buffer = inner_buffer;
-            ULIB_PORT_ATOMIC_INC_W(&(instance->inner_buffer->ref_count));
+            AZIOT_ULIB_PORT_ATOMIC_INC_W(&(instance->inner_buffer->ref_count));
         }
         else
         {
@@ -410,7 +410,7 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
         /*[aziot_ustream_dispose_compliance_cloned_instance_disposed_first_succeed]*/
         /*[aziot_ustream_dispose_compliance_cloned_instance_disposed_second_succeed]*/
         /*[aziot_ustream_dispose_compliance_single_instance_succeed]*/
-        ULIB_PORT_ATOMIC_DEC_W(&(inner_buffer->ref_count));
+        AZIOT_ULIB_PORT_ATOMIC_DEC_W(&(inner_buffer->ref_count));
         if(inner_buffer->ref_count == 0)
         {
             destroy_inner_buffer(inner_buffer);

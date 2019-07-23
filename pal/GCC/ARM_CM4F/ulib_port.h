@@ -12,7 +12,7 @@ extern "C"
 #include <stdint.h>
 #endif
 
-__attribute__( ( always_inline ) ) static inline uint32_t ULIB_PORT_ATOMIC_INC_W(volatile uint32_t* addr)
+__attribute__( ( always_inline ) ) static inline uint32_t AZIOT_ULIB_PORT_ATOMIC_INC_W(volatile uint32_t* addr)
 {
     register uint32_t result;
     register uint32_t modified = 0;
@@ -31,7 +31,7 @@ __attribute__( ( always_inline ) ) static inline uint32_t ULIB_PORT_ATOMIC_INC_W
     return result;
 }
 
-__attribute__( ( always_inline ) ) static inline uint32_t ULIB_PORT_ATOMIC_DEC_W(volatile uint32_t* addr)
+__attribute__( ( always_inline ) ) static inline uint32_t AZIOT_ULIB_PORT_ATOMIC_DEC_W(volatile uint32_t* addr)
 {
     register uint32_t result;
     register uint32_t modified = 0;
@@ -50,7 +50,7 @@ __attribute__( ( always_inline ) ) static inline uint32_t ULIB_PORT_ATOMIC_DEC_W
     return result;
 }
 
-#define ULIB_PORT_THROW_HARD_FAULT          (*(char*)NULL = 0)
+#define AZIOT_ULIB_PORT_THROW_HARD_FAULT          (*(char*)NULL = 0)
 
 #ifdef __cplusplus
 }

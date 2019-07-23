@@ -122,7 +122,7 @@ extern "C" {
         if(!(expression)) \
         { \
             AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, msg); \
-            ULIB_PORT_THROW_HARD_FAULT; \
+            AZIOT_ULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 
@@ -139,7 +139,7 @@ extern "C" {
         if(val != expected) \
         { \
             AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
-            ULIB_PORT_THROW_HARD_FAULT; \
+            AZIOT_ULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 
@@ -156,7 +156,7 @@ extern "C" {
         if(val == expected) \
         { \
             AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
-            ULIB_PORT_THROW_HARD_FAULT; \
+            AZIOT_ULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 
@@ -172,7 +172,7 @@ extern "C" {
         if(val == NULL) \
         { \
             AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
-            ULIB_PORT_THROW_HARD_FAULT; \
+            AZIOT_ULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 
