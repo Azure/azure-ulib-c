@@ -38,7 +38,7 @@ MU_DEFINE_ENUM(
     ULIB_SYSTEM_ERROR                   = (ULIB_ERROR_FLAG | 4),    /**<System error */
     ULIB_CANCELLED_ERROR                = (ULIB_ERROR_FLAG | 5),    /**<Cancelled error */
     ULIB_BUSY_ERROR                     = (ULIB_ERROR_FLAG | 6)     /**<Busy error */
-)
+);
 
 
 #ifdef __cplusplus
