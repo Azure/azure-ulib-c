@@ -5,8 +5,8 @@
  * @file ustream.h
  */
 
-#ifndef AZIOT_USTREAM_H_
-#define AZIOT_USTREAM_H_
+#ifndef AZIOT_USTREAM_H
+#define AZIOT_USTREAM_H
 
 #include "ustream_base.h"
 
@@ -117,4 +117,4 @@ MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_multi_append,
 }
 #endif /* __cplusplus */
 
-#endif /* AZIOT_USTREAM_H_ */
+#endif /* AZIOT_USTREAM_H */

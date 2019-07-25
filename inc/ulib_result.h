@@ -5,8 +5,8 @@
  * @file ulib_result.h
  */
 
-#ifndef AZIOT_ULIB_RESULT_H_
-#define AZIOT_ULIB_RESULT_H_
+#ifndef AZIOT_ULIB_RESULT_H
+#define AZIOT_ULIB_RESULT_H
 
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
@@ -45,4 +45,4 @@ MU_DEFINE_ENUM(
 }
 #endif  //__cplusplus
 
-#endif  //AZIOT_ULIB_RESULT_H_
+#endif  //AZIOT_ULIB_RESULT_H

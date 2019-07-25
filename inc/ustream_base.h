@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef AZIOT_USTREAM_BASE_H_
-#define AZIOT_USTREAM_BASE_H_
+#ifndef AZIOT_USTREAM_BASE_H
+#define AZIOT_USTREAM_BASE_H
 
 /**
  * @file ustream_base.h
@@ -823,4 +823,4 @@ MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_append,
 }
 #endif /* __cplusplus */
 
-#endif /* AZIOT_USTREAM_BASE_H_ */
+#endif /* AZIOT_USTREAM_BASE_H */

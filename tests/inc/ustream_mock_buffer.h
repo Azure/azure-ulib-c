@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef AZURE_ULIB_C_TESTS_INC_USTREAM_MOCK_BUFFER_H_
-#define AZURE_ULIB_C_TESTS_INC_USTREAM_MOCK_BUFFER_H_
+#ifndef AZURE_ULIB_C_TESTS_INC_USTREAM_MOCK_BUFFER_H
+#define AZURE_ULIB_C_TESTS_INC_USTREAM_MOCK_BUFFER_H
 
 #include "ustream_base.h"
 
@@ -25,4 +25,4 @@ void set_dispose_result(AZIOT_ULIB_RESULT result);
 }
 #endif /* __cplusplus */
 
-#endif /* AZURE_ULIB_C_TESTS_INC_USTREAM_MOCK_BUFFER_H_ */
+#endif /* AZURE_ULIB_C_TESTS_INC_USTREAM_MOCK_BUFFER_H */

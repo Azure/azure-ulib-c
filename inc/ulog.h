@@ -5,8 +5,8 @@
  * @file ulog.h
  */
 
-#ifndef AZIOT_ULOG_H_
-#define AZIOT_ULOG_H_
+#ifndef AZIOT_ULOG_H
+#define AZIOT_ULOG_H
 
 #include "ulib_config.h"
 
@@ -50,4 +50,4 @@ void aziot_ulog_print(AZIOT_ULOG_TYPE type, const char* const format, ...);
 }
 #endif /* __cplusplus */
 
-#endif /* AZIOT_ULOG_H_ */
+#endif /* AZIOT_ULOG_H */

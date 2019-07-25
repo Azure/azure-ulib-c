@@ -3,8 +3,8 @@
 
 // This file gets included into ulib_port.h as a means of extending the behavior of
 // atomic increment, decrement, and test.
-#ifndef AZIOT_ULIB_GCC_IOS_PORT_H_
-#define AZIOT_ULIB_GCC_IOS_PORT_H_
+#ifndef AZIOT_ULIB_GCC_IOS_PORT_H
+#define AZIOT_ULIB_GCC_IOS_PORT_H
 
 
 // This iOS-specific header offers 3 strategies:
@@ -62,4 +62,4 @@ gcc
 
 #define AZIOT_ULIB_PORT_THROW_HARD_FAULT      (*(char*)NULL = 0)
 
-#endif // AZIOT_ULIB_GCC_IOS_PORT_H_
+#endif // AZIOT_ULIB_GCC_IOS_PORT_H

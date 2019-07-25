@@ -5,8 +5,8 @@
  * @file ucontract.h
  */
 
-#ifndef AZIOT_UCONTRACT_H_
-#define AZIOT_UCONTRACT_H_
+#ifndef AZIOT_UCONTRACT_H
+#define AZIOT_UCONTRACT_H
 
 #include "azure_macro_utils/macro_utils.h"
 #include "ulib_config.h"
@@ -181,4 +181,4 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif /* AZIOT_UCONTRACT_H_ */
+#endif /* AZIOT_UCONTRACT_H */

@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef AZIOT_ULIB_GCC_ARM_CM4F_PORT_H_
-#define AZIOT_ULIB_GCC_ARM_CM4F_PORT_H_
+#ifndef AZIOT_ULIB_GCC_ARM_CM4F_PORT_H
+#define AZIOT_ULIB_GCC_ARM_CM4F_PORT_H
 
 #ifdef __cplusplus
 #include <cstdint>
@@ -56,4 +56,4 @@ __attribute__( ( always_inline ) ) static inline uint32_t AZIOT_ULIB_PORT_ATOMIC
 }
 #endif
 
-#endif /* AZIOT_ULIB_GCC_ARM_CM4F_PORT_H_ */
+#endif /* AZIOT_ULIB_GCC_ARM_CM4F_PORT_H */

@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef AZIOT_ULIB_CONFIG_H_
-#define AZIOT_ULIB_CONFIG_H_
+#ifndef AZIOT_ULIB_CONFIG_H
+#define AZIOT_ULIB_CONFIG_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -55,4 +55,4 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif /* AZIOT_ULIB_CONFIG_H_ */
+#endif /* AZIOT_ULIB_CONFIG_H */
