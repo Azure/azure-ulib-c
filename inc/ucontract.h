@@ -57,7 +57,7 @@ extern "C" {
     do { \
         if(!(expression)) \
         { \
-            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, msg); \
+            AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, msg); \
             return result; \
         } \
     } while((void)0,0)
@@ -73,7 +73,7 @@ extern "C" {
     do { \
         if(val != expected) \
         { \
-            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
+            AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
             return result; \
         } \
     } while((void)0,0)
@@ -89,7 +89,7 @@ extern "C" {
     do { \
         if(val == expected) \
         { \
-            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
+            AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
             return result; \
         } \
     } while((void)0,0)
@@ -104,7 +104,7 @@ extern "C" {
     do { \
         if(val == NULL) \
         { \
-            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
+            AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
             return result; \
         } \
     } while((void)0,0)
@@ -121,8 +121,8 @@ extern "C" {
     do { \
         if(!(expression)) \
         { \
-            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, msg); \
-            AZULIB_ULIB_PORT_THROW_HARD_FAULT; \
+            AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, msg); \
+            AZULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 
@@ -138,8 +138,8 @@ extern "C" {
     do { \
         if(val != expected) \
         { \
-            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
-            AZULIB_ULIB_PORT_THROW_HARD_FAULT; \
+            AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
+            AZULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 
@@ -155,8 +155,8 @@ extern "C" {
     do { \
         if(val == expected) \
         { \
-            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
-            AZULIB_ULIB_PORT_THROW_HARD_FAULT; \
+            AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
+            AZULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 
@@ -171,8 +171,8 @@ extern "C" {
     do { \
         if(val == NULL) \
         { \
-            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
-            AZULIB_ULIB_PORT_THROW_HARD_FAULT; \
+            AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
+            AZULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 

@@ -5,12 +5,12 @@
 
 #include "ulib_heap.h"
 
-void* azulib_ulib_malloc(size_t size)
+void* azulib_malloc(size_t size)
 {
     return malloc(size);
 }
 
-void azulib_ulib_free(void* ptr)
+void azulib_free(void* ptr)
 {
     free(ptr);
 }

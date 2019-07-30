@@ -5,8 +5,8 @@
  * @file ulib_heap.h
  */
 
-#ifndef AZULIB_ULIB_HEAP_H
-#define AZULIB_ULIB_HEAP_H
+#ifndef AZULIB_HEAP_H
+#define AZULIB_HEAP_H
 
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
@@ -23,7 +23,7 @@ extern "C" {
  * 
  * The developer can use whatever malloc function they want. By default stdlib <tt>malloc</tt> is used
  */
-MOCKABLE_FUNCTION(, void*, azulib_ulib_malloc,
+MOCKABLE_FUNCTION(, void*, azulib_malloc,
             size_t, size);
 
 /**
@@ -31,11 +31,11 @@ MOCKABLE_FUNCTION(, void*, azulib_ulib_malloc,
  * 
  * The developer can use whatever free function they want. By default stdlib <tt>free</tt> is used
  */
-MOCKABLE_FUNCTION(, void, azulib_ulib_free,
+MOCKABLE_FUNCTION(, void, azulib_free,
             void*, ptr);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* AZULIB_ULIB_HEAP_H */
+#endif /* AZULIB_HEAP_H */

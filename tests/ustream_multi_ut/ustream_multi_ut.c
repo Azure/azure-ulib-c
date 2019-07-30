@@ -113,8 +113,8 @@ TEST_SUITE_INITIALIZE(suite_init)
 
     REGISTER_UMOCK_ALIAS_TYPE(AZULIB_USTREAM, void*);
 
-    REGISTER_GLOBAL_MOCK_HOOK(azulib_ulib_malloc, malloc);
-    REGISTER_GLOBAL_MOCK_HOOK(azulib_ulib_free, free);
+    REGISTER_GLOBAL_MOCK_HOOK(azulib_malloc, malloc);
+    REGISTER_GLOBAL_MOCK_HOOK(azulib_free, free);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -144,8 +144,8 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
 TEST_FUNCTION(azulib_ustream_multi_create_succeed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
 
     ///act
     AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
@@ -163,7 +163,7 @@ TEST_FUNCTION(azulib_ustream_multi_create_succeed)
 TEST_FUNCTION(azulib_ustream_multi_create_no_memory_to_create_interface_failed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
 
     ///act
     AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
@@ -179,9 +179,9 @@ TEST_FUNCTION(azulib_ustream_multi_create_no_memory_to_create_interface_failed)
 TEST_FUNCTION(azulib_ustream_multi_create_no_memory_to_create_instance_failed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
 
     ///act
     AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
@@ -217,15 +217,15 @@ TEST_FUNCTION(azulib_ustream_multi_append_new_multibuffer_succeed)
     ASSERT_IS_NOT_NULL(test_buffer3);
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
 
     ///act
     AZULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
@@ -293,15 +293,15 @@ TEST_FUNCTION(azulib_ustream_multi_append_partial_released_multibuffer_succeed)
         azulib_ustream_release(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2) - 1));
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
 
     ///act
     AZULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
@@ -368,15 +368,15 @@ TEST_FUNCTION(azulib_ustream_multi_append_fully_released_multibuffer_succeed)
         azulib_ustream_release(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) - 1));
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
 
     ///act
     AZULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
@@ -459,7 +459,7 @@ TEST_FUNCTION(azulib_ustream_multi_append_null_buffer_to_add_failed)
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     azulib_ustream_multi_append(multibuffer, test_buffer1);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
 
     ///act
     AZULIB_RESULT result = azulib_ustream_multi_append(multibuffer, NULL);
@@ -483,7 +483,7 @@ TEST_FUNCTION(azulib_ustream_multi_append_not_enough_memory_failed)
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
     AZULIB_RESULT result = azulib_ustream_multi_append(multibuffer, test_buffer1);
@@ -507,9 +507,9 @@ TEST_FUNCTION(azulib_ustream_multi_append_not_enough_memory_to_clone_the_buffer_
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
 
     ///act
     AZULIB_RESULT result = azulib_ustream_multi_append(multibuffer, test_buffer1);
@@ -552,15 +552,15 @@ TEST_FUNCTION(azulib_ustream_multi_append_new_inner_buffer_failed_on_get_remaini
     (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* ustream_multi_dispose shall azulib_ulib_free all allocated resources. */
+/* ustream_multi_dispose shall azulib_free all allocated resources. */
 TEST_FUNCTION(ustream_multi_dispose_multibuffer_without_buffers_free_all_resources_succeed)
 {
     ///arrange
     AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
 
     ///act
     AZULIB_RESULT result = azulib_ustream_dispose(multibuffer);
@@ -579,20 +579,20 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_
     AZULIB_USTREAM* multibuffer = USTREAM_COMPLIANCE_TARGET_FACTORY;
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
 
     ///act
     AZULIB_RESULT result = azulib_ustream_dispose(multibuffer);
@@ -921,7 +921,7 @@ TEST_FUNCTION(azulib_ustream_clone_no_memory_to_create_interface_failed)
     ///arrange
     AZULIB_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
+    EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
 
     ///act
     AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(ustream_instance, 0);
@@ -939,9 +939,9 @@ TEST_FUNCTION(azulib_ustream_clone_no_memory_to_create_instance_failed)
     ///arrange
     AZULIB_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
 
     ///act
     AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(ustream_instance, 0);
@@ -960,11 +960,11 @@ TEST_FUNCTION(azulib_ustream_clone_no_memory_to_create_first_node_failed)
     ///arrange
     AZULIB_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
 
     ///act
     AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(ustream_instance, 0);
@@ -1014,15 +1014,15 @@ TEST_FUNCTION(azulib_ustream_clone_no_memory_to_create_second_node_failed)
     ///arrange
     AZULIB_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
-    EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
-    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM)));
+    EXPECTED_CALL(azulib_malloc(IGNORED_NUM_ARG));
+    EXPECTED_CALL(azulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_free(IGNORED_PTR_ARG));
 
     ///act
     AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(ustream_instance, 0);

@@ -105,9 +105,9 @@ MOCKABLE_FUNCTION(, AZULIB_USTREAM*, azulib_ustream_multi_create);
  *                                      to the uStreamMulti. It cannot be <tt>NULL</tt>.
  *
  * @return The {@link AZULIB_RESULT} with the result of the append operation.
- *          @retval     AZULIB_SUCCESS                If the <tt>ustream_to_append</tt> was appended with success.
- *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZULIB_OUT_OF_MEMORY_ERROR    If there is no memory to append the uStream.
+ *          @retval     AZULIB_SUCCESS                  If the <tt>ustream_to_append</tt> was appended with success.
+ *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR   If one of the provided parameters is invalid.
+ *          @retval     AZULIB_OUT_OF_MEMORY_ERROR      If there is no memory to append the uStream.
  */
 MOCKABLE_FUNCTION(, AZULIB_RESULT, azulib_ustream_multi_append,
     AZULIB_USTREAM*, ustream_interface,

@@ -82,7 +82,7 @@
  *  :       |                         |                     | copy the next 1024 bytes from the   :
  *  :       |                         |                     |  data_source to the local_buffer.   :
  *  :       |                         |                     +----->|                    |         :
- *  :       |                         |<---AZULIB_SUCCESS-----+                    |         :
+ *  :       |                         |<---AZULIB_SUCCESS-----+                         |         :
  *  :       |                  +------+                            |                    |         :
  *  :       |                  | use the content in the local_buffer                    |         :
  *  :       |                  +----->|                            |                    |         :
@@ -332,8 +332,8 @@ typedef struct AZULIB_USTREAM_INTERFACE_TAG AZULIB_USTREAM_INTERFACE;
  */
 typedef struct AZULIB_USTREAM_TAG
 {
-    const AZULIB_USTREAM_INTERFACE* api; /**<api handle for AZULIB_USTREAM instance */
-    void* handle;                       /**<handle to data control block */
+    const AZULIB_USTREAM_INTERFACE* api;    /**<api handle for AZULIB_USTREAM instance */
+    void* handle;                           /**<handle to data control block */
 } AZULIB_USTREAM;
 
 /**
@@ -346,15 +346,15 @@ typedef struct AZULIB_USTREAM_TAG
  */
 struct AZULIB_USTREAM_INTERFACE_TAG
 {
-    AZULIB_RESULT(*set_position)(AZULIB_USTREAM* ustream_interface, offset_t position);        /**<internal <tt>set_position</tt> implementation*/
-    AZULIB_RESULT(*reset)(AZULIB_USTREAM* ustream_interface);                                  /**<internal <tt>reset</tt> implementation*/
+    AZULIB_RESULT(*set_position)(AZULIB_USTREAM* ustream_interface, offset_t position);         /**<internal <tt>set_position</tt> implementation*/
+    AZULIB_RESULT(*reset)(AZULIB_USTREAM* ustream_interface);                                   /**<internal <tt>reset</tt> implementation*/
     AZULIB_RESULT(*read)(AZULIB_USTREAM* ustream_interface, uint8_t* const buffer, 
-                                            size_t buffer_length, size_t* const size);              /**<internal <tt>read</tt> implementation*/
-    AZULIB_RESULT(*get_remaining_size)(AZULIB_USTREAM* ustream_interface, size_t* const size); /**<internal <tt>get_remaining_size</tt> implementation*/
-    AZULIB_RESULT(*get_position)(AZULIB_USTREAM* ustream_interface, offset_t* const position); /**<internal <tt>get_position</tt> implementation*/
-    AZULIB_RESULT(*release)(AZULIB_USTREAM* ustream_interface, offset_t position);             /**<internal <tt>release</tt> implementation*/
-    AZULIB_USTREAM*(*clone)(AZULIB_USTREAM* ustream_interface, offset_t offset);                    /**<internal <tt>clone</tt> implementation*/
-    AZULIB_RESULT(*dispose)(AZULIB_USTREAM* ustream_interface);                                /**<internal <tt>dispose</tt> implementation*/
+                                            size_t buffer_length, size_t* const size);          /**<internal <tt>read</tt> implementation*/
+    AZULIB_RESULT(*get_remaining_size)(AZULIB_USTREAM* ustream_interface, size_t* const size);  /**<internal <tt>get_remaining_size</tt> implementation*/
+    AZULIB_RESULT(*get_position)(AZULIB_USTREAM* ustream_interface, offset_t* const position);  /**<internal <tt>get_position</tt> implementation*/
+    AZULIB_RESULT(*release)(AZULIB_USTREAM* ustream_interface, offset_t position);              /**<internal <tt>release</tt> implementation*/
+    AZULIB_USTREAM*(*clone)(AZULIB_USTREAM* ustream_interface, offset_t offset);                /**<internal <tt>clone</tt> implementation*/
+    AZULIB_RESULT(*dispose)(AZULIB_USTREAM* ustream_interface);                                 /**<internal <tt>dispose</tt> implementation*/
 };
 
 
@@ -395,9 +395,9 @@ struct AZULIB_USTREAM_INTERFACE_TAG
  *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR  If one of the provided parameters is invalid.
  *          @retval     AZULIB_NO_SUCH_ELEMENT_ERROR   If the position is out of the uStream range.
  *          @retval     AZULIB_OUT_OF_MEMORY_ERROR     If there is not enough memory to execute the
- *                                                          <tt>set_position</tt> operation.
+ *                                                     <tt>set_position</tt> operation.
  *          @retval     AZULIB_SECURITY_ERROR          If the <tt>set_position</tt> operation was denied for security
- *                                                          reasons.
+ *                                                     reasons.
  *          @retval     AZULIB_SYSTEM_ERROR            If the <tt>set_position</tt> operation failed on the system level.
  */
 static inline AZULIB_RESULT azulib_ustream_set_position(AZULIB_USTREAM* ustream_interface, offset_t position)
@@ -426,18 +426,18 @@ static inline AZULIB_RESULT azulib_ustream_set_position(AZULIB_USTREAM* ustream_
  *                                      implemented uStream type.
  *
  * @return The {@link AZULIB_RESULT} with the result of the <tt>reset</tt> operation.
- *          @retval     AZULIB_SUCCESS                If the uStream changed the current position with success.
- *          @retval     AZULIB_BUSY_ERROR             If the resource necessary for the <tt>reset</tt> operation is
- *                                                        busy.
- *          @retval     AZULIB_CANCELLED_ERROR        If the <tt>reset</tt> operation was cancelled.
- *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZULIB_NO_SUCH_ELEMENT_ERROR  If all previous bytes in the uStream were already
- *                                                        released.
- *          @retval     AZULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
- *                                                        <tt>reset</tt> operation.
- *          @retval     AZULIB_SECURITY_ERROR         If the <tt>reset</tt> operation was denied for security
- *                                                        reasons.
- *          @retval     AZULIB_SYSTEM_ERROR           If the <tt>reset</tt> operation failed on the system level.
+ *          @retval     AZULIB_SUCCESS                  If the uStream changed the current position with success.
+ *          @retval     AZULIB_BUSY_ERROR               If the resource necessary for the <tt>reset</tt> operation is
+ *                                                      busy.
+ *          @retval     AZULIB_CANCELLED_ERROR          If the <tt>reset</tt> operation was cancelled.
+ *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR   If one of the provided parameters is invalid.
+ *          @retval     AZULIB_NO_SUCH_ELEMENT_ERROR    If all previous bytes in the uStream were already
+ *                                                      released.
+ *          @retval     AZULIB_OUT_OF_MEMORY_ERROR      If there is not enough memory to execute the
+ *                                                      <tt>reset</tt> operation.
+ *          @retval     AZULIB_SECURITY_ERROR           If the <tt>reset</tt> operation was denied for security
+ *                                                      reasons.
+ *          @retval     AZULIB_SYSTEM_ERROR             If the <tt>reset</tt> operation failed on the system level.
  */
 static inline AZULIB_RESULT azulib_ustream_reset(AZULIB_USTREAM* ustream_interface)
 {
@@ -486,15 +486,15 @@ static inline AZULIB_RESULT azulib_ustream_reset(AZULIB_USTREAM* ustream_interfa
  *                                          the number of valid <tt>uint8_t</tt> values returned in the local buffer. It cannot be <tt>NULL</tt>.
  *
  * @return The {@link AZULIB_RESULT} with the result of the read operation.
- *          @retval     AZULIB_SUCCESS                If the uStream copied the content of the <tt>Data Source</tt> to the local buffer
- *                                                        with success.
- *          @retval     AZULIB_BUSY_ERROR             If the resource necessary to read the uStream content is busy.
- *          @retval     AZULIB_CANCELLED_ERROR        If the read of the content was cancelled.
- *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZULIB_EOF                    If there are no more <tt>uint8_t</tt> values in the <tt>Data Source</tt> to read.
- *          @retval     AZULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the read.
- *          @retval     AZULIB_SECURITY_ERROR         If the read was denied for security reasons.
- *          @retval     AZULIB_SYSTEM_ERROR           If the read operation failed on the system level.
+ *          @retval     AZULIB_SUCCESS                  If the uStream copied the content of the <tt>Data Source</tt> to the local buffer
+ *                                                      with success.
+ *          @retval     AZULIB_BUSY_ERROR               If the resource necessary to read the uStream content is busy.
+ *          @retval     AZULIB_CANCELLED_ERROR          If the read of the content was cancelled.
+ *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR   If one of the provided parameters is invalid.
+ *          @retval     AZULIB_EOF                      If there are no more <tt>uint8_t</tt> values in the <tt>Data Source</tt> to read.
+ *          @retval     AZULIB_OUT_OF_MEMORY_ERROR      If there is not enough memory to execute the read.
+ *          @retval     AZULIB_SECURITY_ERROR           If the read was denied for security reasons.
+ *          @retval     AZULIB_SYSTEM_ERROR             If the read operation failed on the system level.
  */
 static inline AZULIB_RESULT azulib_ustream_read(AZULIB_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
 {
@@ -521,16 +521,16 @@ static inline AZULIB_RESULT azulib_ustream_read(AZULIB_USTREAM* ustream_interfac
  *                                      It cannot be <tt>NULL</tt>.
  *
  * @return The {@link AZULIB_RESULT} with the result of the <tt>get_remaining_size</tt> operation.
- *          @retval     AZULIB_SUCCESS                If it succeeded to get the remaining size of the uStream.
- *          @retval     AZULIB_BUSY_ERROR             If the resource necessary to get the remaining size of
- *                                                        the uStream is busy.
- *          @retval     AZULIB_CANCELLED_ERROR        If the <tt>get_remaining_size</tt> was cancelled.
- *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
- *                                                        <tt>get_remaining_size</tt> operation.
- *          @retval     AZULIB_SECURITY_ERROR         If the <tt>get_remaining_size</tt> was denied for security reasons.
- *          @retval     AZULIB_SYSTEM_ERROR           If the <tt>get_remaining_size</tt> operation failed on the
- *                                                        system level.
+ *          @retval     AZULIB_SUCCESS                  If it succeeded to get the remaining size of the uStream.
+ *          @retval     AZULIB_BUSY_ERROR               If the resource necessary to get the remaining size of
+ *                                                      the uStream is busy.
+ *          @retval     AZULIB_CANCELLED_ERROR          If the <tt>get_remaining_size</tt> was cancelled.
+ *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR   If one of the provided parameters is invalid.
+ *          @retval     AZULIB_OUT_OF_MEMORY_ERROR      If there is not enough memory to execute the
+ *                                                      <tt>get_remaining_size</tt> operation.
+ *          @retval     AZULIB_SECURITY_ERROR           If the <tt>get_remaining_size</tt> was denied for security reasons.
+ *          @retval     AZULIB_SYSTEM_ERROR             If the <tt>get_remaining_size</tt> operation failed on the
+ *                                                      system level.
  */
 static inline AZULIB_RESULT azulib_ustream_get_remaining_size(AZULIB_USTREAM* ustream_interface, size_t* const size)
 {
@@ -556,17 +556,17 @@ static inline AZULIB_RESULT azulib_ustream_get_remaining_size(AZULIB_USTREAM* us
  *                                  uStream. It cannot be <tt>NULL</tt>.
  *
  * @return The {@link AZULIB_RESULT} with the result of the <tt>get_position</tt> operation.
- *          @retval     AZULIB_SUCCESS                If it provided the position of the uStream.
- *          @retval     AZULIB_BUSY_ERROR             If the resource necessary for getting the
- *                                                        position is busy.
- *          @retval     AZULIB_CANCELLED_ERROR        If the <tt>get_position</tt> was cancelled.
- *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
- *                                                        <tt>get_position</tt> operation.
- *          @retval     AZULIB_SECURITY_ERROR         If the <tt>get_position</tt> was denied for
- *                                                        security reasons.
- *          @retval     AZULIB_SYSTEM_ERROR           If the <tt>get_position</tt> operation failed on
- *                                                        the system level.
+ *          @retval     AZULIB_SUCCESS                  If it provided the position of the uStream.
+ *          @retval     AZULIB_BUSY_ERROR               If the resource necessary for getting the
+ *                                                      position is busy.
+ *          @retval     AZULIB_CANCELLED_ERROR          If the <tt>get_position</tt> was cancelled.
+ *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR   If one of the provided parameters is invalid.
+ *          @retval     AZULIB_OUT_OF_MEMORY_ERROR      If there is not enough memory to execute the
+ *                                                      <tt>get_position</tt> operation.
+ *          @retval     AZULIB_SECURITY_ERROR           If the <tt>get_position</tt> was denied for
+ *                                                      security reasons.
+ *          @retval     AZULIB_SYSTEM_ERROR             If the <tt>get_position</tt> operation failed on
+ *                                                      the system level.
  */
 static inline AZULIB_RESULT azulib_ustream_get_position(AZULIB_USTREAM* ustream_interface, offset_t* const position)
 {
@@ -612,10 +612,10 @@ static inline AZULIB_RESULT azulib_ustream_get_position(AZULIB_USTREAM* ustream_
  *                                  before the position. It shall be bigger than 0.
  *
  * @return The {@link AZULIB_RESULT} with the result of the <tt>release</tt> operation.
- *          @retval     AZULIB_SUCCESS                If the uStream releases the position with success.
- *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZULIB_NO_SUCH_ELEMENT_ERROR  If the position is already released.
- *          @retval     AZULIB_SYSTEM_ERROR           If the <tt>release</tt> operation failed on the system level.
+ *          @retval     AZULIB_SUCCESS                  If the uStream releases the position with success.
+ *          @retval     AZULIB_ILLEGAL_ARGUMENT_ERROR   If one of the provided parameters is invalid.
+ *          @retval     AZULIB_NO_SUCH_ELEMENT_ERROR    If the position is already released.
+ *          @retval     AZULIB_SYSTEM_ERROR             If the <tt>release</tt> operation failed on the system level.
  */
 static inline AZULIB_RESULT azulib_ustream_release(AZULIB_USTREAM* ustream_interface, offset_t position)
 {
@@ -781,8 +781,8 @@ static inline AZULIB_USTREAM* azulib_ustream_clone(AZULIB_USTREAM* ustream_inter
  *                                      of the implemented uStream.
  *
  * @return The {@link AZULIB_RESULT} with the result of the <tt>dispose</tt> operation.
- *          @retval AZULIB_SUCCESS                    If the instance of the uStream was disposed with success.
- *          @retval AZULIB_ILLEGAL_ARGUMENT_ERROR     If one of the provided parameters is invalid.
+ *          @retval AZULIB_SUCCESS                      If the instance of the uStream was disposed with success.
+ *          @retval AZULIB_ILLEGAL_ARGUMENT_ERROR       If one of the provided parameters is invalid.
  */
 static inline AZULIB_RESULT azulib_ustream_dispose(AZULIB_USTREAM* ustream_interface)
 {
@@ -811,9 +811,9 @@ static inline AZULIB_RESULT azulib_ustream_dispose(AZULIB_USTREAM* ustream_inter
   *                                         the uStream to be appended to the original uStream. It cannot be <tt>NULL</tt>, 
   *                                         and it shall be a valid uStream.
   * @return The {@link AZULIB_RESULT} with the result of the <tt>append</tt> operation.
-  *          @retval    AZULIB_SUCCESS                If the uStream was appended with success.
-  *          @retval    AZULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
-  *          @retval    AZULIB_OUT_OF_MEMORY_ERROR    If there is no memory to <tt>append</tt> the uStream.
+  *          @retval    AZULIB_SUCCESS                  If the uStream was appended with success.
+  *          @retval    AZULIB_ILLEGAL_ARGUMENT_ERROR   If one of the provided parameters is invalid.
+  *          @retval    AZULIB_OUT_OF_MEMORY_ERROR      If there is no memory to <tt>append</tt> the uStream.
   */
 MOCKABLE_FUNCTION(, AZULIB_RESULT, azulib_ustream_append,
     AZULIB_USTREAM*, ustream_interface, 

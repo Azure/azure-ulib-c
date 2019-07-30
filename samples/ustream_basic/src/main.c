@@ -60,7 +60,7 @@ int main(void)
     ustream_two_string_len = sizeof(USTREAM_TWO_STRING);
     if((ustream_two_string = (char*)malloc(ustream_two_string_len)) == NULL)
     {
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_OUT_OF_MEMORY_STRING, "string");
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_OUT_OF_MEMORY_STRING, "string");
         result = AZULIB_OUT_OF_MEMORY_ERROR;
     }
     else
@@ -72,12 +72,12 @@ int main(void)
         size_t ustream_size;
         if((ustream_one = azulib_ustream_create((const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) == NULL)
         {
-            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_create", AZULIB_SYSTEM_ERROR);
+            AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_create", AZULIB_SYSTEM_ERROR);
             result = AZULIB_SYSTEM_ERROR;
         }
         else if((result = azulib_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZULIB_SUCCESS)
         {
-            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_get_remaining_size", result);
+            AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_get_remaining_size", result);
         }
         else
         {
@@ -87,12 +87,12 @@ int main(void)
             AZULIB_USTREAM* ustream_two;
             if((ustream_two = azulib_ustream_create((const uint8_t*)ustream_two_string, ustream_two_string_len, free)) == NULL)
             {
-                AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_create", AZULIB_SYSTEM_ERROR);
+                AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_create", AZULIB_SYSTEM_ERROR);
                 result = AZULIB_SYSTEM_ERROR;
             }
             else if((result = azulib_ustream_get_remaining_size(ustream_two, &ustream_size)) != AZULIB_SUCCESS)
             {
-                AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_get_remaining_size", result);
+                AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_get_remaining_size", result);
             }
             else
             {
@@ -101,16 +101,16 @@ int main(void)
                 //Append the second AZULIB_USTREAM to the first AZULIB_USTREAM
                 if((result = azulib_ustream_append(ustream_one, ustream_two)) != AZULIB_SUCCESS)
                 {
-                    AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_append", result);
+                    AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_append", result);
                 }
                 //Dispose of our instance of the second ustream (now the appended has the only instance)
                 else if((result = azulib_ustream_dispose(ustream_two)) != AZULIB_SUCCESS)
                 {
-                    AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_dispose", result);
+                    AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_dispose", result);
                 }
                 else if((result = azulib_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZULIB_SUCCESS)
                 {
-                    AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_get_remaining_size", result);
+                    AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_get_remaining_size", result);
                 }
                 else
                 {
@@ -120,13 +120,13 @@ int main(void)
                     //Print the AZULIB_USTREAM contents
                     if((result = print_buffer(ustream_one)) != AZULIB_SUCCESS)
                     {
-                        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "print_buffer", result);
+                        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "print_buffer", result);
                     }
                     //Dispose of the AZULIB_USTREAM (original ustream_one and original ustream_two)
                     //At this point the memory malloc'd for ustream_two will be free'd
                     else if((result = azulib_ustream_dispose(ustream_one)) != AZULIB_SUCCESS)
                     {
-                        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_dispose", result);
+                        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_dispose", result);
                     }
                 }
             }

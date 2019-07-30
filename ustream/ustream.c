@@ -56,17 +56,17 @@ static AZULIB_USTREAM* create_instance(
     offset_t inner_current_position,
     offset_t offset)
 {
-    AZULIB_USTREAM* ustream_interface = (AZULIB_USTREAM*)AZULIB_ULIB_CONFIG_MALLOC(sizeof(AZULIB_USTREAM));
+    AZULIB_USTREAM* ustream_interface = (AZULIB_USTREAM*)AZULIB_CONFIG_MALLOC(sizeof(AZULIB_USTREAM));
     /*[azulib_ustream_create_no_memory_to_create_interface_failed]*/
     /*[azulib_ustream_clone_no_memory_to_create_interface_failed]*/
     /*[azulib_ustream_clone_no_memory_to_create_instance_failed]*/
     if(ustream_interface == NULL)
     {
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_OUT_OF_MEMORY_STRING, "ustream_interface");
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_OUT_OF_MEMORY_STRING, "ustream_interface");
     }
     else
     {
-        USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)AZULIB_ULIB_CONFIG_MALLOC(sizeof(USTREAM_INSTANCE));
+        USTREAM_INSTANCE* instance = (USTREAM_INSTANCE*)AZULIB_CONFIG_MALLOC(sizeof(USTREAM_INSTANCE));
         if(instance != NULL)
         {
             ustream_interface->api = &api;
@@ -76,12 +76,12 @@ static AZULIB_USTREAM* create_instance(
             instance->inner_first_valid_position = inner_current_position;
             instance->offset_diff = offset - inner_current_position;
             instance->inner_buffer = inner_buffer;
-            AZULIB_ULIB_PORT_ATOMIC_INC_W(&(instance->inner_buffer->ref_count));
+            AZULIB_PORT_ATOMIC_INC_W(&(instance->inner_buffer->ref_count));
         }
         else
         {
-            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_OUT_OF_MEMORY_STRING, "ustream_instance");
-            AZULIB_ULIB_CONFIG_FREE(ustream_interface);
+            AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_OUT_OF_MEMORY_STRING, "ustream_instance");
+            AZULIB_CONFIG_FREE(ustream_interface);
             ustream_interface = NULL;
         }
     }
@@ -96,9 +96,9 @@ static USTREAM_INNER_BUFFER* create_inner_buffer(
 {
     USTREAM_INNER_BUFFER* inner_buffer;
 
-    if((inner_buffer = (USTREAM_INNER_BUFFER*)AZULIB_ULIB_CONFIG_MALLOC(sizeof(USTREAM_INNER_BUFFER))) == NULL)
+    if((inner_buffer = (USTREAM_INNER_BUFFER*)AZULIB_CONFIG_MALLOC(sizeof(USTREAM_INNER_BUFFER))) == NULL)
     {
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_OUT_OF_MEMORY_STRING, "inner buffer control");
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_OUT_OF_MEMORY_STRING, "inner buffer control");
     }
     else
     {
@@ -117,7 +117,7 @@ static void destroy_inner_buffer(USTREAM_INNER_BUFFER* inner_buffer)
     {
         inner_buffer->inner_free(inner_buffer->ptr);
     }
-    AZULIB_ULIB_CONFIG_FREE(inner_buffer);
+    AZULIB_CONFIG_FREE(inner_buffer);
 }
 
 static AZULIB_RESULT concrete_set_position(AZULIB_USTREAM* ustream_interface, offset_t position)
@@ -128,7 +128,7 @@ static AZULIB_RESULT concrete_set_position(AZULIB_USTREAM* ustream_interface, of
     {
         /*[azulib_ustream_set_position_compliance_null_buffer_failed]*/
         /*[azulib_ustream_set_position_compliance_non_type_of_buffer_api_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
@@ -202,14 +202,14 @@ static AZULIB_RESULT concrete_read(
     {
         /*[azulib_ustream_read_compliance_null_buffer_failed]*/
         /*[azulib_ustream_read_compliance_non_type_of_buffer_api_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if((buffer == NULL) || (size == NULL))
     {
         /*[azulib_ustream_read_compliance_null_return_buffer_failed]*/
         /*[azulib_ustream_read_compliance_null_return_size_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(
+        AZULIB_CONFIG_LOG(
             AZULIB_ULOG_TYPE_ERROR,
             AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, 
             (buffer == NULL ? "buffer" : "size"));
@@ -218,7 +218,7 @@ static AZULIB_RESULT concrete_read(
     else if(buffer_length == 0)
     {
         /*[azulib_ustream_read_compliance_buffer_with_zero_size_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, "buffer_length", "0");
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, "buffer_length", "0");
         result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
@@ -262,13 +262,13 @@ static AZULIB_RESULT concrete_get_remaining_size(AZULIB_USTREAM* ustream_interfa
     {
         /*[azulib_ustream_get_remaining_size_compliance_null_buffer_failed]*/
         /*[azulib_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(size == NULL)
     {
         /*[azulib_ustream_get_remaining_size_compliance_null_size_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, "size");
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, "size");
         result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
@@ -293,13 +293,13 @@ static AZULIB_RESULT concrete_get_position(AZULIB_USTREAM* ustream_interface, of
     {
         /*[ustream_get_current_position_compliance_null_buffer_failed]*/
         /*[ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(position == NULL)
     {
         /*[ustream_get_current_position_compliance_null_position_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, "position");
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, "position");
         result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
@@ -324,7 +324,7 @@ static AZULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, offset_
     {
         /*[azulib_ustream_release_compliance_null_buffer_failed]*/
         /*[azulib_ustream_release_compliance_non_type_of_buffer_api_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
@@ -363,7 +363,7 @@ static AZULIB_USTREAM* concrete_clone(AZULIB_USTREAM* ustream_interface, offset_
     {
         /*[azulib_ustream_clone_compliance_null_buffer_failed]*/
         /*[azulib_ustream_clone_compliance_buffer_is_not_type_of_buffer_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         interface_result = NULL;
     }
     else
@@ -399,7 +399,7 @@ static AZULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface)
     {
         /*[azulib_ustream_dispose_compliance_null_buffer_failed]*/
         /*[azulib_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
         result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
@@ -410,13 +410,13 @@ static AZULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface)
         /*[azulib_ustream_dispose_compliance_cloned_instance_disposed_first_succeed]*/
         /*[azulib_ustream_dispose_compliance_cloned_instance_disposed_second_succeed]*/
         /*[azulib_ustream_dispose_compliance_single_instance_succeed]*/
-        AZULIB_ULIB_PORT_ATOMIC_DEC_W(&(inner_buffer->ref_count));
+        AZULIB_PORT_ATOMIC_DEC_W(&(inner_buffer->ref_count));
         if(inner_buffer->ref_count == 0)
         {
             destroy_inner_buffer(inner_buffer);
         }
-        AZULIB_ULIB_CONFIG_FREE(instance);
-        AZULIB_ULIB_CONFIG_FREE(ustream_interface);
+        AZULIB_CONFIG_FREE(instance);
+        AZULIB_CONFIG_FREE(ustream_interface);
         result = AZULIB_SUCCESS;
     }
 
@@ -433,13 +433,13 @@ AZULIB_USTREAM* azulib_ustream_create(
     if(buffer == NULL)
     {
         /*[azulib_ustream_create_null_buffer_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, "buffer");
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, "buffer");
         interface_result = NULL;
     }
     else if(buffer_length == 0)
     {
         /*[azulib_ustream_create_zero_length_failed]*/
-        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, "buffer_length", "0");
+        AZULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, "buffer_length", "0");
         interface_result = NULL;
     }
     else
@@ -457,7 +457,7 @@ AZULIB_USTREAM* azulib_ustream_create(
             /*[azulib_ustream_create_no_memory_to_create_instance_failed]*/
             if(interface_result == NULL)
             {
-                AZULIB_ULIB_CONFIG_FREE(inner_buffer);
+                AZULIB_CONFIG_FREE(inner_buffer);
             }
         }
     }
