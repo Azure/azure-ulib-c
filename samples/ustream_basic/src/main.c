@@ -15,17 +15,17 @@
 
 static const char USTREAM_ONE_STRING[] = "Hello ";
 
-static AZIOT_ULIB_RESULT print_buffer(AZIOT_USTREAM* ustream)
+static AZULIB_ULIB_RESULT print_buffer(AZULIB_USTREAM* ustream)
 {
-    AZIOT_ULIB_RESULT result;
+    AZULIB_ULIB_RESULT result;
     size_t returned_size;
     uint8_t user_buf[USER_BUFFER_SIZE] = { 0 };
     uint32_t printed_chars;
     uint32_t ustream_read_iterations = 0;
 
-    //Read ustream until receive AZIOT_ULIB_EOF
-    (void)printf("\r\n---Printing the AZIOT_USTREAM---\r\n");
-    while((result = aziot_ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == AZIOT_ULIB_SUCCESS)
+    //Read ustream until receive AZULIB_ULIB_EOF
+    (void)printf("\r\n---Printing the AZULIB_USTREAM---\r\n");
+    while((result = azulib_ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == AZULIB_ULIB_SUCCESS)
     {
         printed_chars = 0;
         while(printed_chars < returned_size)
@@ -39,12 +39,12 @@ static AZIOT_ULIB_RESULT print_buffer(AZIOT_USTREAM* ustream)
         ustream_read_iterations++;
     }
     (void)printf("-----------EOF------------\r\n");
-    (void)printf("aziot_ustream_read was called %i times\r\n", ustream_read_iterations);
+    (void)printf("azulib_ustream_read was called %i times\r\n", ustream_read_iterations);
 
-    //Change return to AZIOT_ULIB_SUCCESS if last returned value was AZIOT_ULIB_EOF
-    if(result == AZIOT_ULIB_EOF)
+    //Change return to AZULIB_ULIB_SUCCESS if last returned value was AZULIB_ULIB_EOF
+    if(result == AZULIB_ULIB_EOF)
     {
-        result = AZIOT_ULIB_SUCCESS;
+        result = AZULIB_ULIB_SUCCESS;
     }
 
     return result;
@@ -52,7 +52,7 @@ static AZIOT_ULIB_RESULT print_buffer(AZIOT_USTREAM* ustream)
 
 int main(void)
 {
-    AZIOT_ULIB_RESULT result;
+    AZULIB_ULIB_RESULT result;
     size_t ustream_two_string_len;
     char* ustream_two_string;
 
@@ -60,73 +60,73 @@ int main(void)
     ustream_two_string_len = sizeof(USTREAM_TWO_STRING);
     if((ustream_two_string = (char*)malloc(ustream_two_string_len)) == NULL)
     {
-        AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_OUT_OF_MEMORY_STRING, "string");
-        result = AZIOT_ULIB_OUT_OF_MEMORY_ERROR;
+        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_OUT_OF_MEMORY_STRING, "string");
+        result = AZULIB_ULIB_OUT_OF_MEMORY_ERROR;
     }
     else
     {
         memcpy(ustream_two_string, USTREAM_TWO_STRING, ustream_two_string_len);
 
-        //Create the first AZIOT_USTREAM from constant memory
-        AZIOT_USTREAM* ustream_one;
+        //Create the first AZULIB_USTREAM from constant memory
+        AZULIB_USTREAM* ustream_one;
         size_t ustream_size;
-        if((ustream_one = aziot_ustream_create((const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) == NULL)
+        if((ustream_one = azulib_ustream_create((const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) == NULL)
         {
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
-            result = AZIOT_ULIB_SYSTEM_ERROR;
+            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_create", AZULIB_ULIB_SYSTEM_ERROR);
+            result = AZULIB_ULIB_SYSTEM_ERROR;
         }
-        else if((result = aziot_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
+        else if((result = azulib_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZULIB_ULIB_SUCCESS)
         {
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
+            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_get_remaining_size", result);
         }
         else
         {
             (void)printf("Size of ustream_one: %lu\r\n", ustream_size);
 
-            //Create the second AZIOT_USTREAM from the string in the heap, passing standard free function as release callback
-            AZIOT_USTREAM* ustream_two;
-            if((ustream_two = aziot_ustream_create((const uint8_t*)ustream_two_string, ustream_two_string_len, free)) == NULL)
+            //Create the second AZULIB_USTREAM from the string in the heap, passing standard free function as release callback
+            AZULIB_USTREAM* ustream_two;
+            if((ustream_two = azulib_ustream_create((const uint8_t*)ustream_two_string, ustream_two_string_len, free)) == NULL)
             {
-                AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_create", AZIOT_ULIB_SYSTEM_ERROR);
-                result = AZIOT_ULIB_SYSTEM_ERROR;
+                AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_create", AZULIB_ULIB_SYSTEM_ERROR);
+                result = AZULIB_ULIB_SYSTEM_ERROR;
             }
-            else if((result = aziot_ustream_get_remaining_size(ustream_two, &ustream_size)) != AZIOT_ULIB_SUCCESS)
+            else if((result = azulib_ustream_get_remaining_size(ustream_two, &ustream_size)) != AZULIB_ULIB_SUCCESS)
             {
-                AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
+                AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_get_remaining_size", result);
             }
             else
             {
                 (void)printf("Size of ustream_two: %lu\r\n", ustream_size);
 
-                //Append the second AZIOT_USTREAM to the first AZIOT_USTREAM
-                if((result = aziot_ustream_append(ustream_one, ustream_two)) != AZIOT_ULIB_SUCCESS)
+                //Append the second AZULIB_USTREAM to the first AZULIB_USTREAM
+                if((result = azulib_ustream_append(ustream_one, ustream_two)) != AZULIB_ULIB_SUCCESS)
                 {
-                    AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_append", result);
+                    AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_append", result);
                 }
                 //Dispose of our instance of the second ustream (now the appended has the only instance)
-                else if((result = aziot_ustream_dispose(ustream_two)) != AZIOT_ULIB_SUCCESS)
+                else if((result = azulib_ustream_dispose(ustream_two)) != AZULIB_ULIB_SUCCESS)
                 {
-                    AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_dispose", result);
+                    AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_dispose", result);
                 }
-                else if((result = aziot_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
+                else if((result = azulib_ustream_get_remaining_size(ustream_one, &ustream_size)) != AZULIB_ULIB_SUCCESS)
                 {
-                    AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
+                    AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_get_remaining_size", result);
                 }
                 else
                 {
                     //Print the size of the appended ustream
                     (void)printf("Size of ustream_one after append: %lu\r\n", ustream_size);
 
-                    //Print the AZIOT_USTREAM contents
-                    if((result = print_buffer(ustream_one)) != AZIOT_ULIB_SUCCESS)
+                    //Print the AZULIB_USTREAM contents
+                    if((result = print_buffer(ustream_one)) != AZULIB_ULIB_SUCCESS)
                     {
-                        AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "print_buffer", result);
+                        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "print_buffer", result);
                     }
-                    //Dispose of the AZIOT_USTREAM (original ustream_one and original ustream_two)
+                    //Dispose of the AZULIB_USTREAM (original ustream_one and original ustream_two)
                     //At this point the memory malloc'd for ustream_two will be free'd
-                    else if((result = aziot_ustream_dispose(ustream_one)) != AZIOT_ULIB_SUCCESS)
+                    else if((result = azulib_ustream_dispose(ustream_one)) != AZULIB_ULIB_SUCCESS)
                     {
-                        AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_dispose", result);
+                        AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REPORT_EXCEPTION_STRING, "azulib_ustream_dispose", result);
                     }
                 }
             }

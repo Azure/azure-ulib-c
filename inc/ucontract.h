@@ -5,8 +5,8 @@
  * @file ucontract.h
  */
 
-#ifndef AZIOT_UCONTRACT_H
-#define AZIOT_UCONTRACT_H
+#ifndef AZULIB_UCONTRACT_H
+#define AZULIB_UCONTRACT_H
 
 #include "azure_macro_utils/macro_utils.h"
 #include "ulib_config.h"
@@ -26,24 +26,24 @@ extern "C" {
 /**
  * @brief   Macro to define contract for public function parameters.
  *
- *  Parameters to this macro shall be a comma separated list of AZIOT_UCONTRACT_...
+ *  Parameters to this macro shall be a comma separated list of AZULIB_UCONTRACT_...
  *  macros as listed below.
  *
- *  Each public function shall have one AZIOT_UCONTRACT() macro with the listed
+ *  Each public function shall have one AZULIB_UCONTRACT() macro with the listed
  *  requirements inside.
  */
-#define AZIOT_UCONTRACT(...) do { MU_FOR_EACH_1(EVALUATE_REQUIRE, __VA_ARGS__) } while((void)0,0)
+#define AZULIB_UCONTRACT(...) do { MU_FOR_EACH_1(EVALUATE_REQUIRE, __VA_ARGS__) } while((void)0,0)
 
 /**
  * @brief   Macro to define assertion for internal functions
  *
- *  Parameters to this macro shall be a comma separated list of AZIOT_UCONTRACT_...
+ *  Parameters to this macro shall be a comma separated list of AZULIB_UCONTRACT_...
  *  macros as listed below.
  */
 #ifdef NDEBUG
-#define AZIOT_UASSERT(...)
+#define AZULIB_UASSERT(...)
 #else
-#define AZIOT_UASSERT(...) AZIOT_UCONTRACT(__VA_ARGS__)
+#define AZULIB_UASSERT(...) AZULIB_UCONTRACT(__VA_ARGS__)
 #endif
 
 /**
@@ -53,11 +53,11 @@ extern "C" {
  * @param   result      return value if expression is false
  * @param   msg         message to log if expression is false
  */
-#define AZIOT_UCONTRACT_REQUIRE(expression, result, msg) \
+#define AZULIB_UCONTRACT_REQUIRE(expression, result, msg) \
     do { \
         if(!(expression)) \
         { \
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, msg); \
+            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, msg); \
             return result; \
         } \
     } while((void)0,0)
@@ -69,11 +69,11 @@ extern "C" {
  * @param   expected    value expected
  * @param   result      returned result if values are not equal
  */
-#define AZIOT_UCONTRACT_REQUIRE_EQUALS(val, expected, result) \
+#define AZULIB_UCONTRACT_REQUIRE_EQUALS(val, expected, result) \
     do { \
         if(val != expected) \
         { \
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
+            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
             return result; \
         } \
     } while((void)0,0)
@@ -85,11 +85,11 @@ extern "C" {
  * @param   expected    value not expected
  * @param   result      returned result if values are equal.
  */
-#define AZIOT_UCONTRACT_REQUIRE_NOT_EQUALS(val, expected, result) \
+#define AZULIB_UCONTRACT_REQUIRE_NOT_EQUALS(val, expected, result) \
     do { \
         if(val == expected) \
         { \
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
+            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
             return result; \
         } \
     } while((void)0,0)
@@ -100,11 +100,11 @@ extern "C" {
  * @param   val         value to check
  * @param   result      returned result if value is <tt>NULL</tt>
  */
-#define AZIOT_UCONTRACT_REQUIRE_NOT_NULL(val, result) \
+#define AZULIB_UCONTRACT_REQUIRE_NOT_NULL(val, result) \
     do { \
         if(val == NULL) \
         { \
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
+            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
             return result; \
         } \
     } while((void)0,0)
@@ -117,12 +117,12 @@ extern "C" {
  * @param   expression  expression to check
  * @param   msg         message to log if expression is false
  */
-#define AZIOT_UCONTRACT_REQUIRE_HARD_FAULT(expression, msg) \
+#define AZULIB_UCONTRACT_REQUIRE_HARD_FAULT(expression, msg) \
     do { \
         if(!(expression)) \
         { \
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, msg); \
-            AZIOT_ULIB_PORT_THROW_HARD_FAULT; \
+            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, msg); \
+            AZULIB_ULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 
@@ -134,12 +134,12 @@ extern "C" {
  * @param   val         value to check
  * @param   expected    value expected
  */
-#define AZIOT_UCONTRACT_REQUIRE_EQUALS_HARD_FAULT(val, expected) \
+#define AZULIB_UCONTRACT_REQUIRE_EQUALS_HARD_FAULT(val, expected) \
     do { \
         if(val != expected) \
         { \
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
-            AZIOT_ULIB_PORT_THROW_HARD_FAULT; \
+            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
+            AZULIB_ULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 
@@ -151,12 +151,12 @@ extern "C" {
  * @param   val         value to check
  * @param   expected    value not expected
  */
-#define AZIOT_UCONTRACT_REQUIRE_NOT_EQUALS_HARD_FAULT(val, expected) \
+#define AZULIB_UCONTRACT_REQUIRE_NOT_EQUALS_HARD_FAULT(val, expected) \
     do { \
         if(val == expected) \
         { \
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
-            AZIOT_ULIB_PORT_THROW_HARD_FAULT; \
+            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
+            AZULIB_ULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 
@@ -167,12 +167,12 @@ extern "C" {
  *
  * @param   val         value to check
  */
-#define AZIOT_UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT(val) \
+#define AZULIB_UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT(val) \
     do { \
         if(val == NULL) \
         { \
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
-            AZIOT_ULIB_PORT_THROW_HARD_FAULT; \
+            AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
+            AZULIB_ULIB_PORT_THROW_HARD_FAULT; \
         } \
     } while((void)0,0)
 
@@ -181,4 +181,4 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif /* AZIOT_UCONTRACT_H */
+#endif /* AZULIB_UCONTRACT_H */

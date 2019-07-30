@@ -4,42 +4,42 @@
 #include "ustream_mock_buffer.h"
 #include "ustream_base.h"
 
-static AZIOT_ULIB_RESULT _concrete_set_position_result = AZIOT_ULIB_SUCCESS;
-static AZIOT_ULIB_RESULT _concrete_reset_result = AZIOT_ULIB_SUCCESS;
-static AZIOT_ULIB_RESULT _concrete_read_result = AZIOT_ULIB_SUCCESS;
-static AZIOT_ULIB_RESULT _concrete_get_remaining_size_result = AZIOT_ULIB_SUCCESS;
-static AZIOT_ULIB_RESULT _concrete_get_position_result = AZIOT_ULIB_SUCCESS;
-static AZIOT_ULIB_RESULT _concrete_release_result = AZIOT_ULIB_SUCCESS;
-static AZIOT_ULIB_RESULT _concrete_clone_result = AZIOT_ULIB_SUCCESS;
-static AZIOT_ULIB_RESULT _concrete_dispose_result = AZIOT_ULIB_SUCCESS;
+static AZULIB_ULIB_RESULT _concrete_set_position_result = AZULIB_ULIB_SUCCESS;
+static AZULIB_ULIB_RESULT _concrete_reset_result = AZULIB_ULIB_SUCCESS;
+static AZULIB_ULIB_RESULT _concrete_read_result = AZULIB_ULIB_SUCCESS;
+static AZULIB_ULIB_RESULT _concrete_get_remaining_size_result = AZULIB_ULIB_SUCCESS;
+static AZULIB_ULIB_RESULT _concrete_get_position_result = AZULIB_ULIB_SUCCESS;
+static AZULIB_ULIB_RESULT _concrete_release_result = AZULIB_ULIB_SUCCESS;
+static AZULIB_ULIB_RESULT _concrete_clone_result = AZULIB_ULIB_SUCCESS;
+static AZULIB_ULIB_RESULT _concrete_dispose_result = AZULIB_ULIB_SUCCESS;
 
 static offset_t current_position = 0;
 
-static AZIOT_ULIB_RESULT concrete_set_position(
-        AZIOT_USTREAM* ustream_interface, 
+static AZULIB_ULIB_RESULT concrete_set_position(
+        AZULIB_USTREAM* ustream_interface, 
         offset_t position)
 {
     (void)ustream_interface;
 
     current_position = position;
 
-    AZIOT_ULIB_RESULT result = _concrete_set_position_result;
-    _concrete_set_position_result = AZIOT_ULIB_SUCCESS;
+    AZULIB_ULIB_RESULT result = _concrete_set_position_result;
+    _concrete_set_position_result = AZULIB_ULIB_SUCCESS;
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_reset(
-        AZIOT_USTREAM* ustream_interface)
+static AZULIB_ULIB_RESULT concrete_reset(
+        AZULIB_USTREAM* ustream_interface)
 {
     (void)ustream_interface;
 
-    AZIOT_ULIB_RESULT result = _concrete_reset_result;
-    _concrete_reset_result = AZIOT_ULIB_SUCCESS;
+    AZULIB_ULIB_RESULT result = _concrete_reset_result;
+    _concrete_reset_result = AZULIB_ULIB_SUCCESS;
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_read(
-        AZIOT_USTREAM* ustream_interface, 
+static AZULIB_ULIB_RESULT concrete_read(
+        AZULIB_USTREAM* ustream_interface, 
         uint8_t* const buffer, 
         size_t buffer_length, 
         size_t* const size)
@@ -50,79 +50,79 @@ static AZIOT_ULIB_RESULT concrete_read(
 
     current_position += buffer_length;
 
-    AZIOT_ULIB_RESULT result = _concrete_read_result;
-    _concrete_read_result = AZIOT_ULIB_SUCCESS;
+    AZULIB_ULIB_RESULT result = _concrete_read_result;
+    _concrete_read_result = AZULIB_ULIB_SUCCESS;
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_get_remaining_size(
-        AZIOT_USTREAM* ustream_interface, 
+static AZULIB_ULIB_RESULT concrete_get_remaining_size(
+        AZULIB_USTREAM* ustream_interface, 
         size_t* const size)
 {
     (void)ustream_interface;
 
     *size = 10;
 
-    AZIOT_ULIB_RESULT result = _concrete_get_remaining_size_result;
-    _concrete_get_remaining_size_result = AZIOT_ULIB_SUCCESS;
+    AZULIB_ULIB_RESULT result = _concrete_get_remaining_size_result;
+    _concrete_get_remaining_size_result = AZULIB_ULIB_SUCCESS;
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_get_position(
-        AZIOT_USTREAM* ustream_interface, 
+static AZULIB_ULIB_RESULT concrete_get_position(
+        AZULIB_USTREAM* ustream_interface, 
         offset_t* const position)
 {
     (void)ustream_interface;
     
     *position = current_position;
 
-    AZIOT_ULIB_RESULT result = _concrete_get_position_result;
-    _concrete_get_position_result = AZIOT_ULIB_SUCCESS;
+    AZULIB_ULIB_RESULT result = _concrete_get_position_result;
+    _concrete_get_position_result = AZULIB_ULIB_SUCCESS;
     return result;
 }
 
-static AZIOT_ULIB_RESULT concrete_release(
-        AZIOT_USTREAM* ustream_interface, 
+static AZULIB_ULIB_RESULT concrete_release(
+        AZULIB_USTREAM* ustream_interface, 
         offset_t position)
 {
     (void)ustream_interface;
     (void)position;
 
-    AZIOT_ULIB_RESULT result = _concrete_release_result;
-    _concrete_release_result = AZIOT_ULIB_SUCCESS;
+    AZULIB_ULIB_RESULT result = _concrete_release_result;
+    _concrete_release_result = AZULIB_ULIB_SUCCESS;
     return result;
 }
 
-static AZIOT_USTREAM* concrete_clone(
-        AZIOT_USTREAM* ustream_interface, 
+static AZULIB_USTREAM* concrete_clone(
+        AZULIB_USTREAM* ustream_interface, 
         offset_t offset)
 {
     current_position = offset;
 
-    AZIOT_USTREAM* interface_result;
-    if (_concrete_clone_result == AZIOT_ULIB_SUCCESS)
+    AZULIB_USTREAM* interface_result;
+    if (_concrete_clone_result == AZULIB_ULIB_SUCCESS)
     {
         interface_result = ustream_interface;
     }
     else
     {
         interface_result = NULL;
-        _concrete_clone_result = AZIOT_ULIB_SUCCESS;
+        _concrete_clone_result = AZULIB_ULIB_SUCCESS;
     }
     return interface_result;
 }
 
-static AZIOT_ULIB_RESULT concrete_dispose(
-        AZIOT_USTREAM* ustream_interface)
+static AZULIB_ULIB_RESULT concrete_dispose(
+        AZULIB_USTREAM* ustream_interface)
 {
     (void)ustream_interface;
 
-    AZIOT_ULIB_RESULT result = _concrete_dispose_result;
-    _concrete_dispose_result = AZIOT_ULIB_SUCCESS;
+    AZULIB_ULIB_RESULT result = _concrete_dispose_result;
+    _concrete_dispose_result = AZULIB_ULIB_SUCCESS;
     return result;
 }
 
-static const AZIOT_USTREAM_INTERFACE api =
+static const AZULIB_USTREAM_INTERFACE api =
 {
         concrete_set_position,
         concrete_reset,
@@ -136,62 +136,62 @@ static const AZIOT_USTREAM_INTERFACE api =
 
 static const int TEST_DATA = 1;
 
-static const AZIOT_USTREAM USTREAM_COMPLIANCE_MOCK_BUFFER =
+static const AZULIB_USTREAM USTREAM_COMPLIANCE_MOCK_BUFFER =
 {
-    (const AZIOT_USTREAM_INTERFACE*)&api,
+    (const AZULIB_USTREAM_INTERFACE*)&api,
     (void*)&TEST_DATA
 };
 
-AZIOT_USTREAM* ustream_mock_create(void)
+AZULIB_USTREAM* ustream_mock_create(void)
 {
-    _concrete_set_position_result = AZIOT_ULIB_SUCCESS;
-    _concrete_reset_result = AZIOT_ULIB_SUCCESS;
-    _concrete_read_result = AZIOT_ULIB_SUCCESS;
-    _concrete_get_remaining_size_result = AZIOT_ULIB_SUCCESS;
-    _concrete_get_position_result = AZIOT_ULIB_SUCCESS;
-    _concrete_release_result = AZIOT_ULIB_SUCCESS;
-    _concrete_clone_result = AZIOT_ULIB_SUCCESS;
-    _concrete_dispose_result = AZIOT_ULIB_SUCCESS;
+    _concrete_set_position_result = AZULIB_ULIB_SUCCESS;
+    _concrete_reset_result = AZULIB_ULIB_SUCCESS;
+    _concrete_read_result = AZULIB_ULIB_SUCCESS;
+    _concrete_get_remaining_size_result = AZULIB_ULIB_SUCCESS;
+    _concrete_get_position_result = AZULIB_ULIB_SUCCESS;
+    _concrete_release_result = AZULIB_ULIB_SUCCESS;
+    _concrete_clone_result = AZULIB_ULIB_SUCCESS;
+    _concrete_dispose_result = AZULIB_ULIB_SUCCESS;
 
-    return (AZIOT_USTREAM*)&USTREAM_COMPLIANCE_MOCK_BUFFER;
+    return (AZULIB_USTREAM*)&USTREAM_COMPLIANCE_MOCK_BUFFER;
 }
 
-void set_set_position_result(AZIOT_ULIB_RESULT result)
+void set_set_position_result(AZULIB_ULIB_RESULT result)
 {
     _concrete_set_position_result = result;
 }
 
-void set_reset_result(AZIOT_ULIB_RESULT result)
+void set_reset_result(AZULIB_ULIB_RESULT result)
 {
     _concrete_reset_result = result;
 }
 
-void set_read_result(AZIOT_ULIB_RESULT result)
+void set_read_result(AZULIB_ULIB_RESULT result)
 {
     _concrete_read_result = result;
 }
 
-void set_get_remaining_size_result(AZIOT_ULIB_RESULT result)
+void set_get_remaining_size_result(AZULIB_ULIB_RESULT result)
 {
     _concrete_get_remaining_size_result = result;
 }
 
-void set_get_position_result(AZIOT_ULIB_RESULT result)
+void set_get_position_result(AZULIB_ULIB_RESULT result)
 {
     _concrete_get_position_result = result;
 }
 
-void set_release_result(AZIOT_ULIB_RESULT result)
+void set_release_result(AZULIB_ULIB_RESULT result)
 {
     _concrete_release_result = result;
 }
 
-void set_clone_result(AZIOT_ULIB_RESULT result)
+void set_clone_result(AZULIB_ULIB_RESULT result)
 {
     _concrete_clone_result = result;
 }
 
-void set_dispose_result(AZIOT_ULIB_RESULT result)
+void set_dispose_result(AZULIB_ULIB_RESULT result)
 {
     _concrete_dispose_result = result;
 }

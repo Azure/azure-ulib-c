@@ -38,11 +38,11 @@ static TEST_MUTEX_HANDLE g_dll_by_dll;
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH 62
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
-static AZIOT_USTREAM* ustream_factory()
+static AZULIB_USTREAM* ustream_factory()
 {
-    uint8_t* buf = (uint8_t*)aziot_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    uint8_t* buf = (uint8_t*)azulib_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    return aziot_ustream_create(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
+    return azulib_ustream_create(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
 }
 #define USTREAM_COMPLIANCE_TARGET_FACTORY         ustream_factory()
 
@@ -78,10 +78,10 @@ TEST_SUITE_INITIALIZE(suite_init)
     result = umocktypes_bool_register_types();
     ASSERT_ARE_EQUAL(int, 0, result);
 
-    REGISTER_UMOCK_ALIAS_TYPE(AZIOT_USTREAM, void*);
+    REGISTER_UMOCK_ALIAS_TYPE(AZULIB_USTREAM, void*);
 
-    REGISTER_GLOBAL_MOCK_HOOK(aziot_ulib_malloc, malloc);
-    REGISTER_GLOBAL_MOCK_HOOK(aziot_ulib_free, free);
+    REGISTER_GLOBAL_MOCK_HOOK(azulib_ulib_malloc, malloc);
+    REGISTER_GLOBAL_MOCK_HOOK(azulib_ulib_free, free);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -107,16 +107,16 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* aziot_ustream_create shall create an instance of the uStream and initialize the interface. */
-TEST_FUNCTION(aziot_ustream_create_const_succeed)
+/* azulib_ustream_create shall create an instance of the uStream and initialize the interface. */
+TEST_FUNCTION(azulib_ustream_create_const_succeed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZIOT_USTREAM* buffer_interface = aziot_ustream_create(
+    AZULIB_USTREAM* buffer_interface = azulib_ustream_create(
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
 
@@ -126,19 +126,19 @@ TEST_FUNCTION(aziot_ustream_create_const_succeed)
     ASSERT_IS_NOT_NULL(buffer_interface->api);
 
     ///cleanup
-    (void)aziot_ustream_dispose(buffer_interface);
+    (void)azulib_ustream_dispose(buffer_interface);
 }
 
-/* aziot_ustream_create shall return NULL if there is not enough memory to create the uStream. */
-TEST_FUNCTION(aziot_ustream_create_const_no_memory_to_create_interface_failed)
+/* azulib_ustream_create shall return NULL if there is not enough memory to create the uStream. */
+TEST_FUNCTION(azulib_ustream_create_const_no_memory_to_create_interface_failed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* buffer_interface = aziot_ustream_create(
+    AZULIB_USTREAM* buffer_interface = azulib_ustream_create(
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
 
@@ -149,18 +149,18 @@ TEST_FUNCTION(aziot_ustream_create_const_no_memory_to_create_interface_failed)
     ///cleanup
 }
 
-/* aziot_ustream_create shall return NULL if there is not enough memory to create the instance */
-TEST_FUNCTION(aziot_ustream_create_const_no_memory_to_create_instance_failed)
+/* azulib_ustream_create shall return NULL if there is not enough memory to create the instance */
+TEST_FUNCTION(azulib_ustream_create_const_no_memory_to_create_instance_failed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* buffer_interface = aziot_ustream_create(
+    AZULIB_USTREAM* buffer_interface = azulib_ustream_create(
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
 
@@ -171,14 +171,14 @@ TEST_FUNCTION(aziot_ustream_create_const_no_memory_to_create_instance_failed)
     ///cleanup
 }
 
-/* aziot_ustream_create shall return NULL if there is not enough memory to create the inner buffer */
-TEST_FUNCTION(aziot_ustream_create_const_no_memory_to_create_inner_buffer_failed)
+/* azulib_ustream_create shall return NULL if there is not enough memory to create the inner buffer */
+TEST_FUNCTION(azulib_ustream_create_const_no_memory_to_create_inner_buffer_failed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
-    AZIOT_USTREAM* buffer_interface = aziot_ustream_create(
+    AZULIB_USTREAM* buffer_interface = azulib_ustream_create(
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
 
@@ -189,13 +189,13 @@ TEST_FUNCTION(aziot_ustream_create_const_no_memory_to_create_inner_buffer_failed
     ///cleanup
 }
 
-/* aziot_ustream_create shall return NULL if the provided constant buffer is NULL */
-TEST_FUNCTION(aziot_ustream_create_const_null_buffer_failed)
+/* azulib_ustream_create shall return NULL if the provided constant buffer is NULL */
+TEST_FUNCTION(azulib_ustream_create_const_null_buffer_failed)
 {
     ///arrange
 
     ///act
-    AZIOT_USTREAM* buffer_interface = aziot_ustream_create(NULL, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
+    AZULIB_USTREAM* buffer_interface = azulib_ustream_create(NULL, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -204,13 +204,13 @@ TEST_FUNCTION(aziot_ustream_create_const_null_buffer_failed)
     ///cleanup
 }
 
-/* aziot_ustream_create shall return NULL ff the provided buffer length is zero */
-TEST_FUNCTION(aziot_ustream_create_const_zero_length_failed)
+/* azulib_ustream_create shall return NULL ff the provided buffer length is zero */
+TEST_FUNCTION(azulib_ustream_create_const_zero_length_failed)
 {
     ///arrange
 
     ///act
-    AZIOT_USTREAM* buffer_interface = aziot_ustream_create(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, NULL);
+    AZULIB_USTREAM* buffer_interface = azulib_ustream_create(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -219,20 +219,20 @@ TEST_FUNCTION(aziot_ustream_create_const_zero_length_failed)
     ///cleanup
 }
 
-/* aziot_ustream_create shall create an instance of the uStream and initialize the interface. */
-TEST_FUNCTION(aziot_ustream_create_succeed)
+/* azulib_ustream_create shall create an instance of the uStream and initialize the interface. */
+TEST_FUNCTION(azulib_ustream_create_succeed)
 {
     ///arrange
-    uint8_t* buf = (uint8_t*)aziot_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    uint8_t* buf = (uint8_t*)azulib_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZIOT_USTREAM* buffer_interface = 
-        aziot_ustream_create(
+    AZULIB_USTREAM* buffer_interface = 
+        azulib_ustream_create(
             buf, 
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, 
             free);
@@ -243,23 +243,23 @@ TEST_FUNCTION(aziot_ustream_create_succeed)
     ASSERT_IS_NOT_NULL(buffer_interface->api);
 
     ///cleanup
-    (void)aziot_ustream_dispose(buffer_interface);
+    (void)azulib_ustream_dispose(buffer_interface);
 }
 
-/* aziot_ustream_create shall return NULL if there is not enough memory to create the uStream. */
-TEST_FUNCTION(aziot_ustream_create_no_memory_to_create_interface_failed)
+/* azulib_ustream_create shall return NULL if there is not enough memory to create the uStream. */
+TEST_FUNCTION(azulib_ustream_create_no_memory_to_create_interface_failed)
 {
     ///arrange
-    uint8_t* buf = (uint8_t*)aziot_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    uint8_t* buf = (uint8_t*)azulib_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* buffer_interface =
-        aziot_ustream_create(
+    AZULIB_USTREAM* buffer_interface =
+        azulib_ustream_create(
             buf,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
             free);
@@ -269,25 +269,25 @@ TEST_FUNCTION(aziot_ustream_create_no_memory_to_create_interface_failed)
     ASSERT_IS_NULL(buffer_interface);
 
     ///cleanup
-    aziot_ulib_free(buf);
+    azulib_ulib_free(buf);
 }
 
-/* aziot_ustream_create shall return NULL if there is not enough memory to create the instance */
-TEST_FUNCTION(aziot_ustream_create_no_memory_to_create_instance_failed)
+/* azulib_ustream_create shall return NULL if there is not enough memory to create the instance */
+TEST_FUNCTION(azulib_ustream_create_no_memory_to_create_instance_failed)
 {
     ///arrange
-    uint8_t* buf = (uint8_t*)aziot_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    uint8_t* buf = (uint8_t*)azulib_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* buffer_interface =
-        aziot_ustream_create(
+    AZULIB_USTREAM* buffer_interface =
+        azulib_ustream_create(
             buf,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
             free);
@@ -297,21 +297,21 @@ TEST_FUNCTION(aziot_ustream_create_no_memory_to_create_instance_failed)
     ASSERT_IS_NULL(buffer_interface);
 
     ///cleanup
-    aziot_ulib_free(buf);
+    azulib_ulib_free(buf);
 }
 
-/* aziot_ustream_create shall return NULL if there is not enough memory to create the inner buffer */
-TEST_FUNCTION(aziot_ustream_create_no_memory_to_create_inner_buffer_failed)
+/* azulib_ustream_create shall return NULL if there is not enough memory to create the inner buffer */
+TEST_FUNCTION(azulib_ustream_create_no_memory_to_create_inner_buffer_failed)
 {
     ///arrange
-    uint8_t* buf = (uint8_t*)aziot_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    uint8_t* buf = (uint8_t*)azulib_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
-    AZIOT_USTREAM* buffer_interface =
-        aziot_ustream_create(
+    AZULIB_USTREAM* buffer_interface =
+        azulib_ustream_create(
             buf,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
             free);
@@ -321,16 +321,16 @@ TEST_FUNCTION(aziot_ustream_create_no_memory_to_create_inner_buffer_failed)
     ASSERT_IS_NULL(buffer_interface);
 
     ///cleanup
-    aziot_ulib_free(buf);
+    azulib_ulib_free(buf);
 }
 
-/* aziot_ustream_create shall return NULL if the provided constant buffer is NULL */
-TEST_FUNCTION(aziot_ustream_create_null_buffer_failed)
+/* azulib_ustream_create shall return NULL if the provided constant buffer is NULL */
+TEST_FUNCTION(azulib_ustream_create_null_buffer_failed)
 {
     ///arrange
 
     ///act
-    AZIOT_USTREAM* buffer_interface = aziot_ustream_create(NULL, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
+    AZULIB_USTREAM* buffer_interface = azulib_ustream_create(NULL, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -339,13 +339,13 @@ TEST_FUNCTION(aziot_ustream_create_null_buffer_failed)
     ///cleanup
 }
 
-/* aziot_ustream_create shall return NULL if the provided buffer length is zero */
-TEST_FUNCTION(aziot_ustream_create_zero_length_failed)
+/* azulib_ustream_create shall return NULL if the provided buffer length is zero */
+TEST_FUNCTION(azulib_ustream_create_zero_length_failed)
 {
     ///arrange
 
     ///act
-    AZIOT_USTREAM* buffer_interface = aziot_ustream_create(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, free);
+    AZULIB_USTREAM* buffer_interface = azulib_ustream_create(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, free);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -354,43 +354,43 @@ TEST_FUNCTION(aziot_ustream_create_zero_length_failed)
     ///cleanup
 }
 
-/*  aziot_ustream_clone shall return NULL if there is not enough memory to control the new uStream. */
-TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_interface_failed)
+/*  azulib_ustream_clone shall return NULL if there is not enough memory to control the new uStream. */
+TEST_FUNCTION(azulib_ustream_clone_no_memory_to_create_interface_failed)
 {
     ///arrange
-    AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
+    AZULIB_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
+    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
 
     ///act
-    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(ustream_instance, 0);
 
     ///assert
-    ASSERT_IS_NULL(aziot_ustream_clone_interface);
+    ASSERT_IS_NULL(azulib_ustream_clone_interface);
 
     ///cleanup
-    (void)aziot_ustream_dispose(ustream_instance);
+    (void)azulib_ustream_dispose(ustream_instance);
 }
 
-/* aziot_ustream_clone shall return NULL if there is not enough memory to create the instance */
-TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_instance_failed)
+/* azulib_ustream_clone shall return NULL if there is not enough memory to create the instance */
+TEST_FUNCTION(azulib_ustream_clone_no_memory_to_create_instance_failed)
 {
     ///arrange
-    AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
+    AZULIB_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(ustream_instance, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_IS_NULL(aziot_ustream_clone_interface);
+    ASSERT_IS_NULL(azulib_ustream_clone_interface);
 
     ///cleanup
-    (void)aziot_ustream_dispose(ustream_instance);
+    (void)azulib_ustream_dispose(ustream_instance);
 }
 
 #include "ustream_compliance_ut.h"

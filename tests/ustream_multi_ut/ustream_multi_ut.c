@@ -41,36 +41,36 @@ static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2 =
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3 =
         (const uint8_t* const)"abcdefghijklmnopqrstuvwxyz";
 
-static AZIOT_USTREAM* create_test_default_multibuffer()
+static AZULIB_USTREAM* create_test_default_multibuffer()
 {
-    AZIOT_USTREAM* default_multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* default_multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(default_multibuffer);
 
-    AZIOT_USTREAM* default_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(default_multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(default_multibuffer, default_buffer1));
 
-    AZIOT_USTREAM* default_buffer2 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer2 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2),
             NULL);
     ASSERT_IS_NOT_NULL(default_buffer2);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(default_multibuffer, default_buffer2));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(default_multibuffer, default_buffer2));
 
-    AZIOT_USTREAM* default_buffer3 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer3 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(default_buffer3);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(default_multibuffer, default_buffer3));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(default_multibuffer, default_buffer3));
 
-    (void)aziot_ustream_dispose(default_buffer1);
-    (void)aziot_ustream_dispose(default_buffer2);
-    (void)aziot_ustream_dispose(default_buffer3);
+    (void)azulib_ustream_dispose(default_buffer1);
+    (void)azulib_ustream_dispose(default_buffer2);
+    (void)azulib_ustream_dispose(default_buffer3);
 
     return default_multibuffer;
 }
@@ -111,10 +111,10 @@ TEST_SUITE_INITIALIZE(suite_init)
     result = umocktypes_bool_register_types();
     ASSERT_ARE_EQUAL(int, 0, result);
 
-    REGISTER_UMOCK_ALIAS_TYPE(AZIOT_USTREAM, void*);
+    REGISTER_UMOCK_ALIAS_TYPE(AZULIB_USTREAM, void*);
 
-    REGISTER_GLOBAL_MOCK_HOOK(aziot_ulib_malloc, malloc);
-    REGISTER_GLOBAL_MOCK_HOOK(aziot_ulib_free, free);
+    REGISTER_GLOBAL_MOCK_HOOK(azulib_ulib_malloc, malloc);
+    REGISTER_GLOBAL_MOCK_HOOK(azulib_ulib_free, free);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -140,15 +140,15 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* aziot_ustream_multi_create shall create an instance of the multi-buffer and initialize the interface. */
-TEST_FUNCTION(aziot_ustream_multi_create_succeed)
+/* azulib_ustream_multi_create shall create an instance of the multi-buffer and initialize the interface. */
+TEST_FUNCTION(azulib_ustream_multi_create_succeed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -156,17 +156,17 @@ TEST_FUNCTION(aziot_ustream_multi_create_succeed)
     ASSERT_IS_NOT_NULL(multibuffer->api);
 
     ///cleanup
-    (void)aziot_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* aziot_ustream_multi_create shall return NULL if there is not enough memory to create the multi-buffer interface. */
-TEST_FUNCTION(aziot_ustream_multi_create_no_memory_to_create_interface_failed)
+/* azulib_ustream_multi_create shall return NULL if there is not enough memory to create the multi-buffer interface. */
+TEST_FUNCTION(azulib_ustream_multi_create_no_memory_to_create_interface_failed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
 
     ///act
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -175,16 +175,16 @@ TEST_FUNCTION(aziot_ustream_multi_create_no_memory_to_create_interface_failed)
     ///cleanup
 }
 
-/* aziot_ustream_multi_create shall return NULL if there is not enough memory to create the multi-buffer instance */
-TEST_FUNCTION(aziot_ustream_multi_create_no_memory_to_create_instance_failed)
+/* azulib_ustream_multi_create shall return NULL if there is not enough memory to create the multi-buffer instance */
+TEST_FUNCTION(azulib_ustream_multi_create_no_memory_to_create_instance_failed)
 {
     ///arrange
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
@@ -193,53 +193,53 @@ TEST_FUNCTION(aziot_ustream_multi_create_no_memory_to_create_instance_failed)
     ///cleanup
 }
 
-/* aziot_ustream_multi_append shall add the provided buffer to the multibuffer list */
-TEST_FUNCTION(aziot_ustream_multi_append_new_multibuffer_succeed)
+/* azulib_ustream_multi_append shall add the provided buffer to the multibuffer list */
+TEST_FUNCTION(azulib_ustream_multi_append_new_multibuffer_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* test_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(test_buffer1);
-    AZIOT_USTREAM* test_buffer2 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer2 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2), NULL);
     ASSERT_IS_NOT_NULL(test_buffer2);
-    AZIOT_USTREAM* test_buffer3 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer3 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(test_buffer3);
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZIOT_ULIB_RESULT result1 = aziot_ustream_multi_append(multibuffer, test_buffer1);
-    AZIOT_ULIB_RESULT result2 = aziot_ustream_multi_append(multibuffer, test_buffer2);
-    AZIOT_ULIB_RESULT result3 = aziot_ustream_multi_append(multibuffer, test_buffer3);
+    AZULIB_ULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
+    AZULIB_ULIB_RESULT result2 = azulib_ustream_multi_append(multibuffer, test_buffer2);
+    AZULIB_ULIB_RESULT result3 = azulib_ustream_multi_append(multibuffer, test_buffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result2);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result3);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_get_remaining_size(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(
         int, 
         strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 
@@ -247,75 +247,75 @@ TEST_FUNCTION(aziot_ustream_multi_append_new_multibuffer_succeed)
         strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), size);
 
     ///cleanup
-    (void)aziot_ustream_dispose(test_buffer1);
-    (void)aziot_ustream_dispose(test_buffer2);
-    (void)aziot_ustream_dispose(test_buffer3);
-    (void)aziot_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(test_buffer1);
+    (void)azulib_ustream_dispose(test_buffer2);
+    (void)azulib_ustream_dispose(test_buffer3);
+    (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* aziot_ustream_multi_append shall release part of the multibuffer and return AZIOT_ULIB_SUCCESS */
-TEST_FUNCTION(aziot_ustream_multi_append_partial_released_multibuffer_succeed)
+/* azulib_ustream_multi_append shall release part of the multibuffer and return AZULIB_ULIB_SUCCESS */
+TEST_FUNCTION(azulib_ustream_multi_append_partial_released_multibuffer_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* test_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(test_buffer1);
-    AZIOT_USTREAM* test_buffer2 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer2 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2), NULL);
     ASSERT_IS_NOT_NULL(test_buffer2);
-    AZIOT_USTREAM* test_buffer3 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer3 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(test_buffer3);
 
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, test_buffer1));
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, test_buffer2));
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, test_buffer3));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer2));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer3));
     
     // set_position to half of the buffer
     ASSERT_ARE_EQUAL(
         int, 
-        AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_set_position(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2)));
+        AZULIB_ULIB_SUCCESS, 
+        azulib_ustream_set_position(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2)));
     
     // release current - 1
     ASSERT_ARE_EQUAL(
         int, 
-        AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_release(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2) - 1));
+        AZULIB_ULIB_SUCCESS, 
+        azulib_ustream_release(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2) - 1));
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZIOT_ULIB_RESULT result1 = aziot_ustream_multi_append(multibuffer, test_buffer1);
-    AZIOT_ULIB_RESULT result2 = aziot_ustream_multi_append(multibuffer, test_buffer2);
-    AZIOT_ULIB_RESULT result3 = aziot_ustream_multi_append(multibuffer, test_buffer3);
+    AZULIB_ULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
+    AZULIB_ULIB_RESULT result2 = azulib_ustream_multi_append(multibuffer, test_buffer2);
+    AZULIB_ULIB_RESULT result3 = azulib_ustream_multi_append(multibuffer, test_buffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result2);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result3);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_get_remaining_size(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(int, 
             (strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) +
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2) +
@@ -324,73 +324,73 @@ TEST_FUNCTION(aziot_ustream_multi_append_partial_released_multibuffer_succeed)
         size);
 
     ///cleanup
-    (void)aziot_ustream_dispose(test_buffer1);
-    (void)aziot_ustream_dispose(test_buffer2);
-    (void)aziot_ustream_dispose(test_buffer3);
-    (void)aziot_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(test_buffer1);
+    (void)azulib_ustream_dispose(test_buffer2);
+    (void)azulib_ustream_dispose(test_buffer3);
+    (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* aziot_ustream_multi_append shall release an entire internal uStream and return AZIOT_ULIB_SUCCESS */
-TEST_FUNCTION(aziot_ustream_multi_append_fully_released_multibuffer_succeed)
+/* azulib_ustream_multi_append shall release an entire internal uStream and return AZULIB_ULIB_SUCCESS */
+TEST_FUNCTION(azulib_ustream_multi_append_fully_released_multibuffer_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* test_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(test_buffer1);
-    AZIOT_USTREAM* test_buffer2 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer2 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2), NULL);
     ASSERT_IS_NOT_NULL(test_buffer2);
-    AZIOT_USTREAM* test_buffer3 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer3 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(test_buffer3);
 
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, test_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer1));
     
     // set_position to end of the buffer
     ASSERT_ARE_EQUAL(
         int, 
-        AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1)));
+        AZULIB_ULIB_SUCCESS, 
+        azulib_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1)));
     
     // release all
     ASSERT_ARE_EQUAL(
         int, 
-        AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_release(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) - 1));
+        AZULIB_ULIB_SUCCESS, 
+        azulib_ustream_release(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) - 1));
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZIOT_ULIB_RESULT result1 = aziot_ustream_multi_append(multibuffer, test_buffer1);
-    AZIOT_ULIB_RESULT result2 = aziot_ustream_multi_append(multibuffer, test_buffer2);
-    AZIOT_ULIB_RESULT result3 = aziot_ustream_multi_append(multibuffer, test_buffer3);
+    AZULIB_ULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
+    AZULIB_ULIB_RESULT result2 = azulib_ustream_multi_append(multibuffer, test_buffer2);
+    AZULIB_ULIB_RESULT result3 = azulib_ustream_multi_append(multibuffer, test_buffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result2);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result3);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_get_remaining_size(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(
         int, 
         strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 
@@ -398,641 +398,641 @@ TEST_FUNCTION(aziot_ustream_multi_append_fully_released_multibuffer_succeed)
         strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), size);
 
     ///cleanup
-    (void)aziot_ustream_dispose(test_buffer1);
-    (void)aziot_ustream_dispose(test_buffer2);
-    (void)aziot_ustream_dispose(test_buffer3);
-    (void)aziot_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(test_buffer1);
+    (void)azulib_ustream_dispose(test_buffer2);
+    (void)azulib_ustream_dispose(test_buffer3);
+    (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* aziot_ustream_multi_append shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided handle is NULL */
-TEST_FUNCTION(aziot_ustream_multi_append_null_multibuffer_failed)
+/* azulib_ustream_multi_append shall return AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided handle is NULL */
+TEST_FUNCTION(azulib_ustream_multi_append_null_multibuffer_failed)
 {
     ///arrange
-    AZIOT_USTREAM* test_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_multi_append(NULL, test_buffer1);
+    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(NULL, test_buffer1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)aziot_ustream_dispose(test_buffer1);
+    (void)azulib_ustream_dispose(test_buffer1);
 }
 
-/* aziot_ustream_multi_append shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided handle is not the implemented uStream type */
-TEST_FUNCTION(aziot_ustream_multi_append_buffer_is_not_type_of_buffer_failed)
+/* azulib_ustream_multi_append shall return AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided handle is not the implemented uStream type */
+TEST_FUNCTION(azulib_ustream_multi_append_buffer_is_not_type_of_buffer_failed)
 {
     ///arrange
-    AZIOT_USTREAM* test_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
-    AZIOT_USTREAM* test_buffer2 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer2 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2), NULL);
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_multi_append(test_buffer1, test_buffer2);
+    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(test_buffer1, test_buffer2);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)aziot_ustream_dispose(test_buffer1);
-    (void)aziot_ustream_dispose(test_buffer2);
+    (void)azulib_ustream_dispose(test_buffer1);
+    (void)azulib_ustream_dispose(test_buffer2);
 }
 
-/* aziot_ustream_multi_append shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
-TEST_FUNCTION(aziot_ustream_multi_append_null_buffer_to_add_failed)
+/* azulib_ustream_multi_append shall return AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
+TEST_FUNCTION(azulib_ustream_multi_append_null_buffer_to_add_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
-    AZIOT_USTREAM* test_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
-    aziot_ustream_multi_append(multibuffer, test_buffer1);
+    azulib_ustream_multi_append(multibuffer, test_buffer1);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_multi_append(multibuffer, NULL);
+    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(multibuffer, NULL);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    (void)aziot_ustream_dispose(test_buffer1);
-    (void)aziot_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(test_buffer1);
+    (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* aziot_ustream_multi_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to control the new uStream */
-TEST_FUNCTION(aziot_ustream_multi_append_not_enough_memory_failed)
+/* azulib_ustream_multi_append shall return AZULIB_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to control the new uStream */
+TEST_FUNCTION(azulib_ustream_multi_append_not_enough_memory_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
-    AZIOT_USTREAM* test_buffer1 =
-        aziot_ustream_create(
-            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
-            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
-    umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-
-    ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_multi_append(multibuffer, test_buffer1);
-
-    ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_OUT_OF_MEMORY_ERROR, result);
-
-    ///cleanup
-    (void)aziot_ustream_dispose(test_buffer1);
-    (void)aziot_ustream_dispose(multibuffer);
-}
-
-/* aziot_ustream_multi_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if it failed to clone the buffer */
-TEST_FUNCTION(aziot_ustream_multi_append_not_enough_memory_to_clone_the_buffer_failed)
-{
-    ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
-    ASSERT_IS_NOT_NULL(multibuffer);
-    AZIOT_USTREAM* test_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* test_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_multi_append(multibuffer, test_buffer1);
+    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(multibuffer, test_buffer1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_OUT_OF_MEMORY_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
-    (void)aziot_ustream_dispose(test_buffer1);
-    (void)aziot_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(test_buffer1);
+    (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* aziot_ustream_multi_append shall return AZIOT_ULIB_OUT_OF_MEMORY_ERROR if it failed to copy the buffer */
-TEST_FUNCTION(aziot_ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size_failed)
+/* azulib_ustream_multi_append shall return AZULIB_ULIB_OUT_OF_MEMORY_ERROR if it failed to clone the buffer */
+TEST_FUNCTION(azulib_ustream_multi_append_not_enough_memory_to_clone_the_buffer_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
+    ASSERT_IS_NOT_NULL(multibuffer);
+    AZULIB_USTREAM* test_buffer1 =
+        azulib_ustream_create(
+            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
+            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
+    umock_c_reset_all_calls();
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+
+    ///act
+    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(multibuffer, test_buffer1);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_OUT_OF_MEMORY_ERROR, result);
+
+    ///cleanup
+    (void)azulib_ustream_dispose(test_buffer1);
+    (void)azulib_ustream_dispose(multibuffer);
+}
+
+/* azulib_ustream_multi_append shall return AZULIB_ULIB_OUT_OF_MEMORY_ERROR if it failed to copy the buffer */
+TEST_FUNCTION(azulib_ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size_failed)
+{
+    ///arrange
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* default_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
-    AZIOT_USTREAM* default_buffer2 = ustream_mock_create();
+    AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
 
-    set_get_remaining_size_result(AZIOT_ULIB_SYSTEM_ERROR);
+    set_get_remaining_size_result(AZULIB_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_multi_append(multibuffer, default_buffer2);
+    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(multibuffer, default_buffer2);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    (void)aziot_ustream_dispose(default_buffer1);
-    (void)aziot_ustream_dispose(default_buffer2);
-    (void)aziot_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(default_buffer1);
+    (void)azulib_ustream_dispose(default_buffer2);
+    (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* ustream_multi_dispose shall aziot_ulib_free all allocated resources. */
+/* ustream_multi_dispose shall azulib_ulib_free all allocated resources. */
 TEST_FUNCTION(ustream_multi_dispose_multibuffer_without_buffers_free_all_resources_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_dispose(multibuffer);
+    AZULIB_ULIB_RESULT result = azulib_ustream_dispose(multibuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result);
 
     ///cleanup
 }
 
-/* aziot_ustream_dispose shall release all buffers in its list if the multibuffer contains appended buffers */
+/* azulib_ustream_dispose shall release all buffers in its list if the multibuffer contains appended buffers */
 TEST_FUNCTION(ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = USTREAM_COMPLIANCE_TARGET_FACTORY;
+    AZULIB_USTREAM* multibuffer = USTREAM_COMPLIANCE_TARGET_FACTORY;
 
     umock_c_reset_all_calls();
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_dispose(multibuffer);
+    AZULIB_ULIB_RESULT result = azulib_ustream_dispose(multibuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result);
 
     ///cleanup
 }
 
-/* aziot_ustream_set_position shall bypass the error if the inner uStream returns an error for one of the needed operations */
+/* azulib_ustream_set_position shall bypass the error if the inner uStream returns an error for one of the needed operations */
 TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_current_position_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* default_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
-    AZIOT_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer2));
-    set_get_position_result(AZIOT_ULIB_SYSTEM_ERROR);
+    AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    set_get_position_result(AZULIB_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZIOT_ULIB_RESULT result = 
-        aziot_ustream_set_position(
+    AZULIB_ULIB_RESULT result = 
+        azulib_ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_get_position(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
-    (void)aziot_ustream_dispose(multibuffer);
-    (void)aziot_ustream_dispose(default_buffer1);
-    (void)aziot_ustream_dispose(default_buffer2);
+    (void)azulib_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(default_buffer1);
+    (void)azulib_ustream_dispose(default_buffer2);
 }
 
-/* aziot_ustream_set_position shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to set the position */
+/* azulib_ustream_set_position shall return AZULIB_ULIB_SYSTEM_ERROR if it failed to set the position */
 TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* default_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
-    AZIOT_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer2));
-    set_get_remaining_size_result(AZIOT_ULIB_SYSTEM_ERROR);
+    AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    set_get_remaining_size_result(AZULIB_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZIOT_ULIB_RESULT result = 
-        aziot_ustream_set_position(
+    AZULIB_ULIB_RESULT result = 
+        azulib_ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_get_position(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
-    (void)aziot_ustream_dispose(multibuffer);
-    (void)aziot_ustream_dispose(default_buffer1);
-    (void)aziot_ustream_dispose(default_buffer2);
+    (void)azulib_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(default_buffer1);
+    (void)azulib_ustream_dispose(default_buffer2);
 }
 
-/* aziot_ustream_set_position shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to set the position */
+/* azulib_ustream_set_position shall return AZULIB_ULIB_SYSTEM_ERROR if it failed to set the position */
 TEST_FUNCTION(ustream_multi_seek_inner_buffer_failed_in_seek_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* default_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
-    AZIOT_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer2));
-    set_set_position_result(AZIOT_ULIB_SYSTEM_ERROR);
+    AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    set_set_position_result(AZULIB_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZIOT_ULIB_RESULT result = 
-        aziot_ustream_set_position(
+    AZULIB_ULIB_RESULT result = 
+        azulib_ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_get_position(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
-    (void)aziot_ustream_dispose(multibuffer);
-    (void)aziot_ustream_dispose(default_buffer1);
-    (void)aziot_ustream_dispose(default_buffer2);
+    (void)azulib_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(default_buffer1);
+    (void)azulib_ustream_dispose(default_buffer2);
 }
 
 /* ustream_multi_read shall return partial result if one of the internal buffers failed. */
 TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_content_succeed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* default_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
-    AZIOT_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer2));
-    set_read_result(AZIOT_ULIB_SYSTEM_ERROR);
+    AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    set_read_result(AZULIB_ULIB_SYSTEM_ERROR);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
     size_t size_result;
 
 
     ///act
-    AZIOT_ULIB_RESULT result =
-        aziot_ustream_read(
+    AZULIB_ULIB_RESULT result =
+        azulib_ustream_read(
             multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
             &size_result);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result);
     ASSERT_BUFFER_ARE_EQUAL(uint8_t_ptr, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1, buf_result, size_result);
 
     ///cleanup
-    (void)aziot_ustream_dispose(multibuffer);
-    (void)aziot_ustream_dispose(default_buffer1);
-    (void)aziot_ustream_dispose(default_buffer2);
+    (void)azulib_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(default_buffer1);
+    (void)azulib_ustream_dispose(default_buffer2);
 }
 
-/* aziot_ustream_read shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to read the requested bytes */
+/* azulib_ustream_read shall return AZULIB_ULIB_SYSTEM_ERROR if it failed to read the requested bytes */
 TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* default_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
-    AZIOT_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer2));
-    set_read_result(AZIOT_ULIB_SYSTEM_ERROR);
+    AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    set_read_result(AZULIB_ULIB_SYSTEM_ERROR);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
     size_t size_result;
 
     ASSERT_ARE_EQUAL(
         int, 
-        AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_read(
+        AZULIB_ULIB_SUCCESS, 
+        azulib_ustream_read(
             multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
             &size_result));
     ASSERT_BUFFER_ARE_EQUAL(uint8_t_ptr, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1, buf_result, size_result);
 
-    set_read_result(AZIOT_ULIB_SYSTEM_ERROR);
+    set_read_result(AZULIB_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZIOT_ULIB_RESULT result =
-        aziot_ustream_read(
+    AZULIB_ULIB_RESULT result =
+        azulib_ustream_read(
             multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
             &size_result);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    (void)aziot_ustream_dispose(multibuffer);
-    (void)aziot_ustream_dispose(default_buffer1);
-    (void)aziot_ustream_dispose(default_buffer2);
+    (void)azulib_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(default_buffer1);
+    (void)azulib_ustream_dispose(default_buffer2);
 }
 
 /* ustream_multi_release shall bypass the error if the Inner ustream return not success for one of the needed operations. */
 TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* default_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
-    AZIOT_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer2));
+    AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
     ASSERT_ARE_EQUAL(
         int, 
-        AZIOT_ULIB_SUCCESS, 
-        aziot_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
+        AZULIB_ULIB_SUCCESS, 
+        azulib_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
 
-    set_get_position_result(AZIOT_ULIB_SYSTEM_ERROR);
+    set_get_position_result(AZULIB_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZIOT_ULIB_RESULT result =
-        aziot_ustream_release(
+    AZULIB_ULIB_RESULT result =
+        azulib_ustream_release(
             multibuffer,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_get_position(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
     ///cleanup
-    (void)aziot_ustream_dispose(multibuffer);
-    (void)aziot_ustream_dispose(default_buffer1);
-    (void)aziot_ustream_dispose(default_buffer2);
+    (void)azulib_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(default_buffer1);
+    (void)azulib_ustream_dispose(default_buffer2);
 }
 
-/* aziot_ustream_release shall return AZIOT_ULIB_SYSTEM_ERROR if it failed to release the requested bytes */
+/* azulib_ustream_release shall return AZULIB_ULIB_SYSTEM_ERROR if it failed to release the requested bytes */
 TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* default_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
-    AZIOT_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer2));
+    AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
     ASSERT_ARE_EQUAL(
         int,
-        AZIOT_ULIB_SUCCESS,
-        aziot_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
+        AZULIB_ULIB_SUCCESS,
+        azulib_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
 
-    set_get_remaining_size_result(AZIOT_ULIB_SYSTEM_ERROR);
+    set_get_remaining_size_result(AZULIB_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZIOT_ULIB_RESULT result =
-        aziot_ustream_release(
+    AZULIB_ULIB_RESULT result =
+        azulib_ustream_release(
             multibuffer,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_get_position(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
     ///cleanup
-    (void)aziot_ustream_dispose(multibuffer);
-    (void)aziot_ustream_dispose(default_buffer1);
-    (void)aziot_ustream_dispose(default_buffer2);
+    (void)azulib_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(default_buffer1);
+    (void)azulib_ustream_dispose(default_buffer2);
 }
 
-/* aziot_ustream_clone shall bypass the error if the Inner ustream returns and error for one of the needed operations. */
+/* azulib_ustream_clone shall bypass the error if the Inner ustream returns and error for one of the needed operations. */
 TEST_FUNCTION(ustream_multi_clone_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* default_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
-    AZIOT_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer2));
+    AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
 
-    set_get_remaining_size_result(AZIOT_ULIB_SYSTEM_ERROR);
+    set_get_remaining_size_result(AZULIB_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZIOT_USTREAM* clone_result = aziot_ustream_clone(multibuffer, 0);
+    AZULIB_USTREAM* clone_result = azulib_ustream_clone(multibuffer, 0);
 
     ///assert
     ASSERT_IS_NULL(clone_result);
 
     ///cleanup
-    (void)aziot_ustream_dispose(multibuffer);
-    (void)aziot_ustream_dispose(default_buffer1);
-    (void)aziot_ustream_dispose(default_buffer2);
+    (void)azulib_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(default_buffer1);
+    (void)azulib_ustream_dispose(default_buffer2);
 }
 
-/*  aziot_ustream_clone shall return NULL if there is not enough memory to control the new buffer. */
-TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_interface_failed)
+/*  azulib_ustream_clone shall return NULL if there is not enough memory to control the new buffer. */
+TEST_FUNCTION(azulib_ustream_clone_no_memory_to_create_interface_failed)
 {
     ///arrange
-    AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
+    AZULIB_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
+    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
 
     ///act
-    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(ustream_instance, 0);
 
     ///assert
-    ASSERT_IS_NULL(aziot_ustream_clone_interface);
+    ASSERT_IS_NULL(azulib_ustream_clone_interface);
 
     ///cleanup
-    (void)aziot_ustream_dispose(ustream_instance);
+    (void)azulib_ustream_dispose(ustream_instance);
 }
 
-/* aziot_ustream_clone shall return NULL if there is not enough memory to create an instance */
-TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_instance_failed)
+/* azulib_ustream_clone shall return NULL if there is not enough memory to create an instance */
+TEST_FUNCTION(azulib_ustream_clone_no_memory_to_create_instance_failed)
 {
     ///arrange
-    AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
+    AZULIB_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
-
-    ///assert
-    ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_IS_NULL(aziot_ustream_clone_interface);
-
-    ///cleanup
-    (void)aziot_ustream_dispose(ustream_instance);
-}
-
-/* aziot_ustream_clone shall return NULL if there is not enough memory to create the first node */
-TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_first_node_failed)
-{
-    ///arrange
-    AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
-    umock_c_reset_all_calls();
-    EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-
-    ///act
-    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(ustream_instance, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_IS_NULL(aziot_ustream_clone_interface);
+    ASSERT_IS_NULL(azulib_ustream_clone_interface);
 
     ///cleanup
-    (void)aziot_ustream_dispose(ustream_instance);
+    (void)azulib_ustream_dispose(ustream_instance);
 }
 
-/* aziot_ustream_clone shall return NULL if there is not enough memory to clone the first node */
-TEST_FUNCTION(aziot_ustream_clone_no_memory_to_clone_first_node_failed)
+/* azulib_ustream_clone shall return NULL if there is not enough memory to create the first node */
+TEST_FUNCTION(azulib_ustream_clone_no_memory_to_create_first_node_failed)
 {
     ///arrange
-    AZIOT_USTREAM* multibuffer = aziot_ustream_multi_create();
+    AZULIB_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
+    umock_c_reset_all_calls();
+    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+
+    ///act
+    AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(ustream_instance, 0);
+
+    ///assert
+    ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
+    ASSERT_IS_NULL(azulib_ustream_clone_interface);
+
+    ///cleanup
+    (void)azulib_ustream_dispose(ustream_instance);
+}
+
+/* azulib_ustream_clone shall return NULL if there is not enough memory to clone the first node */
+TEST_FUNCTION(azulib_ustream_clone_no_memory_to_clone_first_node_failed)
+{
+    ///arrange
+    AZULIB_USTREAM* multibuffer = azulib_ustream_multi_create();
     ASSERT_IS_NOT_NULL(multibuffer);
 
-    AZIOT_USTREAM* default_buffer1 =
-        aziot_ustream_create(
+    AZULIB_USTREAM* default_buffer1 =
+        azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
-    AZIOT_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_multi_append(multibuffer, default_buffer2));
+    AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
+    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
 
-    set_clone_result(AZIOT_ULIB_SYSTEM_ERROR);
+    set_clone_result(AZULIB_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(multibuffer, 0);
+    AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(multibuffer, 0);
 
     ///assert
-    ASSERT_IS_NULL(aziot_ustream_clone_interface);
+    ASSERT_IS_NULL(azulib_ustream_clone_interface);
 
     ///cleanup
-    (void)aziot_ustream_dispose(multibuffer);
-    (void)aziot_ustream_dispose(default_buffer1);
-    (void)aziot_ustream_dispose(default_buffer2);
+    (void)azulib_ustream_dispose(multibuffer);
+    (void)azulib_ustream_dispose(default_buffer1);
+    (void)azulib_ustream_dispose(default_buffer2);
 }
 
-/* aziot_ustream_clone shall return NULL if there is not enough memory to create the second node */
-TEST_FUNCTION(aziot_ustream_clone_no_memory_to_create_second_node_failed)
+/* azulib_ustream_clone shall return NULL if there is not enough memory to create the second node */
+TEST_FUNCTION(azulib_ustream_clone_no_memory_to_create_second_node_failed)
 {
     ///arrange
-    AZIOT_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
+    AZULIB_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
     umock_c_reset_all_calls();
-    EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM)));
-    EXPECTED_CALL(aziot_ulib_malloc(IGNORED_NUM_ARG));
-    EXPECTED_CALL(aziot_ulib_malloc(sizeof(AZIOT_USTREAM))).SetReturn(NULL);
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
+    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM)));
+    EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
+    EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
+    STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZIOT_USTREAM* aziot_ustream_clone_interface = aziot_ustream_clone(ustream_instance, 0);
+    AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(ustream_instance, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_IS_NULL(aziot_ustream_clone_interface);
+    ASSERT_IS_NULL(azulib_ustream_clone_interface);
 
     ///cleanup
-    (void)aziot_ustream_dispose(ustream_instance);
+    (void)azulib_ustream_dispose(ustream_instance);
 }
 
 #include "ustream_compliance_ut.h"
