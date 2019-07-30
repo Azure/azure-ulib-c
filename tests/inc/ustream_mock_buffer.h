@@ -12,14 +12,14 @@ extern "C" {
 
 AZULIB_USTREAM* ustream_mock_create(void);
 
-void set_set_position_result(AZULIB_ULIB_RESULT result);
-void set_reset_result(AZULIB_ULIB_RESULT result);
-void set_read_result(AZULIB_ULIB_RESULT result);
-void set_get_remaining_size_result(AZULIB_ULIB_RESULT result);
-void set_get_position_result(AZULIB_ULIB_RESULT result);
-void set_release_result(AZULIB_ULIB_RESULT result);
-void set_clone_result(AZULIB_ULIB_RESULT result);
-void set_dispose_result(AZULIB_ULIB_RESULT result);
+void set_set_position_result(AZULIB_RESULT result);
+void set_reset_result(AZULIB_RESULT result);
+void set_read_result(AZULIB_RESULT result);
+void set_get_remaining_size_result(AZULIB_RESULT result);
+void set_get_position_result(AZULIB_RESULT result);
+void set_release_result(AZULIB_RESULT result);
+void set_clone_result(AZULIB_RESULT result);
+void set_dispose_result(AZULIB_RESULT result);
 
 #ifdef __cplusplus
 }

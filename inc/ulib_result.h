@@ -5,8 +5,8 @@
  * @file ulib_result.h
  */
 
-#ifndef AZULIB_ULIB_RESULT_H
-#define AZULIB_ULIB_RESULT_H
+#ifndef AZULIB_RESULT_H
+#define AZULIB_RESULT_H
 
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
@@ -18,26 +18,26 @@ extern "C" {
 /**
  * @brief   Error bit for error values.
  */
-#define AZULIB_ULIB_ERROR_FLAG 0X80
+#define AZULIB_ERROR_FLAG 0X80
 
 /**
  * @brief   Enumeration of uLib results.
  */
 MU_DEFINE_ENUM(
-    AZULIB_ULIB_RESULT,
+    AZULIB_RESULT,
 
     //SUCCESS RESULTS
-    AZULIB_ULIB_SUCCESS                    = 0,                              /**<Successful return */
-    AZULIB_ULIB_EOF                        = 1,                              /**<End of fle (no more data to read) */
+    AZULIB_SUCCESS                      = 0,                          /**<Successful return */
+    AZULIB_EOF                          = 1,                          /**<End of fle (no more data to read) */
 
     //ERROR RESULTS
-    AZULIB_ULIB_OUT_OF_MEMORY_ERROR        = (AZULIB_ULIB_ERROR_FLAG | 0),    /**<Out of memory error */
-    AZULIB_ULIB_NO_SUCH_ELEMENT_ERROR      = (AZULIB_ULIB_ERROR_FLAG | 1),    /**<No such element error */
-    AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR     = (AZULIB_ULIB_ERROR_FLAG | 2),    /**<Illegal argument error */
-    AZULIB_ULIB_SECURITY_ERROR             = (AZULIB_ULIB_ERROR_FLAG | 3),    /**<Security error */
-    AZULIB_ULIB_SYSTEM_ERROR               = (AZULIB_ULIB_ERROR_FLAG | 4),    /**<System error */
-    AZULIB_ULIB_CANCELLED_ERROR            = (AZULIB_ULIB_ERROR_FLAG | 5),    /**<Cancelled error */
-    AZULIB_ULIB_BUSY_ERROR                 = (AZULIB_ULIB_ERROR_FLAG | 6)     /**<Busy error */
+    AZULIB_OUT_OF_MEMORY_ERROR          = (AZULIB_ERROR_FLAG | 0),    /**<Out of memory error */
+    AZULIB_NO_SUCH_ELEMENT_ERROR        = (AZULIB_ERROR_FLAG | 1),    /**<No such element error */
+    AZULIB_ILLEGAL_ARGUMENT_ERROR       = (AZULIB_ERROR_FLAG | 2),    /**<Illegal argument error */
+    AZULIB_SECURITY_ERROR               = (AZULIB_ERROR_FLAG | 3),    /**<Security error */
+    AZULIB_SYSTEM_ERROR                 = (AZULIB_ERROR_FLAG | 4),    /**<System error */
+    AZULIB_CANCELLED_ERROR              = (AZULIB_ERROR_FLAG | 5),    /**<Cancelled error */
+    AZULIB_BUSY_ERROR                   = (AZULIB_ERROR_FLAG | 6)     /**<Busy error */
 );
 
 
@@ -45,4 +45,4 @@ MU_DEFINE_ENUM(
 }
 #endif  //__cplusplus
 
-#endif  //AZULIB_ULIB_RESULT_H
+#endif  //AZULIB_RESULT_H

@@ -4,18 +4,18 @@
 #include "ustream_mock_buffer.h"
 #include "ustream_base.h"
 
-static AZULIB_ULIB_RESULT _concrete_set_position_result = AZULIB_ULIB_SUCCESS;
-static AZULIB_ULIB_RESULT _concrete_reset_result = AZULIB_ULIB_SUCCESS;
-static AZULIB_ULIB_RESULT _concrete_read_result = AZULIB_ULIB_SUCCESS;
-static AZULIB_ULIB_RESULT _concrete_get_remaining_size_result = AZULIB_ULIB_SUCCESS;
-static AZULIB_ULIB_RESULT _concrete_get_position_result = AZULIB_ULIB_SUCCESS;
-static AZULIB_ULIB_RESULT _concrete_release_result = AZULIB_ULIB_SUCCESS;
-static AZULIB_ULIB_RESULT _concrete_clone_result = AZULIB_ULIB_SUCCESS;
-static AZULIB_ULIB_RESULT _concrete_dispose_result = AZULIB_ULIB_SUCCESS;
+static AZULIB_RESULT _concrete_set_position_result = AZULIB_SUCCESS;
+static AZULIB_RESULT _concrete_reset_result = AZULIB_SUCCESS;
+static AZULIB_RESULT _concrete_read_result = AZULIB_SUCCESS;
+static AZULIB_RESULT _concrete_get_remaining_size_result = AZULIB_SUCCESS;
+static AZULIB_RESULT _concrete_get_position_result = AZULIB_SUCCESS;
+static AZULIB_RESULT _concrete_release_result = AZULIB_SUCCESS;
+static AZULIB_RESULT _concrete_clone_result = AZULIB_SUCCESS;
+static AZULIB_RESULT _concrete_dispose_result = AZULIB_SUCCESS;
 
 static offset_t current_position = 0;
 
-static AZULIB_ULIB_RESULT concrete_set_position(
+static AZULIB_RESULT concrete_set_position(
         AZULIB_USTREAM* ustream_interface, 
         offset_t position)
 {
@@ -23,22 +23,22 @@ static AZULIB_ULIB_RESULT concrete_set_position(
 
     current_position = position;
 
-    AZULIB_ULIB_RESULT result = _concrete_set_position_result;
-    _concrete_set_position_result = AZULIB_ULIB_SUCCESS;
+    AZULIB_RESULT result = _concrete_set_position_result;
+    _concrete_set_position_result = AZULIB_SUCCESS;
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_reset(
+static AZULIB_RESULT concrete_reset(
         AZULIB_USTREAM* ustream_interface)
 {
     (void)ustream_interface;
 
-    AZULIB_ULIB_RESULT result = _concrete_reset_result;
-    _concrete_reset_result = AZULIB_ULIB_SUCCESS;
+    AZULIB_RESULT result = _concrete_reset_result;
+    _concrete_reset_result = AZULIB_SUCCESS;
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_read(
+static AZULIB_RESULT concrete_read(
         AZULIB_USTREAM* ustream_interface, 
         uint8_t* const buffer, 
         size_t buffer_length, 
@@ -50,12 +50,12 @@ static AZULIB_ULIB_RESULT concrete_read(
 
     current_position += buffer_length;
 
-    AZULIB_ULIB_RESULT result = _concrete_read_result;
-    _concrete_read_result = AZULIB_ULIB_SUCCESS;
+    AZULIB_RESULT result = _concrete_read_result;
+    _concrete_read_result = AZULIB_SUCCESS;
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_get_remaining_size(
+static AZULIB_RESULT concrete_get_remaining_size(
         AZULIB_USTREAM* ustream_interface, 
         size_t* const size)
 {
@@ -63,12 +63,12 @@ static AZULIB_ULIB_RESULT concrete_get_remaining_size(
 
     *size = 10;
 
-    AZULIB_ULIB_RESULT result = _concrete_get_remaining_size_result;
-    _concrete_get_remaining_size_result = AZULIB_ULIB_SUCCESS;
+    AZULIB_RESULT result = _concrete_get_remaining_size_result;
+    _concrete_get_remaining_size_result = AZULIB_SUCCESS;
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_get_position(
+static AZULIB_RESULT concrete_get_position(
         AZULIB_USTREAM* ustream_interface, 
         offset_t* const position)
 {
@@ -76,20 +76,20 @@ static AZULIB_ULIB_RESULT concrete_get_position(
     
     *position = current_position;
 
-    AZULIB_ULIB_RESULT result = _concrete_get_position_result;
-    _concrete_get_position_result = AZULIB_ULIB_SUCCESS;
+    AZULIB_RESULT result = _concrete_get_position_result;
+    _concrete_get_position_result = AZULIB_SUCCESS;
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_release(
+static AZULIB_RESULT concrete_release(
         AZULIB_USTREAM* ustream_interface, 
         offset_t position)
 {
     (void)ustream_interface;
     (void)position;
 
-    AZULIB_ULIB_RESULT result = _concrete_release_result;
-    _concrete_release_result = AZULIB_ULIB_SUCCESS;
+    AZULIB_RESULT result = _concrete_release_result;
+    _concrete_release_result = AZULIB_SUCCESS;
     return result;
 }
 
@@ -100,25 +100,25 @@ static AZULIB_USTREAM* concrete_clone(
     current_position = offset;
 
     AZULIB_USTREAM* interface_result;
-    if (_concrete_clone_result == AZULIB_ULIB_SUCCESS)
+    if (_concrete_clone_result == AZULIB_SUCCESS)
     {
         interface_result = ustream_interface;
     }
     else
     {
         interface_result = NULL;
-        _concrete_clone_result = AZULIB_ULIB_SUCCESS;
+        _concrete_clone_result = AZULIB_SUCCESS;
     }
     return interface_result;
 }
 
-static AZULIB_ULIB_RESULT concrete_dispose(
+static AZULIB_RESULT concrete_dispose(
         AZULIB_USTREAM* ustream_interface)
 {
     (void)ustream_interface;
 
-    AZULIB_ULIB_RESULT result = _concrete_dispose_result;
-    _concrete_dispose_result = AZULIB_ULIB_SUCCESS;
+    AZULIB_RESULT result = _concrete_dispose_result;
+    _concrete_dispose_result = AZULIB_SUCCESS;
     return result;
 }
 
@@ -144,54 +144,54 @@ static const AZULIB_USTREAM USTREAM_COMPLIANCE_MOCK_BUFFER =
 
 AZULIB_USTREAM* ustream_mock_create(void)
 {
-    _concrete_set_position_result = AZULIB_ULIB_SUCCESS;
-    _concrete_reset_result = AZULIB_ULIB_SUCCESS;
-    _concrete_read_result = AZULIB_ULIB_SUCCESS;
-    _concrete_get_remaining_size_result = AZULIB_ULIB_SUCCESS;
-    _concrete_get_position_result = AZULIB_ULIB_SUCCESS;
-    _concrete_release_result = AZULIB_ULIB_SUCCESS;
-    _concrete_clone_result = AZULIB_ULIB_SUCCESS;
-    _concrete_dispose_result = AZULIB_ULIB_SUCCESS;
+    _concrete_set_position_result = AZULIB_SUCCESS;
+    _concrete_reset_result = AZULIB_SUCCESS;
+    _concrete_read_result = AZULIB_SUCCESS;
+    _concrete_get_remaining_size_result = AZULIB_SUCCESS;
+    _concrete_get_position_result = AZULIB_SUCCESS;
+    _concrete_release_result = AZULIB_SUCCESS;
+    _concrete_clone_result = AZULIB_SUCCESS;
+    _concrete_dispose_result = AZULIB_SUCCESS;
 
     return (AZULIB_USTREAM*)&USTREAM_COMPLIANCE_MOCK_BUFFER;
 }
 
-void set_set_position_result(AZULIB_ULIB_RESULT result)
+void set_set_position_result(AZULIB_RESULT result)
 {
     _concrete_set_position_result = result;
 }
 
-void set_reset_result(AZULIB_ULIB_RESULT result)
+void set_reset_result(AZULIB_RESULT result)
 {
     _concrete_reset_result = result;
 }
 
-void set_read_result(AZULIB_ULIB_RESULT result)
+void set_read_result(AZULIB_RESULT result)
 {
     _concrete_read_result = result;
 }
 
-void set_get_remaining_size_result(AZULIB_ULIB_RESULT result)
+void set_get_remaining_size_result(AZULIB_RESULT result)
 {
     _concrete_get_remaining_size_result = result;
 }
 
-void set_get_position_result(AZULIB_ULIB_RESULT result)
+void set_get_position_result(AZULIB_RESULT result)
 {
     _concrete_get_position_result = result;
 }
 
-void set_release_result(AZULIB_ULIB_RESULT result)
+void set_release_result(AZULIB_RESULT result)
 {
     _concrete_release_result = result;
 }
 
-void set_clone_result(AZULIB_ULIB_RESULT result)
+void set_clone_result(AZULIB_RESULT result)
 {
     _concrete_clone_result = result;
 }
 
-void set_dispose_result(AZULIB_ULIB_RESULT result)
+void set_dispose_result(AZULIB_RESULT result)
 {
     _concrete_dispose_result = result;
 }

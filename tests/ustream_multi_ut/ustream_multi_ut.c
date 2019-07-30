@@ -51,7 +51,7 @@ static AZULIB_USTREAM* create_test_default_multibuffer()
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(default_multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(default_multibuffer, default_buffer1));
 
     AZULIB_USTREAM* default_buffer2 =
         azulib_ustream_create(
@@ -59,14 +59,14 @@ static AZULIB_USTREAM* create_test_default_multibuffer()
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2),
             NULL);
     ASSERT_IS_NOT_NULL(default_buffer2);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(default_multibuffer, default_buffer2));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(default_multibuffer, default_buffer2));
 
     AZULIB_USTREAM* default_buffer3 =
         azulib_ustream_create(
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(default_buffer3);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(default_multibuffer, default_buffer3));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(default_multibuffer, default_buffer3));
 
     (void)azulib_ustream_dispose(default_buffer1);
     (void)azulib_ustream_dispose(default_buffer2);
@@ -228,18 +228,18 @@ TEST_FUNCTION(azulib_ustream_multi_append_new_multibuffer_succeed)
     STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZULIB_ULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
-    AZULIB_ULIB_RESULT result2 = azulib_ustream_multi_append(multibuffer, test_buffer2);
-    AZULIB_ULIB_RESULT result3 = azulib_ustream_multi_append(multibuffer, test_buffer3);
+    AZULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
+    AZULIB_RESULT result2 = azulib_ustream_multi_append(multibuffer, test_buffer2);
+    AZULIB_RESULT result3 = azulib_ustream_multi_append(multibuffer, test_buffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result2);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result3);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_remaining_size(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(
         int, 
         strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 
@@ -253,7 +253,7 @@ TEST_FUNCTION(azulib_ustream_multi_append_new_multibuffer_succeed)
     (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* azulib_ustream_multi_append shall release part of the multibuffer and return AZULIB_ULIB_SUCCESS */
+/* azulib_ustream_multi_append shall release part of the multibuffer and return AZULIB_SUCCESS */
 TEST_FUNCTION(azulib_ustream_multi_append_partial_released_multibuffer_succeed)
 {
     ///arrange
@@ -276,20 +276,20 @@ TEST_FUNCTION(azulib_ustream_multi_append_partial_released_multibuffer_succeed)
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(test_buffer3);
 
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer1));
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer2));
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer3));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer2));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer3));
     
     // set_position to half of the buffer
     ASSERT_ARE_EQUAL(
         int, 
-        AZULIB_ULIB_SUCCESS, 
+        AZULIB_SUCCESS, 
         azulib_ustream_set_position(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2)));
     
     // release current - 1
     ASSERT_ARE_EQUAL(
         int, 
-        AZULIB_ULIB_SUCCESS, 
+        AZULIB_SUCCESS, 
         azulib_ustream_release(multibuffer, (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2) - 1));
 
     umock_c_reset_all_calls();
@@ -304,18 +304,18 @@ TEST_FUNCTION(azulib_ustream_multi_append_partial_released_multibuffer_succeed)
     STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZULIB_ULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
-    AZULIB_ULIB_RESULT result2 = azulib_ustream_multi_append(multibuffer, test_buffer2);
-    AZULIB_ULIB_RESULT result3 = azulib_ustream_multi_append(multibuffer, test_buffer3);
+    AZULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
+    AZULIB_RESULT result2 = azulib_ustream_multi_append(multibuffer, test_buffer2);
+    AZULIB_RESULT result3 = azulib_ustream_multi_append(multibuffer, test_buffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result2);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result3);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_remaining_size(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(int, 
             (strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) +
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2) +
@@ -330,7 +330,7 @@ TEST_FUNCTION(azulib_ustream_multi_append_partial_released_multibuffer_succeed)
     (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* azulib_ustream_multi_append shall release an entire internal uStream and return AZULIB_ULIB_SUCCESS */
+/* azulib_ustream_multi_append shall release an entire internal uStream and return AZULIB_SUCCESS */
 TEST_FUNCTION(azulib_ustream_multi_append_fully_released_multibuffer_succeed)
 {
     ///arrange
@@ -353,18 +353,18 @@ TEST_FUNCTION(azulib_ustream_multi_append_fully_released_multibuffer_succeed)
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
     ASSERT_IS_NOT_NULL(test_buffer3);
 
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, test_buffer1));
     
     // set_position to end of the buffer
     ASSERT_ARE_EQUAL(
         int, 
-        AZULIB_ULIB_SUCCESS, 
+        AZULIB_SUCCESS, 
         azulib_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1)));
     
     // release all
     ASSERT_ARE_EQUAL(
         int, 
-        AZULIB_ULIB_SUCCESS, 
+        AZULIB_SUCCESS, 
         azulib_ustream_release(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) - 1));
 
     umock_c_reset_all_calls();
@@ -379,18 +379,18 @@ TEST_FUNCTION(azulib_ustream_multi_append_fully_released_multibuffer_succeed)
     STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZULIB_ULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
-    AZULIB_ULIB_RESULT result2 = azulib_ustream_multi_append(multibuffer, test_buffer2);
-    AZULIB_ULIB_RESULT result3 = azulib_ustream_multi_append(multibuffer, test_buffer3);
+    AZULIB_RESULT result1 = azulib_ustream_multi_append(multibuffer, test_buffer1);
+    AZULIB_RESULT result2 = azulib_ustream_multi_append(multibuffer, test_buffer2);
+    AZULIB_RESULT result3 = azulib_ustream_multi_append(multibuffer, test_buffer3);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result2);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result3);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result3);
 
     size_t size;
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_remaining_size(multibuffer, &size));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_get_remaining_size(multibuffer, &size));
     ASSERT_ARE_EQUAL(
         int, 
         strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 
@@ -404,7 +404,7 @@ TEST_FUNCTION(azulib_ustream_multi_append_fully_released_multibuffer_succeed)
     (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* azulib_ustream_multi_append shall return AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided handle is NULL */
+/* azulib_ustream_multi_append shall return AZULIB_ILLEGAL_ARGUMENT_ERROR if the provided handle is NULL */
 TEST_FUNCTION(azulib_ustream_multi_append_null_multibuffer_failed)
 {
     ///arrange
@@ -414,16 +414,16 @@ TEST_FUNCTION(azulib_ustream_multi_append_null_multibuffer_failed)
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(NULL, test_buffer1);
+    AZULIB_RESULT result = azulib_ustream_multi_append(NULL, test_buffer1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
     (void)azulib_ustream_dispose(test_buffer1);
 }
 
-/* azulib_ustream_multi_append shall return AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided handle is not the implemented uStream type */
+/* azulib_ustream_multi_append shall return AZULIB_ILLEGAL_ARGUMENT_ERROR if the provided handle is not the implemented uStream type */
 TEST_FUNCTION(azulib_ustream_multi_append_buffer_is_not_type_of_buffer_failed)
 {
     ///arrange
@@ -437,17 +437,17 @@ TEST_FUNCTION(azulib_ustream_multi_append_buffer_is_not_type_of_buffer_failed)
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2), NULL);
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(test_buffer1, test_buffer2);
+    AZULIB_RESULT result = azulib_ustream_multi_append(test_buffer1, test_buffer2);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
     (void)azulib_ustream_dispose(test_buffer1);
     (void)azulib_ustream_dispose(test_buffer2);
 }
 
-/* azulib_ustream_multi_append shall return AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
+/* azulib_ustream_multi_append shall return AZULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
 TEST_FUNCTION(azulib_ustream_multi_append_null_buffer_to_add_failed)
 {
     ///arrange
@@ -462,17 +462,17 @@ TEST_FUNCTION(azulib_ustream_multi_append_null_buffer_to_add_failed)
     STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG));
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(multibuffer, NULL);
+    AZULIB_RESULT result = azulib_ustream_multi_append(multibuffer, NULL);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
     (void)azulib_ustream_dispose(test_buffer1);
     (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* azulib_ustream_multi_append shall return AZULIB_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to control the new uStream */
+/* azulib_ustream_multi_append shall return AZULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to control the new uStream */
 TEST_FUNCTION(azulib_ustream_multi_append_not_enough_memory_failed)
 {
     ///arrange
@@ -486,17 +486,17 @@ TEST_FUNCTION(azulib_ustream_multi_append_not_enough_memory_failed)
     STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(multibuffer, test_buffer1);
+    AZULIB_RESULT result = azulib_ustream_multi_append(multibuffer, test_buffer1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_OUT_OF_MEMORY_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
     (void)azulib_ustream_dispose(test_buffer1);
     (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* azulib_ustream_multi_append shall return AZULIB_ULIB_OUT_OF_MEMORY_ERROR if it failed to clone the buffer */
+/* azulib_ustream_multi_append shall return AZULIB_OUT_OF_MEMORY_ERROR if it failed to clone the buffer */
 TEST_FUNCTION(azulib_ustream_multi_append_not_enough_memory_to_clone_the_buffer_failed)
 {
     ///arrange
@@ -512,17 +512,17 @@ TEST_FUNCTION(azulib_ustream_multi_append_not_enough_memory_to_clone_the_buffer_
     STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(multibuffer, test_buffer1);
+    AZULIB_RESULT result = azulib_ustream_multi_append(multibuffer, test_buffer1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_OUT_OF_MEMORY_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
     (void)azulib_ustream_dispose(test_buffer1);
     (void)azulib_ustream_dispose(multibuffer);
 }
 
-/* azulib_ustream_multi_append shall return AZULIB_ULIB_OUT_OF_MEMORY_ERROR if it failed to copy the buffer */
+/* azulib_ustream_multi_append shall return AZULIB_OUT_OF_MEMORY_ERROR if it failed to copy the buffer */
 TEST_FUNCTION(azulib_ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size_failed)
 {
     ///arrange
@@ -534,17 +534,17 @@ TEST_FUNCTION(azulib_ustream_multi_append_new_inner_buffer_failed_on_get_remaini
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
     AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
 
-    set_get_remaining_size_result(AZULIB_ULIB_SYSTEM_ERROR);
+    set_get_remaining_size_result(AZULIB_SYSTEM_ERROR);
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_multi_append(multibuffer, default_buffer2);
+    AZULIB_RESULT result = azulib_ustream_multi_append(multibuffer, default_buffer2);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_SYSTEM_ERROR, result);
 
     ///cleanup
     (void)azulib_ustream_dispose(default_buffer1);
@@ -563,11 +563,11 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_without_buffers_free_all_resourc
     STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_dispose(multibuffer);
+    AZULIB_RESULT result = azulib_ustream_dispose(multibuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result);
 
     ///cleanup
 }
@@ -595,11 +595,11 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_
     STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_dispose(multibuffer);
+    AZULIB_RESULT result = azulib_ustream_dispose(multibuffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result);
 
     ///cleanup
 }
@@ -616,22 +616,22 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_current_posi
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
     AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
-    set_get_position_result(AZULIB_ULIB_SYSTEM_ERROR);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    set_get_position_result(AZULIB_SYSTEM_ERROR);
 
     ///act
-    AZULIB_ULIB_RESULT result = 
+    AZULIB_RESULT result = 
         azulib_ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
@@ -640,7 +640,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_current_posi
     (void)azulib_ustream_dispose(default_buffer2);
 }
 
-/* azulib_ustream_set_position shall return AZULIB_ULIB_SYSTEM_ERROR if it failed to set the position */
+/* azulib_ustream_set_position shall return AZULIB_SYSTEM_ERROR if it failed to set the position */
 TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange
@@ -652,22 +652,22 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_si
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
     AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
-    set_get_remaining_size_result(AZULIB_ULIB_SYSTEM_ERROR);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    set_get_remaining_size_result(AZULIB_SYSTEM_ERROR);
 
     ///act
-    AZULIB_ULIB_RESULT result = 
+    AZULIB_RESULT result = 
         azulib_ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
@@ -676,7 +676,7 @@ TEST_FUNCTION(ustream_multi_set_position_inner_buffer_failed_in_get_remaining_si
     (void)azulib_ustream_dispose(default_buffer2);
 }
 
-/* azulib_ustream_set_position shall return AZULIB_ULIB_SYSTEM_ERROR if it failed to set the position */
+/* azulib_ustream_set_position shall return AZULIB_SYSTEM_ERROR if it failed to set the position */
 TEST_FUNCTION(ustream_multi_seek_inner_buffer_failed_in_seek_failed)
 {
     ///arrange
@@ -688,22 +688,22 @@ TEST_FUNCTION(ustream_multi_seek_inner_buffer_failed_in_seek_failed)
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
     AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
-    set_set_position_result(AZULIB_ULIB_SYSTEM_ERROR);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    set_set_position_result(AZULIB_SYSTEM_ERROR);
 
     ///act
-    AZULIB_ULIB_RESULT result = 
+    AZULIB_RESULT result = 
         azulib_ustream_set_position(
             multibuffer, 
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, 0, pos);
 
     ///cleanup
@@ -724,18 +724,18 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
     AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
-    set_read_result(AZULIB_ULIB_SYSTEM_ERROR);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    set_read_result(AZULIB_SYSTEM_ERROR);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
     size_t size_result;
 
 
     ///act
-    AZULIB_ULIB_RESULT result =
+    AZULIB_RESULT result =
         azulib_ustream_read(
             multibuffer,
             buf_result,
@@ -743,7 +743,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
             &size_result);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result);
     ASSERT_BUFFER_ARE_EQUAL(uint8_t_ptr, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1, buf_result, size_result);
 
     ///cleanup
@@ -752,7 +752,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
     (void)azulib_ustream_dispose(default_buffer2);
 }
 
-/* azulib_ustream_read shall return AZULIB_ULIB_SYSTEM_ERROR if it failed to read the requested bytes */
+/* azulib_ustream_read shall return AZULIB_SYSTEM_ERROR if it failed to read the requested bytes */
 TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
 {
     ///arrange
@@ -764,18 +764,18 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
     AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
-    set_read_result(AZULIB_ULIB_SYSTEM_ERROR);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    set_read_result(AZULIB_SYSTEM_ERROR);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
     size_t size_result;
 
     ASSERT_ARE_EQUAL(
         int, 
-        AZULIB_ULIB_SUCCESS, 
+        AZULIB_SUCCESS, 
         azulib_ustream_read(
             multibuffer,
             buf_result,
@@ -783,10 +783,10 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
             &size_result));
     ASSERT_BUFFER_ARE_EQUAL(uint8_t_ptr, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1, buf_result, size_result);
 
-    set_read_result(AZULIB_ULIB_SYSTEM_ERROR);
+    set_read_result(AZULIB_SYSTEM_ERROR);
 
     ///act
-    AZULIB_ULIB_RESULT result =
+    AZULIB_RESULT result =
         azulib_ustream_read(
             multibuffer,
             buf_result,
@@ -794,7 +794,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
             &size_result);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_SYSTEM_ERROR, result);
 
     ///cleanup
     (void)azulib_ustream_dispose(multibuffer);
@@ -814,27 +814,27 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
     AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
     ASSERT_ARE_EQUAL(
         int, 
-        AZULIB_ULIB_SUCCESS, 
+        AZULIB_SUCCESS, 
         azulib_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
 
-    set_get_position_result(AZULIB_ULIB_SYSTEM_ERROR);
+    set_get_position_result(AZULIB_SYSTEM_ERROR);
 
     ///act
-    AZULIB_ULIB_RESULT result =
+    AZULIB_RESULT result =
         azulib_ustream_release(
             multibuffer,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
     ///cleanup
@@ -843,7 +843,7 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_current_position_
     (void)azulib_ustream_dispose(default_buffer2);
 }
 
-/* azulib_ustream_release shall return AZULIB_ULIB_SYSTEM_ERROR if it failed to release the requested bytes */
+/* azulib_ustream_release shall return AZULIB_SYSTEM_ERROR if it failed to release the requested bytes */
 TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_failed)
 {
     ///arrange
@@ -855,27 +855,27 @@ TEST_FUNCTION(ustream_multi_release_inner_buffer_failed_in_get_remaining_size_fa
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
     AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
     ASSERT_ARE_EQUAL(
         int,
-        AZULIB_ULIB_SUCCESS,
+        AZULIB_SUCCESS,
         azulib_ustream_set_position(multibuffer, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2));
 
-    set_get_remaining_size_result(AZULIB_ULIB_SYSTEM_ERROR);
+    set_get_remaining_size_result(AZULIB_SYSTEM_ERROR);
 
     ///act
-    AZULIB_ULIB_RESULT result =
+    AZULIB_RESULT result =
         azulib_ustream_release(
             multibuffer,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 1);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SYSTEM_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_SYSTEM_ERROR, result);
     offset_t pos;
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_get_position(multibuffer, &pos));
     ASSERT_ARE_EQUAL(int, strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1) + 2, pos);
 
     ///cleanup
@@ -896,12 +896,12 @@ TEST_FUNCTION(ustream_multi_clone_inner_buffer_failed_in_get_remaining_size_fail
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
     AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
 
-    set_get_remaining_size_result(AZULIB_ULIB_SYSTEM_ERROR);
+    set_get_remaining_size_result(AZULIB_SYSTEM_ERROR);
 
     ///act
     AZULIB_USTREAM* clone_result = azulib_ustream_clone(multibuffer, 0);
@@ -989,12 +989,12 @@ TEST_FUNCTION(azulib_ustream_clone_no_memory_to_clone_first_node_failed)
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_IS_NOT_NULL(default_buffer1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer1));
 
     AZULIB_USTREAM* default_buffer2 = ustream_mock_create();
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, azulib_ustream_multi_append(multibuffer, default_buffer2));
 
-    set_clone_result(AZULIB_ULIB_SYSTEM_ERROR);
+    set_clone_result(AZULIB_SYSTEM_ERROR);
 
     ///act
     AZULIB_USTREAM* azulib_ustream_clone_interface = azulib_ustream_clone(multibuffer, 0);

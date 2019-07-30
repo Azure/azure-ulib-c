@@ -31,14 +31,14 @@ typedef struct USTREAM_INSTANCE_TAG
     offset_t inner_first_valid_position;
 } USTREAM_INSTANCE;
 
-static AZULIB_ULIB_RESULT concrete_set_position(AZULIB_USTREAM* ustream_interface, offset_t position);
-static AZULIB_ULIB_RESULT concrete_reset(AZULIB_USTREAM* ustream_interface);
-static AZULIB_ULIB_RESULT concrete_read(AZULIB_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
-static AZULIB_ULIB_RESULT concrete_get_remaining_size(AZULIB_USTREAM* ustream_interface, size_t* const size);
-static AZULIB_ULIB_RESULT concrete_get_position(AZULIB_USTREAM* ustream_interface, offset_t* const position);
-static AZULIB_ULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, offset_t position);
+static AZULIB_RESULT concrete_set_position(AZULIB_USTREAM* ustream_interface, offset_t position);
+static AZULIB_RESULT concrete_reset(AZULIB_USTREAM* ustream_interface);
+static AZULIB_RESULT concrete_read(AZULIB_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
+static AZULIB_RESULT concrete_get_remaining_size(AZULIB_USTREAM* ustream_interface, size_t* const size);
+static AZULIB_RESULT concrete_get_position(AZULIB_USTREAM* ustream_interface, offset_t* const position);
+static AZULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, offset_t position);
 static AZULIB_USTREAM* concrete_clone(AZULIB_USTREAM* ustream_interface, offset_t offset);
-static AZULIB_ULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface);
+static AZULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface);
 static const AZULIB_USTREAM_INTERFACE api =
 {
         concrete_set_position,
@@ -120,16 +120,16 @@ static void destroy_inner_buffer(USTREAM_INNER_BUFFER* inner_buffer)
     AZULIB_ULIB_CONFIG_FREE(inner_buffer);
 }
 
-static AZULIB_ULIB_RESULT concrete_set_position(AZULIB_USTREAM* ustream_interface, offset_t position)
+static AZULIB_RESULT concrete_set_position(AZULIB_USTREAM* ustream_interface, offset_t position)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_set_position_compliance_null_buffer_failed]*/
         /*[azulib_ustream_set_position_compliance_non_type_of_buffer_api_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -142,7 +142,7 @@ static AZULIB_ULIB_RESULT concrete_set_position(AZULIB_USTREAM* ustream_interfac
         {
             /*[azulib_ustream_set_position_compliance_forward_out_of_the_buffer_failed]*/
             /*[azulib_ustream_set_position_compliance_back_before_first_valid_position_failed]*/
-            result = AZULIB_ULIB_NO_SUCH_ELEMENT_ERROR;
+            result = AZULIB_NO_SUCH_ELEMENT_ERROR;
         }
         else
         {
@@ -159,23 +159,23 @@ static AZULIB_ULIB_RESULT concrete_set_position(AZULIB_USTREAM* ustream_interfac
             /*[azulib_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed]*/
             /*[azulib_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_reverse_order_succeed]*/
             instance->inner_current_position = inner_position;
-            result = AZULIB_ULIB_SUCCESS;
+            result = AZULIB_SUCCESS;
         }
     }
 
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_reset(AZULIB_USTREAM* ustream_interface)
+static AZULIB_RESULT concrete_reset(AZULIB_USTREAM* ustream_interface)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_reset_compliance_null_buffer_failed]*/
         /*[azulib_ustream_reset_compliance_non_type_of_buffer_api_failed]*/
 
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -184,26 +184,26 @@ static AZULIB_ULIB_RESULT concrete_reset(AZULIB_USTREAM* ustream_interface)
         /*[azulib_ustream_reset_compliance_back_to_beginning_succeed]*/
         /*[azulib_ustream_reset_compliance_back_position_succeed]*/
         instance->inner_current_position = instance->inner_first_valid_position;
-        result = AZULIB_ULIB_SUCCESS;
+        result = AZULIB_SUCCESS;
     }
 
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_read(
+static AZULIB_RESULT concrete_read(
         AZULIB_USTREAM* ustream_interface,
         uint8_t* const buffer,
         size_t buffer_length,
         size_t* const size)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_read_compliance_null_buffer_failed]*/
         /*[azulib_ustream_read_compliance_non_type_of_buffer_api_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if((buffer == NULL) || (size == NULL))
     {
@@ -213,13 +213,13 @@ static AZULIB_ULIB_RESULT concrete_read(
             AZULIB_ULOG_TYPE_ERROR,
             AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, 
             (buffer == NULL ? "buffer" : "size"));
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(buffer_length == 0)
     {
         /*[azulib_ustream_read_compliance_buffer_with_zero_size_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, "buffer_length", "0");
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -230,7 +230,7 @@ static AZULIB_ULIB_RESULT concrete_read(
         {
             /*[azulib_ustream_read_compliance_succeed_3]*/
             *size = 0;
-            result = AZULIB_ULIB_EOF;
+            result = AZULIB_EOF;
         }
         else
         {
@@ -247,29 +247,29 @@ static AZULIB_ULIB_RESULT concrete_read(
             /*[azulib_ustream_read_compliance_cloned_buffer_right_boundary_condition_succeed]*/
             (void)memcpy(buffer, inner_buffer->ptr + instance->inner_current_position, *size);
             instance->inner_current_position += *size;
-            result = AZULIB_ULIB_SUCCESS;
+            result = AZULIB_SUCCESS;
         }
     }
 
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_get_remaining_size(AZULIB_USTREAM* ustream_interface, size_t* const size)
+static AZULIB_RESULT concrete_get_remaining_size(AZULIB_USTREAM* ustream_interface, size_t* const size)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_get_remaining_size_compliance_null_buffer_failed]*/
         /*[azulib_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(size == NULL)
     {
         /*[azulib_ustream_get_remaining_size_compliance_null_size_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, "size");
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -279,28 +279,28 @@ static AZULIB_ULIB_RESULT concrete_get_remaining_size(AZULIB_USTREAM* ustream_in
         /*[azulib_ustream_get_remaining_size_compliance_new_buffer_with_non_zero_current_position_succeed]*/
         /*[azulib_ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
         *size = instance->inner_buffer->length - instance->inner_current_position;
-        result = AZULIB_ULIB_SUCCESS;
+        result = AZULIB_SUCCESS;
     }
 
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_get_position(AZULIB_USTREAM* ustream_interface, offset_t* const position)
+static AZULIB_RESULT concrete_get_position(AZULIB_USTREAM* ustream_interface, offset_t* const position)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[ustream_get_current_position_compliance_null_buffer_failed]*/
         /*[ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(position == NULL)
     {
         /*[ustream_get_current_position_compliance_null_position_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, "position");
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -310,22 +310,22 @@ static AZULIB_ULIB_RESULT concrete_get_position(AZULIB_USTREAM* ustream_interfac
         /*[ustream_get_current_position_compliance_new_buffer_with_non_zero_current_position_succeed]*/
         /*[ustream_get_current_position_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
         *position = instance->inner_current_position + instance->offset_diff;
-        result = AZULIB_ULIB_SUCCESS;
+        result = AZULIB_SUCCESS;
     }
 
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, offset_t position)
+static AZULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, offset_t position)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_release_compliance_null_buffer_failed]*/
         /*[azulib_ustream_release_compliance_non_type_of_buffer_api_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -337,7 +337,7 @@ static AZULIB_ULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, of
         {
             /*[azulib_ustream_release_compliance_release_after_current_failed]*/
             /*[azulib_ustream_release_compliance_release_position_already_released_failed]*/
-            result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+            result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
         }
         else
         {
@@ -348,7 +348,7 @@ static AZULIB_ULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, of
             /*[azulib_ustream_release_compliance_cloned_buffer_release_all_succeed]*/
             /*[azulib_ustream_release_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed]*/
             instance->inner_first_valid_position = inner_position + (offset_t)1;
-            result = AZULIB_ULIB_SUCCESS;
+            result = AZULIB_SUCCESS;
         }
     }
 
@@ -391,16 +391,16 @@ static AZULIB_USTREAM* concrete_clone(AZULIB_USTREAM* ustream_interface, offset_
     return interface_result;
 }
 
-static AZULIB_ULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface)
+static AZULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_dispose_compliance_null_buffer_failed]*/
         /*[azulib_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -417,7 +417,7 @@ static AZULIB_ULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface)
         }
         AZULIB_ULIB_CONFIG_FREE(instance);
         AZULIB_ULIB_CONFIG_FREE(ustream_interface);
-        result = AZULIB_ULIB_SUCCESS;
+        result = AZULIB_SUCCESS;
     }
 
     return result;

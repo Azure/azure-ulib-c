@@ -4,34 +4,34 @@
 #include "ustream.h"
 
 
-AZULIB_ULIB_RESULT azulib_ustream_append(
+AZULIB_RESULT azulib_ustream_append(
     AZULIB_USTREAM* ustream_interface, 
     AZULIB_USTREAM* ustream_to_append)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if((ustream_to_append == NULL) || 
         (ustream_interface == NULL)) 
     {
         /*[azulib_ustream_append_null_buffer_to_add_failed]*/
         /*[azulib_ustream_append_null_interface_failed]*/
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     /*[azulib_ustream_append_starting_from_multibuffer_with_not_enough_memory_failed]*/
-    else if((result = azulib_ustream_multi_append(ustream_interface, ustream_to_append)) == AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR)
+    else if((result = azulib_ustream_multi_append(ustream_interface, ustream_to_append)) == AZULIB_ILLEGAL_ARGUMENT_ERROR)
     {
         AZULIB_USTREAM* new_multi_buffer = azulib_ustream_multi_create();
         if(new_multi_buffer == NULL)
         {
             /*[azulib_ustream_append_not_enough_memory_to_create_multibuffer_failed]*/
-            result = AZULIB_ULIB_OUT_OF_MEMORY_ERROR;
+            result = AZULIB_OUT_OF_MEMORY_ERROR;
         }
-        else if ((result = azulib_ustream_multi_append(new_multi_buffer, ustream_interface)) != AZULIB_ULIB_SUCCESS)
+        else if ((result = azulib_ustream_multi_append(new_multi_buffer, ustream_interface)) != AZULIB_SUCCESS)
         {
             /*[azulib_ustream_append_not_enough_memory_to_append_first_buffer_failed]*/
             azulib_ustream_dispose(new_multi_buffer);
         }
-        else if ((result = azulib_ustream_multi_append(new_multi_buffer, ustream_to_append)) != AZULIB_ULIB_SUCCESS)
+        else if ((result = azulib_ustream_multi_append(new_multi_buffer, ustream_to_append)) != AZULIB_SUCCESS)
         {
             /*[azulib_ustream_append_not_enough_memory_to_append_second_buffer_failed]*/
             azulib_ustream_dispose(new_multi_buffer);

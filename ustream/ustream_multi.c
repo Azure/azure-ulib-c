@@ -28,14 +28,14 @@ typedef struct USTREAM_MULTI_INSTANCE_TAG
     offset_t inner_first_valid_position;
 } USTREAM_MULTI_INSTANCE;
 
-static AZULIB_ULIB_RESULT concrete_set_position(AZULIB_USTREAM* ustream_interface, offset_t position);
-static AZULIB_ULIB_RESULT concrete_reset(AZULIB_USTREAM* ustream_interface);
-static AZULIB_ULIB_RESULT concrete_read(AZULIB_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
-static AZULIB_ULIB_RESULT concrete_get_remaining_size(AZULIB_USTREAM* ustream_interface, size_t* const size);
-static AZULIB_ULIB_RESULT concrete_get_position(AZULIB_USTREAM* ustream_interface, offset_t* const position);
-static AZULIB_ULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, offset_t position);
+static AZULIB_RESULT concrete_set_position(AZULIB_USTREAM* ustream_interface, offset_t position);
+static AZULIB_RESULT concrete_reset(AZULIB_USTREAM* ustream_interface);
+static AZULIB_RESULT concrete_read(AZULIB_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
+static AZULIB_RESULT concrete_get_remaining_size(AZULIB_USTREAM* ustream_interface, size_t* const size);
+static AZULIB_RESULT concrete_get_position(AZULIB_USTREAM* ustream_interface, offset_t* const position);
+static AZULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, offset_t position);
 static AZULIB_USTREAM* concrete_clone(AZULIB_USTREAM* ustream_interface, offset_t offset);
-static AZULIB_ULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface);
+static AZULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface);
 static const AZULIB_USTREAM_INTERFACE api =
 {
         concrete_set_position,
@@ -134,18 +134,18 @@ static void destroy_instance(AZULIB_USTREAM* ustream_interface)
     AZULIB_ULIB_CONFIG_FREE(ustream_interface);
 }
 
-static AZULIB_ULIB_RESULT concrete_set_position(
+static AZULIB_RESULT concrete_set_position(
         AZULIB_USTREAM* ustream_interface, 
         offset_t position)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_set_position_compliance_null_buffer_failed]*/
         /*[azulib_ustream_set_position_compliance_non_type_of_buffer_api_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -155,14 +155,14 @@ static AZULIB_ULIB_RESULT concrete_set_position(
         if(inner_position == instance->inner_current_position)
         {
             /*[azulib_ustream_set_position_compliance_forward_to_the_end_position_succeed]*/
-            result = AZULIB_ULIB_SUCCESS;
+            result = AZULIB_SUCCESS;
         }
         else if((inner_position > (offset_t)(instance->length)) || 
                 (inner_position < instance->inner_first_valid_position))
         {
             /*[azulib_ustream_set_position_compliance_forward_out_of_the_buffer_failed]*/
             /*[azulib_ustream_set_position_compliance_back_before_first_valid_position_failed]*/
-            result = AZULIB_ULIB_NO_SUCH_ELEMENT_ERROR;
+            result = AZULIB_NO_SUCH_ELEMENT_ERROR;
         }
         else
         {
@@ -177,11 +177,11 @@ static AZULIB_ULIB_RESULT concrete_set_position(
             /*[azulib_ustream_set_position_compliance_cloned_buffer_forward_to_the_end_position_succeed]*/
             /*[azulib_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed]*/
             /*[azulib_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_reverse_order_succeed]*/
-            result = AZULIB_ULIB_SUCCESS;
+            result = AZULIB_SUCCESS;
             BUFFER_LIST_NODE* node = instance->buffer_list;
             BUFFER_LIST_NODE* new_current_node = NULL; 
             bool bypass_old_current_node = false;
-            while((node != NULL) && (result == AZULIB_ULIB_SUCCESS))
+            while((node != NULL) && (result == AZULIB_SUCCESS))
             {
                 if(node == instance->current_node)
                 {
@@ -192,10 +192,10 @@ static AZULIB_ULIB_RESULT concrete_set_position(
                 {
                     offset_t current_position;
                     /*[ustream_multi_seek_inner_buffer_failed_in_get_current_position_failed]*/
-                    if((result = azulib_ustream_get_position(node->buffer, &current_position)) == AZULIB_ULIB_SUCCESS)
+                    if((result = azulib_ustream_get_position(node->buffer, &current_position)) == AZULIB_SUCCESS)
                     {
                         size_t size;
-                        if((result = azulib_ustream_get_remaining_size(node->buffer, &size)) == AZULIB_ULIB_SUCCESS)
+                        if((result = azulib_ustream_get_remaining_size(node->buffer, &size)) == AZULIB_SUCCESS)
                         {
                             if((current_position + size) > inner_position)
                             {
@@ -220,7 +220,7 @@ static AZULIB_ULIB_RESULT concrete_set_position(
                 node = node->next;
             } 
 
-            if(result == AZULIB_ULIB_SUCCESS)
+            if(result == AZULIB_SUCCESS)
             {
                 instance->inner_current_position = inner_position;
                 instance->current_node = new_current_node;
@@ -229,9 +229,9 @@ static AZULIB_ULIB_RESULT concrete_set_position(
             {
                 if(instance->current_node != NULL)
                 {
-                    AZULIB_ULIB_RESULT rollback_result = 
+                    AZULIB_RESULT rollback_result = 
                         azulib_ustream_set_position(instance->current_node->buffer, instance->inner_current_position);
-                    if(rollback_result != AZULIB_ULIB_SUCCESS)
+                    if(rollback_result != AZULIB_SUCCESS)
                     {
                         AZULIB_ULIB_CONFIG_LOG(
                             AZULIB_ULOG_TYPE_ERROR,
@@ -252,16 +252,16 @@ static AZULIB_ULIB_RESULT concrete_set_position(
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_reset(AZULIB_USTREAM* ustream_interface)
+static AZULIB_RESULT concrete_reset(AZULIB_USTREAM* ustream_interface)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_reset_compliance_null_buffer_failed]*/
         /*[azulib_ustream_reset_compliance_non_type_of_buffer_api_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -276,20 +276,20 @@ static AZULIB_ULIB_RESULT concrete_reset(AZULIB_USTREAM* ustream_interface)
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_read(
+static AZULIB_RESULT concrete_read(
         AZULIB_USTREAM* ustream_interface,
         uint8_t* const buffer,
         size_t buffer_length,
         size_t* const size)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_read_compliance_null_buffer_failed]*/
         /*[azulib_ustream_read_compliance_non_type_of_buffer_api_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if((buffer == NULL) || (size == NULL))
     {
@@ -299,13 +299,13 @@ static AZULIB_ULIB_RESULT concrete_read(
             AZULIB_ULOG_TYPE_ERROR,
             AZULIB_ULOG_REQUIRE_NOT_NULL_STRING,
             (buffer == NULL ? "buffer" : "size"));
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(buffer_length == 0)
     {
         /*[azulib_ustream_read_compliance_buffer_with_zero_size_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, "buffer_length", "0");
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -315,7 +315,7 @@ static AZULIB_ULIB_RESULT concrete_read(
         if(node == NULL)
         {
             *size = 0;
-            result = AZULIB_ULIB_EOF;
+            result = AZULIB_EOF;
         }
         else
         {
@@ -327,10 +327,10 @@ static AZULIB_ULIB_RESULT concrete_read(
             /*[azulib_ustream_read_compliance_get_from_cloned_buffer_succeed]*/
             /*[azulib_ustream_read_compliance_cloned_buffer_right_boundary_condition_succeed]*/
             *size = 0;
-            AZULIB_ULIB_RESULT intermediate_result = AZULIB_ULIB_SUCCESS;
+            AZULIB_RESULT intermediate_result = AZULIB_SUCCESS;
             while((node != NULL) &&
                     (*size < buffer_length) &&
-                    (intermediate_result == AZULIB_ULIB_SUCCESS))
+                    (intermediate_result == AZULIB_SUCCESS))
             {
                 size_t total_copy_size;
                 /*[azulib_ustream_read_compliance_succeed_2]*/
@@ -339,17 +339,17 @@ static AZULIB_ULIB_RESULT concrete_read(
                 intermediate_result = azulib_ustream_read(node->buffer, &buffer[*size], remain_size, &total_copy_size);
                 switch(intermediate_result)
                 {
-                case AZULIB_ULIB_SUCCESS:
+                case AZULIB_SUCCESS:
                     *size += total_copy_size;
                     /* do not **break** here.*/
-                case AZULIB_ULIB_EOF:
+                case AZULIB_EOF:
                     if(*size < buffer_length)
                     {
                         node = node->next;
                         instance->current_node = node;
                         if(node != NULL)
                         {
-                            intermediate_result = AZULIB_ULIB_SUCCESS;
+                            intermediate_result = AZULIB_SUCCESS;
                             (void)azulib_ustream_reset(node->buffer);
                         }
                     }
@@ -363,7 +363,7 @@ static AZULIB_ULIB_RESULT concrete_read(
             {
                 /* if the size is bigger than 0 is because at least one inner buffer was copied, so use it and return success. */
                 instance->inner_current_position += *size;
-                result = AZULIB_ULIB_SUCCESS;
+                result = AZULIB_SUCCESS;
             }
             else
             {
@@ -376,22 +376,22 @@ static AZULIB_ULIB_RESULT concrete_read(
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_get_remaining_size(AZULIB_USTREAM* ustream_interface, size_t* const size)
+static AZULIB_RESULT concrete_get_remaining_size(AZULIB_USTREAM* ustream_interface, size_t* const size)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_get_remaining_size_compliance_null_buffer_failed]*/
         /*[azulib_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(size == NULL)
     {
         /*[azulib_ustream_get_remaining_size_compliance_null_size_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, "size");
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -401,28 +401,28 @@ static AZULIB_ULIB_RESULT concrete_get_remaining_size(AZULIB_USTREAM* ustream_in
         /*[azulib_ustream_get_remaining_size_compliance_new_buffer_with_non_zero_current_position_succeed]*/
         /*[azulib_ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
         *size = instance->length - instance->inner_current_position;
-        result = AZULIB_ULIB_SUCCESS;
+        result = AZULIB_SUCCESS;
     }
 
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_get_position(AZULIB_USTREAM* ustream_interface, offset_t* const position)
+static AZULIB_RESULT concrete_get_position(AZULIB_USTREAM* ustream_interface, offset_t* const position)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[ustream_get_current_position_compliance_null_buffer_failed]*/
         /*[ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(position == NULL)
     {
         /*[ustream_get_current_position_compliance_null_position_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, "position");
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -432,22 +432,22 @@ static AZULIB_ULIB_RESULT concrete_get_position(AZULIB_USTREAM* ustream_interfac
         /*[ustream_get_current_position_compliance_new_buffer_with_non_zero_current_position_succeed]*/
         /*[ustream_get_current_position_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
         *position = instance->inner_current_position + instance->offset_diff;
-        result = AZULIB_ULIB_SUCCESS;
+        result = AZULIB_SUCCESS;
     }
 
     return result;
 }
 
-static AZULIB_ULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, offset_t position)
+static AZULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, offset_t position)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_release_compliance_null_buffer_failed]*/
         /*[azulib_ustream_release_compliance_non_type_of_buffer_api_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -460,7 +460,7 @@ static AZULIB_ULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, of
         {
             /*[azulib_ustream_release_compliance_release_after_current_failed]*/
             /*[azulib_ustream_release_compliance_release_position_already_released_failed]*/
-            result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+            result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
         }
         else
         {
@@ -468,19 +468,19 @@ static AZULIB_ULIB_RESULT concrete_release(AZULIB_USTREAM* ustream_interface, of
             /*[azulib_ustream_release_compliance_run_full_buffer_byte_by_byte_succeed]*/
             /*[azulib_ustream_release_compliance_cloned_buffer_release_all_succeed]*/
             /*[azulib_ustream_release_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed]*/
-            result = AZULIB_ULIB_SUCCESS;
+            result = AZULIB_SUCCESS;
             offset_t last_position = 0;
             while((new_buffer_list_start != NULL) &&
-                    ((result = azulib_ustream_get_position(new_buffer_list_start->buffer, &last_position)) == AZULIB_ULIB_SUCCESS) && 
+                    ((result = azulib_ustream_get_position(new_buffer_list_start->buffer, &last_position)) == AZULIB_SUCCESS) && 
                     (inner_position > last_position))
             {
                 new_buffer_list_start = new_buffer_list_start->next;
             }
 
-            if(result == AZULIB_ULIB_SUCCESS)
+            if(result == AZULIB_SUCCESS)
             {
                 size_t size;
-                if((result = azulib_ustream_get_remaining_size(new_buffer_list_start->buffer, &size)) == AZULIB_ULIB_SUCCESS)
+                if((result = azulib_ustream_get_remaining_size(new_buffer_list_start->buffer, &size)) == AZULIB_SUCCESS)
                 {
                     if((size == 0) && (inner_position == (last_position - 1)))
                     {
@@ -553,7 +553,7 @@ static AZULIB_USTREAM* concrete_clone(AZULIB_USTREAM* ustream_interface, offset_
                     {
                         fail = true;
                     }
-                    else if(azulib_ustream_get_remaining_size(new_node->buffer, &(new_buffer_size)) == AZULIB_ULIB_SUCCESS)
+                    else if(azulib_ustream_get_remaining_size(new_node->buffer, &(new_buffer_size)) == AZULIB_SUCCESS)
                     {
                         // find insertion position in the list
                         *insert_position = new_node;
@@ -585,16 +585,16 @@ static AZULIB_USTREAM* concrete_clone(AZULIB_USTREAM* ustream_interface, offset_
     return interface_result;
 }
 
-static AZULIB_ULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface)
+static AZULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_dispose_compliance_null_buffer_failed]*/
         /*[azulib_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING);
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -602,7 +602,7 @@ static AZULIB_ULIB_RESULT concrete_dispose(AZULIB_USTREAM* ustream_interface)
         /*[azulib_ustream_dispose_compliance_cloned_instance_disposed_second_succeed]*/
         /*[azulib_ustream_dispose_compliance_single_instance_succeed]*/
         destroy_instance(ustream_interface);
-        result = AZULIB_ULIB_SUCCESS;
+        result = AZULIB_SUCCESS;
     }
 
     return result;
@@ -615,23 +615,23 @@ AZULIB_USTREAM* azulib_ustream_multi_create(void)
     return create_instance();
 }
 
-AZULIB_ULIB_RESULT azulib_ustream_multi_append(
+AZULIB_RESULT azulib_ustream_multi_append(
         AZULIB_USTREAM* ustream_interface,
         AZULIB_USTREAM* ustream_to_append)
 {
-    AZULIB_ULIB_RESULT result;
+    AZULIB_RESULT result;
 
     if(AZULIB_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api))
     {
         /*[azulib_ustream_multi_append_null_multibuffer_failed]*/
         /*[azulib_ustream_multi_append_not_multibuffer_type_failed]*/
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else if(ustream_to_append == NULL)
     {
         /*[azulib_ustream_multi_append_null_buffer_to_add_failed]*/
         AZULIB_ULIB_CONFIG_LOG(AZULIB_ULOG_TYPE_ERROR, AZULIB_ULOG_REQUIRE_NOT_NULL_STRING, "ustream_to_append");
-        result = AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        result = AZULIB_ILLEGAL_ARGUMENT_ERROR;
     }
     else
     {
@@ -643,9 +643,9 @@ AZULIB_ULIB_RESULT azulib_ustream_multi_append(
         /*[azulib_ustream_multi_append_not_enough_memory_to_clone_the_buffer_failed]*/
         if((new_node = create_buffer_node(ustream_to_append, (offset_t)(instance->length))) == NULL)
         {
-            result = AZULIB_ULIB_OUT_OF_MEMORY_ERROR;
+            result = AZULIB_OUT_OF_MEMORY_ERROR;
         }
-        else if((result = azulib_ustream_get_remaining_size(new_node->buffer, &(new_buffer_size))) != AZULIB_ULIB_SUCCESS)
+        else if((result = azulib_ustream_get_remaining_size(new_node->buffer, &(new_buffer_size))) != AZULIB_SUCCESS)
         {
             /*[azulib_ustream_multi_append_new_inner_buffer_failed_on_get_remaining_size_failed]*/
             AZULIB_ULIB_CONFIG_LOG(

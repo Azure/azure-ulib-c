@@ -104,7 +104,7 @@ static void check_buffer(
 
     if (offset < expected_content_length)
     {
-        ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS,
+        ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS,
             azulib_ustream_read(az_buffer, buf_result, 256, &size_result));
 
         ASSERT_ARE_EQUAL(int, expected_content_length - offset, size_result);
@@ -118,7 +118,7 @@ static void check_buffer(
     size_result = 10;
     ASSERT_ARE_EQUAL(
         int,
-        AZULIB_ULIB_EOF,
+        AZULIB_EOF,
         azulib_ustream_read(az_buffer, buf_result, 256, &size_result));
     ASSERT_ARE_EQUAL(int, 0, size_result);
 }

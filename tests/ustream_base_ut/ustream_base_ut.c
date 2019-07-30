@@ -128,14 +128,14 @@ TEST_FUNCTION(azulib_ustream_append_start_from_empty_multibuffer_succeed)
     ASSERT_IS_NOT_NULL(default_buffer3);
 
     ///act
-    AZULIB_ULIB_RESULT result1 = azulib_ustream_append(default_multibuffer, default_buffer1);
-    AZULIB_ULIB_RESULT result2 = azulib_ustream_append(default_multibuffer, default_buffer2);
-    AZULIB_ULIB_RESULT result3 = azulib_ustream_append(default_multibuffer, default_buffer3);
+    AZULIB_RESULT result1 = azulib_ustream_append(default_multibuffer, default_buffer1);
+    AZULIB_RESULT result2 = azulib_ustream_append(default_multibuffer, default_buffer2);
+    AZULIB_RESULT result3 = azulib_ustream_append(default_multibuffer, default_buffer3);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result2);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result3);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result3);
     azulib_ustream_dispose(default_buffer1);
     azulib_ustream_dispose(default_buffer2);
     azulib_ustream_dispose(default_buffer3);
@@ -149,7 +149,7 @@ TEST_FUNCTION(azulib_ustream_append_start_from_empty_multibuffer_succeed)
     azulib_ustream_dispose(default_multibuffer);
 }
 
-/* azulib_ustream_append shall return AZULIB_ULIB_SUCCESS if the uStreams were appended succesfully */
+/* azulib_ustream_append shall return AZULIB_SUCCESS if the uStreams were appended succesfully */
 TEST_FUNCTION(azulib_ustream_append_append_multiple_buffers_succeed)
 {
     ///arrange
@@ -173,12 +173,12 @@ TEST_FUNCTION(azulib_ustream_append_append_multiple_buffers_succeed)
     ASSERT_IS_NOT_NULL(default_buffer3);
 
     ///act
-    AZULIB_ULIB_RESULT result1 = azulib_ustream_append(default_buffer1, default_buffer2);
-    AZULIB_ULIB_RESULT result2 = azulib_ustream_append(default_buffer1, default_buffer3);
+    AZULIB_RESULT result1 = azulib_ustream_append(default_buffer1, default_buffer2);
+    AZULIB_RESULT result2 = azulib_ustream_append(default_buffer1, default_buffer3);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result1);
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_SUCCESS, result2);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZULIB_SUCCESS, result2);
     azulib_ustream_dispose(default_buffer2);
     azulib_ustream_dispose(default_buffer3);
     check_buffer(
@@ -191,7 +191,7 @@ TEST_FUNCTION(azulib_ustream_append_append_multiple_buffers_succeed)
     azulib_ustream_dispose(default_buffer1);
 }
 
-/* azulib_ustream_append shall return AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream is NULL */
+/* azulib_ustream_append shall return AZULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream is NULL */
 TEST_FUNCTION(azulib_ustream_append_null_interface_failed)
 {
     ///arrange
@@ -202,16 +202,16 @@ TEST_FUNCTION(azulib_ustream_append_null_interface_failed)
     ASSERT_IS_NOT_NULL(default_buffer);
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_append(NULL, default_buffer);
+    AZULIB_RESULT result = azulib_ustream_append(NULL, default_buffer);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
     azulib_ustream_dispose(default_buffer);
 }
 
-/* azulib_ustream_append shall return AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
+/* azulib_ustream_append shall return AZULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
 TEST_FUNCTION(azulib_ustream_append_null_buffer_to_add_failed)
 {
     ///arrange
@@ -222,16 +222,16 @@ TEST_FUNCTION(azulib_ustream_append_null_buffer_to_add_failed)
     ASSERT_IS_NOT_NULL(default_buffer);
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_append(default_buffer, NULL);
+    AZULIB_RESULT result = azulib_ustream_append(default_buffer, NULL);
 
     ///assert
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
     azulib_ustream_dispose(default_buffer);
 }
 
-/*  azulib_ustream_append shall return AZULIB_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the uStream */
+/*  azulib_ustream_append shall return AZULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the uStream */
 TEST_FUNCTION(azulib_ustream_append_starting_from_multibuffer_with_not_enough_memory_failed)
 {
     ///arrange
@@ -248,18 +248,18 @@ TEST_FUNCTION(azulib_ustream_append_starting_from_multibuffer_with_not_enough_me
     STRICT_EXPECTED_CALL(azulib_ulib_malloc(IGNORED_NUM_ARG)).SetReturn(NULL);
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_append(default_multibuffer, default_buffer);
+    AZULIB_RESULT result = azulib_ustream_append(default_multibuffer, default_buffer);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_OUT_OF_MEMORY_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_OUT_OF_MEMORY_ERROR, result);
 
     ///cleanup
     azulib_ustream_dispose(default_buffer);
     azulib_ustream_dispose(default_multibuffer);
 }
 
-/* azulib_ustream_append shall return AZULIB_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to create the multibuffer */
+/* azulib_ustream_append shall return AZULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to create the multibuffer */
 TEST_FUNCTION(azulib_ustream_append_not_enough_memory_to_create_multibuffer_failed)
 {
     ///arrange
@@ -280,11 +280,11 @@ TEST_FUNCTION(azulib_ustream_append_not_enough_memory_to_create_multibuffer_fail
     STRICT_EXPECTED_CALL(azulib_ulib_malloc(sizeof(AZULIB_USTREAM))).SetReturn(NULL);
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_append(default_buffer1, default_buffer2);
+    AZULIB_RESULT result = azulib_ustream_append(default_buffer1, default_buffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_OUT_OF_MEMORY_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_OUT_OF_MEMORY_ERROR, result);
     check_buffer(
         default_buffer1,
         0,
@@ -301,7 +301,7 @@ TEST_FUNCTION(azulib_ustream_append_not_enough_memory_to_create_multibuffer_fail
     azulib_ustream_dispose(default_buffer2);
 }
 
-/* azulib_ustream_append shall return AZULIB_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the first uStream */
+/* azulib_ustream_append shall return AZULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the first uStream */
 TEST_FUNCTION(azulib_ustream_append_not_enough_memory_to_append_first_buffer_failed)
 {
     ///arrange
@@ -329,11 +329,11 @@ TEST_FUNCTION(azulib_ustream_append_not_enough_memory_to_append_first_buffer_fai
     STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_append(default_buffer1, default_buffer2);
+    AZULIB_RESULT result = azulib_ustream_append(default_buffer1, default_buffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_OUT_OF_MEMORY_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_OUT_OF_MEMORY_ERROR, result);
     check_buffer(
         default_buffer1,
         0,
@@ -350,7 +350,7 @@ TEST_FUNCTION(azulib_ustream_append_not_enough_memory_to_append_first_buffer_fai
     azulib_ustream_dispose(default_buffer2);
 }
 
-/* azulib_ustream_append shall return AZULIB_ULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the second uStream */
+/* azulib_ustream_append shall return AZULIB_OUT_OF_MEMORY_ERROR if there is not enough memory to append the second uStream */
 TEST_FUNCTION(azulib_ustream_append_not_enough_memory_to_append_second_buffer_failed)
 {
     ///arrange
@@ -385,11 +385,11 @@ TEST_FUNCTION(azulib_ustream_append_not_enough_memory_to_append_second_buffer_fa
     STRICT_EXPECTED_CALL(azulib_ulib_free(IGNORED_PTR_ARG));
 
     ///act
-    AZULIB_ULIB_RESULT result = azulib_ustream_append(default_buffer1, default_buffer2);
+    AZULIB_RESULT result = azulib_ustream_append(default_buffer1, default_buffer2);
 
     ///assert
     ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZULIB_ULIB_OUT_OF_MEMORY_ERROR, result);
+    ASSERT_ARE_EQUAL(int, AZULIB_OUT_OF_MEMORY_ERROR, result);
     check_buffer(
         default_buffer1,
         0,
