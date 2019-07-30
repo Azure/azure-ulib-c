@@ -27,6 +27,9 @@ set(azure_ulib_c_files
     ${CMAKE_SOURCE_DIR}/ustream/ustream_base.c
     ${CMAKE_SOURCE_DIR}/ustream/ustream_multi.c
     ${CMAKE_SOURCE_DIR}/ustream/ustream.c
+    ${CMAKE_SOURCE_DIR}/src/azulib_transport/azulib_credential.c
+    ${CMAKE_SOURCE_DIR}/src/azulib_transport/azulib_message.c
+    ${CMAKE_SOURCE_DIR}/src/azulib_http/azulib_http.c
 )
 
 #Add library of ulib c files

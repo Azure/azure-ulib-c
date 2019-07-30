@@ -172,6 +172,7 @@ $RECYCLE.BIN/
 .DS_Store
 
 # Visual studio build artifacts
+/.vs
 *.tlog
 *.lastbuildstate
 *.idb

@@ -4,3 +4,4 @@
 cmake_minimum_required(VERSION 3.2)
 
 add_subdirectory(./ustream_basic)
+add_subdirectory(./http_simple_get)

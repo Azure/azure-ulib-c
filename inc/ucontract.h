@@ -176,6 +176,9 @@ extern "C" {
         } \
     } while((void)0,0)
 
+#define UCONTRACT_REQUEST_STRUCT_SIZE(tag, size) \
+    typedef char MU_C2(tag, _check_size)[(sizeof(tag) == MU_C1(size) ? 1 : -1)]
+
 
 #ifdef __cplusplus
 }

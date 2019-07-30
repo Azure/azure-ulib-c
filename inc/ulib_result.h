@@ -28,7 +28,7 @@ MU_DEFINE_ENUM(
 
     //SUCCESS RESULTS
     ULIB_SUCCESS                        = 0,                        /**<Successful return */
-    ULIB_EOF                            = 1,                        /**<End of fle (no more data to read) */
+    ULIB_EOF                            = 1,                        /**<End of file (no more data to read) */
 
     //ERROR RESULTS
     ULIB_OUT_OF_MEMORY_ERROR            = (ULIB_ERROR_FLAG | 0),    /**<Out of memory error */
@@ -36,8 +36,10 @@ MU_DEFINE_ENUM(
     ULIB_ILLEGAL_ARGUMENT_ERROR         = (ULIB_ERROR_FLAG | 2),    /**<Illegal argument error */
     ULIB_SECURITY_ERROR                 = (ULIB_ERROR_FLAG | 3),    /**<Security error */
     ULIB_SYSTEM_ERROR                   = (ULIB_ERROR_FLAG | 4),    /**<System error */
-    ULIB_CANCELLED_ERROR                = (ULIB_ERROR_FLAG | 5),    /**<Cancelled error */
-    ULIB_BUSY_ERROR                     = (ULIB_ERROR_FLAG | 6)     /**<Busy error */
+    ULIB_CANCELLED_ERROR                = (ULIB_ERROR_FLAG | 5),    /**<Canceled error */
+    ULIB_BUSY_ERROR                     = (ULIB_ERROR_FLAG | 6),    /**<Busy error */
+    ULIB_NOT_SUPPORTED_ERROR            = (ULIB_ERROR_FLAG | 7),    /**<Feature not supported error */
+    ULIB_NOT_INITIALIZED_ERROR          = (ULIB_ERROR_FLAG | 8)     /**<System not initialized yet */
 )
 
 
