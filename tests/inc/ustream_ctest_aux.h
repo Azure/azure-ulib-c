@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef AZURE_ULIB_C_TESTS_INC_USTREAM_CTEST_AUX_H
-#define AZURE_ULIB_C_TESTS_INC_USTREAM_CTEST_AUX_H
+#ifndef AZULIB_USTREAM_CTEST_AUX_H
+#define AZULIB_USTREAM_CTEST_AUX_H
 
 #include <stdint.h>
 #include "ctest_macros.h"
@@ -123,4 +123,4 @@ static void check_buffer(
     ASSERT_ARE_EQUAL(int, 0, size_result);
 }
 
-#endif /* AZURE_ULIB_C_TESTS_INC_USTREAM_CTEST_AUX_H */
+#endif /* AZULIB_USTREAM_CTEST_AUX_H */
