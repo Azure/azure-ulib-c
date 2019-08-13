@@ -97,10 +97,10 @@ extern "C" {
     } while((void)0,0)
 
 /**
- * @brief   Contract macro to evaluate if value is not <tt>NULL</tt>.
+ * @brief   Contract macro to evaluate if value is not `NULL`.
  *
  * @param   val         value to check
- * @param   result      returned result if value is <tt>NULL</tt>
+ * @param   result      returned result if value is `NULL`
  */
 #define AZ_UCONTRACT_REQUIRE_NOT_NULL(val, result) \
     do { \
@@ -112,7 +112,22 @@ extern "C" {
     } while((void)0,0)
 
 /**
- * @brief   Contract macro to evaluate developer expression.
+ * @brief   Contract macro to evaluate if value is `NULL`.
+ *
+ * @param   val         value to check
+ * @param   result      returned result if value is not `NULL`
+ */
+#define AZ_UCONTRACT_REQUIRE_NULL(val, result) \
+    do { \
+        if(val != NULL) \
+        { \
+            AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, AZ_ULOG_REQUIRE_NULL_STRING, MU_TOSTRING(val)); \
+            return result; \
+        } \
+    } while((void)0,0)
+
+/**
+ * @brief   Contract macro to evaluate user expression.
  *
  * @warning Throws hard fault if developer expression is false
  *
@@ -163,9 +178,9 @@ extern "C" {
     } while((void)0,0)
 
 /**
- * @brief   Contract macro to evaluate if value is not <tt>NULL</tt>.
+ * @brief   Contract macro to evaluate if value is not `NULL`.
  *
- * @warning Throws hard fault if value is <tt>NULL</tt>
+ * @warning Throws hard fault if value is `NULL`
  *
  * @param   val         value to check
  */

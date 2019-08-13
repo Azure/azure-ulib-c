@@ -67,6 +67,9 @@ ipch/
 *.psess
 *.vsp
 *.vspx
+.vs
+out
+CMakeSettings.json
 
 # Guidance Automation Toolkit
 *.gpState

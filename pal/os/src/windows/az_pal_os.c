@@ -13,6 +13,7 @@ void az_pal_os_lock_init(AZ_PAL_OS_LOCK* lock)
 
 void az_pal_os_lock_deinit(AZ_PAL_OS_LOCK* lock)
 {
+    (void)lock;
 }
 
 void az_pal_os_lock_acquire(AZ_PAL_OS_LOCK* lock)

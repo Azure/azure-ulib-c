@@ -13,7 +13,8 @@
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
 
-#ifdef __cplusplus
+#ifndef __cplusplus
+#else
 extern "C" {
 #endif
 
@@ -30,7 +31,8 @@ MU_DEFINE_ENUM(
 
     //SUCCESS RESULTS
     AZ_ULIB_SUCCESS                    = 0,                           /**<Successful return */
-    AZ_ULIB_EOF                        = 1,                           /**<End of fle (no more data to read) */
+    AZ_ULIB_EOF                        = 1,                           /**<End of file (no more data to read) */
+    AZ_ULIB_PENDING                    = 2,                           /**<Intermediate state waiting for the end of the job */
 
     //ERROR RESULTS
     AZ_ULIB_OUT_OF_MEMORY_ERROR        = (AZ_ULIB_ERROR_FLAG | 0),    /**<Out of memory error */
@@ -39,9 +41,14 @@ MU_DEFINE_ENUM(
     AZ_ULIB_SECURITY_ERROR             = (AZ_ULIB_ERROR_FLAG | 3),    /**<Security error */
     AZ_ULIB_SYSTEM_ERROR               = (AZ_ULIB_ERROR_FLAG | 4),    /**<System error */
     AZ_ULIB_CANCELLED_ERROR            = (AZ_ULIB_ERROR_FLAG | 5),    /**<Cancelled error */
-    AZ_ULIB_BUSY_ERROR                 = (AZ_ULIB_ERROR_FLAG | 6)     /**<Busy error */
+    AZ_ULIB_BUSY_ERROR                 = (AZ_ULIB_ERROR_FLAG | 6),    /**<Busy error */
+    AZ_ULIB_PRECONDITION_ERROR         = (AZ_ULIB_ERROR_FLAG | 7),    /**<Precondition for executing the command was not met */
+    AZ_ULIB_ELEMENT_DUPLICATE_ERROR    = (AZ_ULIB_ERROR_FLAG | 8),    /**<New element already exists */
+    AZ_ULIB_DISABLED_ERROR             = (AZ_ULIB_ERROR_FLAG | 9),    /**<Disabled error */
+    AZ_ULIB_INCOMPATIBLE_VERSION_ERROR = (AZ_ULIB_ERROR_FLAG | 10),   /**<Required version is not available error */
+    AZ_ULIB_NOT_INITIALIZED_ERROR      = (AZ_ULIB_ERROR_FLAG | 11),   /**<Use a component that was not properly initialized */
+    AZ_ULIB_ALREADY_INITIALIZED_ERROR  = (AZ_ULIB_ERROR_FLAG | 12)    /**<A singleton component is already initialized */
 );
-
 
 #ifdef __cplusplus
 }

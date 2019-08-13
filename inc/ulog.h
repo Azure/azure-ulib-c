@@ -26,6 +26,7 @@ extern "C" {
 extern const char* const AZ_ULOG_REQUIRE_EQUALS_STRING;
 extern const char* const AZ_ULOG_REQUIRE_NOT_EQUALS_STRING;
 extern const char* const AZ_ULOG_REQUIRE_NOT_NULL_STRING;
+extern const char* const AZ_ULOG_REQUIRE_NULL_STRING;
 extern const char* const AZ_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING;
 extern const char* const AZ_ULOG_OUT_OF_MEMORY_STRING;
 extern const char* const AZ_ULOG_REPORT_EXCEPTION_STRING;
