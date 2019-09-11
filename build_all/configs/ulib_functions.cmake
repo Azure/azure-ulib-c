@@ -119,10 +119,6 @@ function(ulib_populate_test_target target_name)
         ulib_c_linux_valgrind(${target_name})
     endif()
 
-    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-        ulib_set_target_build_properties(${target_name})
-    endif()
-
     add_test(NAME ${target_name} COMMAND ${target_name})
 
 endfunction()
@@ -146,9 +142,5 @@ function(ulib_populate_sample_target target_name)
             azure_macro_utils_c
             umock_c
     )
-
-    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-        ulib_set_target_build_properties(${target_name})
-    endif()
 
 endfunction()
