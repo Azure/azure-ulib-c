@@ -3,10 +3,12 @@
 
 /**
  * @file ustream.h
+ * 
+ * @brief uStream implementation for local memory
  */
 
-#ifndef AZURE_ULIB_C_INC_USTREAM_H_
-#define AZURE_ULIB_C_INC_USTREAM_H_
+#ifndef AZIOT_USTREAM_H
+#define AZIOT_USTREAM_H
 
 #include "ustream_base.h"
 
@@ -23,98 +25,95 @@ extern "C" {
 #include <stdbool.h>
 #endif /* __cplusplus */
 
-
 /**
- * @brief   Signature of the function to release inner buffer
- * 
- * @param[in]   void*       void pointer to memory that needs to be free'd
- * 
- * @return  void
- */
-typedef void (*USTREAM_BUFFER_RELEASE_CALLBACK)(void*);
-
-/**
- * @brief   Factory to create a new uStream.
+ * @brief   Factory to initialize a new uStream.
  *
- *  This factory creates a uStream that handles the content of the provided buffer. As a result,
- *      it will return a {@link USTREAM}* with this content. The created uStream takes ownership of the
- *      passed memory and will release the memory with the passed #USTREAM_BUFFER_RELEASE_CALLBACK function when
+ *  This factory initializes a uStream that handles the content of the provided buffer. As a result,
+ *      it will return an {@link AZIOT_USTREAM}* with this content. The initialized uStream takes ownership of the
+ *      passed memory and will release the memory with the passed #AZIOT_USTREAM_DATA_RELEASE function when
  *      the ref count goes to zero.
  *
- * @param[in]  buffer           The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
- *                              It cannot be <tt>NULL</tt>.
- * @param[in]  buffer_length    The <tt>size_t</tt> with the number of <tt>uint8_t</tt> in the provided buffer.
- * @param[in]  inner_free       The #USTREAM_BUFFER_RELEASE_CALLBACK function that will be called for the inner buffer once all the references
- *                              to the uStream are released. If <tt>NULL</tt> is passed, the data is assumed to be constant with
- *                              no need to be free'd. In other words, there is no need for notification that the memory can be released.
- *                              As a default, users may use the standard <tt>free</tt> to release malloc'd memory.
+ * @param[in,out]   ustream_instance        The pointer to the allocated #AZIOT_USTREAM struct. This memory must be valid from
+ *                                          the time aziot_ustream_init() is called through aziot_ustream_release(). The uStream will not
+ *                                          free this struct and it is the responsibility of the developer to make sure it is valid during
+ *                                          the time frame described above.
+ * @param[in]       ustream_inner_buffer    The pointer to the allocated #AZIOT_USTREAM_INNER_BUFFER struct. This memory should be allocated in
+ *                                          a way that it stays valid until the passed #AZIOT_USTREAM_INNER_BUFFER_RELEASE is called
+ *                                          at some (potentially) unknown time in the future.
+ * @param[in]       inner_buffer_release    The #AZIOT_USTREAM_INNER_BUFFER_RELEASE function that will be called for the inner 
+ *                                          buffer control block (the passed <tt>ustream_inner_buffer</tt> parameter) once all the 
+ *                                          references to the uStream are released. If <tt>NULL</tt> is passed, the data is assumed to 
+ *                                          be constant with no need to be free'd. In other words, there is no need for notification 
+ *                                          that the memory may be released.
+ *                                          As a default, users may use the standard <tt>free</tt> to release malloc'd memory.
+ * @param[in]       data_buffer             The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
+ *                                          It cannot be <tt>NULL</tt>.
+ * @param[in]       data_buffer_length      The <tt>size_t</tt> with the number of <tt>uint8_t</tt> in the provided buffer.
+ * @param[in]       data_buffer_release     The #AZIOT_USTREAM_DATA_RELEASE function that will be called for the inner 
+ *                                          buffer once all the references to the uStream are released. If <tt>NULL</tt> is 
+ *                                          passed, the data is assumed to be constant with no need to be free'd. In other words, 
+ *                                          there is no need for notification that the memory may be released.
+ *                                          As a default, users may use the standard <tt>free</tt> to release malloc'd memory.
  *
- * @return The {@link USTREAM}* with the uStream interface.
- *          @retval not-NULL    If the uStream was created with success.
- *          @retval NULL        If there is no memory to create the new uStream.
+ * @return The {@link AZIOT_ULIB_RESULT} with result of the initialization.
+ *          @retval     AZIOT_ULIB_SUCCESS                          If the {@link AZIOT_USTREAM}* is successfully initialized.
+ *          @retval     AZIOT_ULIB_ILLEGAL_ARGUMENT_EXCEPTION       If one of the provided parameters is invalid.
  */
-MOCKABLE_FUNCTION(, USTREAM*, ustream_create,
-        const uint8_t* const, buffer,
-        size_t, buffer_length,
-        USTREAM_BUFFER_RELEASE_CALLBACK, inner_free);
+MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_init,
+        AZIOT_USTREAM*, ustream_instance,
+        AZIOT_USTREAM_INNER_BUFFER*, ustream_inner_buffer,
+        AZIOT_USTREAM_INNER_BUFFER_RELEASE, inner_buffer_release,
+        const uint8_t* const, data_buffer,
+        size_t, data_buffer_length,
+        AZIOT_USTREAM_DATA_RELEASE, data_buffer_release);
 
 
 /**
- * @brief   Factory to create a new uStreamMulti.
- *
- *  uStreamMulti is a uStream that handles multiple heterogeneous uStreams and exposes 
- *      it with a single interface. The sequence of the uStreams is determined by the appended sequence:
- *      first in first out.
- *
- *  Note that the <tt>read()</tt> API will return the content of the appended uStreams as if
- *      it was a single uStream. There is nothing that identifies where one uStream stops and the
- *      next one starts.
- *
- *  Cloning a uStreamMulti creates a new instance that has the same content of the original one
- *      at the moment where the clone was made. Any change in the original uStreamMulti
- *      will <b>NOT</b> be reflected in its clone, and changes in the clone will not change the
- *      original uStreamMulti as well.
- *
- *  The uStreamMulti clones each appended uStream. It will enforce the immutable
- *      characteristic of the uStream.
- *
- *  Because a uStreamMulti exposes a uStream interface, it can be appended to another
- *      uStreamMulti.
- *
- *  Releasing part of a uStreamMulti will dispose the appended uStreams that are not necessary anymore,
- *      and the disposal of the uStreamMulti will dispose all appended uStreams.
- *
- * @return The {@link USTREAM}* with the uStreamMulti interface.
- *          @retval not-NULL    If the uStreamMulti was created with success.
- *          @retval NULL        If there is no memory to create the new uStreamMulti.
- */
-MOCKABLE_FUNCTION(, USTREAM*, ustream_multi_create);
+  * @brief   Append a uStream to the existing uStream.
+  *
+  *  The append will add a uStream at the end of the current one. To do that, the append will copy 
+  *         the <tt>ustream_interface</tt> into a <tt>USTREAM_MULTI_INSTANCE</tt>, and append a clone of <tt>ustream_to_append</tt>
+  *         inside the <tt>USTREAM_MULTI_INSTANCE</tt>.
+  *
+  *  The <tt>aziot_ustream_concat</tt> API shall follow the following minimum requirements:
+  *      - The <tt>append</tt> shall append <tt>ustream_to_append</tt> to the end of <tt>ustream_interface</tt>.
+  *      - If <tt>ustream_interface</tt> is <tt>NULL</tt>, the <tt>append</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
+  *      - If <tt>ustream_to_append</tt> is <tt>NULL</tt>, the <tt>append</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
+  *      - If <tt>inner_buffer</tt> is <tt>NULL</tt>, the <tt>append</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
+  *      - If <tt>multi_data</tt> is <tt>NULL</tt>, the <tt>append</tt> shall return #AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR.
+  *
+  * @param[in, out]     ustream_interface       The {@link AZIOT_USTREAM}* with the interface of 
+  *                                             the uStream. It cannot be <tt>NULL</tt>, and it shall be a valid uStream.
+  * @param[in]          ustream_to_append       The {@link AZIOT_USTREAM}* with the interface of 
+  *                                             the uStream to be appended to <tt>ustream_interface</tt>. It cannot be <tt>NULL</tt>, 
+  *                                             and it shall be a valid uStream.
+  * @param[in]          inner_buffer            The pointer to the {@link AZIOT_USTREAM_INNER_BUFFER} struct.
+  *                                             It must be allocated in way that it remains a valid address until
+  *                                             the passed {@link AZIOT_USTREAM_INNER_BUFFER_RELEASE} callback is invoked some
+  *                                             time in the future. It may be <tt>NULL</tt> if no future cleanup is needed.
+  * @param[in]          inner_buffer_release    The {@link AZIOT_USTREAM_INNER_BUFFER_RELEASE} callback which will be called once
+  *                                             the number of references to the inner buffer reaches zero.
+  * @param[in]          multi_data              The {@link AZIOT_USTREAM_MULTI_DATA}* pointing to the allocated data. It must be allocated
+  *                                             in a way that it remains a valid address until the passed {@link AZIOT_USTREAM_DATA_RELEASE}
+  *                                             callback is invoked some time in the future.
+  * @param[in]          multi_data_release      The {@link AZIOT_USTREAM_DATA_RELEASE} callback which will be called once
+  *                                             the number of references to the inner buffer reaches zero. It may be <tt>NULL</tt> if no 
+  *                                             future cleanup is needed. 
+  * @return The {@link AZIOT_ULIB_RESULT} with the result of the <tt>append</tt> operation.
+  *          @retval    AZIOT_ULIB_SUCCESS                If the AZIOT_USTREAM is appended with success.
+  *          @retval    AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+  */
+MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_concat,
+        AZIOT_USTREAM*, ustream_interface,
+        AZIOT_USTREAM*, ustream_to_append,
+        AZIOT_USTREAM_INNER_BUFFER*, inner_buffer,
+        AZIOT_USTREAM_INNER_BUFFER_RELEASE, inner_buffer_release,
+        AZIOT_USTREAM_MULTI_DATA*, multi_data,
+        AZIOT_USTREAM_DATA_RELEASE, multi_data_release);
 
-/**
- * @brief   Append an existent uStream to the uStreamMulti.
- *
- *  Append will add a new uStream at the end of the list of uStreams in the uStreamMulti. To maintain
- *      the immutability, every copy of the uStreamMulti will create an independent instance of it, which
- *      means that appending a new uStream in a current instance of the uStreamMulti will not affect the
- *      other instances.
- *
- * @param[in,out]   ustream_interface   The {@link USTREAM}* with the handle of the uStreamMulti.
- *                                      It cannot be <tt>NULL</tt> and it shall be a valid uStream that is a
- *                                      type of uStreamMulti.
- * @param[in]       ustream_to_append   The {@link USTREAM}* with the handle of the uStream to add
- *                                      to the uStreamMulti. It cannot be <tt>NULL</tt>.
- *
- * @return The {@link ULIB_RESULT} with the result of the append operation.
- *          @retval     ULIB_SUCCESS                If the uStreamMulti appended the provided uStream with success.
- *          @retval     ULIB_ILLEGAL_ARGUMENT_ERROR If the one of the provided parameters is invalid.
- *          @retval     ULIB_OUT_OF_MEMORY_ERROR    If there is no memory to append the uStream.
- */
-MOCKABLE_FUNCTION(, ULIB_RESULT, ustream_multi_append,
-    USTREAM*, ustream_interface,
-    USTREAM*, ustream_to_append);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* AZURE_ULIB_C_INC_USTREAM_H_ */
+#endif /* AZIOT_USTREAM_H */

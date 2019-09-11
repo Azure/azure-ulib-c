@@ -3,9 +3,9 @@
 
 cmake_minimum_required(VERSION 3.5.0)
 
-add_executable(ucontract_ut
+add_executable(ustream_aux_e2e
     ${CMAKE_CURRENT_LIST_DIR}/main.c
-    ${CMAKE_CURRENT_LIST_DIR}/ucontract_ut.c
+    ${CMAKE_CURRENT_LIST_DIR}/ustream_aux_e2e.c
 )
 
-ulib_populate_test_target(ucontract_ut)
+ulib_populate_test_target(ustream_aux_e2e)

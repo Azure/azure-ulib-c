@@ -3,10 +3,12 @@
 
 /**
  * @file ulib_heap.h
+ * 
+ * @brief uLib malloc and free functions available to change by user
  */
 
-#ifndef AZURE_ULIB_C_INC_ULIB_HEAP_H_
-#define AZURE_ULIB_C_INC_ULIB_HEAP_H_
+#ifndef AZIOT_ULIB_HEAP_H
+#define AZIOT_ULIB_HEAP_H
 
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
@@ -18,13 +20,24 @@ extern "C" {
 #include <stddef.h>
 #endif /* __cplusplus */
 
-MOCKABLE_FUNCTION(, void*, ulib_malloc,
+/**
+ * @brief   User defined malloc function to be used in ulib.
+ * 
+ * The developer can use whatever malloc function they want. By default stdlib <tt>malloc</tt> is used.
+ */
+MOCKABLE_FUNCTION(, void*, aziot_ulib_malloc,
             size_t, size);
-MOCKABLE_FUNCTION(, void, ulib_free,
+
+/**
+ * @brief   User defined free function to be used in ulib.
+ * 
+ * The developer can use whatever free function they want. By default stdlib <tt>free</tt> is used.
+ */
+MOCKABLE_FUNCTION(, void, aziot_ulib_free,
             void*, ptr);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* AZURE_ULIB_C_INC_ULIB_HEAP_H_ */
+#endif /* AZIOT_ULIB_HEAP_H */

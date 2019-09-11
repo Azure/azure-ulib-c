@@ -28,20 +28,18 @@ endfunction()
 # Global variable to know if we are on linux, windows, or macosx.
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(ULIB_PAL_DIRECTORY "MSBUILD/X86")
+    set(ULIB_PAL_OS_DIRECTORY "windows")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # Enable valgrind on Linux
     find_program(MEMORYCHECK_COMMAND valgrind)
     set(MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --error-exitcode=1")
     set(ULIB_PAL_DIRECTORY "GCC/LINUX")
+    set(ULIB_PAL_OS_DIRECTORY "linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     add_definitions(-DMACOSX)
     set(ULIB_PAL_DIRECTORY "GCC/IOS")
+    set(ULIB_PAL_OS_DIRECTORY "linux")
 endif()
-
-#Enable testing for the target
-enable_testing()
-include(CTest)
-set(use_cppunittest ON)
 
 #Provide stdint and stbool headers if necessary
 if((NOT HAVE_STDINT_H) OR (NOT HAVE_STDBOOL_H))

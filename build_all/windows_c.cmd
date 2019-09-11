@@ -37,14 +37,14 @@ mkdir %build-root%\cmake\%CMAKE_DIR%
 rem no error checking
 pushd %build-root%\cmake\%CMAKE_DIR%
 
-cmake %build-root% -Drun_ulib_unit_tests:BOOL=ON
+cmake %build-root% -Drun_ulib_unit_tests:BOOL=ON -Drun_ulib_e2e_tests:BOOL=ON
 if not !ERRORLEVEL!==0 exit /b !ERRORLEVEL!
 
-msbuild /m azure_ulib_c.sln "/p:Configuration=%build-config%;Platform=%build-platform%"
+cmake --build . --config %build-config%
 if !ERRORLEVEL! neq 0 exit /b !ERRORLEVEL!
 
 if %build-platform% neq arm (
-    ctest -C "debug" -V
+    ctest -C "Debug" --output-on-failure
     if not !ERRORLEVEL!==0 exit /b !ERRORLEVEL!
 )
 

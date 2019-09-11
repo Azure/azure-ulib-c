@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef AZURE_ULIB_C_TESTS_INC_USTREAM_CTEST_AUX_H_
-#define AZURE_ULIB_C_TESTS_INC_USTREAM_CTEST_AUX_H_
+#ifndef USTREAM_CTEST_AUX_H
+#define USTREAM_CTEST_AUX_H
 
 #include <stdint.h>
-#include "ctest_macros.h"
+#include "azure_macro_utils/macro_utils.h"
 #include "testrunnerswitcher.h"
 #include "ustream_base.h"
 
@@ -80,9 +80,9 @@ do { \
     const type B_value = (const type)(B); \
     char expected_string[256]; \
     char actual_string[256]; \
-    C2(type,_to_string)(expected_string, sizeof(expected_string), A_value, size); /*one evaluation per argument*/ \
-    C2(type,_to_string)(actual_string, sizeof(actual_string), B_value, size);/*one evaluation per argument*/ \
-    if (C2(type,_compare)(A_value, B_value, size)) \
+    MU_C2(type,_to_string)(expected_string, sizeof(expected_string), A_value, size); /*one evaluation per argument*/ \
+    MU_C2(type,_to_string)(actual_string, sizeof(actual_string), B_value, size);/*one evaluation per argument*/ \
+    if (MU_C2(type,_compare)(A_value, B_value, size)) \
     { \
         char temp_str[1024]; \
         (void)snprintf(temp_str, sizeof(temp_str), "  Assert failed: Expected: %s, Actual: %s\n", expected_string, actual_string); \
@@ -94,7 +94,7 @@ do { \
  * Check buffer
  */
 static void check_buffer(
-        USTREAM* az_buffer, 
+        AZIOT_USTREAM* ustream_interface, 
         uint8_t offset, 
         const uint8_t* const expected_content, 
         uint8_t expected_content_length)
@@ -104,8 +104,8 @@ static void check_buffer(
 
     if (offset < expected_content_length)
     {
-        ASSERT_ARE_EQUAL(int, ULIB_SUCCESS,
-            ustream_read(az_buffer, buf_result, 256, &size_result));
+        ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS,
+            aziot_ustream_read(ustream_interface, buf_result, 256, &size_result));
 
         ASSERT_ARE_EQUAL(int, expected_content_length - offset, size_result);
         ASSERT_BUFFER_ARE_EQUAL(
@@ -118,9 +118,9 @@ static void check_buffer(
     size_result = 10;
     ASSERT_ARE_EQUAL(
         int,
-        ULIB_EOF,
-        ustream_read(az_buffer, buf_result, 256, &size_result));
+        AZIOT_ULIB_EOF,
+        aziot_ustream_read(ustream_interface, buf_result, 256, &size_result));
     ASSERT_ARE_EQUAL(int, 0, size_result);
 }
 
-#endif /* AZURE_ULIB_C_TESTS_INC_USTREAM_CTEST_AUX_H_ */
+#endif /* USTREAM_CTEST_AUX_H */
