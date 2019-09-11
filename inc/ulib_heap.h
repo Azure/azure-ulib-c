@@ -4,7 +4,7 @@
 /**
  * @file ulib_heap.h
  * 
- * @brief uLib malloc and free functions available to change by user
+ * @brief ulib malloc and free functions available to change by user
  */
 
 #ifndef AZIOT_ULIB_HEAP_H

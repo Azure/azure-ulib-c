@@ -230,7 +230,6 @@ static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offs
                                             AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed uStream is not the correct type\r\n"));
     AZIOT_ULIB_RESULT result;
 
-    AZIOT_USTREAM_MULTI_DATA* multi_data = (AZIOT_USTREAM_MULTI_DATA*)ustream_interface->inner_buffer->ptr;
     offset_t release_position = position - ustream_interface->offset_diff;
 
     /*[aziot_ustream_release_compliance_release_after_current_failed]*/
