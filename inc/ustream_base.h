@@ -425,7 +425,7 @@ typedef struct AZIOT_USTREAM_INNER_BUFFER_TAG
  *       it directly and only allocate the memory necessary for it to be passed to the uStream.
  *  
  */
-typedef struct AZIOT_USTREAM_TAG
+struct AZIOT_USTREAM_TAG
 {
     /* Inner buffer. */
     AZIOT_USTREAM_INNER_BUFFER* inner_buffer;   /**<The #AZIOT_USTREAM_INNER_BUFFER* on which this instance operates on. */
@@ -435,7 +435,7 @@ typedef struct AZIOT_USTREAM_TAG
     offset_t inner_current_position;            /**<The #offset_t used to keep track of the current position (next returned position). */
     offset_t inner_first_valid_position;        /**<The #offset_t used to keep track of the earliest position to reset. */
     size_t length;                              /**<The <tt>size_t</tt> with the length of the inner_buffer */
-} AZIOT_USTREAM;
+};
 
 /**
  * @brief   Structure to keep track of concatenated uStreams.
