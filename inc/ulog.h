@@ -10,6 +10,7 @@
 #ifndef AZIOT_ULOG_H
 #define AZIOT_ULOG_H
 
+#include "azure_macro_utils/macro_utils.h"
 #include "ulib_config.h"
 
 #include <stdio.h>
@@ -28,11 +29,11 @@ extern const char* const AZIOT_ULOG_REPORT_EXCEPTION_STRING;
 /**
  * @brief   enum to select the log type
  */
-typedef enum AZIOT_ULOG_TYPE_TAG
-{
-    AZIOT_ULOG_TYPE_ERROR = 0,    /**<error log message */
-    AZIOT_ULOG_TYPE_INFO = 1      /**<info log message */
-} AZIOT_ULOG_TYPE;
+MU_DEFINE_ENUM(
+    AZIOT_ULOG_TYPE,
+    AZIOT_ULOG_TYPE_ERROR   = 0,    /**<error log message */
+    AZIOT_ULOG_TYPE_INFO    = 1     /**<info log message */
+);
 
 /**
  * @brief   AZIOT_ULOG_TYPE string values

@@ -109,7 +109,7 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* aziot_ustream_init shall create an instance of the uStream and initialize the interface. */
+/* aziot_ustream_init shall create an instance of the ustream and initialize the interface. */
 TEST_FUNCTION(aziot_ustream_init_const_succeed)
 {
     ///arrange
@@ -134,7 +134,7 @@ TEST_FUNCTION(aziot_ustream_init_const_succeed)
     (void)aziot_ustream_dispose((AZIOT_USTREAM*)&ustream_instance);
 }
 
-/* aziot_ustream_init shall create an instance of the uStream and initialize the interface. */
+/* aziot_ustream_init shall create an instance of the ustream and initialize the interface. */
 TEST_FUNCTION(aziot_ustream_init_succeed)
 {
     ///arrange

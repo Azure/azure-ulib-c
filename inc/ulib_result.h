@@ -4,7 +4,7 @@
 /**
  * @file ulib_result.h
  * 
- * @brief uLib return values
+ * @brief ulib return values
  */
 
 #ifndef AZIOT_ULIB_RESULT_H
@@ -23,7 +23,7 @@ extern "C" {
 #define AZIOT_ULIB_ERROR_FLAG 0X80
 
 /**
- * @brief   Enumeration of uLib results.
+ * @brief   Enumeration of ulib results.
  */
 MU_DEFINE_ENUM(
     AZIOT_ULIB_RESULT,

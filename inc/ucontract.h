@@ -49,7 +49,7 @@ extern "C" {
 #endif
 
 /**
- * @brief   Contract macro to evaluation user expression.
+ * @brief   Contract macro to evaluation developer expression.
  *
  * @param   expression  boolean expression to be evaluated
  * @param   result      return value if expression is false
@@ -112,9 +112,9 @@ extern "C" {
     } while((void)0,0)
 
 /**
- * @brief   Contract macro to evaluate user expression.
+ * @brief   Contract macro to evaluate developer expression.
  *
- * @warning Throws hard fault if user expression is false
+ * @warning Throws hard fault if developer expression is false
  *
  * @param   expression  expression to check
  * @param   msg         message to log if expression is false

@@ -11,7 +11,7 @@ extern "C" {
 /**
  * @file ulib_config.h
  * 
- * @brief Configuration options for uLib
+ * @brief Configuration options for ulib
  */
 
 /*
@@ -19,7 +19,7 @@ extern "C" {
  */
 
 /**
- * @brief   uLib malloc
+ * @brief   ulib malloc
  *
  *  Defines the malloc function that the ulib shall use as its own way to dynamically allocate
  *      memory from the HEAP. For simplicity, it can be defined as the malloc(size) from the `stdlib.h`.
@@ -27,7 +27,7 @@ extern "C" {
 #define AZIOT_ULIB_CONFIG_MALLOC(size)    aziot_ulib_malloc(size)
 
 /**
- * @brief   uLib free
+ * @brief   ulib free
  *
  *  Defines the free function that the ulib shall use as its own way to release memory dynamic 
  *      allocated in the HEAP. For simplicity, it can be defined as the free(ptr) from the `stdlib.h`.
@@ -39,7 +39,7 @@ extern "C" {
  */
 
 /**
- * @brief   uLib logger
+ * @brief   ulib logger
  *
  *  Defines the log function that the ulib shall use as its own way to print information in the
  *      log system.
@@ -47,7 +47,7 @@ extern "C" {
 #define AZIOT_ULIB_CONFIG_LOG(category, format, ...)  aziot_ulog_print(category, format, ##__VA_ARGS__)
 
 /**
- * @brief   Maximum size of the uLib log.
+ * @brief   Maximum size of the ulib log.
  *
  *  Defines the maximum number of chars in each log line.
  */

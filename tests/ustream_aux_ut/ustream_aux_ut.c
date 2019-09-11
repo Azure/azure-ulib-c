@@ -170,8 +170,8 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* aziot_ustream_concat shall return AZIOT_ULIB_SUCCESS if the uStreams were appended succesfully */
-TEST_FUNCTION(aziot_ustream_concat_append_multiple_buffers_succeed)
+/* aziot_ustream_concat shall return AZIOT_ULIB_SUCCESS if the ustreams were concatenated succesfully */
+TEST_FUNCTION(aziot_ustream_concat_multiple_buffers_succeed)
 {
     ///arrange
     AZIOT_USTREAM_INNER_BUFFER* inner_buffer1 =
@@ -244,7 +244,7 @@ TEST_FUNCTION(aziot_ustream_concat_append_multiple_buffers_succeed)
     aziot_ustream_dispose(&test_buffer1);
 }
 
-/* aziot_ustream_read shall read from all the appended ustreams and return AZIOT_ULIB_SUCCESS */
+/* aziot_ustream_read shall read from all the concatenated ustreams and return AZIOT_ULIB_SUCCESS */
 TEST_FUNCTION(aziot_ustream_concat_read_from_multiple_buffers_succeed)
 {
     ///arrange
@@ -325,7 +325,7 @@ TEST_FUNCTION(aziot_ustream_concat_read_from_multiple_buffers_succeed)
     aziot_ustream_dispose(&test_buffer1);
 }
 
-/* aziot_ustream_concat shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream is NULL */
+/* aziot_ustream_concat shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
 TEST_FUNCTION(aziot_ustream_concat_null_interface_failed)
 {
     ///arrange
@@ -353,7 +353,7 @@ TEST_FUNCTION(aziot_ustream_concat_null_interface_failed)
     aziot_ustream_dispose(&test_buffer);
 }
 
-/* aziot_ustream_concat shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided uStream to add is NULL */
+/* aziot_ustream_concat shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream to add is NULL */
 TEST_FUNCTION(aziot_ustream_concat_null_buffer_to_add_failed)
 {
     ///arrange
@@ -471,7 +471,7 @@ TEST_FUNCTION(aziot_ustream_concat_null_multi_data_failed)
 }
 
 /* aziot_ustream_multi_concat shall return an error if the internal call to aziot_ustream_get_remaining_size failed
-    when concatenating two uStreams */
+    when concatenating two ustreams */
 TEST_FUNCTION(aziot_ustream_concat_new_inner_buffer_failed_on_get_remaining_size_failed)
 {
     ///arrange
@@ -503,7 +503,7 @@ TEST_FUNCTION(aziot_ustream_concat_new_inner_buffer_failed_on_get_remaining_size
     (void)aziot_ustream_dispose(&multibuffer);
 }
 
-/* aziot_ustream_dispose shall release all buffers in its list if the multibuffer contains appended buffers */
+/* aziot_ustream_dispose shall release all buffers in its list if the multibuffer contains concatenated buffers */
 TEST_FUNCTION(ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_succeed)
 {
     ///arrange

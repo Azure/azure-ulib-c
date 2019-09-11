@@ -103,12 +103,12 @@ int main(void)
 
                 AZIOT_USTREAM_INNER_BUFFER* multi_inner_buffer = (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
                 AZIOT_USTREAM_MULTI_DATA* multi_data = (AZIOT_USTREAM_MULTI_DATA*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
-                //Append the second AZIOT_USTREAM to the first AZIOT_USTREAM
+                //Concat the second AZIOT_USTREAM to the first AZIOT_USTREAM
                 if((result = aziot_ustream_concat(&ustream_one, &ustream_two, multi_inner_buffer, aziot_ulib_free, multi_data, aziot_ulib_free)) != AZIOT_ULIB_SUCCESS)
                 {
                     AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_concat", result);
                 }
-                //Dispose of our instance of the second ustream (now the appended has the only instance)
+                //Dispose of our instance of the second ustream (now the concatenated has the only instance)
                 else if((result = aziot_ustream_dispose((AZIOT_USTREAM*)&ustream_two)) != AZIOT_ULIB_SUCCESS)
                 {
                     AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_dispose", result);
@@ -119,8 +119,8 @@ int main(void)
                 }
                 else
                 {
-                    //Print the size of the appended ustream
-                    (void)printf("Size of ustream_one after append: %zu\r\n", ustream_size);
+                    //Print the size of the concat ustream
+                    (void)printf("Size of ustream_one after concat: %zu\r\n", ustream_size);
 
                     //Print the AZIOT_USTREAM contents
                     if((result = print_buffer(&ustream_one)) != AZIOT_ULIB_SUCCESS)

@@ -55,7 +55,7 @@ static AZIOT_ULIB_RESULT concrete_set_position(
     /*[aziot_ustream_set_position_compliance_null_buffer_failed]*/
     /*[aziot_ustream_set_position_compliance_non_type_of_buffer_api_failed]*/
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE(!AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed uStream is not the correct type\r\n"),
+                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ustream_interface, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
     AZIOT_ULIB_RESULT result;
 
@@ -94,7 +94,7 @@ static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface)
     /*[aziot_ustream_reset_compliance_null_buffer_failed]*/
     /*[aziot_ustream_reset_compliance_non_type_of_buffer_api_failed]*/
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE(!AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed uStream is not the correct type\r\n"));
+                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"));
 
     /*[aziot_ustream_reset_compliance_back_to_beginning_succeed]*/
     /*[aziot_ustream_reset_compliance_back_position_succeed]*/
@@ -115,7 +115,7 @@ static AZIOT_ULIB_RESULT concrete_read(
     /*[aziot_ustream_read_compliance_null_return_size_failed]*/
     /*[aziot_ustream_read_compliance_buffer_with_zero_size_failed]*/
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE(!AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed uStream is not the correct type\r\n"),
+                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(buffer, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZIOT_UCONTRACT_REQUIRE_NOT_EQUALS(buffer_length, 0, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(size, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
@@ -194,7 +194,7 @@ static AZIOT_ULIB_RESULT concrete_get_remaining_size(AZIOT_USTREAM* ustream_inte
     /*[aziot_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed]*/
     /*[aziot_ustream_get_remaining_size_compliance_null_size_failed]*/
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE(!AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed uStream is not the correct type\r\n"),
+                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(size, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
 
     /*[aziot_ustream_get_remaining_size_compliance_new_buffer_succeed]*/
@@ -211,7 +211,7 @@ static AZIOT_ULIB_RESULT concrete_get_position(AZIOT_USTREAM* ustream_interface,
     /*[ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed]*/
     /*[ustream_get_current_position_compliance_null_position_failed]*/
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE(!AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed uStream is not the correct type\r\n"),
+                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(position, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
 
     /*[ustream_get_current_position_compliance_new_buffer_succeed]*/
@@ -227,7 +227,7 @@ static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offs
     /*[aziot_ustream_release_compliance_null_buffer_failed]*/
     /*[aziot_ustream_release_compliance_non_type_of_buffer_api_failed]*/
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE(!AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed uStream is not the correct type\r\n"));
+                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"));
     AZIOT_ULIB_RESULT result;
 
     offset_t release_position = position - ustream_interface->offset_diff;
@@ -261,7 +261,7 @@ static AZIOT_ULIB_RESULT concrete_clone(AZIOT_USTREAM* ustream_interface_clone, 
     /*[aziot_ustream_clone_compliance_null_buffer_clone_failed]*/
     /*[aziot_ustream_clone_compliance_offset_exceed_size_failed]*/
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE(!AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed uStream is not the correct type\r\n"),
+                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ustream_interface_clone, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZIOT_UCONTRACT_REQUIRE((offset <= (UINT32_MAX - ustream_interface->length)), AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "offset exceeds max size"));
 
@@ -292,7 +292,7 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
     /*[aziot_ustream_dispose_compliance_null_buffer_failed]*/
     /*[aziot_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed]*/
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE(!AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed uStream is not the correct type\r\n"));
+                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"));
 
     /*[aziot_ustream_dispose_compliance_cloned_instance_disposed_first_succeed]*/
     /*[aziot_ustream_dispose_compliance_cloned_instance_disposed_second_succeed]*/
@@ -322,8 +322,8 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
 }
 
 static void aziot_ustream_multi_init(AZIOT_USTREAM* ustream_interface,
-        AZIOT_USTREAM_INNER_BUFFER* inner_buffer, AZIOT_USTREAM_INNER_BUFFER_RELEASE inner_buffer_release,
-        AZIOT_USTREAM_MULTI_DATA* multi_data, AZIOT_USTREAM_DATA_RELEASE multi_data_release)
+        AZIOT_USTREAM_INNER_BUFFER* inner_buffer, AZIOT_RELEASE_CALLBACK inner_buffer_release,
+        AZIOT_USTREAM_MULTI_DATA* multi_data, AZIOT_RELEASE_CALLBACK multi_data_release)
 {
     multi_data->ustream_one.inner_buffer = ustream_interface->inner_buffer;
     multi_data->ustream_one.inner_current_position = ustream_interface->inner_current_position;
@@ -352,18 +352,18 @@ static void aziot_ustream_multi_init(AZIOT_USTREAM* ustream_interface,
 
 AZIOT_ULIB_RESULT aziot_ustream_concat(
     AZIOT_USTREAM* ustream_interface,
-    AZIOT_USTREAM* ustream_to_append,
+    AZIOT_USTREAM* ustream_to_concat,
     AZIOT_USTREAM_INNER_BUFFER* inner_buffer,
-    AZIOT_USTREAM_INNER_BUFFER_RELEASE inner_buffer_release,
+    AZIOT_RELEASE_CALLBACK inner_buffer_release,
     AZIOT_USTREAM_MULTI_DATA* multi_data,
-    AZIOT_USTREAM_DATA_RELEASE multi_data_release)
+    AZIOT_RELEASE_CALLBACK multi_data_release)
 {
     /*[aziot_ustream_concat_null_buffer_to_add_failed]*/
     /*[aziot_ustream_concat_null_interface_failed]*/
     /*[aziot_ustream_concat_null_inner_buffer_failed]*/
     /*[aziot_ustream_concat_null_multi_data_failed]*/
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ustream_interface, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
-                    AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ustream_to_append, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
+                    AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ustream_to_concat, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(inner_buffer, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(multi_data, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
 
@@ -371,8 +371,8 @@ AZIOT_ULIB_RESULT aziot_ustream_concat(
 
     /*[aziot_ustream_multi_init_succeed]*/
     aziot_ustream_multi_init(ustream_interface, inner_buffer, inner_buffer_release, multi_data, multi_data_release);
-    /*[aziot_ustream_concat_append_multiple_buffers_succeed]*/
-    if((result = aziot_ustream_clone(&multi_data->ustream_two, ustream_to_append, ustream_interface->length)) == AZIOT_ULIB_SUCCESS)
+    /*[aziot_ustream_concat_multiple_buffers_succeed]*/
+    if((result = aziot_ustream_clone(&multi_data->ustream_two, ustream_to_concat, ustream_interface->length)) == AZIOT_ULIB_SUCCESS)
     {
         size_t remaining_size;
         if((result = aziot_ustream_get_remaining_size(&(multi_data->ustream_two), &remaining_size)) == AZIOT_ULIB_SUCCESS)
