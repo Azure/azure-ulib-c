@@ -1,23 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#define _DEFAULT_SOURCE
-
 #include "test_thread.h"
 
 #include <stdint.h>
 #include <stdlib.h>
 #include <errno.h>
 
-#ifdef TI_RTOS
-#include <ti/sysbios/knl/Task.h>
-#else
 #include <unistd.h>
-#endif
 
 #include <pthread.h>
 #include <time.h>
-
 
 typedef struct THREAD_INSTANCE_TAG
 {
@@ -118,12 +111,8 @@ void test_thread_exit(int res)
 
 void test_thread_sleep(unsigned int milliseconds)
 {
-#ifdef TI_RTOS
-    Task_sleep(milliseconds);
-#else
     time_t seconds = milliseconds / 1000;
     long nsRemainder = (milliseconds % 1000) * 1000000;
     struct timespec timeToSleep = { seconds, nsRemainder };
     (void)nanosleep(&timeToSleep, NULL);
-#endif
 }

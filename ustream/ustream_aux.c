@@ -55,8 +55,7 @@ static AZIOT_ULIB_RESULT concrete_set_position(
     /*[aziot_ustream_set_position_compliance_null_buffer_failed]*/
     /*[aziot_ustream_set_position_compliance_non_type_of_buffer_api_failed]*/
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE(!AZIOT_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"),
-                    AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ustream_interface, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
+                                            AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"));
     AZIOT_ULIB_RESULT result;
 
     offset_t inner_position = position - ustream_interface->offset_diff;
@@ -230,12 +229,12 @@ static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offs
                                             AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"));
     AZIOT_ULIB_RESULT result;
 
-    offset_t release_position = position - ustream_interface->offset_diff;
+    offset_t inner_position = position - ustream_interface->offset_diff;
 
     /*[aziot_ustream_release_compliance_release_after_current_failed]*/
     /*[aziot_ustream_release_compliance_release_position_already_released_failed]*/
-    if((release_position >= ustream_interface->inner_current_position) ||
-            (release_position < ustream_interface->inner_first_valid_position))
+    if((inner_position >= ustream_interface->inner_current_position) ||
+            (inner_position < ustream_interface->inner_first_valid_position))
     {
         result = AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR;
     }
@@ -247,7 +246,7 @@ static AZIOT_ULIB_RESULT concrete_release(AZIOT_USTREAM* ustream_interface, offs
         /*[aziot_ustream_release_compliance_cloned_buffer_succeed]*/
         /*[aziot_ustream_release_compliance_cloned_buffer_release_all_succeed]*/
         /*[aziot_ustream_release_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed]*/
-        ustream_interface->inner_first_valid_position = release_position + (offset_t)1;
+        ustream_interface->inner_first_valid_position = inner_position + (offset_t)1;
         result = AZIOT_ULIB_SUCCESS;
     }
 
@@ -332,14 +331,14 @@ static void aziot_ustream_multi_init(AZIOT_USTREAM* ustream_interface,
     multi_data->ustream_one.offset_diff = ustream_interface->offset_diff;
     multi_data->ustream_one_ref_count = 1;
 
-    az_pal_os_lock_init(&multi_data->lock);
-
     multi_data->ustream_two.inner_buffer = NULL;
     multi_data->ustream_two.inner_current_position = 0;
     multi_data->ustream_two.inner_first_valid_position = 0;
     multi_data->ustream_two.length = 0;
     multi_data->ustream_two.offset_diff = 0;
     multi_data->ustream_two_ref_count = 0;
+
+    az_pal_os_lock_init(&multi_data->lock);
 
     inner_buffer->api = &api;
     inner_buffer->ptr = (void*)multi_data;

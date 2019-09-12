@@ -3,10 +3,8 @@
 
 cmake_minimum_required(VERSION 3.2.0)
 
-set(this_sample_name ustream_basic)
-
 add_executable(ustream_basic
     ${CMAKE_CURRENT_LIST_DIR}/src/main.c
 )
 
-ulib_populate_sample_target(${this_sample_name})
+ulib_populate_sample_target(ustream_basic)

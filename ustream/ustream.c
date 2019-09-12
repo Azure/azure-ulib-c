@@ -50,11 +50,11 @@ static void init_instance(
 
 static void destroy_inner_buffer(AZIOT_USTREAM_INNER_BUFFER* inner_buffer)
 {
-    if(inner_buffer->data_release != NULL)
+    if(inner_buffer->data_release)
     {
         inner_buffer->data_release(inner_buffer->ptr);
     }
-    if(inner_buffer->inner_buffer_release != NULL)
+    if(inner_buffer->inner_buffer_release)
     {
         inner_buffer->inner_buffer_release(inner_buffer);
     }

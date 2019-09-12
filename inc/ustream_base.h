@@ -141,7 +141,7 @@
  *      the original ustream. The content itself is a smart pointer with a <tt>ref_count</tt> that
  *      controls the total number of instances.
  * <p> Disposing an instance of the ustream will decrease the <tt>ref_count</tt> of this ustream. If the
- *      number of references reaches 0, the ustream will destroy itself, releasing all allocated memory.
+ *      number of references reaches 0, the ustream will destroy itself by calling the provided release functions.
  *
  *  @warning Not disposing an instance of the ustream will leak memory.
  *
@@ -355,16 +355,16 @@ typedef struct AZIOT_USTREAM_TAG AZIOT_USTREAM;
  */
 struct AZIOT_USTREAM_INTERFACE_TAG
 {
-    AZIOT_ULIB_RESULT(*set_position)(AZIOT_USTREAM* ustream_interface, offset_t position);          /**<internal <tt>set_position</tt> implementation*/
-    AZIOT_ULIB_RESULT(*reset)(AZIOT_USTREAM* ustream_interface);                                    /**<internal <tt>reset</tt> implementation*/
+    AZIOT_ULIB_RESULT(*set_position)(AZIOT_USTREAM* ustream_interface, offset_t position);          /**<concrete <tt>set_position</tt> implementation*/
+    AZIOT_ULIB_RESULT(*reset)(AZIOT_USTREAM* ustream_interface);                                    /**<concrete <tt>reset</tt> implementation*/
     AZIOT_ULIB_RESULT(*read)(AZIOT_USTREAM* ustream_interface, uint8_t* const buffer, 
-                                            size_t buffer_length, size_t* const size);              /**<internal <tt>read</tt> implementation*/
-    AZIOT_ULIB_RESULT(*get_remaining_size)(AZIOT_USTREAM* ustream_interface, size_t* const size);   /**<internal <tt>get_remaining_size</tt> implementation*/
-    AZIOT_ULIB_RESULT(*get_position)(AZIOT_USTREAM* ustream_interface, offset_t* const position);   /**<internal <tt>get_position</tt> implementation*/
-    AZIOT_ULIB_RESULT(*release)(AZIOT_USTREAM* ustream_interface, offset_t position);               /**<internal <tt>release</tt> implementation*/
+                                            size_t buffer_length, size_t* const size);              /**<concrete <tt>read</tt> implementation*/
+    AZIOT_ULIB_RESULT(*get_remaining_size)(AZIOT_USTREAM* ustream_interface, size_t* const size);   /**<concrete <tt>get_remaining_size</tt> implementation*/
+    AZIOT_ULIB_RESULT(*get_position)(AZIOT_USTREAM* ustream_interface, offset_t* const position);   /**<concrete <tt>get_position</tt> implementation*/
+    AZIOT_ULIB_RESULT(*release)(AZIOT_USTREAM* ustream_interface, offset_t position);               /**<concrete <tt>release</tt> implementation*/
     AZIOT_ULIB_RESULT(*clone)(AZIOT_USTREAM* ustream_interface_clone, 
-                                            AZIOT_USTREAM* ustream_interface, offset_t offset);     /**<internal <tt>clone</tt> implementation*/
-    AZIOT_ULIB_RESULT(*dispose)(AZIOT_USTREAM* ustream_interface);                                  /**<internal <tt>dispose</tt> implementation*/
+                                            AZIOT_USTREAM* ustream_interface, offset_t offset);     /**<concrete <tt>clone</tt> implementation*/
+    AZIOT_ULIB_RESULT(*dispose)(AZIOT_USTREAM* ustream_interface);                                  /**<concrete <tt>dispose</tt> implementation*/
 };
 
 /**
@@ -397,14 +397,18 @@ typedef void* AZIOT_USTREAM_DATA;
  */
 typedef struct AZIOT_USTREAM_INNER_BUFFER_TAG
 {
-    const AZIOT_USTREAM_INTERFACE* api;                                 /**<The @link AZIOT_USTREAM_INTERFACE_TAG AZIOT_USTREAM_INTERFACE* @endlink for this ustream instance type */
-    AZIOT_USTREAM_DATA* ptr;                                            /**<The #AZIOT_USTREAM_DATA* pointing to the data to read. It can be anything that a given ustream implementation
-                                                                            needs to access the data, whether it be a memory address to a buffer, another struct with more controls, etc */
-    volatile uint32_t ref_count;                                        /**<The <tt>volatile uint32_t</tt> with the number of references taken for this memory */
-    AZIOT_RELEASE_CALLBACK data_release;                            /**<The #AZIOT_RELEASE_CALLBACK to call to release <tt>ptr</tt> 
-                                                                            once the <tt>ref_count</tt> goes to zero */
-    AZIOT_RELEASE_CALLBACK inner_buffer_release;            /**<The #AZIOT_RELEASE_CALLBACK to call to release the #AZIOT_USTREAM_INNER_BUFFER
-                                                                            once the <tt>ref_count</tt> goes to zero */
+    const AZIOT_USTREAM_INTERFACE* api;             /**<The @link AZIOT_USTREAM_INTERFACE_TAG AZIOT_USTREAM_INTERFACE*
+                                                            @endlink for this ustream instance type */
+    AZIOT_USTREAM_DATA* ptr;                        /**<The #AZIOT_USTREAM_DATA* pointing to the data to read. It can 
+                                                            be anything that a given ustream implementation needs to
+                                                            access the data, whether it be a memory address to a buffer,
+                                                            another struct with more controls, etc */
+    volatile uint32_t ref_count;                    /**<The <tt>volatile uint32_t</tt> with the number of references
+                                                            taken for this memory */
+    AZIOT_RELEASE_CALLBACK data_release;            /**<The #AZIOT_RELEASE_CALLBACK to call to release <tt>ptr</tt> 
+                                                            once the <tt>ref_count</tt> goes to zero */
+    AZIOT_RELEASE_CALLBACK inner_buffer_release;    /**<The #AZIOT_RELEASE_CALLBACK to call to release the #AZIOT_USTREAM_INNER_BUFFER
+                                                            once the <tt>ref_count</tt> goes to zero */
 } AZIOT_USTREAM_INNER_BUFFER;
 
 /**

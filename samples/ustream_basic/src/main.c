@@ -59,10 +59,10 @@ int main(void)
 
     //Allocate second string in the heap
     ustream_two_string_len = sizeof(USTREAM_TWO_STRING);
-    if((ustream_two_string = (char*)aziot_ulib_malloc(ustream_two_string_len)) == NULL)
+    if((ustream_two_string = (char*)malloc(ustream_two_string_len)) == NULL)
     {
-        AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_OUT_OF_MEMORY_STRING, "string");
-        result = AZIOT_ULIB_OUT_OF_MEMORY_ERROR;
+        printf("Not enough memory for string\r\n");
+        result = -1;
     }
     else
     {
@@ -70,16 +70,16 @@ int main(void)
 
         //Create the first AZIOT_USTREAM from constant memory
         AZIOT_USTREAM ustream_one;
-        AZIOT_USTREAM_INNER_BUFFER* ustream_inner_buffer_one = (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
+        AZIOT_USTREAM_INNER_BUFFER* ustream_inner_buffer_one = (AZIOT_USTREAM_INNER_BUFFER*)malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
         size_t ustream_size;
-        if((result = aziot_ustream_init(&ustream_one, ustream_inner_buffer_one, aziot_ulib_free,
+        if((result = aziot_ustream_init(&ustream_one, ustream_inner_buffer_one, free,
                                                 (const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) != AZIOT_ULIB_SUCCESS)
         {
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_init", AZIOT_ULIB_SYSTEM_ERROR);
+            printf("Couldn't initialize ustream_one\r\n");
         }
         else if((result = aziot_ustream_get_remaining_size((AZIOT_USTREAM*)&ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
         {
-            AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
+            printf("Couldn't get ustream_one remaining size\r\n");
         }
         else
         {
@@ -87,35 +87,35 @@ int main(void)
 
             //Create the second AZIOT_USTREAM from the string in the heap, passing standard free function as release callback
             AZIOT_USTREAM ustream_two;
-            AZIOT_USTREAM_INNER_BUFFER* ustream_inner_buffer_two = (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
-            if((result = aziot_ustream_init(&ustream_two, ustream_inner_buffer_two, aziot_ulib_free,
-                                                (const uint8_t*) ustream_two_string, ustream_two_string_len, aziot_ulib_free)) != AZIOT_ULIB_SUCCESS)
+            AZIOT_USTREAM_INNER_BUFFER* ustream_inner_buffer_two = (AZIOT_USTREAM_INNER_BUFFER*)malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
+            if((result = aziot_ustream_init(&ustream_two, ustream_inner_buffer_two, free,
+                                                (const uint8_t*) ustream_two_string, ustream_two_string_len, free)) != AZIOT_ULIB_SUCCESS)
             {
-                AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_init", AZIOT_ULIB_SYSTEM_ERROR);
+                printf("Couldn't initialize ustream_two\r\n");
             }
             else if((result = aziot_ustream_get_remaining_size((AZIOT_USTREAM*)&ustream_two, &ustream_size)) != AZIOT_ULIB_SUCCESS)
             {
-                AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
+                printf("Couldn't get ustream_two remaining size\r\n");
             }
             else
             {
                 (void)printf("Size of ustream_two: %zu\r\n", ustream_size);
 
-                AZIOT_USTREAM_INNER_BUFFER* multi_inner_buffer = (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
-                AZIOT_USTREAM_MULTI_DATA* multi_data = (AZIOT_USTREAM_MULTI_DATA*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
+                AZIOT_USTREAM_INNER_BUFFER* multi_inner_buffer = (AZIOT_USTREAM_INNER_BUFFER*)malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
+                AZIOT_USTREAM_MULTI_DATA* multi_data = (AZIOT_USTREAM_MULTI_DATA*)malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
                 //Concat the second AZIOT_USTREAM to the first AZIOT_USTREAM
-                if((result = aziot_ustream_concat(&ustream_one, &ustream_two, multi_inner_buffer, aziot_ulib_free, multi_data, aziot_ulib_free)) != AZIOT_ULIB_SUCCESS)
+                if((result = aziot_ustream_concat(&ustream_one, &ustream_two, multi_inner_buffer, free, multi_data, free)) != AZIOT_ULIB_SUCCESS)
                 {
-                    AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_concat", result);
+                    printf("Couldn't concat ustream_two to ustream_one\r\n");
                 }
                 //Dispose of our instance of the second ustream (now the concatenated has the only instance)
                 else if((result = aziot_ustream_dispose((AZIOT_USTREAM*)&ustream_two)) != AZIOT_ULIB_SUCCESS)
                 {
-                    AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_dispose", result);
+                    printf("Couldn't dispose ustream_two\r\n");
                 }
                 else if((result = aziot_ustream_get_remaining_size(&ustream_one, &ustream_size)) != AZIOT_ULIB_SUCCESS)
                 {
-                    AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_get_remaining_size", result);
+                    printf("Couldn't get concatenated ustream remaining size\r\n");
                 }
                 else
                 {
@@ -125,13 +125,13 @@ int main(void)
                     //Print the AZIOT_USTREAM contents
                     if((result = print_buffer(&ustream_one)) != AZIOT_ULIB_SUCCESS)
                     {
-                        AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "print_buffer", result);
+                        printf("Couldn't print concatenated ustream\r\n");
                     }
                     //Dispose of the AZIOT_USTREAM (original ustream_one and original ustream_two)
                     //At this point the memory malloc'd for ustream_two will be free'd
                     else if((result = aziot_ustream_dispose(&ustream_one)) != AZIOT_ULIB_SUCCESS)
                     {
-                        AZIOT_ULIB_CONFIG_LOG(AZIOT_ULOG_TYPE_ERROR, AZIOT_ULOG_REPORT_EXCEPTION_STRING, "aziot_ustream_dispose", result);
+                        printf("Couldn't dispose ustream_one\r\n");
                     }
                 }
             }
