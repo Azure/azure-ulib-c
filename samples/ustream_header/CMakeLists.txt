@@ -3,6 +3,8 @@
 
 cmake_minimum_required(VERSION 3.2.0)
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ustream_basic)
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ustream_header)
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ustream_message)
+add_executable(ustream_header
+    ${CMAKE_CURRENT_LIST_DIR}/src/main.c
+)
+
+ulib_populate_sample_target(ustream_header)

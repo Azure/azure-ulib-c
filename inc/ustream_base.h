@@ -460,6 +460,16 @@ typedef struct AZIOT_USTREAM_MULTI_DATA_TAG
     AZ_PAL_OS_LOCK lock;                        /**<The #AZ_PAL_OS_LOCK with controls the critical section of the read from the multi ustream */
 } AZIOT_USTREAM_MULTI_DATA;
 
+
+
+typedef struct AZIOT_USTREAM_MESSAGE_TAG
+{
+    const char* host_name;
+    const char* message_verb;
+    const char* content_type;
+} AZIOT_USTREAM_MESSAGE;
+
+
 /**
  * @brief   Check if a handle is the same type of the API.
  *

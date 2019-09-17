@@ -113,6 +113,12 @@ MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_concat,
         AZIOT_USTREAM_MULTI_DATA*, multi_data,
         AZIOT_RELEASE_CALLBACK, multi_data_release);
 
+MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_message_init,
+        AZIOT_USTREAM*, ustream_instance,
+        AZIOT_USTREAM_INNER_BUFFER*, ustream_inner_buffer,
+        AZIOT_RELEASE_CALLBACK, inner_buffer_release,
+        AZIOT_USTREAM_MESSAGE*, message,
+        AZIOT_RELEASE_CALLBACK, message_release);
 
 #ifdef __cplusplus
 }

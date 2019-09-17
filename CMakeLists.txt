@@ -29,6 +29,7 @@ add_library(azure_ulib_c
     ${PROJECT_SOURCE_DIR}/pal/MemMang/ulib_heap.c
     ${PROJECT_SOURCE_DIR}/ulog/ulog.c
     ${PROJECT_SOURCE_DIR}/ustream/ustream_aux.c
+    ${PROJECT_SOURCE_DIR}/ustream/ustream_message.c
     ${PROJECT_SOURCE_DIR}/ustream/ustream.c
     ${PROJECT_SOURCE_DIR}/pal/os/src/${ULIB_PAL_OS_DIRECTORY}/az_pal_os.c
 )
