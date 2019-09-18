@@ -73,7 +73,7 @@ int main(void)
 
     aziot_ustream_message_init(message, USER_STRING_HOST, AZIOT_ULIB_MESSAGE_VERB_GET);
 
-    aziot_ustream_message_add_option(message, AZIOT_ULIB_MESSAGE_OPTION_CONTENT_TYPE, "text/plain", 11);
+    aziot_ustream_message_add_option(message, AZIOT_ULIB_MESSAGE_OPTION_CONTENT_TYPE, "text/plain", sizeof("text/plain"));
 
     aziot_ustream_from_message(&message_ustream, inner_buffer, free, message, free);
 

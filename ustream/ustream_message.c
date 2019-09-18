@@ -130,7 +130,7 @@ static AZIOT_ULIB_RESULT concrete_read(
             copied_size += snprintf(buffer + copied_size, buffer_length, MESSAGE_OPTION_STRING_FORMAT, 
                                                                 AZIOT_ULIB_OPTION_HOST, inner_message->host_name);
         }
-        if(buffer_length != 0 && inner_message->content_type)
+        if(buffer_length != 0 && inner_message->content_type[0])
         {
             copied_size += snprintf(buffer + copied_size, buffer_length, MESSAGE_OPTION_STRING_FORMAT, AZIOT_ULIB_OPTION_CONTENT_TYPE, inner_message->content_type);
         }
