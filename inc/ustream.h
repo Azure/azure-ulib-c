@@ -114,6 +114,12 @@ MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_concat,
         AZIOT_USTREAM_MULTI_DATA*, multi_data,
         AZIOT_RELEASE_CALLBACK, multi_data_release);
 
+MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_message_add_option,
+    AZIOT_USTREAM_MESSAGE*, message,
+    AZIOT_ULIB_MESSAGE_OPTION, option,
+    const char *, option_string,
+    size_t, option_string_length);
+
 MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_from_message,
         AZIOT_USTREAM*, ustream_instance,
         AZIOT_USTREAM_INNER_BUFFER*, ustream_inner_buffer,

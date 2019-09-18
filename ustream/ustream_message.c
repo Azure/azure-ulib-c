@@ -130,10 +130,10 @@ static AZIOT_ULIB_RESULT concrete_read(
             copied_size += snprintf(buffer + copied_size, buffer_length, MESSAGE_OPTION_STRING_FORMAT, 
                                                                 AZIOT_ULIB_OPTION_HOST, inner_message->host_name);
         }
-        // if(buffer_length != 0 && inner_message->content_type)
-        // {
-        //     copied_size += snprintf(buffer + buffer_length, buffer_length, MESSAGE_OPTION_STRING_FORMAT, AZIOT_ULIB_OPTION_CONTENT_TYPE, inner_message->content_type);
-        // }
+        if(buffer_length != 0 && inner_message->content_type)
+        {
+            copied_size += snprintf(buffer + copied_size, buffer_length, MESSAGE_OPTION_STRING_FORMAT, AZIOT_ULIB_OPTION_CONTENT_TYPE, inner_message->content_type);
+        }
         ustream_interface->inner_current_position += *size;
         result = AZIOT_ULIB_SUCCESS;
     }
@@ -220,15 +220,16 @@ static size_t get_message_size(AZIOT_USTREAM_MESSAGE* message)
         copied_size += snprintf(NULL, 0, MESSAGE_OPTION_STRING_FORMAT,
                                 AZIOT_ULIB_OPTION_HOST, message->host_name);
     }
-    // if(buffer_length != 0 && inner_message->content_type)
-    // {
-    //     copied_size += snprintf(buffer + buffer_length, buffer_length, MESSAGE_OPTION_STRING_FORMAT, AZIOT_ULIB_OPTION_CONTENT_TYPE, inner_message->content_type);
-    // }
+    if(message->content_type[0])
+    {
+        copied_size += snprintf(NULL, 0, MESSAGE_OPTION_STRING_FORMAT,
+                                                AZIOT_ULIB_OPTION_CONTENT_TYPE, message->content_type);
+    }
     return copied_size;
 }
 
 AZIOT_ULIB_RESULT aziot_ustream_message_add_option(AZIOT_USTREAM_MESSAGE* message, AZIOT_ULIB_MESSAGE_OPTION option,
-                                                    const char* option_string)
+                                                    const char* option_string, size_t option_string_length)
 {
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE_NOT_NULL(message, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(option_string, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
@@ -238,7 +239,7 @@ AZIOT_ULIB_RESULT aziot_ustream_message_add_option(AZIOT_USTREAM_MESSAGE* messag
     switch(option)
     {
         case AZIOT_ULIB_MESSAGE_OPTION_CONTENT_TYPE:
-            message->content_type = option_string;
+            strncpy(message->content_type, option_string, option_string_length);
             result = AZIOT_ULIB_SUCCESS;
             break;
         default:
@@ -257,7 +258,7 @@ AZIOT_ULIB_RESULT aziot_ustream_message_init(
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(host, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
 
     message->host_name = host;
-    message->content_type = NULL;
+    message->content_type[0] = 0;
     message->message_verb = AZIOT_ULIB_MESSAGE_VERB_STRINGS[verb];
 
     return AZIOT_ULIB_SUCCESS;
