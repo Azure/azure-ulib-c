@@ -14,14 +14,9 @@
 #include "ulib_heap.h"
 #include "ulog.h"
 
-static const char* const MESSAGE_FORMAT =
-"\
-%s %s %s\r\n\
-%s: %s\r\n\
-";
-
+static const char* const MESSAGE_FORMAT = "%s %s %s\r\n";
 static const char *const MESSAGE_OPTION_STRING_FORMAT = "%s: %s\r\n";
-static const char *const MESSAGE_OPTION_INT_FORMAT = "%S: %i\r\n";
+static const char *const MESSAGE_OPTION_INT_FORMAT = "%s: %i\r\n";
 
 static AZIOT_ULIB_RESULT concrete_set_position(AZIOT_USTREAM* ustream_interface, offset_t position);
 static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface);
@@ -127,9 +122,18 @@ static AZIOT_ULIB_RESULT concrete_read(
         size_t remain_size = ustream_interface->length - (size_t)ustream_interface->inner_current_position;
         *size = (buffer_length < remain_size) ? buffer_length : remain_size;
         AZIOT_USTREAM_MESSAGE *inner_message = (AZIOT_USTREAM_MESSAGE*)inner_buffer->ptr;
-        (void)snprintf(buffer, buffer_length, MESSAGE_FORMAT, 
-                    inner_message->message_verb, inner_message->host_name, AZIOT_ULIB_OPTION_HTTP_VERSION,
-                    AZIOT_ULIB_OPTION_HOST, inner_message->host_name);
+        size_t copied_size = snprintf(buffer, buffer_length, MESSAGE_FORMAT, 
+                    inner_message->message_verb, inner_message->host_name, AZIOT_ULIB_OPTION_HTTP_VERSION);
+        buffer_length -= copied_size < buffer_length ? copied_size : buffer_length;
+        if(buffer_length != 0 && inner_message->host_name)
+        {
+            copied_size += snprintf(buffer + copied_size, buffer_length, MESSAGE_OPTION_STRING_FORMAT, 
+                                                                AZIOT_ULIB_OPTION_HOST, inner_message->host_name);
+        }
+        // if(buffer_length != 0 && inner_message->content_type)
+        // {
+        //     copied_size += snprintf(buffer + buffer_length, buffer_length, MESSAGE_OPTION_STRING_FORMAT, AZIOT_ULIB_OPTION_CONTENT_TYPE, inner_message->content_type);
+        // }
         ustream_interface->inner_current_position += *size;
         result = AZIOT_ULIB_SUCCESS;
     }
@@ -207,6 +211,22 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
     return AZIOT_ULIB_SUCCESS;
 }
 
+static size_t get_message_size(AZIOT_USTREAM_MESSAGE* message)
+{
+    size_t copied_size = snprintf(NULL, 0, MESSAGE_FORMAT,
+                                  message->message_verb, message->host_name, AZIOT_ULIB_OPTION_HTTP_VERSION);
+    if (message->host_name)
+    {
+        copied_size += snprintf(NULL, 0, MESSAGE_OPTION_STRING_FORMAT,
+                                AZIOT_ULIB_OPTION_HOST, message->host_name);
+    }
+    // if(buffer_length != 0 && inner_message->content_type)
+    // {
+    //     copied_size += snprintf(buffer + buffer_length, buffer_length, MESSAGE_OPTION_STRING_FORMAT, AZIOT_ULIB_OPTION_CONTENT_TYPE, inner_message->content_type);
+    // }
+    return copied_size;
+}
+
 AZIOT_ULIB_RESULT aziot_ustream_message_add_option(AZIOT_USTREAM_MESSAGE* message, AZIOT_ULIB_MESSAGE_OPTION option,
                                                     const char* option_string)
 {
@@ -260,9 +280,7 @@ AZIOT_ULIB_RESULT aziot_ustream_from_message(
     ustream_inner_buffer->data_release = message_release;
     ustream_inner_buffer->inner_buffer_release = inner_buffer_release;
 
-    size_t size_of_message = snprintf(NULL, 0, MESSAGE_FORMAT,
-                   message->message_verb, message->host_name, AZIOT_ULIB_OPTION_HTTP_VERSION,
-                   AZIOT_ULIB_OPTION_HOST, message->host_name);
+    size_t size_of_message = get_message_size(message);
 
     init_instance(ustream_instance, ustream_inner_buffer, 0, 0, size_of_message);
 
