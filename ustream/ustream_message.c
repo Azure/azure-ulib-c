@@ -20,6 +20,9 @@ static const char* const MESSAGE_FORMAT =
 %s: %s\r\n\
 ";
 
+static const char *const MESSAGE_OPTION_STRING_FORMAT = "%s: %s\r\n";
+static const char *const MESSAGE_OPTION_INT_FORMAT = "%S: %i\r\n";
+
 static AZIOT_ULIB_RESULT concrete_set_position(AZIOT_USTREAM* ustream_interface, offset_t position);
 static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface);
 static AZIOT_ULIB_RESULT concrete_read(AZIOT_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
@@ -44,13 +47,14 @@ static void init_instance(
     AZIOT_USTREAM* ustream_instance,
     AZIOT_USTREAM_INNER_BUFFER* inner_buffer,
     offset_t inner_current_position,
-    offset_t offset)
+    offset_t offset,
+    size_t message_size)
 {
     ustream_instance->inner_current_position = inner_current_position;
     ustream_instance->inner_first_valid_position = inner_current_position;
     ustream_instance->offset_diff = offset - inner_current_position;
     ustream_instance->inner_buffer = inner_buffer;
-    ustream_instance->length = 1000;
+    ustream_instance->length = message_size;
     AZIOT_ULIB_PORT_ATOMIC_INC_W(&(ustream_instance->inner_buffer->ref_count));
 }
 
@@ -182,7 +186,7 @@ static AZIOT_ULIB_RESULT concrete_clone(AZIOT_USTREAM* ustream_interface_clone, 
                                             AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ustream_interface_clone, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZIOT_UCONTRACT_REQUIRE((offset <= (UINT32_MAX - ustream_interface->length)), AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, "offset exceeds max size"));
-    init_instance(ustream_interface_clone, ustream_interface->inner_buffer, ustream_interface->inner_current_position, offset);
+    init_instance(ustream_interface_clone, ustream_interface->inner_buffer, ustream_interface->inner_current_position, offset, ustream_interface->length);
 
     return AZIOT_ULIB_SUCCESS;
 }
@@ -203,7 +207,43 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
     return AZIOT_ULIB_SUCCESS;
 }
 
+AZIOT_ULIB_RESULT aziot_ustream_message_add_option(AZIOT_USTREAM_MESSAGE* message, AZIOT_ULIB_MESSAGE_OPTION option,
+                                                    const char* option_string)
+{
+    AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE_NOT_NULL(message, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
+                    AZIOT_UCONTRACT_REQUIRE_NOT_NULL(option_string, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
+
+    AZIOT_ULIB_RESULT result;
+
+    switch(option)
+    {
+        case AZIOT_ULIB_MESSAGE_OPTION_CONTENT_TYPE:
+            message->content_type = option_string;
+            result = AZIOT_ULIB_SUCCESS;
+            break;
+        default:
+            result = AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR;
+    }
+
+    return result;
+}
+
 AZIOT_ULIB_RESULT aziot_ustream_message_init(
+    AZIOT_USTREAM_MESSAGE* message,
+    const char* host,
+    AZIOT_ULIB_MESSAGE_VERB verb)
+{
+    AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE_NOT_NULL(message, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
+                    AZIOT_UCONTRACT_REQUIRE_NOT_NULL(host, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
+
+    message->host_name = host;
+    message->content_type = NULL;
+    message->message_verb = AZIOT_ULIB_MESSAGE_VERB_STRINGS[verb];
+
+    return AZIOT_ULIB_SUCCESS;
+}
+
+AZIOT_ULIB_RESULT aziot_ustream_from_message(
     AZIOT_USTREAM* ustream_instance,
     AZIOT_USTREAM_INNER_BUFFER* ustream_inner_buffer,
     AZIOT_RELEASE_CALLBACK inner_buffer_release,
@@ -220,7 +260,11 @@ AZIOT_ULIB_RESULT aziot_ustream_message_init(
     ustream_inner_buffer->data_release = message_release;
     ustream_inner_buffer->inner_buffer_release = inner_buffer_release;
 
-    init_instance(ustream_instance, ustream_inner_buffer, 0, 0);
+    size_t size_of_message = snprintf(NULL, 0, MESSAGE_FORMAT,
+                   message->message_verb, message->host_name, AZIOT_ULIB_OPTION_HTTP_VERSION,
+                   AZIOT_ULIB_OPTION_HOST, message->host_name);
+
+    init_instance(ustream_instance, ustream_inner_buffer, 0, 0, size_of_message);
 
     return AZIOT_ULIB_SUCCESS;
 }

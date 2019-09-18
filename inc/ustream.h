@@ -11,6 +11,7 @@
 #define AZIOT_USTREAM_H
 
 #include "ustream_base.h"
+#include "ustream_message.h"
 
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
@@ -113,12 +114,17 @@ MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_concat,
         AZIOT_USTREAM_MULTI_DATA*, multi_data,
         AZIOT_RELEASE_CALLBACK, multi_data_release);
 
-MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_message_init,
+MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_from_message,
         AZIOT_USTREAM*, ustream_instance,
         AZIOT_USTREAM_INNER_BUFFER*, ustream_inner_buffer,
         AZIOT_RELEASE_CALLBACK, inner_buffer_release,
         AZIOT_USTREAM_MESSAGE*, message,
         AZIOT_RELEASE_CALLBACK, message_release);
+
+MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_message_init,
+        AZIOT_USTREAM_MESSAGE*, message,
+        const char*, host,
+        AZIOT_ULIB_MESSAGE_VERB, verb);
 
 #ifdef __cplusplus
 }

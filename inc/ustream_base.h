@@ -461,7 +461,6 @@ typedef struct AZIOT_USTREAM_MULTI_DATA_TAG
 } AZIOT_USTREAM_MULTI_DATA;
 
 
-
 typedef struct AZIOT_USTREAM_MESSAGE_TAG
 {
     const char* host_name;

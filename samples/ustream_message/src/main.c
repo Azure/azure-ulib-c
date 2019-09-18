@@ -13,13 +13,6 @@
 #include "ulog.h"
 
 #define USER_BUFFER_SIZE 1000
-#define USTREAM_TWO_STRING "World\r\n"
-
-static const char CONST_STRING_POST[] = "POST: ";
-static const char CONST_STRING_HOST[] = "Host: ";
-static const char CONST_STRING_CONTENT_LENGTH[] = "Content-Length: ";
-static const char CONST_STRING_CONTENT_TYPE[] = "Content-Type: text/plain";
-static const char CONST_STRING_HTTP_VERSION[] = "HTTP/1.1";
 
 static const char USER_STRING_HOST[] = "contoso-storage-account.blob.core.windows.net";
 
@@ -47,20 +40,18 @@ static AZIOT_ULIB_RESULT print_ustream(AZIOT_USTREAM * ustream)
     uint32_t printed_chars;
     uint32_t ustream_read_iterations = 0;
 
+    size_t size_of_message;
+    aziot_ustream_get_remaining_size(ustream, &size_of_message);
+    printf("Size of the message is %zu bytes\r\n", size_of_message);
+
     //Read ustream until receive AZIOT_ULIB_EOF
     (void)printf("\r\n------Printing the Header------\r\n");
     while((result = aziot_ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == AZIOT_ULIB_SUCCESS)
     {
-        printed_chars = 0;
-        while(printed_chars < returned_size)
-        {
-            //Print passed data
-            printed_chars += printf("%s", &(user_buf[printed_chars]));
-
-            //Account for NULL terminator
-            printed_chars++;
-        }
-        ustream_read_iterations++;
+        //Set char after last returned to NULL
+        user_buf[returned_size] = '\0';
+        //Print passed data
+        (void)printf("%s", user_buf);
     }
     (void)printf("-----------End of Header------------\r\n\r\n");
     // (void)printf("aziot_ustream_read was called %i times\r\n", ustream_read_iterations);
@@ -80,10 +71,9 @@ int main(void)
     AZIOT_USTREAM_INNER_BUFFER *inner_buffer = (AZIOT_USTREAM_INNER_BUFFER *)malloc_track(sizeof(AZIOT_USTREAM_INNER_BUFFER));
     AZIOT_USTREAM_MESSAGE *message = (AZIOT_USTREAM_MESSAGE *)malloc_track(sizeof(AZIOT_USTREAM_MESSAGE));
 
-    message->host_name = USER_STRING_HOST;
-    message->message_verb = CONST_STRING_POST;
+    aziot_ustream_message_init(message, USER_STRING_HOST, AZIOT_ULIB_MESSAGE_VERB_GET);
 
-    aziot_ustream_message_init(&message_ustream, inner_buffer, free, message, free);
+    aziot_ustream_from_message(&message_ustream, inner_buffer, free, message, free);
 
     print_ustream(&message_ustream);
 
