@@ -13,6 +13,8 @@
 #include "az_pal_os_api.h"
 #include "ulog.h"
 
+#define USER_BUFFER_SIZE 1000
+
 static AZIOT_ULIB_RESULT concrete_set_position(AZIOT_USTREAM* ustream_interface, offset_t position);
 static AZIOT_ULIB_RESULT concrete_reset(AZIOT_USTREAM* ustream_interface);
 static AZIOT_ULIB_RESULT concrete_read(AZIOT_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
@@ -384,6 +386,30 @@ AZIOT_ULIB_RESULT aziot_ustream_concat(
             /*[aziot_ustream_concat_new_inner_buffer_failed_on_get_remaining_size_failed]*/
             aziot_ustream_dispose(&(multi_data->ustream_two));
         }
+    }
+
+    return result;
+}
+
+AZIOT_ULIB_RESULT aziot_print_ustream(AZIOT_USTREAM* ustream)
+{
+    AZIOT_ULIB_RESULT result;
+    size_t returned_size;
+    uint8_t user_buf[USER_BUFFER_SIZE] = { 0 };
+
+    //Read ustream until receive AZIOT_ULIB_EOF
+    (void)printf("\r\n------Printing the Header------\r\n");
+    while((result = aziot_ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == AZIOT_ULIB_SUCCESS)
+    {
+        user_buf[returned_size] = '\0';
+        (void)printf("%s", user_buf);
+    }
+    (void)printf("-----------End of Header------------\r\n\r\n");
+
+    //Change return to AZIOT_ULIB_SUCCESS if last returned value was AZIOT_ULIB_EOF
+    if(result == AZIOT_ULIB_EOF)
+    {
+        result = AZIOT_ULIB_SUCCESS;
     }
 
     return result;

@@ -132,6 +132,9 @@ MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_message_init,
         const char*, host,
         AZIOT_ULIB_MESSAGE_VERB, verb);
 
+MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_print_ustream,
+        AZIOT_USTREAM*, ustream);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

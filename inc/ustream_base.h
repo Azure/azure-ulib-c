@@ -465,7 +465,10 @@ typedef struct AZIOT_USTREAM_MESSAGE_TAG
 {
     const char* host_name;
     const char* message_verb;
+    uint64_t time;
+
     char content_type[20];
+    char ms_version[11];
 } AZIOT_USTREAM_MESSAGE;
 
 

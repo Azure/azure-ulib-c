@@ -11,9 +11,12 @@ static const char* const AZIOT_ULIB_VERB_POST = "POST";
 static const char* const AZIOT_ULIB_VERB_GET = "GET";
 
 //Option constants
-static const char* const AZIOT_ULIB_OPTION_CONTENT_LENGTH = "Content-Length";
+static const char *const AZIOT_ULIB_OPTION_TIME = "x-ms-date";
+static const char *const AZIOT_ULIB_OPTION_VERSION = "x-ms-version";
+static const char *const AZIOT_ULIB_OPTION_CONTENT_LENGTH = "Content-Length";
 static const char* const AZIOT_ULIB_OPTION_CONTENT_TYPE = "Content-Type";
 static const char* const AZIOT_ULIB_OPTION_HOST = "Host";
+static const char *const AZIOT_ULIB_OPTION_HTTP_PREFIX = "https://";
 static const char* const AZIOT_ULIB_OPTION_HTTP_VERSION = "HTTP/1.1";
 
 static const char* AZIOT_ULIB_MESSAGE_VERB_STRINGS[] = {"POST", "GET"};
@@ -26,7 +29,9 @@ MU_DEFINE_ENUM(
 
 MU_DEFINE_ENUM(
     AZIOT_ULIB_MESSAGE_OPTION,
-    AZIOT_ULIB_MESSAGE_OPTION_CONTENT_TYPE
+    AZIOT_ULIB_MESSAGE_OPTION_CONTENT_TYPE,
+    AZIOT_ULIB_MESSAGE_OPTION_VERSION,
+    AZIOT_ULIB_MESSAGE_OPTION_TIME
 )
 
 #endif // USTREAM_MESSAGE_H
