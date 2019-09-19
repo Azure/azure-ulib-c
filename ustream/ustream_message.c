@@ -275,7 +275,7 @@ AZIOT_ULIB_RESULT aziot_ustream_message_init(
 
     message->host_name = host;
     message->content_type[0] = 0;
-    message->message_verb = AZIOT_ULIB_MESSAGE_VERB_STRINGS[verb];
+    message->message_verb = (const char*)AZIOT_ULIB_MESSAGE_VERB_STRINGS[verb];
     message->time = 1568916577834;
 
     return AZIOT_ULIB_SUCCESS;

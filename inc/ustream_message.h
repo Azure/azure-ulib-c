@@ -19,7 +19,7 @@ static const char* const AZIOT_ULIB_OPTION_HOST = "Host";
 static const char *const AZIOT_ULIB_OPTION_HTTP_PREFIX = "https://";
 static const char* const AZIOT_ULIB_OPTION_HTTP_VERSION = "HTTP/1.1";
 
-static const char* AZIOT_ULIB_MESSAGE_VERB_STRINGS[] = {"POST", "GET"};
+static const char AZIOT_ULIB_MESSAGE_VERB_STRINGS[2][5] = {"POST", "GET"};
 
 MU_DEFINE_ENUM(
     AZIOT_ULIB_MESSAGE_VERB,

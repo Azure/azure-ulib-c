@@ -27,8 +27,8 @@ int main(void)
     aziot_ustream_from_message(&message_ustream, inner_buffer, free, message, free);
 
     size_t returned_size;
-    aziot_ustream_get_remaining_size(ustream, &returned_size);
-    printf("Size of the message is %zu bytes\r\n", returned_size);
+    aziot_ustream_get_remaining_size(&message_ustream, &returned_size);
+    printf("\r\nsize of the message is %zu bytes\r\n", returned_size);
 
     aziot_print_ustream(&message_ustream);
 

@@ -398,13 +398,13 @@ AZIOT_ULIB_RESULT aziot_print_ustream(AZIOT_USTREAM* ustream)
     uint8_t user_buf[USER_BUFFER_SIZE] = { 0 };
 
     //Read ustream until receive AZIOT_ULIB_EOF
-    (void)printf("\r\n------Printing the Header------\r\n");
+    (void)printf("\r\n------printing the ustream------\r\n");
     while((result = aziot_ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == AZIOT_ULIB_SUCCESS)
     {
         user_buf[returned_size] = '\0';
         (void)printf("%s", user_buf);
     }
-    (void)printf("-----------End of Header------------\r\n\r\n");
+    (void)printf("\r\n-----------end of ustream------------\r\n\r\n");
 
     //Change return to AZIOT_ULIB_SUCCESS if last returned value was AZIOT_ULIB_EOF
     if(result == AZIOT_ULIB_EOF)
