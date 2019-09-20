@@ -14,7 +14,8 @@
 #include "ulib_heap.h"
 #include "ulog.h"
 
-static const char* const MESSAGE_FORMAT = "%s %s%s %s\r\n";
+static const char *const MESSAGE_FORMAT = "%s %s%s %s\r\n";
+static const char* const MESSAGE_FORMAT_WITH_PARAMS = "%s %s%s?%s %s\r\n";
 static const char *const MESSAGE_OPTION_STRING_FORMAT = "%s: %s\r\n";
 static const char *const MESSAGE_OPTION_INT_FORMAT = "%s: %i\r\n";
 
@@ -55,9 +56,17 @@ static void init_instance(
 
 static size_t get_message_size(AZIOT_USTREAM_MESSAGE *message)
 {
-    size_t copied_size = snprintf(NULL, 0, MESSAGE_FORMAT,
-                                  message->message_verb, AZIOT_ULIB_OPTION_HTTP_PREFIX, 
-                                  message->host_name, AZIOT_ULIB_OPTION_HTTP_VERSION);
+    size_t copied_size;
+    if (message->sas_key)
+    {
+        copied_size = snprintf(NULL, 0, MESSAGE_FORMAT_WITH_PARAMS,
+                               message->message_verb, AZIOT_ULIB_OPTION_HTTP_PREFIX, message->host_name, message->sas_key, AZIOT_ULIB_OPTION_HTTP_VERSION);
+    }
+    else
+    {
+        copied_size = snprintf(NULL, 0, MESSAGE_FORMAT, 
+                message->message_verb, AZIOT_ULIB_OPTION_HTTP_PREFIX, message->host_name, AZIOT_ULIB_OPTION_HTTP_VERSION);
+    }
     if (message->host_name)
     {
         copied_size += snprintf(NULL, 0, MESSAGE_OPTION_STRING_FORMAT,
@@ -145,9 +154,18 @@ static AZIOT_ULIB_RESULT concrete_read(
         size_t remain_size = ustream_interface->length - (size_t)ustream_interface->inner_current_position;
         *size = (buffer_length < remain_size) ? buffer_length : remain_size;
         AZIOT_USTREAM_MESSAGE *inner_message = (AZIOT_USTREAM_MESSAGE*)inner_buffer->ptr;
-        size_t copied_size = snprintf(buffer, buffer_length, MESSAGE_FORMAT, 
-                    inner_message->message_verb, AZIOT_ULIB_OPTION_HTTP_PREFIX, inner_message->host_name, AZIOT_ULIB_OPTION_HTTP_VERSION);
+        size_t copied_size;
+        if(buffer_length != 0 && inner_message->sas_key)
+        {
+            copied_size = snprintf(buffer, buffer_length, MESSAGE_FORMAT_WITH_PARAMS, 
+                    inner_message->message_verb, AZIOT_ULIB_OPTION_HTTP_PREFIX, inner_message->host_name, inner_message->sas_key, AZIOT_ULIB_OPTION_HTTP_VERSION);
         buffer_length -= copied_size < buffer_length ? copied_size : buffer_length;
+        }
+        else
+        {
+            copied_size = snprintf(buffer, buffer_length, MESSAGE_FORMAT, 
+                    inner_message->message_verb, AZIOT_ULIB_OPTION_HTTP_PREFIX, inner_message->host_name, AZIOT_ULIB_OPTION_HTTP_VERSION);
+        }
         if(buffer_length != 0 && inner_message->host_name)
         {
             copied_size += snprintf(buffer + copied_size, buffer_length, MESSAGE_OPTION_STRING_FORMAT, 
@@ -240,7 +258,7 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
 
 
 
-AZIOT_ULIB_RESULT aziot_ustream_message_add_option(AZIOT_USTREAM_MESSAGE* message, AZIOT_ULIB_MESSAGE_OPTION option,
+AZIOT_ULIB_RESULT aziot_ustream_message_add_header(AZIOT_USTREAM_MESSAGE* message, AZIOT_ULIB_MESSAGE_OPTION option,
                                                     const char* option_string, size_t option_string_length)
 {
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE_NOT_NULL(message, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
@@ -256,6 +274,27 @@ AZIOT_ULIB_RESULT aziot_ustream_message_add_option(AZIOT_USTREAM_MESSAGE* messag
             break;
         case AZIOT_ULIB_MESSAGE_OPTION_VERSION:
             strncpy(message->ms_version, option_string, option_string_length);
+            result = AZIOT_ULIB_SUCCESS;
+            break;
+        default:
+            result = AZIOT_ULIB_NO_SUCH_ELEMENT_ERROR;
+    }
+
+    return result;
+}
+
+AZIOT_ULIB_RESULT aziot_ustream_message_add_param(AZIOT_USTREAM_MESSAGE* message, AZIOT_ULIB_MESSAGE_OPTION option,
+                                                    const char* option_string, size_t option_string_length)
+{
+    AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE_NOT_NULL(message, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
+                    AZIOT_UCONTRACT_REQUIRE_NOT_NULL(option_string, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
+
+    AZIOT_ULIB_RESULT result;
+
+    switch(option)
+    {
+        case AZIOT_ULIB_MESSAGE_OPTION_SAS_KEY:
+            message->sas_key = option_string;
             result = AZIOT_ULIB_SUCCESS;
             break;
         default:

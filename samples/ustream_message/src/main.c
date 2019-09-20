@@ -13,6 +13,8 @@
 #include "ulog.h"
 
 static const char USER_STRING_HOST[] = "contoso-storage-account.blob.core.windows.net";
+static const char USER_SAS_KEY[] = "sp=r&st=2019-09-19T18:40:04Z&se=2019-09-20T02:40:04Z&spr=https&\
+sv=2018-03-28&sig=Gd2xwG4mBoYYXw6GmptRs82FiFMSsj5DldUF5Z%2Fc0yk%3D&sr=b";
 
 int main(void)
 {
@@ -22,7 +24,9 @@ int main(void)
 
     aziot_ustream_message_init(message, USER_STRING_HOST, AZIOT_ULIB_MESSAGE_VERB_GET);
 
-    aziot_ustream_message_add_option(message, AZIOT_ULIB_MESSAGE_OPTION_VERSION, "2018-03-28", sizeof("2018-03-28"));
+    aziot_ustream_message_add_header(message, AZIOT_ULIB_MESSAGE_OPTION_VERSION, "2018-03-28", sizeof("2018-03-28"));
+
+    aziot_ustream_message_add_param(message, AZIOT_ULIB_MESSAGE_OPTION_SAS_KEY, USER_SAS_KEY, sizeof(USER_SAS_KEY));
 
     aziot_ustream_from_message(&message_ustream, inner_buffer, free, message, free);
 

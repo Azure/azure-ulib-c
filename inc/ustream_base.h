@@ -464,6 +464,7 @@ typedef struct AZIOT_USTREAM_MULTI_DATA_TAG
 typedef struct AZIOT_USTREAM_MESSAGE_TAG
 {
     const char* host_name;
+    const char* sas_key;
     const char* message_verb;
     uint64_t time;
 

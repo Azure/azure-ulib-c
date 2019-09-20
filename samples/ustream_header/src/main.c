@@ -90,7 +90,7 @@ static void create_ustream_from_string(AZIOT_USTREAM* ustream, const char* input
 static AZIOT_USTREAM* create_post_header_ustream(AZIOT_USTREAM* ustream, const char* host, size_t host_size)
 {
     create_ustream_from_string(ustream, CONST_STRING_HOST, sizeof(CONST_STRING_HOST), NULL);
-    
+
     AZIOT_USTREAM host_ustream;
     create_ustream_from_string(&host_ustream, host, host_size, NULL);
     concat_ustream(ustream, &host_ustream);
