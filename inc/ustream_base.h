@@ -453,6 +453,7 @@ struct AZIOT_USTREAM_TAG
  */
 typedef struct AZIOT_USTREAM_MULTI_DATA_TAG
 {
+    AZIOT_USTREAM_INNER_BUFFER inner_buffer;    /**<The #AZIOT_USTREAM_INNER_BUFFER to manage the multi data structure*/
     AZIOT_USTREAM ustream_one;                  /**<The #AZIOT_USTREAM with the first ustream instance*/
     AZIOT_USTREAM ustream_two;                  /**<The #AZIOT_USTREAM with the second ustream instance*/
     volatile uint32_t ustream_one_ref_count;    /**<The <tt>uint32_t</tt> with the number of references to the first ustream */

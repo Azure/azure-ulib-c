@@ -89,12 +89,6 @@ MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_init,
   * @param[in]          ustream_to_concat       The {@link AZIOT_USTREAM}* with the interface of 
   *                                             the ustream to concat to <tt>ustream_interface</tt>. It cannot be <tt>NULL</tt>, 
   *                                             and it shall be a valid ustream.
-  * @param[in]          inner_buffer            The pointer to the {@link AZIOT_USTREAM_INNER_BUFFER} struct.
-  *                                             It must be allocated in way that it remains a valid address until
-  *                                             the passed {@link AZIOT_RELEASE_CALLBACK} callback is invoked some
-  *                                             time in the future. It may be <tt>NULL</tt> if no future cleanup is needed.
-  * @param[in]          inner_buffer_release    The {@link AZIOT_RELEASE_CALLBACK} callback which will be called once
-  *                                             the number of references to the inner buffer reaches zero.
   * @param[in]          multi_data              The {@link AZIOT_USTREAM_MULTI_DATA}* pointing to the allocated data. It must be allocated
   *                                             in a way that it remains a valid address until the passed {@link AZIOT_RELEASE_CALLBACK}
   *                                             callback is invoked some time in the future.
@@ -108,8 +102,6 @@ MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_init,
 MOCKABLE_FUNCTION(, AZIOT_ULIB_RESULT, aziot_ustream_concat,
         AZIOT_USTREAM*, ustream_interface,
         AZIOT_USTREAM*, ustream_to_concat,
-        AZIOT_USTREAM_INNER_BUFFER*, inner_buffer,
-        AZIOT_RELEASE_CALLBACK, inner_buffer_release,
         AZIOT_USTREAM_MULTI_DATA*, multi_data,
         AZIOT_RELEASE_CALLBACK, multi_data_release);
 

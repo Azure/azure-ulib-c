@@ -42,10 +42,6 @@ static void destroy_instance(AZIOT_USTREAM* ustream_interface)
     {
         ustream_interface->inner_buffer->data_release(ustream_interface->inner_buffer->ptr);
     }
-    if(ustream_interface->inner_buffer->inner_buffer_release != NULL)
-    {
-        ustream_interface->inner_buffer->inner_buffer_release(ustream_interface->inner_buffer);
-    }
 }
 
 static AZIOT_ULIB_RESULT concrete_set_position(
@@ -320,9 +316,8 @@ static AZIOT_ULIB_RESULT concrete_dispose(AZIOT_USTREAM* ustream_interface)
     return AZIOT_ULIB_SUCCESS;
 }
 
-static void aziot_ustream_multi_init(AZIOT_USTREAM* ustream_interface,
-        AZIOT_USTREAM_INNER_BUFFER* inner_buffer, AZIOT_RELEASE_CALLBACK inner_buffer_release,
-        AZIOT_USTREAM_MULTI_DATA* multi_data, AZIOT_RELEASE_CALLBACK multi_data_release)
+static void aziot_ustream_multi_init(AZIOT_USTREAM* ustream_interface, AZIOT_USTREAM_INNER_BUFFER* inner_buffer,
+                                    AZIOT_USTREAM_MULTI_DATA* multi_data, AZIOT_RELEASE_CALLBACK multi_data_release)
 {
     multi_data->ustream_one.inner_buffer = ustream_interface->inner_buffer;
     multi_data->ustream_one.inner_current_position = ustream_interface->inner_current_position;
@@ -343,7 +338,7 @@ static void aziot_ustream_multi_init(AZIOT_USTREAM* ustream_interface,
     inner_buffer->api = &api;
     inner_buffer->ptr = (void*)multi_data;
     inner_buffer->ref_count = 1;
-    inner_buffer->inner_buffer_release = inner_buffer_release;
+    inner_buffer->inner_buffer_release = NULL;
     inner_buffer->data_release = multi_data_release;
 
     ustream_interface->inner_buffer = inner_buffer;
@@ -352,24 +347,20 @@ static void aziot_ustream_multi_init(AZIOT_USTREAM* ustream_interface,
 AZIOT_ULIB_RESULT aziot_ustream_concat(
     AZIOT_USTREAM* ustream_interface,
     AZIOT_USTREAM* ustream_to_concat,
-    AZIOT_USTREAM_INNER_BUFFER* inner_buffer,
-    AZIOT_RELEASE_CALLBACK inner_buffer_release,
     AZIOT_USTREAM_MULTI_DATA* multi_data,
     AZIOT_RELEASE_CALLBACK multi_data_release)
 {
     /*[aziot_ustream_concat_null_buffer_to_add_failed]*/
     /*[aziot_ustream_concat_null_interface_failed]*/
-    /*[aziot_ustream_concat_null_inner_buffer_failed]*/
     /*[aziot_ustream_concat_null_multi_data_failed]*/
     AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ustream_interface, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ustream_to_concat, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
-                    AZIOT_UCONTRACT_REQUIRE_NOT_NULL(inner_buffer, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZIOT_UCONTRACT_REQUIRE_NOT_NULL(multi_data, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR));
 
     AZIOT_ULIB_RESULT result;
 
     /*[aziot_ustream_multi_init_succeed]*/
-    aziot_ustream_multi_init(ustream_interface, inner_buffer, inner_buffer_release, multi_data, multi_data_release);
+    aziot_ustream_multi_init(ustream_interface, &multi_data->inner_buffer, multi_data, multi_data_release);
     /*[aziot_ustream_concat_multiple_buffers_succeed]*/
     if((result = aziot_ustream_clone(&multi_data->ustream_two, ustream_to_concat, ustream_interface->length)) == AZIOT_ULIB_SUCCESS)
     {

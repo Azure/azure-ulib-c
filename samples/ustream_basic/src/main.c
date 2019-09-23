@@ -101,10 +101,9 @@ int main(void)
             {
                 (void)printf("Size of ustream_two: %zu\r\n", ustream_size);
 
-                AZIOT_USTREAM_INNER_BUFFER* multi_inner_buffer = (AZIOT_USTREAM_INNER_BUFFER*)malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
                 AZIOT_USTREAM_MULTI_DATA* multi_data = (AZIOT_USTREAM_MULTI_DATA*)malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
                 //Concat the second AZIOT_USTREAM to the first AZIOT_USTREAM
-                if((result = aziot_ustream_concat(&ustream_one, &ustream_two, multi_inner_buffer, free, multi_data, free)) != AZIOT_ULIB_SUCCESS)
+                if((result = aziot_ustream_concat(&ustream_one, &ustream_two, multi_data, free)) != AZIOT_ULIB_SUCCESS)
                 {
                     printf("Couldn't concat ustream_two to ustream_one\r\n");
                 }

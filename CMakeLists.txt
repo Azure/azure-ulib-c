@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.2.0)
 
 project(azure_ulib_c)
 
-set(AZURE_ULIB_C_VERSION 1.0.1)
+set(AZURE_ULIB_C_VERSION 0.1.0)
 
 #Include helper functions
 include("build_all/configs/ulib_functions.cmake")

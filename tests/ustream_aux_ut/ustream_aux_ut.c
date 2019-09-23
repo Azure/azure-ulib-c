@@ -45,17 +45,11 @@ static AZIOT_USTREAM test_multi;
 static AZIOT_USTREAM* create_test_default_multibuffer()
 {
     //Set up required structs for first multi
-    AZIOT_USTREAM_INNER_BUFFER* default_multi_inner_buffer1 = (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
-    ASSERT_IS_NOT_NULL(default_multi_inner_buffer1);
-    memset(default_multi_inner_buffer1, 0, sizeof(AZIOT_USTREAM_INNER_BUFFER));
     AZIOT_USTREAM_MULTI_DATA* default_multi_data1 = (AZIOT_USTREAM_MULTI_DATA*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
     ASSERT_IS_NOT_NULL(default_multi_data1);
     memset(default_multi_data1, 0, sizeof(AZIOT_USTREAM_MULTI_DATA));
 
     //Set up required structs for second multi
-    AZIOT_USTREAM_INNER_BUFFER* default_multi_inner_buffer2 = (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
-    ASSERT_IS_NOT_NULL(default_multi_inner_buffer2);
-    memset(default_multi_inner_buffer2, 0, sizeof(AZIOT_USTREAM_INNER_BUFFER));
     AZIOT_USTREAM_MULTI_DATA* default_multi_data2 = (AZIOT_USTREAM_MULTI_DATA*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
     ASSERT_IS_NOT_NULL(default_multi_data2);
     memset(default_multi_data2, 0, sizeof(AZIOT_USTREAM_MULTI_DATA));
@@ -95,9 +89,9 @@ static AZIOT_USTREAM* create_test_default_multibuffer()
 
     //Concat buffers together
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_concat(&test_multi, &default_buffer2, 
-                        default_multi_inner_buffer1, aziot_ulib_free, default_multi_data1, aziot_ulib_free));
+                        default_multi_data1, aziot_ulib_free));
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, aziot_ustream_concat(&test_multi, &default_buffer3,
-                        default_multi_inner_buffer2, aziot_ulib_free, default_multi_data2, aziot_ulib_free));
+                        default_multi_data2, aziot_ulib_free));
 
     (void)aziot_ustream_dispose(&default_buffer2);
     (void)aziot_ustream_dispose(&default_buffer3);
@@ -216,18 +210,14 @@ TEST_FUNCTION(aziot_ustream_concat_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result3);
 
-    AZIOT_USTREAM_INNER_BUFFER* multi_inner_buffer1 =
-        (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
-    AZIOT_USTREAM_INNER_BUFFER* multi_inner_buffer2 =
-        (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
     AZIOT_USTREAM_MULTI_DATA* multi_data1 =
         (AZIOT_USTREAM_MULTI_DATA*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
     AZIOT_USTREAM_MULTI_DATA* multi_data2 =
         (AZIOT_USTREAM_MULTI_DATA*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
 
     ///act
-    result1 = aziot_ustream_concat(&test_buffer1, &test_buffer2, multi_inner_buffer1, aziot_ulib_free, multi_data1, aziot_ulib_free);
-    result2 = aziot_ustream_concat(&test_buffer1, &test_buffer3, multi_inner_buffer2, aziot_ulib_free, multi_data2, aziot_ulib_free);
+    result1 = aziot_ustream_concat(&test_buffer1, &test_buffer2, multi_data1, aziot_ulib_free);
+    result2 = aziot_ustream_concat(&test_buffer1, &test_buffer3, multi_data2, aziot_ulib_free);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result1);
@@ -290,17 +280,13 @@ TEST_FUNCTION(aziot_ustream_concat_read_from_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result3);
 
-    AZIOT_USTREAM_INNER_BUFFER* multi_inner_buffer1 =
-        (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
-    AZIOT_USTREAM_INNER_BUFFER* multi_inner_buffer2 =
-        (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
     AZIOT_USTREAM_MULTI_DATA* multi_data1 =
         (AZIOT_USTREAM_MULTI_DATA*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
     AZIOT_USTREAM_MULTI_DATA* multi_data2 =
         (AZIOT_USTREAM_MULTI_DATA*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
 
-    result1 = aziot_ustream_concat(&test_buffer1, &test_buffer2, multi_inner_buffer1, aziot_ulib_free, multi_data1, aziot_ulib_free);
-    result2 = aziot_ustream_concat(&test_buffer1, &test_buffer3, multi_inner_buffer2, aziot_ulib_free, multi_data2, aziot_ulib_free);
+    result1 = aziot_ustream_concat(&test_buffer1, &test_buffer2, multi_data1, aziot_ulib_free);
+    result2 = aziot_ustream_concat(&test_buffer1, &test_buffer3, multi_data2, aziot_ulib_free);
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result1);
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result2);
 
@@ -344,7 +330,7 @@ TEST_FUNCTION(aziot_ustream_concat_null_interface_failed)
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result1);
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_concat(NULL, &test_buffer, NULL, aziot_ulib_free, NULL, aziot_ulib_free);
+    AZIOT_ULIB_RESULT result = aziot_ustream_concat(NULL, &test_buffer, NULL, aziot_ulib_free);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -371,11 +357,10 @@ TEST_FUNCTION(aziot_ustream_concat_null_buffer_to_add_failed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result1);
 
-    AZIOT_USTREAM_INNER_BUFFER multi_inner;
     AZIOT_USTREAM_MULTI_DATA multi_data;
 
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_concat(&default_buffer, NULL, &multi_inner, NULL, &multi_data, NULL);
+    AZIOT_ULIB_RESULT result = aziot_ustream_concat(&default_buffer, NULL, &multi_data, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -384,47 +369,6 @@ TEST_FUNCTION(aziot_ustream_concat_null_buffer_to_add_failed)
     aziot_ustream_dispose(&default_buffer);
 }
 
-/* aziot_ustream_concat shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided inner buffer to add is NULL */
-TEST_FUNCTION(aziot_ustream_concat_null_inner_buffer_failed)
-{
-    ///arrange
-    AZIOT_USTREAM_INNER_BUFFER* inner_buffer =
-        (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
-    ASSERT_IS_NOT_NULL(inner_buffer);
-    AZIOT_USTREAM default_buffer;
-    AZIOT_ULIB_RESULT result = aziot_ustream_init(
-                &default_buffer,
-                inner_buffer,
-                aziot_ulib_free,
-                USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
-                strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
-                NULL);
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SUCCESS, result);
-
-    AZIOT_USTREAM_INNER_BUFFER* inner_buffer2 =
-        (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
-    ASSERT_IS_NOT_NULL(inner_buffer2);
-    AZIOT_USTREAM test_buffer2;
-    result = aziot_ustream_init(
-                &test_buffer2,
-                inner_buffer2,
-                aziot_ulib_free,
-                USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
-                strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
-                NULL);
-
-    AZIOT_USTREAM_MULTI_DATA multi_data;
-
-    ///act
-    result = aziot_ustream_concat(&default_buffer, &test_buffer2, NULL, NULL, &multi_data, NULL);
-
-    ///assert
-    ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
-
-    ///cleanup
-    aziot_ustream_dispose(&test_buffer2);
-    aziot_ustream_dispose(&default_buffer);
-}
 
 /* aziot_ustream_concat shall return AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided multi data to add is NULL */
 TEST_FUNCTION(aziot_ustream_concat_null_multi_data_failed)
@@ -457,10 +401,8 @@ TEST_FUNCTION(aziot_ustream_concat_null_multi_data_failed)
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
             NULL);
 
-    AZIOT_USTREAM_INNER_BUFFER multi_inner;
-
     ///act
-    AZIOT_ULIB_RESULT result = aziot_ustream_concat(&default_buffer, &test_buffer2, &multi_inner, NULL, NULL, NULL);
+    AZIOT_ULIB_RESULT result = aziot_ustream_concat(&default_buffer, &test_buffer2, NULL, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -485,15 +427,13 @@ TEST_FUNCTION(aziot_ustream_concat_new_inner_buffer_failed_on_get_remaining_size
 
     AZIOT_USTREAM* test_buffer2 = ustream_mock_create();
 
-    AZIOT_USTREAM_INNER_BUFFER* multi_inner_buffer1 =
-        (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
     AZIOT_USTREAM_MULTI_DATA* multi_data1 =
         (AZIOT_USTREAM_MULTI_DATA*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
 
     set_get_remaining_size_result(AZIOT_ULIB_SYSTEM_ERROR);
 
     ///act
-    result = aziot_ustream_concat(&multibuffer, test_buffer2, multi_inner_buffer1, aziot_ulib_free, multi_data1, aziot_ulib_free);
+    result = aziot_ustream_concat(&multibuffer, test_buffer2, multi_data1, aziot_ulib_free);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZIOT_ULIB_SYSTEM_ERROR, result);
@@ -511,8 +451,6 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_
 
     umock_c_reset_all_calls();
 
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
     STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
     STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
     STRICT_EXPECTED_CALL(aziot_ulib_free(IGNORED_PTR_ARG));
@@ -544,12 +482,10 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
 
     AZIOT_USTREAM* test_buffer2 = ustream_mock_create();
 
-    AZIOT_USTREAM_INNER_BUFFER* multi_inner_buffer1 =
-        (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
     AZIOT_USTREAM_MULTI_DATA* multi_data1 =
         (AZIOT_USTREAM_MULTI_DATA*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
 
-    result = aziot_ustream_concat(&multibuffer, test_buffer2, multi_inner_buffer1, aziot_ulib_free, multi_data1, aziot_ulib_free);
+    result = aziot_ustream_concat(&multibuffer, test_buffer2, multi_data1, aziot_ulib_free);
     set_read_result(AZIOT_ULIB_SYSTEM_ERROR);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
@@ -587,12 +523,10 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
 
     AZIOT_USTREAM* test_buffer2 = ustream_mock_create();
 
-    AZIOT_USTREAM_INNER_BUFFER* multi_inner_buffer1 =
-        (AZIOT_USTREAM_INNER_BUFFER*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_INNER_BUFFER));
     AZIOT_USTREAM_MULTI_DATA* multi_data1 =
         (AZIOT_USTREAM_MULTI_DATA*)aziot_ulib_malloc(sizeof(AZIOT_USTREAM_MULTI_DATA));
 
-    result = aziot_ustream_concat(&multibuffer, test_buffer2, multi_inner_buffer1, aziot_ulib_free, multi_data1, aziot_ulib_free);
+    result = aziot_ustream_concat(&multibuffer, test_buffer2, multi_data1, aziot_ulib_free);
     set_read_result(AZIOT_ULIB_SYSTEM_ERROR);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
