@@ -51,13 +51,13 @@
  *          +----------------------------malloc(content_size)-------------------------------->|
  *          |<--------------------------------content_ptr-------------------------------------+
  *          +--------------------malloc(sizeof(AZ_USTREAM_DATA_CB))-------------------------->|
- *          <---------------------------------inner_buffer_ptr--------------------------------+
+ *          <---------------------------------control_block_ptr-------------------------------+
  *   +------+                         |                                  |                    |
  *   | generate the content and store in the content_ptr                 |                    |
  *   +----->|                         |                                  |                    |
  *          +-----az_ustream_init                                        |                    |
  *          |       (ustream_instance,                                   |                    |
- *          |        inner_buffer_ptr, free,                             |                    |
+ *          |        control_block_ptr, free,                            |                    |
  *          |        content_ptr, content_size, free)------------------->|                    |
  *          |                         |                           +------+                    |
  *          |                         |                           | data_source = content_ptr |
@@ -94,10 +94,10 @@
  *          |                         +---------------free(local_buffer)--------------------->|
  *          |                         +-az_ustream_dispose               |                    |
  *          |                         |       (ustream_interface)------->|                    |
- *          |                         |                             +----+                    |
- *          |                         |                             | free(inner_buffer_ptr)->|
- *          |                         |                             | free(data_source)------>|
- *          |                         |                             +----+
+ *          |                         |                            +-----+                    |
+ *          |                         |                            | free(control_block_ptr)->|
+ *          |                         |                            | free(data_source)------->|
+ *          |                         |                            +-----+
  * </code></pre>
  *
  * <h2>Heterogeneous buffer</h2>
@@ -407,7 +407,7 @@ typedef struct AZ_USTREAM_DATA_CB_TAG
                                                             taken for this memory */
     AZ_RELEASE_CALLBACK data_release;           /**<The #AZ_RELEASE_CALLBACK to call to release <tt>ptr</tt> 
                                                             once the <tt>ref_count</tt> goes to zero */
-    AZ_RELEASE_CALLBACK inner_buffer_release;   /**<The #AZ_RELEASE_CALLBACK to call to release the #AZ_USTREAM_DATA_CB
+    AZ_RELEASE_CALLBACK control_block_release;   /**<The #AZ_RELEASE_CALLBACK to call to release the #AZ_USTREAM_DATA_CB
                                                             once the <tt>ref_count</tt> goes to zero */
 } AZ_USTREAM_DATA_CB;
 
@@ -429,13 +429,13 @@ typedef struct AZ_USTREAM_DATA_CB_TAG
 struct AZ_USTREAM_TAG
 {
     /* Inner buffer. */
-    AZ_USTREAM_DATA_CB* inner_buffer;           /**<The #AZ_USTREAM_DATA_CB* on which this instance operates on. */
+    AZ_USTREAM_DATA_CB* control_block;           /**<The #AZ_USTREAM_DATA_CB* on which this instance operates on. */
 
     /* Instance controls. */
     offset_t offset_diff;                       /**<The #offset_t used as the logical position for this instance. */
     offset_t inner_current_position;            /**<The #offset_t used to keep track of the current position (next returned position). */
     offset_t inner_first_valid_position;        /**<The #offset_t used to keep track of the earliest position to reset. */
-    size_t length;                              /**<The <tt>size_t</tt> with the length of the inner_buffer */
+    size_t length;                              /**<The <tt>size_t</tt> with the length of the data in the control_block */
 };
 
 /**
@@ -453,7 +453,7 @@ struct AZ_USTREAM_TAG
  */
 typedef struct AZ_USTREAM_MULTI_DATA_CB_TAG
 {
-    AZ_USTREAM_DATA_CB inner_buffer;            /**<The #AZ_USTREAM_DATA_CB to manage the multi data structure*/
+    AZ_USTREAM_DATA_CB control_block;            /**<The #AZ_USTREAM_DATA_CB to manage the multi data structure*/
     AZ_USTREAM ustream_one;                     /**<The #AZ_USTREAM with the first ustream instance*/
     AZ_USTREAM ustream_two;                     /**<The #AZ_USTREAM with the second ustream instance*/
     volatile uint32_t ustream_one_ref_count;    /**<The <tt>uint32_t</tt> with the number of references to the first ustream */
@@ -467,7 +467,7 @@ typedef struct AZ_USTREAM_MULTI_DATA_CB_TAG
  *  It will return true if the handle is valid and it is the same type of the API. It will
  *      return false if the handle is <tt>NULL</tt> or not the correct type.
  */
-#define AZ_USTREAM_IS_NOT_TYPE_OF(handle, type_api)   ((handle == NULL) || (handle->inner_buffer == NULL) || (handle->inner_buffer->api == NULL) || (handle->inner_buffer->api != &type_api))
+#define AZ_USTREAM_IS_NOT_TYPE_OF(handle, type_api)   ((handle == NULL) || (handle->control_block == NULL) || (handle->control_block->api == NULL) || (handle->control_block->api != &type_api))
 
 /**
  * @brief   Change the current position of the ustream.
@@ -505,7 +505,7 @@ typedef struct AZ_USTREAM_MULTI_DATA_CB_TAG
  */
 static inline AZ_ULIB_RESULT az_ustream_set_position(AZ_USTREAM* ustream_interface, offset_t position)
 {
-    return ustream_interface->inner_buffer->api->set_position(ustream_interface, position);
+    return ustream_interface->control_block->api->set_position(ustream_interface, position);
 }
 
 /**
@@ -544,7 +544,7 @@ static inline AZ_ULIB_RESULT az_ustream_set_position(AZ_USTREAM* ustream_interfa
  */
 static inline AZ_ULIB_RESULT az_ustream_reset(AZ_USTREAM* ustream_interface)
 {
-    return ustream_interface->inner_buffer->api->reset(ustream_interface);
+    return ustream_interface->control_block->api->reset(ustream_interface);
 }
 
 /**
@@ -601,7 +601,7 @@ static inline AZ_ULIB_RESULT az_ustream_reset(AZ_USTREAM* ustream_interface)
  */
 static inline AZ_ULIB_RESULT az_ustream_read(AZ_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size)
 {
-    return ustream_interface->inner_buffer->api->read(ustream_interface, buffer, buffer_length, size);
+    return ustream_interface->control_block->api->read(ustream_interface, buffer, buffer_length, size);
 }
 
 /**
@@ -637,7 +637,7 @@ static inline AZ_ULIB_RESULT az_ustream_read(AZ_USTREAM* ustream_interface, uint
  */
 static inline AZ_ULIB_RESULT az_ustream_get_remaining_size(AZ_USTREAM* ustream_interface, size_t* const size)
 {
-    return ustream_interface->inner_buffer->api->get_remaining_size(ustream_interface, size);
+    return ustream_interface->control_block->api->get_remaining_size(ustream_interface, size);
 }
 
 /**
@@ -673,7 +673,7 @@ static inline AZ_ULIB_RESULT az_ustream_get_remaining_size(AZ_USTREAM* ustream_i
  */
 static inline AZ_ULIB_RESULT az_ustream_get_position(AZ_USTREAM* ustream_interface, offset_t* const position)
 {
-    return ustream_interface->inner_buffer->api->get_position(ustream_interface, position);
+    return ustream_interface->control_block->api->get_position(ustream_interface, position);
 }
 
 /**
@@ -722,7 +722,7 @@ static inline AZ_ULIB_RESULT az_ustream_get_position(AZ_USTREAM* ustream_interfa
  */
 static inline AZ_ULIB_RESULT az_ustream_release(AZ_USTREAM* ustream_interface, offset_t position)
 {
-    return ustream_interface->inner_buffer->api->release(ustream_interface, position);
+    return ustream_interface->control_block->api->release(ustream_interface, position);
 }
 
 /**
@@ -864,7 +864,7 @@ static inline AZ_ULIB_RESULT az_ustream_release(AZ_USTREAM* ustream_interface, o
  */
 static inline AZ_ULIB_RESULT az_ustream_clone(AZ_USTREAM* ustream_interface_clone, AZ_USTREAM* ustream_interface, offset_t offset)
 {
-    return ustream_interface->inner_buffer->api->clone(ustream_interface_clone, ustream_interface, offset);
+    return ustream_interface->control_block->api->clone(ustream_interface_clone, ustream_interface, offset);
 }
 
 /**
@@ -892,7 +892,7 @@ static inline AZ_ULIB_RESULT az_ustream_clone(AZ_USTREAM* ustream_interface_clon
  */
 static inline AZ_ULIB_RESULT az_ustream_dispose(AZ_USTREAM* ustream_interface)
 {
-    return ustream_interface->inner_buffer->api->dispose(ustream_interface);
+    return ustream_interface->control_block->api->dispose(ustream_interface);
 }
 
 

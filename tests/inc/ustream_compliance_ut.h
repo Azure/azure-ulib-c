@@ -106,7 +106,7 @@ TEST_FUNCTION(az_ustream_dispose_compliance_null_buffer_failed)
     ASSERT_IS_NOT_NULL(ustream_instance);
     
     ///act
-    AZ_ULIB_RESULT result = ustream_instance->inner_buffer->api->dispose(NULL);
+    AZ_ULIB_RESULT result = ustream_instance->control_block->api->dispose(NULL);
     
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -123,7 +123,7 @@ TEST_FUNCTION(az_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed)
     ASSERT_IS_NOT_NULL(ustream_instance);
     
     ///act
-    AZ_ULIB_RESULT result = ustream_instance->inner_buffer->api->dispose(ustream_mock_create());
+    AZ_ULIB_RESULT result = ustream_instance->control_block->api->dispose(ustream_mock_create());
     
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -564,7 +564,7 @@ TEST_FUNCTION(az_ustream_clone_compliance_null_buffer_failed)
     USTREAM_COMPLIANCE_TARGET_INSTANCE ustream_instance_clone;
 
     ///act
-    AZ_ULIB_RESULT result = ustream_instance->inner_buffer->api->clone((AZ_USTREAM*)&ustream_instance_clone, NULL, 0);
+    AZ_ULIB_RESULT result = ustream_instance->control_block->api->clone((AZ_USTREAM*)&ustream_instance_clone, NULL, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -581,7 +581,7 @@ TEST_FUNCTION(az_ustream_clone_compliance_null_buffer_clone_failed)
     ASSERT_IS_NOT_NULL(ustream_instance);
 
     ///act
-    AZ_ULIB_RESULT result = ustream_instance->inner_buffer->api->clone(NULL, ustream_instance, 0);
+    AZ_ULIB_RESULT result = ustream_instance->control_block->api->clone(NULL, ustream_instance, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -600,7 +600,7 @@ TEST_FUNCTION(az_ustream_clone_compliance_buffer_is_not_type_of_buffer_failed)
 
     ///act
     AZ_ULIB_RESULT result =
-        ustream_instance->inner_buffer->api->clone((AZ_USTREAM*)&ustream_instance_clone, ustream_mock_create(), 0);
+        ustream_instance->control_block->api->clone((AZ_USTREAM*)&ustream_instance_clone, ustream_mock_create(), 0);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -727,7 +727,7 @@ TEST_FUNCTION(az_ustream_get_remaining_size_compliance_null_buffer_failed)
     size_t size;
 
     ///act
-    AZ_ULIB_RESULT result = ustream_instance->inner_buffer->api->get_remaining_size(NULL, &size);
+    AZ_ULIB_RESULT result = ustream_instance->control_block->api->get_remaining_size(NULL, &size);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -745,7 +745,7 @@ TEST_FUNCTION(az_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buf
 
     ///act
     AZ_ULIB_RESULT result = 
-        ustream_instance->inner_buffer->api->get_remaining_size(ustream_mock_create(), &size);
+        ustream_instance->control_block->api->get_remaining_size(ustream_mock_create(), &size);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -865,7 +865,7 @@ TEST_FUNCTION(ustream_get_current_position_compliance_null_buffer_failed)
     offset_t position;
 
     ///act
-    AZ_ULIB_RESULT result = ustream_instance->inner_buffer->api->get_position(NULL, &position);
+    AZ_ULIB_RESULT result = ustream_instance->control_block->api->get_position(NULL, &position);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -883,7 +883,7 @@ TEST_FUNCTION(ustream_get_current_position_compliance_buffer_is_not_type_of_buff
 
     ///act
     AZ_ULIB_RESULT result = 
-        ustream_instance->inner_buffer->api->get_position(ustream_mock_create(), &position);
+        ustream_instance->control_block->api->get_position(ustream_mock_create(), &position);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -1284,7 +1284,7 @@ TEST_FUNCTION(az_ustream_read_compliance_null_buffer_failed)
 
     ///act
     AZ_ULIB_RESULT result = 
-        ustream_instance->inner_buffer->api->read(
+        ustream_instance->control_block->api->read(
             NULL, 
             buf_result, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
@@ -1312,7 +1312,7 @@ TEST_FUNCTION(az_ustream_read_compliance_non_type_of_buffer_api_failed)
 
     ///act
     AZ_ULIB_RESULT result = 
-        ustream_instance->inner_buffer->api->read(
+        ustream_instance->control_block->api->read(
             ustream_mock_create(), 
             buf_result, 
             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, 
@@ -1876,7 +1876,7 @@ TEST_FUNCTION(az_ustream_set_position_compliance_null_buffer_failed)
     AZ_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
 
     ///act
-    AZ_ULIB_RESULT result = ustream_instance->inner_buffer->api->set_position(NULL, 1);
+    AZ_ULIB_RESULT result = ustream_instance->control_block->api->set_position(NULL, 1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -1893,7 +1893,7 @@ TEST_FUNCTION(az_ustream_set_position_compliance_non_type_of_buffer_api_failed)
 
     ///act
     AZ_ULIB_RESULT result = 
-        ustream_instance->inner_buffer->api->set_position(ustream_mock_create(), 1);
+        ustream_instance->control_block->api->set_position(ustream_mock_create(), 1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -2193,7 +2193,7 @@ TEST_FUNCTION(az_ustream_release_compliance_null_buffer_failed)
     AZ_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
 
     ///act
-    AZ_ULIB_RESULT result1 = ustream_instance->inner_buffer->api->release(NULL, 0);
+    AZ_ULIB_RESULT result1 = ustream_instance->control_block->api->release(NULL, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result1);
@@ -2210,7 +2210,7 @@ TEST_FUNCTION(az_ustream_release_compliance_non_type_of_buffer_api_failed)
 
     ///act
     AZ_ULIB_RESULT result1 = 
-        ustream_instance->inner_buffer->api->release(ustream_mock_create(), 0);
+        ustream_instance->control_block->api->release(ustream_mock_create(), 0);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result1);
@@ -2332,7 +2332,7 @@ TEST_FUNCTION(az_ustream_reset_compliance_null_buffer_failed)
     AZ_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
 
     ///act
-    AZ_ULIB_RESULT result = ustream_instance->inner_buffer->api->reset(NULL);
+    AZ_ULIB_RESULT result = ustream_instance->control_block->api->reset(NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -2348,7 +2348,7 @@ TEST_FUNCTION(az_ustream_reset_compliance_non_type_of_buffer_api_failed)
     AZ_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
 
     ///act
-    AZ_ULIB_RESULT result = ustream_instance->inner_buffer->api->reset(ustream_mock_create());
+    AZ_ULIB_RESULT result = ustream_instance->control_block->api->reset(ustream_mock_create());
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);

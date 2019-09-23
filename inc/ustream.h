@@ -37,11 +37,11 @@ extern "C" {
  *                                          the time az_ustream_init() is called through az_ustream_release(). The ustream will not
  *                                          free this struct and it is the responsibility of the developer to make sure it is valid during
  *                                          the time frame described above. It cannot be <tt>NULL</tt>.
- * @param[in]       ustream_inner_buffer    The pointer to the allocated #AZ_USTREAM_DATA_CB struct. This memory should be allocated in
- *                                          a way that it stays valid until the passed <tt>inner_buffer_release</tt> is called
+ * @param[in]       ustream_control_block   The pointer to the allocated #AZ_USTREAM_DATA_CB struct. This memory should be allocated in
+ *                                          a way that it stays valid until the passed <tt>control_block_release</tt> is called
  *                                          at some (potentially) unknown time in the future. It cannot be <tt>NULL</tt>.
- * @param[in]       inner_buffer_release    The {@link AZ_RELEASE_CALLBACK} function that will be called for the inner 
- *                                          buffer control block (the passed <tt>ustream_inner_buffer</tt> parameter) once all the 
+ * @param[in]       control_block_release   The {@link AZ_RELEASE_CALLBACK} function that will be called for the inner 
+ *                                          buffer control block (the passed <tt>ustream_control_block</tt> parameter) once all the 
  *                                          references to the ustream are released. If <tt>NULL</tt> is passed, the data is assumed to 
  *                                          be constant with no need to be free'd. In other words, there is no need for notification 
  *                                          that the memory may be released.
@@ -62,8 +62,8 @@ extern "C" {
  */
 MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_init,
         AZ_USTREAM*, ustream_instance,
-        AZ_USTREAM_DATA_CB*, ustream_inner_buffer,
-        AZ_RELEASE_CALLBACK, inner_buffer_release,
+        AZ_USTREAM_DATA_CB*, ustream_control_block,
+        AZ_RELEASE_CALLBACK, control_block_release,
         const uint8_t* const, data_buffer,
         size_t, data_buffer_length,
         AZ_RELEASE_CALLBACK, data_buffer_release);
@@ -75,7 +75,7 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_init,
   *  The concat will effectively append a ustream at the end of the passed <tt>ustream_interface</tt>. To do that, the 
   *     concat will copy the <tt>ustream_interface</tt> into a <tt>USTREAM_MULTI_INSTANCE</tt> and clone the 
   *     <tt>ustream_to_concat</tt> inside the <tt>USTREAM_MULTI_INSTANCE</tt>. At this point, the original 
-  *     <tt>ustream_interface</tt> will point to the passed <tt>inner_buffer</tt> whose data is two ustreams which will
+  *     <tt>ustream_interface</tt> will point to the passed <tt>control_block</tt> whose data is two ustreams which will
   *     be read as one.
   *
   *  The <tt>az_ustream_concat</tt> API shall follow the following minimum requirements:

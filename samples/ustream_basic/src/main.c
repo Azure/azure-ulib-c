@@ -70,9 +70,9 @@ int main(void)
 
         //Create the first AZ_USTREAM from constant memory
         AZ_USTREAM ustream_one;
-        AZ_USTREAM_DATA_CB* ustream_inner_buffer_one = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+        AZ_USTREAM_DATA_CB* ustream_control_block_one = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
         size_t ustream_size;
-        if((result = az_ustream_init(&ustream_one, ustream_inner_buffer_one, free,
+        if((result = az_ustream_init(&ustream_one, ustream_control_block_one, free,
                                                 (const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) != AZ_ULIB_SUCCESS)
         {
             printf("Couldn't initialize ustream_one\r\n");
@@ -87,8 +87,8 @@ int main(void)
 
             //Create the second AZ_USTREAM from the string in the heap, passing standard free function as release callback
             AZ_USTREAM ustream_two;
-            AZ_USTREAM_DATA_CB* ustream_inner_buffer_two = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
-            if((result = az_ustream_init(&ustream_two, ustream_inner_buffer_two, free,
+            AZ_USTREAM_DATA_CB* ustream_control_block_two = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+            if((result = az_ustream_init(&ustream_two, ustream_control_block_two, free,
                                                 (const uint8_t*) ustream_two_string, ustream_two_string_len, free)) != AZ_ULIB_SUCCESS)
             {
                 printf("Couldn't initialize ustream_two\r\n");

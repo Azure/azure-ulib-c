@@ -123,7 +123,7 @@ static AZ_ULIB_RESULT concrete_clone(
 
     if (_concrete_clone_result == AZ_ULIB_SUCCESS)
     {
-        ustream_interface_clone->inner_buffer = ustream_interface->inner_buffer;
+        ustream_interface_clone->control_block = ustream_interface->control_block;
         ustream_interface_clone->inner_current_position = ustream_interface->inner_current_position;
         ustream_interface_clone->inner_first_valid_position = ustream_interface->inner_first_valid_position;
         ustream_interface_clone->length = ustream_interface->length;
@@ -161,18 +161,18 @@ static const AZ_USTREAM_INTERFACE api =
 
 static const int TEST_DATA = 1;
 
-static AZ_USTREAM_DATA_CB USTREAM_COMPLIANCE_MOCK_INNER_BUFFER =
+static AZ_USTREAM_DATA_CB USTREAM_COMPLIANCE_MOCK_CONTROL_BLOCK =
 {
     .api = (const AZ_USTREAM_INTERFACE*)&api,
     .ptr = NULL,
     .ref_count = 0,
     .data_release = NULL,
-    .inner_buffer_release = NULL
+    .control_block_release = NULL
 };
 
 static AZ_USTREAM USTREAM_COMPLIANCE_MOCK_BUFFER =
 {
-    .inner_buffer = (AZ_USTREAM_DATA_CB*)&USTREAM_COMPLIANCE_MOCK_INNER_BUFFER,
+    .control_block = (AZ_USTREAM_DATA_CB*)&USTREAM_COMPLIANCE_MOCK_CONTROL_BLOCK,
     .offset_diff = 0,
     .inner_current_position = 0,
     .inner_first_valid_position = 0,

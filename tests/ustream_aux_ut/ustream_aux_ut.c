@@ -55,10 +55,10 @@ static AZ_USTREAM* create_test_default_multibuffer()
     memset(default_multi_data2, 0, sizeof(AZ_USTREAM_MULTI_DATA_CB));
 
     //Set up first ustream
-    AZ_USTREAM_DATA_CB* ustream_inner_buffer1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    memset(ustream_inner_buffer1, 0, sizeof(AZ_USTREAM_DATA_CB));
+    AZ_USTREAM_DATA_CB* ustream_control_block1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
+    memset(ustream_control_block1, 0, sizeof(AZ_USTREAM_DATA_CB));
     AZ_ULIB_RESULT result = az_ustream_init(&test_multi,
-            ustream_inner_buffer1,
+            ustream_control_block1,
             az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
@@ -66,10 +66,10 @@ static AZ_USTREAM* create_test_default_multibuffer()
 
     //Set up second ustream
     AZ_USTREAM default_buffer2;
-    AZ_USTREAM_DATA_CB* ustream_inner_buffer2 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    memset(ustream_inner_buffer2, 0, sizeof(AZ_USTREAM_DATA_CB));
+    AZ_USTREAM_DATA_CB* ustream_control_block2 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
+    memset(ustream_control_block2, 0, sizeof(AZ_USTREAM_DATA_CB));
     result = az_ustream_init(&default_buffer2,
-                ustream_inner_buffer2,
+                ustream_control_block2,
                 az_ulib_free,
                 USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
                 strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2),
@@ -78,10 +78,10 @@ static AZ_USTREAM* create_test_default_multibuffer()
 
     //Set up third ustream
     AZ_USTREAM default_buffer3;
-    AZ_USTREAM_DATA_CB* ustream_inner_buffer3 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    memset(ustream_inner_buffer3, 0, sizeof(AZ_USTREAM_DATA_CB));
+    AZ_USTREAM_DATA_CB* ustream_control_block3 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
+    memset(ustream_control_block3, 0, sizeof(AZ_USTREAM_DATA_CB));
     result = az_ustream_init(&default_buffer3,
-                ustream_inner_buffer3,
+                ustream_control_block3,
                 az_ulib_free,
                 USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
                 strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3), NULL);
@@ -168,42 +168,42 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
 TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* inner_buffer1 =
+    AZ_USTREAM_DATA_CB* control_block1 =
         (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    ASSERT_IS_NOT_NULL(inner_buffer1);
+    ASSERT_IS_NOT_NULL(control_block1);
     AZ_USTREAM test_buffer1;
     AZ_ULIB_RESULT result1 =
         az_ustream_init(
             &test_buffer1,
-            inner_buffer1,
+            control_block1,
             az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
-    AZ_USTREAM_DATA_CB* inner_buffer2 =
+    AZ_USTREAM_DATA_CB* control_block2 =
         (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    ASSERT_IS_NOT_NULL(inner_buffer2);
+    ASSERT_IS_NOT_NULL(control_block2);
     AZ_USTREAM test_buffer2;
     AZ_ULIB_RESULT result2 =
         az_ustream_init(
             &test_buffer2,
-            inner_buffer2,
+            control_block2,
             az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2),
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result2);
 
-    AZ_USTREAM_DATA_CB* inner_buffer3 =
+    AZ_USTREAM_DATA_CB* control_block3 =
         (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    ASSERT_IS_NOT_NULL(inner_buffer3);
+    ASSERT_IS_NOT_NULL(control_block3);
     AZ_USTREAM test_buffer3;
     AZ_ULIB_RESULT result3 =
         az_ustream_init(
             &test_buffer3,
-            inner_buffer3,
+            control_block3,
             az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3),
@@ -238,42 +238,42 @@ TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
 TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* inner_buffer1 =
+    AZ_USTREAM_DATA_CB* control_block1 =
         (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    ASSERT_IS_NOT_NULL(inner_buffer1);
+    ASSERT_IS_NOT_NULL(control_block1);
     AZ_USTREAM test_buffer1;
     AZ_ULIB_RESULT result1 =
         az_ustream_init(
             &test_buffer1,
-            inner_buffer1,
+            control_block1,
             az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
-    AZ_USTREAM_DATA_CB* inner_buffer2 =
+    AZ_USTREAM_DATA_CB* control_block2 =
         (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    ASSERT_IS_NOT_NULL(inner_buffer2);
+    ASSERT_IS_NOT_NULL(control_block2);
     AZ_USTREAM test_buffer2;
     AZ_ULIB_RESULT result2 =
         az_ustream_init(
             &test_buffer2,
-            inner_buffer2,
+            control_block2,
             az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2),
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result2);
 
-    AZ_USTREAM_DATA_CB* inner_buffer3 =
+    AZ_USTREAM_DATA_CB* control_block3 =
         (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    ASSERT_IS_NOT_NULL(inner_buffer3);
+    ASSERT_IS_NOT_NULL(control_block3);
     AZ_USTREAM test_buffer3;
     AZ_ULIB_RESULT result3 =
         az_ustream_init(
             &test_buffer3,
-            inner_buffer3,
+            control_block3,
             az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3),
@@ -315,14 +315,14 @@ TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
 TEST_FUNCTION(az_ustream_concat_null_interface_failed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* inner_buffer =
+    AZ_USTREAM_DATA_CB* control_block =
         (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    ASSERT_IS_NOT_NULL(inner_buffer);
+    ASSERT_IS_NOT_NULL(control_block);
     AZ_USTREAM test_buffer;
     AZ_ULIB_RESULT result1 =
         az_ustream_init(
             &test_buffer,
-            inner_buffer,
+            control_block,
             az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
@@ -343,14 +343,14 @@ TEST_FUNCTION(az_ustream_concat_null_interface_failed)
 TEST_FUNCTION(az_ustream_concat_null_buffer_to_add_failed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* inner_buffer =
+    AZ_USTREAM_DATA_CB* control_block =
         (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    ASSERT_IS_NOT_NULL(inner_buffer);
+    ASSERT_IS_NOT_NULL(control_block);
     AZ_USTREAM default_buffer;
     AZ_ULIB_RESULT result1 =
         az_ustream_init(
             &default_buffer,
-            inner_buffer,
+            control_block,
             az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
@@ -374,28 +374,28 @@ TEST_FUNCTION(az_ustream_concat_null_buffer_to_add_failed)
 TEST_FUNCTION(az_ustream_concat_null_multi_data_failed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* inner_buffer =
+    AZ_USTREAM_DATA_CB* control_block =
         (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    ASSERT_IS_NOT_NULL(inner_buffer);
+    ASSERT_IS_NOT_NULL(control_block);
     AZ_USTREAM default_buffer;
     AZ_ULIB_RESULT result1 =
         az_ustream_init(
             &default_buffer,
-            inner_buffer,
+            control_block,
             az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
-    AZ_USTREAM_DATA_CB* inner_buffer2 =
+    AZ_USTREAM_DATA_CB* control_block2 =
         (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    ASSERT_IS_NOT_NULL(inner_buffer2);
+    ASSERT_IS_NOT_NULL(control_block2);
     AZ_USTREAM test_buffer2;
     AZ_ULIB_RESULT result2 =
         az_ustream_init(
             &test_buffer2,
-            inner_buffer2,
+            control_block2,
             az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
@@ -414,13 +414,13 @@ TEST_FUNCTION(az_ustream_concat_null_multi_data_failed)
 
 /* az_ustream_multi_concat shall return an error if the internal call to az_ustream_get_remaining_size failed
     when concatenating two ustreams */
-TEST_FUNCTION(az_ustream_concat_new_inner_buffer_failed_on_get_remaining_size_failed)
+TEST_FUNCTION(az_ustream_concat_new_control_block_failed_on_get_remaining_size_failed)
 {
     ///arrange
     AZ_USTREAM multibuffer;
-    AZ_USTREAM_DATA_CB* inner_buffer1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
+    AZ_USTREAM_DATA_CB* control_block1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     AZ_ULIB_RESULT result =
-        az_ustream_init(&multibuffer, inner_buffer1, az_ulib_free,
+        az_ustream_init(&multibuffer, control_block1, az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_ARE_EQUAL(int, result, AZ_ULIB_SUCCESS);
@@ -469,13 +469,13 @@ TEST_FUNCTION(ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_
 
 
 /* az_ustream_read shall return partial result if one of the internal buffers failed. */
-TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_content_succeed)
+TEST_FUNCTION(ustream_multi_read_control_block_failed_in_read_with_some_valid_content_succeed)
 {
     ///arrange
     AZ_USTREAM multibuffer;
-    AZ_USTREAM_DATA_CB* inner_buffer1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
+    AZ_USTREAM_DATA_CB* control_block1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     AZ_ULIB_RESULT result =
-        az_ustream_init(&multibuffer, inner_buffer1, az_ulib_free,
+        az_ustream_init(&multibuffer, control_block1, az_ulib_free,
                            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
                            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_ARE_EQUAL(int, result, AZ_ULIB_SUCCESS);
@@ -510,13 +510,13 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
 }
 
 /* az_ustream_read shall return AZ_ULIB_SYSTEM_ERROR if it failed to read the requested bytes */
-TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
+TEST_FUNCTION(ustream_multi_read_control_block_failed_in_read_failed)
 {
     ///arrange
     AZ_USTREAM multibuffer;
-    AZ_USTREAM_DATA_CB* inner_buffer1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
+    AZ_USTREAM_DATA_CB* control_block1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     AZ_ULIB_RESULT result =
-        az_ustream_init(&multibuffer, inner_buffer1, az_ulib_free,
+        az_ustream_init(&multibuffer, control_block1, az_ulib_free,
                            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
                            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_ARE_EQUAL(int, result, AZ_ULIB_SUCCESS);

@@ -37,7 +37,7 @@ static const AZ_USTREAM_INTERFACE api =
 
 static void init_instance(
     AZ_USTREAM* ustream_instance,
-    AZ_USTREAM_DATA_CB* inner_buffer,
+    AZ_USTREAM_DATA_CB* control_block,
     offset_t inner_current_position,
     offset_t offset,
     size_t data_buffer_length)
@@ -45,20 +45,20 @@ static void init_instance(
     ustream_instance->inner_current_position = inner_current_position;
     ustream_instance->inner_first_valid_position = inner_current_position;
     ustream_instance->offset_diff = offset - inner_current_position;
-    ustream_instance->inner_buffer = inner_buffer;
+    ustream_instance->control_block = control_block;
     ustream_instance->length = data_buffer_length;
-    AZ_ULIB_PORT_ATOMIC_INC_W(&(ustream_instance->inner_buffer->ref_count));
+    AZ_ULIB_PORT_ATOMIC_INC_W(&(ustream_instance->control_block->ref_count));
 }
 
-static void destroy_inner_buffer(AZ_USTREAM_DATA_CB* inner_buffer)
+static void destroy_control_block(AZ_USTREAM_DATA_CB* control_block)
 {
-    if(inner_buffer->data_release)
+    if(control_block->data_release)
     {
-        inner_buffer->data_release(inner_buffer->ptr);
+        control_block->data_release(control_block->ptr);
     }
-    if(inner_buffer->inner_buffer_release)
+    if(control_block->control_block_release)
     {
-        inner_buffer->inner_buffer_release(inner_buffer);
+        control_block->control_block_release(control_block);
     }
 }
 
@@ -134,7 +134,7 @@ static AZ_ULIB_RESULT concrete_read(
 
     AZ_ULIB_RESULT result;
 
-    AZ_USTREAM_DATA_CB* inner_buffer = ustream_interface->inner_buffer;
+    AZ_USTREAM_DATA_CB* control_block = ustream_interface->control_block;
 
     if(ustream_interface->inner_current_position >= ustream_interface->length)
     {
@@ -155,7 +155,7 @@ static AZ_ULIB_RESULT concrete_read(
         /*[az_ustream_read_compliance_single_byte_succeed]*/
         /*[az_ustream_read_compliance_get_from_cloned_buffer_succeed]*/
         /*[az_ustream_read_compliance_cloned_buffer_right_boundary_condition_succeed]*/
-        (void)memcpy(buffer, (uint8_t*)inner_buffer->ptr + ustream_interface->inner_current_position, *size);
+        (void)memcpy(buffer, (uint8_t*)control_block->ptr + ustream_interface->inner_current_position, *size);
         ustream_interface->inner_current_position += *size;
         result = AZ_ULIB_SUCCESS;
     }
@@ -245,7 +245,7 @@ static AZ_ULIB_RESULT concrete_clone(AZ_USTREAM* ustream_interface_clone, AZ_UST
     /*[az_ustream_clone_compliance_cloned_buffer_with_non_zero_current_and_released_positions_cloned_with_offset_succeed]*/
     /*[az_ustream_clone_compliance_no_memory_to_create_instance_failed]*/
     /*[az_ustream_clone_compliance_empty_buffer_succeed]*/
-    init_instance(ustream_interface_clone, ustream_interface->inner_buffer, ustream_interface->inner_current_position, offset, 
+    init_instance(ustream_interface_clone, ustream_interface->control_block, ustream_interface->inner_current_position, offset, 
                                                             ustream_interface->length);
 
     return AZ_ULIB_SUCCESS;
@@ -258,15 +258,15 @@ static AZ_ULIB_RESULT concrete_dispose(AZ_USTREAM* ustream_interface)
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
                                             AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
 
-    AZ_USTREAM_DATA_CB* inner_buffer = ustream_interface->inner_buffer;
+    AZ_USTREAM_DATA_CB* control_block = ustream_interface->control_block;
 
     /*[az_ustream_dispose_compliance_cloned_instance_disposed_first_succeed]*/
     /*[az_ustream_dispose_compliance_cloned_instance_disposed_second_succeed]*/
     /*[az_ustream_dispose_compliance_single_instance_succeed]*/
-    AZ_ULIB_PORT_ATOMIC_DEC_W(&(inner_buffer->ref_count));
-    if(inner_buffer->ref_count == 0)
+    AZ_ULIB_PORT_ATOMIC_DEC_W(&(control_block->ref_count));
+    if(control_block->ref_count == 0)
     {
-        destroy_inner_buffer(inner_buffer);
+        destroy_control_block(control_block);
     }
 
     return AZ_ULIB_SUCCESS;
@@ -274,30 +274,30 @@ static AZ_ULIB_RESULT concrete_dispose(AZ_USTREAM* ustream_interface)
 
 AZ_ULIB_RESULT az_ustream_init(
     AZ_USTREAM* ustream_instance,
-    AZ_USTREAM_DATA_CB* ustream_inner_buffer,
-    AZ_RELEASE_CALLBACK inner_buffer_release,
+    AZ_USTREAM_DATA_CB* ustream_control_block,
+    AZ_RELEASE_CALLBACK control_block_release,
     const uint8_t* const data_buffer,
     size_t data_buffer_length,
     AZ_RELEASE_CALLBACK data_buffer_release)
 {
     /*[az_ustream_init_NULL_ustream_instance_failed]*/
-    /*[az_ustream_init_NULL_inner_buffer_failed]*/
+    /*[az_ustream_init_NULL_control_block_failed]*/
     /*[az_ustream_init_null_buffer_failed]*/
     /*[az_ustream_init_zero_length_failed]*/
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
-                    AZ_UCONTRACT_REQUIRE_NOT_NULL(ustream_inner_buffer, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
+                    AZ_UCONTRACT_REQUIRE_NOT_NULL(ustream_control_block, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZ_UCONTRACT_REQUIRE_NOT_NULL(data_buffer, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZ_UCONTRACT_REQUIRE_NOT_EQUALS(data_buffer_length, 0, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
 
     /*[az_ustream_init_succeed]*/
     /*[az_ustream_init_const_succeed*/
-    ustream_inner_buffer->api = &api;
-    ustream_inner_buffer->ptr = (void*)data_buffer;
-    ustream_inner_buffer->ref_count = 0;
-    ustream_inner_buffer->data_release = data_buffer_release;
-    ustream_inner_buffer->inner_buffer_release = inner_buffer_release;
+    ustream_control_block->api = &api;
+    ustream_control_block->ptr = (void*)data_buffer;
+    ustream_control_block->ref_count = 0;
+    ustream_control_block->data_release = data_buffer_release;
+    ustream_control_block->control_block_release = control_block_release;
 
-    init_instance(ustream_instance, ustream_inner_buffer, 0, 0, data_buffer_length);
+    init_instance(ustream_instance, ustream_control_block, 0, 0, data_buffer_length);
 
     return AZ_ULIB_SUCCESS;
 }
