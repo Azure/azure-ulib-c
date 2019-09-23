@@ -560,7 +560,7 @@ TEST_FUNCTION(ustream_multi_read_control_block_failed_in_read_failed)
     (void)az_ustream_dispose(test_buffer2);
 }
 
-/* az_ustream_read shall set the position to an instance's position before reading and return AZ_USTREAM_SUCCESS */
+/* az_ustream_read shall set the position to an instance's position before reading and return AZ_ULIB_SUCCESS */
 TEST_FUNCTION(ustream_multi_read_clone_and_original_in_parallel_succeed)
 {
     ///arrange

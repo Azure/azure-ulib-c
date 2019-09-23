@@ -46,8 +46,14 @@
  *  +----------------+        +----------------+              +------------------+     +------------+
  *  |    Provider    |        |    Consumer    |              |      ustream     |     |    HEAP    |
  *  +----------------+        +----------------+              +------------------+     +------------+
+ *          |           +-------------+                                  |                    |
+ *          |           | [Allocate on stack or heap]                    |                    |
+ *          |           | [In this example the stack]                    |                    |
+ *          |           | AZ_USTREAM ustream_interface                   |                    |
+ *          |           +-------------+                                  |                    |
  *          |                         |                                  |                    |
- *          |<-get_provider_content()-+                                  |                    |
+ *          |<-get_provider_content                                      |                    |
+ *               (&ustream_interface)-+                                  |                    |
  *          +----------------------------malloc(content_size)-------------------------------->|
  *          |<--------------------------------content_ptr-------------------------------------+
  *          +--------------------malloc(sizeof(AZ_USTREAM_DATA_CB))-------------------------->|
@@ -56,7 +62,7 @@
  *   | generate the content and store in the content_ptr                 |                    |
  *   +----->|                         |                                  |                    |
  *          +-----az_ustream_init                                        |                    |
- *          |       (ustream_instance,                                   |                    |
+ *          |       (ustream_interface,                                  |                    |
  *          |        control_block_ptr, free,                            |                    |
  *          |        content_ptr, content_size, free)------------------->|                    |
  *          |                         |                           +------+                    |
@@ -64,12 +70,12 @@
  *          |                         |                           | data_source_size = content_size
  *          |                         |                           +----->|                    |
  *          |<-----------------ustream_interface-------------------------+                    |
- *          +---ustream_interface---->|                                  |                    |
+ *          +----AZ_ULIB_SUCCESS----->|                                  |                    |
  *
  * </code></pre>
  *
  *
- *  Now that the consumer has the ustream with the content, it will print it using the 
+ *  Now that the consumer has it's local ustream intialized with the content, it will print it using the 
  *   iterator az_ustream_read().
  *
  * <pre><code>

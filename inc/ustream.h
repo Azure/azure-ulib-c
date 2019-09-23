@@ -34,24 +34,24 @@ extern "C" {
  *      the ref count of the <tt>ustream_control_block</tt> goes to zero.
  *
  * @param[out]      ustream_instance        The pointer to the allocated #AZ_USTREAM struct. This memory must be valid from
- *                                          the time az_ustream_init() is called through az_ustream_release(). The ustream will not
+ *                                          the time az_ustream_init() is called through az_ustream_dispose(). The ustream will not
  *                                          free this struct and it is the responsibility of the developer to make sure it is valid during
  *                                          the time frame described above. It cannot be <tt>NULL</tt>.
  * @param[in]       ustream_control_block   The pointer to the allocated #AZ_USTREAM_DATA_CB struct. This memory should be allocated in
  *                                          a way that it stays valid until the passed <tt>control_block_release</tt> is called
  *                                          at some (potentially) unknown time in the future. It cannot be <tt>NULL</tt>.
- * @param[in]       control_block_release   The {@link AZ_RELEASE_CALLBACK} function that will be called for the inner 
- *                                          buffer control block (the passed <tt>ustream_control_block</tt> parameter) once all the 
- *                                          references to the ustream are released. If <tt>NULL</tt> is passed, the data is assumed to 
+ * @param[in]       control_block_release   The {@link AZ_RELEASE_CALLBACK} function that will be called to release the
+ *                                          control block (the passed <tt>ustream_control_block</tt> parameter) once all the 
+ *                                          references to the ustream are diposed. If <tt>NULL</tt> is passed, the data is assumed to 
  *                                          be constant with no need to be free'd. In other words, there is no need for notification 
  *                                          that the memory may be released.
  *                                          As a default, developers may use the stdlib <tt>free</tt> to release malloc'd memory.
  * @param[in]       data_buffer             The <tt>const uint8_t* const</tt> that points to a memory position where the buffer starts.
  *                                          It cannot be <tt>NULL</tt>.
  * @param[in]       data_buffer_length      The <tt>size_t</tt> with the number of <tt>uint8_t</tt> in the provided buffer.
- *                                          It shall be larger than 0.
- * @param[in]       data_buffer_release     The {@link AZ_RELEASE_CALLBACK} function that will be called to release the inner 
- *                                          buffer once all the references to the ustream are released. If <tt>NULL</tt> is 
+ *                                          It shall be larger than zero.
+ * @param[in]       data_buffer_release     The {@link AZ_RELEASE_CALLBACK} function that will be called to release the data 
+ *                                          once all the references to the ustream are disposed. If <tt>NULL</tt> is 
  *                                          passed, the data is assumed to be constant with no need to be free'd. In other words, 
  *                                          there is no need for notification that the memory may be released.
  *                                          As a default, developers may use the stdlib <tt>free</tt> to release malloc'd memory.
@@ -75,23 +75,19 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_init,
   *  The concat will effectively append a ustream at the end of the passed <tt>ustream_interface</tt>. To do that, the 
   *     concat will copy the <tt>ustream_interface</tt> into a <tt>AZ_USTREAM_MULTI_DATA_CB</tt> and clone the 
   *     <tt>ustream_to_concat</tt> inside the <tt>AZ_USTREAM_MULTI_DATA_CB</tt>. When returned, the original 
-  *     <tt>ustream_interface</tt> will point to the #AZ_USTREAM_DATA_CB inside the passed <tt>multi_data</tt> whose data is
-  *     two ustreams which will be read as one.
+  *     <tt>ustream_interface</tt> will point to the #AZ_USTREAM_DATA_CB inside of the passed <tt>multi_data</tt>. 
+  *     The data of the passed <tt>ustream_interface</tt> will at that point be read as if the content of the orignal
+  *     <tt>ustream_interface</tt> and <tt>ustream_to_concat</tt> were one ustream. This means that both <tt>ustream_interface</tt>
+  *     and <tt>ustream_to_concat</tt> will have to be disposed by the calling function.
   *
-  *  The <tt>az_ustream_concat</tt> API shall follow the following minimum requirements:
-  *      - The <tt>concat</tt> shall concat <tt>ustream_to_concat</tt> to the end of <tt>ustream_interface</tt>.
-  *      - The <tt>concat</tt> shall copy the passed <tt>ustream_interface</tt> to the <tt>multi_data</tt> structure.
-  *      - The <tt>concat</tt> shall not modify the passed <tt>ustream_to_concat</tt>.
-  *      - The <tt>concat</tt> shall clone the <tt>ustream_to_concat</tt> into the <tt>multi_data</tt> structure.
-  *
-  * @param[in, out]     ustream_interface       The {@link AZ_USTREAM}* with the interface of 
+  * @param[out]         ustream_interface       The {@link AZ_USTREAM}* with the interface of 
   *                                             the ustream. It cannot be <tt>NULL</tt>, and it shall be a valid ustream.
   * @param[in]          ustream_to_concat       The {@link AZ_USTREAM}* with the interface of 
   *                                             the ustream to concat to <tt>ustream_interface</tt>. It cannot be <tt>NULL</tt>, 
   *                                             and it shall be a valid ustream.
-  * @param[in]          multi_data              The {@link AZ_USTREAM_MULTI_DATA_CB}* pointing to the allocated data control block.
+  * @param[in]          multi_data              The {@link AZ_USTREAM_MULTI_DATA_CB}* pointing to the allocated multi data control block.
   *                                             It must be allocated in a way that it remains a valid address until the passed
-  *                                             {@link AZ_RELEASE_CALLBACK} callback is invoked some time in the future.
+  *                                             <tt>multi_data_release</tt> is invoked some time in the future.
   * @param[in]          multi_data_release      The {@link AZ_RELEASE_CALLBACK} callback which will be called once
   *                                             the number of references to the control block reaches zero. It may be <tt>NULL</tt> if no 
   *                                             future cleanup is needed. 
