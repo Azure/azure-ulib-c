@@ -31,7 +31,7 @@ extern "C" {
  *  This factory initializes a ustream that handles the content of the provided buffer. As a result,
  *      it will return an {@link AZ_USTREAM}* with this content. The initialized ustream takes ownership of the
  *      passed memory and will release the memory with the passed {@link AZ_RELEASE_CALLBACK} function when
- *      the ref count goes to zero.
+ *      the ref count of the <tt>ustream_control_block</tt> goes to zero.
  *
  * @param[out]      ustream_instance        The pointer to the allocated #AZ_USTREAM struct. This memory must be valid from
  *                                          the time az_ustream_init() is called through az_ustream_release(). The ustream will not
@@ -73,10 +73,10 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_init,
   * @brief   Concatenate a ustream to the existing ustream.
   *
   *  The concat will effectively append a ustream at the end of the passed <tt>ustream_interface</tt>. To do that, the 
-  *     concat will copy the <tt>ustream_interface</tt> into a <tt>USTREAM_MULTI_INSTANCE</tt> and clone the 
-  *     <tt>ustream_to_concat</tt> inside the <tt>USTREAM_MULTI_INSTANCE</tt>. At this point, the original 
-  *     <tt>ustream_interface</tt> will point to the passed <tt>control_block</tt> whose data is two ustreams which will
-  *     be read as one.
+  *     concat will copy the <tt>ustream_interface</tt> into a <tt>AZ_USTREAM_MULTI_DATA_CB</tt> and clone the 
+  *     <tt>ustream_to_concat</tt> inside the <tt>AZ_USTREAM_MULTI_DATA_CB</tt>. When returned, the original 
+  *     <tt>ustream_interface</tt> will point to the #AZ_USTREAM_DATA_CB inside the passed <tt>multi_data</tt> whose data is
+  *     two ustreams which will be read as one.
   *
   *  The <tt>az_ustream_concat</tt> API shall follow the following minimum requirements:
   *      - The <tt>concat</tt> shall concat <tt>ustream_to_concat</tt> to the end of <tt>ustream_interface</tt>.
@@ -89,11 +89,11 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_init,
   * @param[in]          ustream_to_concat       The {@link AZ_USTREAM}* with the interface of 
   *                                             the ustream to concat to <tt>ustream_interface</tt>. It cannot be <tt>NULL</tt>, 
   *                                             and it shall be a valid ustream.
-  * @param[in]          multi_data              The {@link AZ_USTREAM_MULTI_DATA_CB}* pointing to the allocated data. It must be allocated
-  *                                             in a way that it remains a valid address until the passed {@link AZ_RELEASE_CALLBACK}
-  *                                             callback is invoked some time in the future.
+  * @param[in]          multi_data              The {@link AZ_USTREAM_MULTI_DATA_CB}* pointing to the allocated data control block.
+  *                                             It must be allocated in a way that it remains a valid address until the passed
+  *                                             {@link AZ_RELEASE_CALLBACK} callback is invoked some time in the future.
   * @param[in]          multi_data_release      The {@link AZ_RELEASE_CALLBACK} callback which will be called once
-  *                                             the number of references to the inner buffer reaches zero. It may be <tt>NULL</tt> if no 
+  *                                             the number of references to the control block reaches zero. It may be <tt>NULL</tt> if no 
   *                                             future cleanup is needed. 
   * @return The {@link AZ_ULIB_RESULT} with the result of the <tt>concat</tt> operation.
   *          @retval    AZ_ULIB_SUCCESS                If the AZ_USTREAM is concatenated with success.

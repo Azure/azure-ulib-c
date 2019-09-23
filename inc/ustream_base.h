@@ -428,10 +428,10 @@ typedef struct AZ_USTREAM_DATA_CB_TAG
  */
 struct AZ_USTREAM_TAG
 {
-    /* Inner buffer. */
-    AZ_USTREAM_DATA_CB* control_block;           /**<The #AZ_USTREAM_DATA_CB* on which this instance operates on. */
+    /* Control Block */
+    AZ_USTREAM_DATA_CB* control_block;          /**<The #AZ_USTREAM_DATA_CB* on which this instance operates on. */
 
-    /* Instance controls. */
+    /* Instance controls */
     offset_t offset_diff;                       /**<The #offset_t used as the logical position for this instance. */
     offset_t inner_current_position;            /**<The #offset_t used to keep track of the current position (next returned position). */
     offset_t inner_first_valid_position;        /**<The #offset_t used to keep track of the earliest position to reset. */

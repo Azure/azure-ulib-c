@@ -17,35 +17,35 @@
 extern "C" {
 #endif
 
-    /**
-     * @brief    This API initialize and returns a valid lock handle.
-     *
-     * @param[in/out]   lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to the lock handle.
-     */
-    MOCKABLE_FUNCTION(, void, az_pal_os_lock_init, AZ_PAL_OS_LOCK *, lock);
+/**
+ * @brief    This API initialize and returns a valid lock handle.
+ *
+ * @param[in/out]   lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to the lock handle.
+ */
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_init, AZ_PAL_OS_LOCK *, lock);
 
-    /**
-     * @brief    The lock instance is destroyed.
-     *
-     * @param[in]       lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to a valid lock handle.
-     */
-    MOCKABLE_FUNCTION(, void, az_pal_os_lock_deinit, AZ_PAL_OS_LOCK *, lock);
+/**
+ * @brief    The lock instance is destroyed.
+ *
+ * @param[in]       lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to a valid lock handle.
+ */
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_deinit, AZ_PAL_OS_LOCK *, lock);
 
-    /**
-     * @brief    Acquires a lock on the given lock handle. Uses platform
-     *             specific mutex primitives in its implementation.
-     *
-     * @param[in]       lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to a valid lock handle.
-     */
-    MOCKABLE_FUNCTION(, void, az_pal_os_lock_acquire, AZ_PAL_OS_LOCK *, lock);
+/**
+ * @brief    Acquires a lock on the given lock handle. Uses platform
+ *             specific mutex primitives in its implementation.
+ *
+ * @param[in]       lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to a valid lock handle.
+ */
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_acquire, AZ_PAL_OS_LOCK *, lock);
 
-    /**
-     * @brief    Releases the lock on the given lock handle. Uses platform
-     *             specific mutex primitives in its implementation.
-     *
-     * @param[in]       lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to a valid lock handle.
-     */
-    MOCKABLE_FUNCTION(, void, az_pal_os_lock_release, AZ_PAL_OS_LOCK *, lock);
+/**
+ * @brief    Releases the lock on the given lock handle. Uses platform
+ *             specific mutex primitives in its implementation.
+ *
+ * @param[in]       lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to a valid lock handle.
+ */
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_release, AZ_PAL_OS_LOCK *, lock);
 
 #ifdef __cplusplus
 }
