@@ -37,7 +37,7 @@ extern "C" {
  *                                          the time az_ustream_init() is called through az_ustream_release(). The ustream will not
  *                                          free this struct and it is the responsibility of the developer to make sure it is valid during
  *                                          the time frame described above. It cannot be <tt>NULL</tt>.
- * @param[in]       ustream_inner_buffer    The pointer to the allocated #AZ_USTREAM_INNER_BUFFER struct. This memory should be allocated in
+ * @param[in]       ustream_inner_buffer    The pointer to the allocated #AZ_USTREAM_DATA_CB struct. This memory should be allocated in
  *                                          a way that it stays valid until the passed <tt>inner_buffer_release</tt> is called
  *                                          at some (potentially) unknown time in the future. It cannot be <tt>NULL</tt>.
  * @param[in]       inner_buffer_release    The {@link AZ_RELEASE_CALLBACK} function that will be called for the inner 
@@ -62,7 +62,7 @@ extern "C" {
  */
 MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_init,
         AZ_USTREAM*, ustream_instance,
-        AZ_USTREAM_INNER_BUFFER*, ustream_inner_buffer,
+        AZ_USTREAM_DATA_CB*, ustream_inner_buffer,
         AZ_RELEASE_CALLBACK, inner_buffer_release,
         const uint8_t* const, data_buffer,
         size_t, data_buffer_length,
@@ -89,7 +89,7 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_init,
   * @param[in]          ustream_to_concat       The {@link AZ_USTREAM}* with the interface of 
   *                                             the ustream to concat to <tt>ustream_interface</tt>. It cannot be <tt>NULL</tt>, 
   *                                             and it shall be a valid ustream.
-  * @param[in]          multi_data              The {@link AZ_USTREAM_MULTI_DATA}* pointing to the allocated data. It must be allocated
+  * @param[in]          multi_data              The {@link AZ_USTREAM_MULTI_DATA_CB}* pointing to the allocated data. It must be allocated
   *                                             in a way that it remains a valid address until the passed {@link AZ_RELEASE_CALLBACK}
   *                                             callback is invoked some time in the future.
   * @param[in]          multi_data_release      The {@link AZ_RELEASE_CALLBACK} callback which will be called once
@@ -102,7 +102,7 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_init,
 MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_concat,
         AZ_USTREAM*, ustream_interface,
         AZ_USTREAM*, ustream_to_concat,
-        AZ_USTREAM_MULTI_DATA*, multi_data,
+        AZ_USTREAM_MULTI_DATA_CB*, multi_data,
         AZ_RELEASE_CALLBACK, multi_data_release);
 
 

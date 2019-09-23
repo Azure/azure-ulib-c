@@ -35,7 +35,7 @@ static const AZ_USTREAM_INTERFACE api =
 
 static void destroy_instance(AZ_USTREAM* ustream_interface)
 {
-    AZ_USTREAM_MULTI_DATA* multidata = (AZ_USTREAM_MULTI_DATA*)ustream_interface->inner_buffer->ptr;
+    AZ_USTREAM_MULTI_DATA_CB* multidata = (AZ_USTREAM_MULTI_DATA_CB*)ustream_interface->inner_buffer->ptr;
     az_pal_os_lock_deinit(&multidata->lock);
 
     if(ustream_interface->inner_buffer->data_release != NULL)
@@ -117,7 +117,7 @@ static AZ_ULIB_RESULT concrete_read(
 
     AZ_ULIB_RESULT result;
 
-    AZ_USTREAM_MULTI_DATA* multi_data = (AZ_USTREAM_MULTI_DATA*)ustream_interface->inner_buffer->ptr;
+    AZ_USTREAM_MULTI_DATA_CB* multi_data = (AZ_USTREAM_MULTI_DATA_CB*)ustream_interface->inner_buffer->ptr;
     AZ_USTREAM* current_ustream = (ustream_interface->inner_current_position < multi_data->ustream_one.length) ?
                                                                 &multi_data->ustream_one : &multi_data->ustream_two;
 
@@ -275,7 +275,7 @@ static AZ_ULIB_RESULT concrete_clone(AZ_USTREAM* ustream_interface_clone, AZ_UST
 
     AZ_ULIB_PORT_ATOMIC_INC_W(&(ustream_interface->inner_buffer->ref_count));
 
-    AZ_USTREAM_MULTI_DATA* multi_data = (AZ_USTREAM_MULTI_DATA*)ustream_interface->inner_buffer->ptr;
+    AZ_USTREAM_MULTI_DATA_CB* multi_data = (AZ_USTREAM_MULTI_DATA_CB*)ustream_interface->inner_buffer->ptr;
     AZ_ULIB_PORT_ATOMIC_INC_W(&(multi_data->ustream_one_ref_count));
     AZ_ULIB_PORT_ATOMIC_INC_W(&(multi_data->ustream_two_ref_count));
 
@@ -292,7 +292,7 @@ static AZ_ULIB_RESULT concrete_dispose(AZ_USTREAM* ustream_interface)
     /*[az_ustream_dispose_compliance_cloned_instance_disposed_first_succeed]*/
     /*[az_ustream_dispose_compliance_cloned_instance_disposed_second_succeed]*/
     /*[az_ustream_dispose_compliance_single_instance_succeed]*/
-    AZ_USTREAM_MULTI_DATA* multi_data = (AZ_USTREAM_MULTI_DATA*)ustream_interface->inner_buffer->ptr;
+    AZ_USTREAM_MULTI_DATA_CB* multi_data = (AZ_USTREAM_MULTI_DATA_CB*)ustream_interface->inner_buffer->ptr;
     AZ_ULIB_PORT_ATOMIC_DEC_W(&(multi_data->ustream_one_ref_count));
     AZ_ULIB_PORT_ATOMIC_DEC_W(&(multi_data->ustream_two_ref_count));
     /*[ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_succeed]*/
@@ -305,7 +305,7 @@ static AZ_ULIB_RESULT concrete_dispose(AZ_USTREAM* ustream_interface)
         az_ustream_dispose(&(multi_data->ustream_two));
     }
 
-    AZ_USTREAM_INNER_BUFFER* inner_buffer = ustream_interface->inner_buffer;
+    AZ_USTREAM_DATA_CB* inner_buffer = ustream_interface->inner_buffer;
 
     AZ_ULIB_PORT_ATOMIC_DEC_W(&(inner_buffer->ref_count));
     if(inner_buffer->ref_count == 0)
@@ -316,8 +316,8 @@ static AZ_ULIB_RESULT concrete_dispose(AZ_USTREAM* ustream_interface)
     return AZ_ULIB_SUCCESS;
 }
 
-static void az_ustream_multi_init(AZ_USTREAM* ustream_interface, AZ_USTREAM_INNER_BUFFER* inner_buffer,
-                                    AZ_USTREAM_MULTI_DATA* multi_data, AZ_RELEASE_CALLBACK multi_data_release)
+static void az_ustream_multi_init(AZ_USTREAM* ustream_interface, AZ_USTREAM_DATA_CB* inner_buffer,
+                                    AZ_USTREAM_MULTI_DATA_CB* multi_data, AZ_RELEASE_CALLBACK multi_data_release)
 {
     multi_data->ustream_one.inner_buffer = ustream_interface->inner_buffer;
     multi_data->ustream_one.inner_current_position = ustream_interface->inner_current_position;
@@ -347,7 +347,7 @@ static void az_ustream_multi_init(AZ_USTREAM* ustream_interface, AZ_USTREAM_INNE
 AZ_ULIB_RESULT az_ustream_concat(
     AZ_USTREAM* ustream_interface,
     AZ_USTREAM* ustream_to_concat,
-    AZ_USTREAM_MULTI_DATA* multi_data,
+    AZ_USTREAM_MULTI_DATA_CB* multi_data,
     AZ_RELEASE_CALLBACK multi_data_release)
 {
     /*[az_ustream_concat_null_buffer_to_add_failed]*/

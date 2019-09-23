@@ -161,7 +161,7 @@ static const AZ_USTREAM_INTERFACE api =
 
 static const int TEST_DATA = 1;
 
-static AZ_USTREAM_INNER_BUFFER USTREAM_COMPLIANCE_MOCK_INNER_BUFFER =
+static AZ_USTREAM_DATA_CB USTREAM_COMPLIANCE_MOCK_INNER_BUFFER =
 {
     .api = (const AZ_USTREAM_INTERFACE*)&api,
     .ptr = NULL,
@@ -172,7 +172,7 @@ static AZ_USTREAM_INNER_BUFFER USTREAM_COMPLIANCE_MOCK_INNER_BUFFER =
 
 static AZ_USTREAM USTREAM_COMPLIANCE_MOCK_BUFFER =
 {
-    .inner_buffer = (AZ_USTREAM_INNER_BUFFER*)&USTREAM_COMPLIANCE_MOCK_INNER_BUFFER,
+    .inner_buffer = (AZ_USTREAM_DATA_CB*)&USTREAM_COMPLIANCE_MOCK_INNER_BUFFER,
     .offset_diff = 0,
     .inner_current_position = 0,
     .inner_first_valid_position = 0,

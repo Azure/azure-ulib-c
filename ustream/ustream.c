@@ -37,7 +37,7 @@ static const AZ_USTREAM_INTERFACE api =
 
 static void init_instance(
     AZ_USTREAM* ustream_instance,
-    AZ_USTREAM_INNER_BUFFER* inner_buffer,
+    AZ_USTREAM_DATA_CB* inner_buffer,
     offset_t inner_current_position,
     offset_t offset,
     size_t data_buffer_length)
@@ -50,7 +50,7 @@ static void init_instance(
     AZ_ULIB_PORT_ATOMIC_INC_W(&(ustream_instance->inner_buffer->ref_count));
 }
 
-static void destroy_inner_buffer(AZ_USTREAM_INNER_BUFFER* inner_buffer)
+static void destroy_inner_buffer(AZ_USTREAM_DATA_CB* inner_buffer)
 {
     if(inner_buffer->data_release)
     {
@@ -134,7 +134,7 @@ static AZ_ULIB_RESULT concrete_read(
 
     AZ_ULIB_RESULT result;
 
-    AZ_USTREAM_INNER_BUFFER* inner_buffer = ustream_interface->inner_buffer;
+    AZ_USTREAM_DATA_CB* inner_buffer = ustream_interface->inner_buffer;
 
     if(ustream_interface->inner_current_position >= ustream_interface->length)
     {
@@ -258,7 +258,7 @@ static AZ_ULIB_RESULT concrete_dispose(AZ_USTREAM* ustream_interface)
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
                                             AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
 
-    AZ_USTREAM_INNER_BUFFER* inner_buffer = ustream_interface->inner_buffer;
+    AZ_USTREAM_DATA_CB* inner_buffer = ustream_interface->inner_buffer;
 
     /*[az_ustream_dispose_compliance_cloned_instance_disposed_first_succeed]*/
     /*[az_ustream_dispose_compliance_cloned_instance_disposed_second_succeed]*/
@@ -274,7 +274,7 @@ static AZ_ULIB_RESULT concrete_dispose(AZ_USTREAM* ustream_interface)
 
 AZ_ULIB_RESULT az_ustream_init(
     AZ_USTREAM* ustream_instance,
-    AZ_USTREAM_INNER_BUFFER* ustream_inner_buffer,
+    AZ_USTREAM_DATA_CB* ustream_inner_buffer,
     AZ_RELEASE_CALLBACK inner_buffer_release,
     const uint8_t* const data_buffer,
     size_t data_buffer_length,

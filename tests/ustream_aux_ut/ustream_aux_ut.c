@@ -45,18 +45,18 @@ static AZ_USTREAM test_multi;
 static AZ_USTREAM* create_test_default_multibuffer()
 {
     //Set up required structs for first multi
-    AZ_USTREAM_MULTI_DATA* default_multi_data1 = (AZ_USTREAM_MULTI_DATA*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA));
+    AZ_USTREAM_MULTI_DATA_CB* default_multi_data1 = (AZ_USTREAM_MULTI_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
     ASSERT_IS_NOT_NULL(default_multi_data1);
-    memset(default_multi_data1, 0, sizeof(AZ_USTREAM_MULTI_DATA));
+    memset(default_multi_data1, 0, sizeof(AZ_USTREAM_MULTI_DATA_CB));
 
     //Set up required structs for second multi
-    AZ_USTREAM_MULTI_DATA* default_multi_data2 = (AZ_USTREAM_MULTI_DATA*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA));
+    AZ_USTREAM_MULTI_DATA_CB* default_multi_data2 = (AZ_USTREAM_MULTI_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
     ASSERT_IS_NOT_NULL(default_multi_data2);
-    memset(default_multi_data2, 0, sizeof(AZ_USTREAM_MULTI_DATA));
+    memset(default_multi_data2, 0, sizeof(AZ_USTREAM_MULTI_DATA_CB));
 
     //Set up first ustream
-    AZ_USTREAM_INNER_BUFFER* ustream_inner_buffer1 = (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
-    memset(ustream_inner_buffer1, 0, sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* ustream_inner_buffer1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
+    memset(ustream_inner_buffer1, 0, sizeof(AZ_USTREAM_DATA_CB));
     AZ_ULIB_RESULT result = az_ustream_init(&test_multi,
             ustream_inner_buffer1,
             az_ulib_free,
@@ -66,8 +66,8 @@ static AZ_USTREAM* create_test_default_multibuffer()
 
     //Set up second ustream
     AZ_USTREAM default_buffer2;
-    AZ_USTREAM_INNER_BUFFER* ustream_inner_buffer2 = (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
-    memset(ustream_inner_buffer2, 0, sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* ustream_inner_buffer2 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
+    memset(ustream_inner_buffer2, 0, sizeof(AZ_USTREAM_DATA_CB));
     result = az_ustream_init(&default_buffer2,
                 ustream_inner_buffer2,
                 az_ulib_free,
@@ -78,8 +78,8 @@ static AZ_USTREAM* create_test_default_multibuffer()
 
     //Set up third ustream
     AZ_USTREAM default_buffer3;
-    AZ_USTREAM_INNER_BUFFER* ustream_inner_buffer3 = (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
-    memset(ustream_inner_buffer3, 0, sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* ustream_inner_buffer3 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
+    memset(ustream_inner_buffer3, 0, sizeof(AZ_USTREAM_DATA_CB));
     result = az_ustream_init(&default_buffer3,
                 ustream_inner_buffer3,
                 az_ulib_free,
@@ -168,8 +168,8 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
 TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
 {
     ///arrange
-    AZ_USTREAM_INNER_BUFFER* inner_buffer1 =
-        (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer1 =
+        (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(inner_buffer1);
     AZ_USTREAM test_buffer1;
     AZ_ULIB_RESULT result1 =
@@ -182,8 +182,8 @@ TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
-    AZ_USTREAM_INNER_BUFFER* inner_buffer2 =
-        (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer2 =
+        (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(inner_buffer2);
     AZ_USTREAM test_buffer2;
     AZ_ULIB_RESULT result2 =
@@ -196,8 +196,8 @@ TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result2);
 
-    AZ_USTREAM_INNER_BUFFER* inner_buffer3 =
-        (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer3 =
+        (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(inner_buffer3);
     AZ_USTREAM test_buffer3;
     AZ_ULIB_RESULT result3 =
@@ -210,10 +210,10 @@ TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result3);
 
-    AZ_USTREAM_MULTI_DATA* multi_data1 =
-        (AZ_USTREAM_MULTI_DATA*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA));
-    AZ_USTREAM_MULTI_DATA* multi_data2 =
-        (AZ_USTREAM_MULTI_DATA*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA));
+    AZ_USTREAM_MULTI_DATA_CB* multi_data1 =
+        (AZ_USTREAM_MULTI_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    AZ_USTREAM_MULTI_DATA_CB* multi_data2 =
+        (AZ_USTREAM_MULTI_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
 
     ///act
     result1 = az_ustream_concat(&test_buffer1, &test_buffer2, multi_data1, az_ulib_free);
@@ -238,8 +238,8 @@ TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
 TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
 {
     ///arrange
-    AZ_USTREAM_INNER_BUFFER* inner_buffer1 =
-        (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer1 =
+        (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(inner_buffer1);
     AZ_USTREAM test_buffer1;
     AZ_ULIB_RESULT result1 =
@@ -252,8 +252,8 @@ TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
-    AZ_USTREAM_INNER_BUFFER* inner_buffer2 =
-        (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer2 =
+        (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(inner_buffer2);
     AZ_USTREAM test_buffer2;
     AZ_ULIB_RESULT result2 =
@@ -266,8 +266,8 @@ TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result2);
 
-    AZ_USTREAM_INNER_BUFFER* inner_buffer3 =
-        (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer3 =
+        (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(inner_buffer3);
     AZ_USTREAM test_buffer3;
     AZ_ULIB_RESULT result3 =
@@ -280,10 +280,10 @@ TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result3);
 
-    AZ_USTREAM_MULTI_DATA* multi_data1 =
-        (AZ_USTREAM_MULTI_DATA*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA));
-    AZ_USTREAM_MULTI_DATA* multi_data2 =
-        (AZ_USTREAM_MULTI_DATA*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA));
+    AZ_USTREAM_MULTI_DATA_CB* multi_data1 =
+        (AZ_USTREAM_MULTI_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    AZ_USTREAM_MULTI_DATA_CB* multi_data2 =
+        (AZ_USTREAM_MULTI_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
 
     result1 = az_ustream_concat(&test_buffer1, &test_buffer2, multi_data1, az_ulib_free);
     result2 = az_ustream_concat(&test_buffer1, &test_buffer3, multi_data2, az_ulib_free);
@@ -315,8 +315,8 @@ TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
 TEST_FUNCTION(az_ustream_concat_null_interface_failed)
 {
     ///arrange
-    AZ_USTREAM_INNER_BUFFER* inner_buffer =
-        (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer =
+        (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(inner_buffer);
     AZ_USTREAM test_buffer;
     AZ_ULIB_RESULT result1 =
@@ -343,8 +343,8 @@ TEST_FUNCTION(az_ustream_concat_null_interface_failed)
 TEST_FUNCTION(az_ustream_concat_null_buffer_to_add_failed)
 {
     ///arrange
-    AZ_USTREAM_INNER_BUFFER* inner_buffer =
-        (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer =
+        (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(inner_buffer);
     AZ_USTREAM default_buffer;
     AZ_ULIB_RESULT result1 =
@@ -357,7 +357,7 @@ TEST_FUNCTION(az_ustream_concat_null_buffer_to_add_failed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
-    AZ_USTREAM_MULTI_DATA multi_data;
+    AZ_USTREAM_MULTI_DATA_CB multi_data;
 
     ///act
     AZ_ULIB_RESULT result = az_ustream_concat(&default_buffer, NULL, &multi_data, NULL);
@@ -374,8 +374,8 @@ TEST_FUNCTION(az_ustream_concat_null_buffer_to_add_failed)
 TEST_FUNCTION(az_ustream_concat_null_multi_data_failed)
 {
     ///arrange
-    AZ_USTREAM_INNER_BUFFER* inner_buffer =
-        (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer =
+        (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(inner_buffer);
     AZ_USTREAM default_buffer;
     AZ_ULIB_RESULT result1 =
@@ -388,8 +388,8 @@ TEST_FUNCTION(az_ustream_concat_null_multi_data_failed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
-    AZ_USTREAM_INNER_BUFFER* inner_buffer2 =
-        (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer2 =
+        (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(inner_buffer2);
     AZ_USTREAM test_buffer2;
     AZ_ULIB_RESULT result2 =
@@ -418,7 +418,7 @@ TEST_FUNCTION(az_ustream_concat_new_inner_buffer_failed_on_get_remaining_size_fa
 {
     ///arrange
     AZ_USTREAM multibuffer;
-    AZ_USTREAM_INNER_BUFFER* inner_buffer1 = (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     AZ_ULIB_RESULT result =
         az_ustream_init(&multibuffer, inner_buffer1, az_ulib_free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
@@ -427,8 +427,8 @@ TEST_FUNCTION(az_ustream_concat_new_inner_buffer_failed_on_get_remaining_size_fa
 
     AZ_USTREAM* test_buffer2 = ustream_mock_create();
 
-    AZ_USTREAM_MULTI_DATA* multi_data1 =
-        (AZ_USTREAM_MULTI_DATA*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA));
+    AZ_USTREAM_MULTI_DATA_CB* multi_data1 =
+        (AZ_USTREAM_MULTI_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
 
     set_get_remaining_size_result(AZ_ULIB_SYSTEM_ERROR);
 
@@ -473,7 +473,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
 {
     ///arrange
     AZ_USTREAM multibuffer;
-    AZ_USTREAM_INNER_BUFFER* inner_buffer1 = (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     AZ_ULIB_RESULT result =
         az_ustream_init(&multibuffer, inner_buffer1, az_ulib_free,
                            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
@@ -482,8 +482,8 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_with_some_valid_con
 
     AZ_USTREAM* test_buffer2 = ustream_mock_create();
 
-    AZ_USTREAM_MULTI_DATA* multi_data1 =
-        (AZ_USTREAM_MULTI_DATA*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA));
+    AZ_USTREAM_MULTI_DATA_CB* multi_data1 =
+        (AZ_USTREAM_MULTI_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
 
     result = az_ustream_concat(&multibuffer, test_buffer2, multi_data1, az_ulib_free);
     set_read_result(AZ_ULIB_SYSTEM_ERROR);
@@ -514,7 +514,7 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
 {
     ///arrange
     AZ_USTREAM multibuffer;
-    AZ_USTREAM_INNER_BUFFER* inner_buffer1 = (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer1 = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     AZ_ULIB_RESULT result =
         az_ustream_init(&multibuffer, inner_buffer1, az_ulib_free,
                            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
@@ -523,8 +523,8 @@ TEST_FUNCTION(ustream_multi_read_inner_buffer_failed_in_read_failed)
 
     AZ_USTREAM* test_buffer2 = ustream_mock_create();
 
-    AZ_USTREAM_MULTI_DATA* multi_data1 =
-        (AZ_USTREAM_MULTI_DATA*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA));
+    AZ_USTREAM_MULTI_DATA_CB* multi_data1 =
+        (AZ_USTREAM_MULTI_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
 
     result = az_ustream_concat(&multibuffer, test_buffer2, multi_data1, az_ulib_free);
     set_read_result(AZ_ULIB_SYSTEM_ERROR);

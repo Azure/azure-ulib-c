@@ -42,7 +42,7 @@ static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const u
 static AZ_USTREAM test_ustream_instance;
 static AZ_USTREAM* ustream_factory()
 {
-    AZ_USTREAM_INNER_BUFFER* ustream_inner_buffer = (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* ustream_inner_buffer = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     uint8_t* buf = (uint8_t*)az_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     az_ustream_init(&test_ustream_instance, ustream_inner_buffer, az_ulib_free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, az_ulib_free);
@@ -113,7 +113,7 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
 TEST_FUNCTION(az_ustream_init_const_succeed)
 {
     ///arrange
-    AZ_USTREAM_INNER_BUFFER* inner_buffer = (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     umock_c_reset_all_calls();
     AZ_USTREAM ustream_instance;
 
@@ -140,7 +140,7 @@ TEST_FUNCTION(az_ustream_init_succeed)
     ///arrange
     uint8_t* buf = (uint8_t*)az_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    AZ_USTREAM_INNER_BUFFER* inner_buffer = (AZ_USTREAM_INNER_BUFFER*)az_ulib_malloc(sizeof(AZ_USTREAM_INNER_BUFFER));
+    AZ_USTREAM_DATA_CB* inner_buffer = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
     umock_c_reset_all_calls();
     AZ_USTREAM ustream_instance;
 
@@ -167,7 +167,7 @@ TEST_FUNCTION(az_ustream_init_null_buffer_failed)
 {
     ///arrange
     AZ_USTREAM ustream_instance;
-    AZ_USTREAM_INNER_BUFFER inner_buffer;
+    AZ_USTREAM_DATA_CB inner_buffer;
 
     ///act
     AZ_ULIB_RESULT result = az_ustream_init(&ustream_instance, &inner_buffer, NULL, NULL, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
@@ -183,7 +183,7 @@ TEST_FUNCTION(az_ustream_init_zero_length_failed)
 {
     ///arrange
     AZ_USTREAM ustream_instance;
-    AZ_USTREAM_INNER_BUFFER inner_buffer;
+    AZ_USTREAM_DATA_CB inner_buffer;
 
     ///act
     AZ_ULIB_RESULT result = az_ustream_init(&ustream_instance, &inner_buffer, NULL, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, NULL);
@@ -198,7 +198,7 @@ TEST_FUNCTION(az_ustream_init_zero_length_failed)
 TEST_FUNCTION(az_ustream_init_NULL_ustream_instance_failed)
 {
     ///arrange
-    AZ_USTREAM_INNER_BUFFER inner_buffer;
+    AZ_USTREAM_DATA_CB inner_buffer;
 
     ///act
     AZ_ULIB_RESULT result = az_ustream_init(NULL, &inner_buffer, NULL, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);

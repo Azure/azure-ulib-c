@@ -50,7 +50,7 @@
  *          |<-get_provider_content()-+                                  |                    |
  *          +----------------------------malloc(content_size)-------------------------------->|
  *          |<--------------------------------content_ptr-------------------------------------+
- *          +--------------------malloc(sizeof(AZ_USTREAM_INNER_BUFFER))--------------------->|
+ *          +--------------------malloc(sizeof(AZ_USTREAM_DATA_CB))-------------------------->|
  *          <---------------------------------inner_buffer_ptr--------------------------------+
  *   +------+                         |                                  |                    |
  *   | generate the content and store in the content_ptr                 |                    |
@@ -387,15 +387,15 @@ typedef void (*AZ_RELEASE_CALLBACK)(void*);
 typedef void* AZ_USTREAM_DATA;
 
 /**
- * @brief   Structure for inner buffer control block
+ * @brief   Structure for data control block
  * 
- * For any given ustream that is created, one inner control block is created and initialized. 
+ * For any given ustream that is created, one control block is created and initialized. 
  * 
  * @note This structure should be viewed and used as internal to the implementation of the ustream. Users should therefore not act on
  *       it directly and only allocate the memory necessary for it to be passed to the ustream.
  * 
  */
-typedef struct AZ_USTREAM_INNER_BUFFER_TAG
+typedef struct AZ_USTREAM_DATA_CB_TAG
 {
     const AZ_USTREAM_INTERFACE* api;             /**<The @link AZ_USTREAM_INTERFACE_TAG AZ_USTREAM_INTERFACE*
                                                             @endlink for this ustream instance type */
@@ -407,18 +407,18 @@ typedef struct AZ_USTREAM_INNER_BUFFER_TAG
                                                             taken for this memory */
     AZ_RELEASE_CALLBACK data_release;           /**<The #AZ_RELEASE_CALLBACK to call to release <tt>ptr</tt> 
                                                             once the <tt>ref_count</tt> goes to zero */
-    AZ_RELEASE_CALLBACK inner_buffer_release;   /**<The #AZ_RELEASE_CALLBACK to call to release the #AZ_USTREAM_INNER_BUFFER
+    AZ_RELEASE_CALLBACK inner_buffer_release;   /**<The #AZ_RELEASE_CALLBACK to call to release the #AZ_USTREAM_DATA_CB
                                                             once the <tt>ref_count</tt> goes to zero */
-} AZ_USTREAM_INNER_BUFFER;
+} AZ_USTREAM_DATA_CB;
 
 /**
  * @brief   Structure for instance control block
  * 
  * For any given ustream that is created, there may be mutliple <tt>AZ_USTREAM</tt>'s
- *      pointing to the same <tt>AZ_USTREAM_INNER_BUFFER</tt>. Each instance control block serves to
- *      manage a given developer's usage of the memory pointed to inside the <tt>AZ_USTREAM_INNER_BUFFER</tt>.
+ *      pointing to the same <tt>AZ_USTREAM_DATA_CB</tt>. Each instance control block serves to
+ *      manage a given developer's usage of the memory pointed to inside the <tt>AZ_USTREAM_DATA_CB</tt>.
  *      Each time an <tt>AZ_USTREAM</tt> is cloned using az_ustream_clone(), the
- *      <tt>ref_count</tt> inside the <tt>AZ_USTREAM_INNER_BUFFER</tt> is incremented to signal a reference
+ *      <tt>ref_count</tt> inside the <tt>AZ_USTREAM_DATA_CB</tt> is incremented to signal a reference
  *      to the memory has been acquired. Once the instance is done being used, az_ustream_release() 
  *      must be called to decrememnt <tt>ref_count</tt>.
  * 
@@ -429,7 +429,7 @@ typedef struct AZ_USTREAM_INNER_BUFFER_TAG
 struct AZ_USTREAM_TAG
 {
     /* Inner buffer. */
-    AZ_USTREAM_INNER_BUFFER* inner_buffer;      /**<The #AZ_USTREAM_INNER_BUFFER* on which this instance operates on. */
+    AZ_USTREAM_DATA_CB* inner_buffer;           /**<The #AZ_USTREAM_DATA_CB* on which this instance operates on. */
 
     /* Instance controls. */
     offset_t offset_diff;                       /**<The #offset_t used as the logical position for this instance. */
@@ -441,25 +441,25 @@ struct AZ_USTREAM_TAG
 /**
  * @brief   Structure to keep track of concatenated ustreams.
  * 
- * When concatenating a ustream to another ustream, the instances are placed into a <tt>AZ_USTREAM_MULTI_DATA</tt>. The base ustream onto which you wish
+ * When concatenating a ustream to another ustream, the instances are placed into a <tt>AZ_USTREAM_MULTI_DATA_CB</tt>. The base ustream onto which you wish
  *      to concatenate will be copied into the <tt>ustream_one</tt> structure and the ustream to concatenate will be cloned into the <tt>ustream_two</tt>
  *      structure. The difference being that the first #AZ_USTREAM*, when returned, will point to the newly populated multi instance and the ownership
  *      of the passed instance will be assumed by the multi instance. The second ustream which was passed will not be changed, only cloned into the
- *      <tt>AZ_USTREAM_MULTI_DATA</tt> structure.
+ *      <tt>AZ_USTREAM_MULTI_DATA_CB</tt> structure.
  * 
  * @note This structure should be viewed and used as internal to the implementation of the ustream. Users should therefore not act on 
  *       it directly and only allocate the memory necessary for it to be passed to the ustream.
  * 
  */
-typedef struct AZ_USTREAM_MULTI_DATA_TAG
+typedef struct AZ_USTREAM_MULTI_DATA_CB_TAG
 {
-    AZ_USTREAM_INNER_BUFFER inner_buffer;       /**<The #AZ_USTREAM_INNER_BUFFER to manage the multi data structure*/
+    AZ_USTREAM_DATA_CB inner_buffer;            /**<The #AZ_USTREAM_DATA_CB to manage the multi data structure*/
     AZ_USTREAM ustream_one;                     /**<The #AZ_USTREAM with the first ustream instance*/
     AZ_USTREAM ustream_two;                     /**<The #AZ_USTREAM with the second ustream instance*/
     volatile uint32_t ustream_one_ref_count;    /**<The <tt>uint32_t</tt> with the number of references to the first ustream */
     volatile uint32_t ustream_two_ref_count;    /**<The <tt>uint32_t</tt> with the number of references to the second ustream */
     AZ_PAL_OS_LOCK lock;                        /**<The #AZ_PAL_OS_LOCK with controls the critical section of the read from the multi ustream */
-} AZ_USTREAM_MULTI_DATA;
+} AZ_USTREAM_MULTI_DATA_CB;
 
 /**
  * @brief   Check if a handle is the same type of the API.
