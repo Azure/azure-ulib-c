@@ -3,8 +3,8 @@
 
 // This file gets included into ulib_port.h as a means of extending the behavior of
 // atomic increment, decrement, and test.
-#ifndef AZIOT_ULIB_GCC_LINUX_PORT_H
-#define AZIOT_ULIB_GCC_LINUX_PORT_H
+#ifndef AZ_ULIB_GCC_LINUX_PORT_H
+#define AZ_ULIB_GCC_LINUX_PORT_H
 
 
 // This Linux-specific header offers 3 strategies:
@@ -46,20 +46,20 @@ gcc
 
 
 #if defined(AZURE_ULIB_C_ATOMIC_DONTCARE)
-#define AZIOT_ULIB_PORT_ATOMIC_INC_W(count) ++(*count)
-#define AZIOT_ULIB_PORT_ATOMIC_DEC_W(count) --(*count)
+#define AZ_ULIB_PORT_ATOMIC_INC_W(count) ++(*count)
+#define AZ_ULIB_PORT_ATOMIC_DEC_W(count) --(*count)
 
 #elif defined(AZURE_ULIB_C_USE_STD_ATOMIC)
 #include <stdatomic.h>
-#define AZIOT_ULIB_PORT_ATOMIC_INC_W(count) atomic_fetch_add((count), 1)
-#define AZIOT_ULIB_PORT_ATOMIC_DEC_W(count) atomic_fetch_sub((count), 1)
+#define AZ_ULIB_PORT_ATOMIC_INC_W(count) atomic_fetch_add((count), 1)
+#define AZ_ULIB_PORT_ATOMIC_DEC_W(count) atomic_fetch_sub((count), 1)
 
 #elif defined(AZURE_ULIB_C_USE_GNU_C_ATOMIC)
-#define AZIOT_ULIB_PORT_ATOMIC_INC_W(count) __sync_add_and_fetch((count), 1)
-#define AZIOT_ULIB_PORT_ATOMIC_DEC_W(count) __sync_sub_and_fetch((count), 1)
+#define AZ_ULIB_PORT_ATOMIC_INC_W(count) __sync_add_and_fetch((count), 1)
+#define AZ_ULIB_PORT_ATOMIC_DEC_W(count) __sync_sub_and_fetch((count), 1)
 
 #endif /*defined(AZURE_ULIB_C_USE_GNU_C_ATOMIC)*/
 
-#define AZIOT_ULIB_PORT_THROW_HARD_FAULT      (*(char*)NULL = 0)
+#define AZ_ULIB_PORT_THROW_HARD_FAULT      (*(char*)NULL = 0)
 
-#endif // AZIOT_ULIB_GCC_LINUX_PORT_H
+#endif // AZ_ULIB_GCC_LINUX_PORT_H

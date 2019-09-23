@@ -6,9 +6,9 @@
 
 #include "windows.h"
 
-#define AZIOT_ULIB_PORT_ATOMIC_INC_W(count)   InterlockedIncrement((volatile LONG*)(count))
-#define AZIOT_ULIB_PORT_ATOMIC_DEC_W(count)   InterlockedDecrement((volatile LONG*)(count))
+#define AZ_ULIB_PORT_ATOMIC_INC_W(count)   InterlockedIncrement((volatile LONG*)(count))
+#define AZ_ULIB_PORT_ATOMIC_DEC_W(count)   InterlockedDecrement((volatile LONG*)(count))
 
-#define AZIOT_ULIB_PORT_THROW_HARD_FAULT      (*(char*)NULL = 0)
+#define AZ_ULIB_PORT_THROW_HARD_FAULT      (*(char*)NULL = 0)
 
 #endif /* MSBUILD_X86_ULIB_PORT_H */

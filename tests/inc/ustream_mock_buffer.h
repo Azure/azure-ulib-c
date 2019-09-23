@@ -11,18 +11,18 @@
 extern "C" {
 #endif /* __cplusplus */
 
-AZIOT_USTREAM* ustream_mock_create(void);
+AZ_USTREAM* ustream_mock_create(void);
 
 void set_concurrency_ustream(void);
 
-void set_set_position_result(AZIOT_ULIB_RESULT result);
-void set_reset_result(AZIOT_ULIB_RESULT result);
-void set_read_result(AZIOT_ULIB_RESULT result);
-void set_get_remaining_size_result(AZIOT_ULIB_RESULT result);
-void set_get_position_result(AZIOT_ULIB_RESULT result);
-void set_release_result(AZIOT_ULIB_RESULT result);
-void set_clone_result(AZIOT_ULIB_RESULT result);
-void set_dispose_result(AZIOT_ULIB_RESULT result);
+void set_set_position_result(AZ_ULIB_RESULT result);
+void set_reset_result(AZ_ULIB_RESULT result);
+void set_read_result(AZ_ULIB_RESULT result);
+void set_get_remaining_size_result(AZ_ULIB_RESULT result);
+void set_get_position_result(AZ_ULIB_RESULT result);
+void set_release_result(AZ_ULIB_RESULT result);
+void set_clone_result(AZ_ULIB_RESULT result);
+void set_dispose_result(AZ_ULIB_RESULT result);
 
 #ifdef __cplusplus
 }

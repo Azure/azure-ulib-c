@@ -49,58 +49,58 @@ TEST_SUITE_INITIALIZE(suite_init)
 
 static int require(bool expression)
 {
-    AZIOT_UCONTRACT_REQUIRE(expression, -1, "Require invoked");
+    AZ_UCONTRACT_REQUIRE(expression, -1, "Require invoked");
     return 0;
 }
 
 static int require_equals(bool expression)
 {
-    AZIOT_UCONTRACT_REQUIRE_EQUALS(expression, true, -1);
+    AZ_UCONTRACT_REQUIRE_EQUALS(expression, true, -1);
     return 0;
 }
 
 static int require_not_equals(bool expression)
 {
-    AZIOT_UCONTRACT_REQUIRE_NOT_EQUALS(expression, false, -1);
+    AZ_UCONTRACT_REQUIRE_NOT_EQUALS(expression, false, -1);
     return 0;
 }
 
 static int require_not_null(void* ptr)
 {
-    AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ptr, -1);
+    AZ_UCONTRACT_REQUIRE_NOT_NULL(ptr, -1);
     return 0;
 }
 
 static int ucontract_with_one_arg(bool expression)
 {
-    AZIOT_UCONTRACT(AZIOT_UCONTRACT_REQUIRE(expression, -1, "Require invoked"));
+    AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(expression, -1, "Require invoked"));
     return 0;
 }
 
 static int ucontract_with_two_arg(void* ptr, bool expression)
 {
-    AZIOT_UCONTRACT(
-        AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ptr, -1),
-        AZIOT_UCONTRACT_REQUIRE(expression, -2, "Require invoked"));
+    AZ_UCONTRACT(
+        AZ_UCONTRACT_REQUIRE_NOT_NULL(ptr, -1),
+        AZ_UCONTRACT_REQUIRE(expression, -2, "Require invoked"));
     return 0;
 }
 
 static int ucontract_with_three_arg(void* ptr, bool expression, bool val_equals)
 {
-    AZIOT_UCONTRACT(
-        AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ptr, -1),
-        AZIOT_UCONTRACT_REQUIRE(expression, -2, "Require invoked"),
-        AZIOT_UCONTRACT_REQUIRE_EQUALS(val_equals, true, -3));
+    AZ_UCONTRACT(
+        AZ_UCONTRACT_REQUIRE_NOT_NULL(ptr, -1),
+        AZ_UCONTRACT_REQUIRE(expression, -2, "Require invoked"),
+        AZ_UCONTRACT_REQUIRE_EQUALS(val_equals, true, -3));
     return 0;
 }
 
 static int ucontract_with_four_arg(void* ptr, bool expression, bool val_equals, int num)
 {
-    AZIOT_UCONTRACT(
-        AZIOT_UCONTRACT_REQUIRE_NOT_NULL(ptr, -1),
-        AZIOT_UCONTRACT_REQUIRE(expression, -2, "Require invoked"),
-        AZIOT_UCONTRACT_REQUIRE_EQUALS(val_equals, true, -3),
-        AZIOT_UCONTRACT_REQUIRE_NOT_EQUALS(num, 0, -4));
+    AZ_UCONTRACT(
+        AZ_UCONTRACT_REQUIRE_NOT_NULL(ptr, -1),
+        AZ_UCONTRACT_REQUIRE(expression, -2, "Require invoked"),
+        AZ_UCONTRACT_REQUIRE_EQUALS(val_equals, true, -3),
+        AZ_UCONTRACT_REQUIRE_NOT_EQUALS(num, 0, -4));
     return 0;
 }
 
@@ -126,8 +126,8 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* The AZIOT_UCONTRACT_REQUIRE shall do nothing if the required expression returns true. */
-TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_Succeed)
+/* The AZ_UCONTRACT_REQUIRE shall do nothing if the required expression returns true. */
+TEST_FUNCTION(AZ_UCONTRACT_REQUIRE_Succeed)
 {
     ///arrange
 
@@ -140,7 +140,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_Succeed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_EQUALS_Succeed)
+TEST_FUNCTION(AZ_UCONTRACT_REQUIRE_EQUALS_Succeed)
 {
     ///arrange
 
@@ -153,7 +153,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_EQUALS_Succeed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_NOT_EQUALS_Succeed)
+TEST_FUNCTION(AZ_UCONTRACT_REQUIRE_NOT_EQUALS_Succeed)
 {
     ///arrange
 
@@ -166,7 +166,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_NOT_EQUALS_Succeed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_NOT_NULL_Succeed)
+TEST_FUNCTION(AZ_UCONTRACT_REQUIRE_NOT_NULL_Succeed)
 {
     ///arrange
     int i = 0;
@@ -180,8 +180,8 @@ TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_NOT_NULL_Succeed)
     ///cleanup
 }
 
-/* The AZIOT_UCONTRACT_REQUIRE shall return `result` if the required expression returns false. */
-TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_Failed)
+/* The AZ_UCONTRACT_REQUIRE shall return `result` if the required expression returns false. */
+TEST_FUNCTION(AZ_UCONTRACT_REQUIRE_Failed)
 {
     ///arrange
 
@@ -194,7 +194,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_Failed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_EQUALS_Failed)
+TEST_FUNCTION(AZ_UCONTRACT_REQUIRE_EQUALS_Failed)
 {
     ///arrange
 
@@ -207,7 +207,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_EQUALS_Failed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_NOT_EQUALS_Failed)
+TEST_FUNCTION(AZ_UCONTRACT_REQUIRE_NOT_EQUALS_Failed)
 {
     ///arrange
 
@@ -220,7 +220,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_NOT_EQUALS_Failed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_NOT_NULL_Failed)
+TEST_FUNCTION(AZ_UCONTRACT_REQUIRE_NOT_NULL_Failed)
 {
     ///arrange
 
@@ -233,8 +233,8 @@ TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_NOT_NULL_Failed)
     ///cleanup
 }
 
-/* The AZIOT_UCONTRACT shall do nothing if the required expressions return true. */
-TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_one_arg_succeed)
+/* The AZ_UCONTRACT shall do nothing if the required expressions return true. */
+TEST_FUNCTION(AZ_UCONTRACT_ucontract_with_one_arg_succeed)
 {
     ///arrange
 
@@ -247,7 +247,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_one_arg_succeed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_two_arg_succeed)
+TEST_FUNCTION(AZ_UCONTRACT_ucontract_with_two_arg_succeed)
 {
     ///arrange
     int i = 0;
@@ -261,7 +261,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_two_arg_succeed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_three_arg_succeed)
+TEST_FUNCTION(AZ_UCONTRACT_ucontract_with_three_arg_succeed)
 {
     ///arrange
     int i = 0;
@@ -275,7 +275,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_three_arg_succeed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_four_arg_succeed)
+TEST_FUNCTION(AZ_UCONTRACT_ucontract_with_four_arg_succeed)
 {
     ///arrange
     int i = 0;
@@ -289,8 +289,8 @@ TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_four_arg_succeed)
     ///cleanup
 }
 
-/* The AZIOT_UCONTRACT_REQUIRE shall return `result` if at least one of the required expressions return false. */
-TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_ucontract_with_one_arg_failed)
+/* The AZ_UCONTRACT_REQUIRE shall return `result` if at least one of the required expressions return false. */
+TEST_FUNCTION(AZ_UCONTRACT_REQUIRE_ucontract_with_one_arg_failed)
 {
     ///arrange
 
@@ -303,7 +303,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_REQUIRE_ucontract_with_one_arg_failed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_two_arg_first_failed)
+TEST_FUNCTION(AZ_UCONTRACT_ucontract_with_two_arg_first_failed)
 {
     ///arrange
 
@@ -316,7 +316,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_two_arg_first_failed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_two_arg_second_failed)
+TEST_FUNCTION(AZ_UCONTRACT_ucontract_with_two_arg_second_failed)
 {
     ///arrange
     int i = 0;
@@ -330,7 +330,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_two_arg_second_failed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_three_arg_failed)
+TEST_FUNCTION(AZ_UCONTRACT_ucontract_with_three_arg_failed)
 {
     ///arrange
     int i = 0;
@@ -344,7 +344,7 @@ TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_three_arg_failed)
     ///cleanup
 }
 
-TEST_FUNCTION(AZIOT_UCONTRACT_ucontract_with_four_arg_failed)
+TEST_FUNCTION(AZ_UCONTRACT_ucontract_with_four_arg_failed)
 {
     ///arrange
     int i = 0;

@@ -7,8 +7,8 @@
  * @brief Small footprint logging functionality
  */
 
-#ifndef AZIOT_ULOG_H
-#define AZIOT_ULOG_H
+#ifndef AZ_ULOG_H
+#define AZ_ULOG_H
 
 #include "azure_macro_utils/macro_utils.h"
 #include "ulib_config.h"
@@ -19,38 +19,38 @@
 extern "C" {
 #endif /* __cplusplus */
 
-extern const char* const AZIOT_ULOG_REQUIRE_EQUALS_STRING;
-extern const char* const AZIOT_ULOG_REQUIRE_NOT_EQUALS_STRING;
-extern const char* const AZIOT_ULOG_REQUIRE_NOT_NULL_STRING;
-extern const char* const AZIOT_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING;
-extern const char* const AZIOT_ULOG_OUT_OF_MEMORY_STRING;
-extern const char* const AZIOT_ULOG_REPORT_EXCEPTION_STRING;
+extern const char* const AZ_ULOG_REQUIRE_EQUALS_STRING;
+extern const char* const AZ_ULOG_REQUIRE_NOT_EQUALS_STRING;
+extern const char* const AZ_ULOG_REQUIRE_NOT_NULL_STRING;
+extern const char* const AZ_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING;
+extern const char* const AZ_ULOG_OUT_OF_MEMORY_STRING;
+extern const char* const AZ_ULOG_REPORT_EXCEPTION_STRING;
 
 /**
  * @brief   enum to select the log type
  */
 MU_DEFINE_ENUM(
-    AZIOT_ULOG_TYPE,
-    AZIOT_ULOG_TYPE_ERROR   = 0,    /**<error log message */
-    AZIOT_ULOG_TYPE_INFO    = 1     /**<info log message */
+    AZ_ULOG_TYPE,
+    AZ_ULOG_TYPE_ERROR   = 0,    /**<error log message */
+    AZ_ULOG_TYPE_INFO    = 1     /**<info log message */
 );
 
 /**
- * @brief   AZIOT_ULOG_TYPE string values
+ * @brief   AZ_ULOG_TYPE string values
  */
-extern const char* const AZIOT_ULOG_TYPE_STRING[];
+extern const char* const AZ_ULOG_TYPE_STRING[];
 
 /**
  * @brief log function for ulib_config
  *
- * @param   type    AZIOT_ULOG_TYPE to signify error or info log
+ * @param   type    AZ_ULOG_TYPE to signify error or info log
  * @param   format  Format prefix for the passed string in (...)
  * @param   ...     Passed string (with any % formatting parameters) to print to the log
  */
-void aziot_ulog_print(AZIOT_ULOG_TYPE type, const char* const format, ...);
+void az_ulog_print(AZ_ULOG_TYPE type, const char* const format, ...);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* AZIOT_ULOG_H */
+#endif /* AZ_ULOG_H */
