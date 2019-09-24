@@ -38,6 +38,28 @@ static AZ_ULIB_RESULT print_buffer(AZ_USTREAM* ustream)
     return result;
 }
 
+
+/**
+ * This sample creates two ustreams and concatenates them. It then prints the concatenated ustream
+ * as if the two original ustreams were one.
+ *      Content of ustream one: "Hello "
+ *      Content of ustream two: "World\r\n"
+ *      Content of concatenated ustream: "Hello World\r\n"
+ * With both instances, the AZ_USTREAM lives on the stack while the control blocks use stdlib malloc for
+ * allocation and stdlib free to free the memory.
+ * 
+ * Steps followed:
+ *      1) Create the first ustream for a buffer in static memory. Print the size of the ustream.
+ *      2) Create the second ustream for a buffer in the heap. Print the size of the ustream.
+ *      3) Concatenate the second ustream to the first ustream. Dispose of the local instance of ustream_two.
+ *              Remember we must do this to avoid memory leaks because while ustream_one is copied into the
+ *              AZ_USTREAM_MULTI_DATA_CB (still one reference), ustream_two is cloned (meaning there are 
+ *              now two references). We then print the size of the concatenated ustream.
+ *      4) Print the concatenated ustream. Dispose of the ustream_one instance. Underneath the covers,
+ *              since references to both buffers reaches zero, the free functions for the buffers and the
+ *              control blocks are called and no memory is leaked.
+ */
+
 int main(void)
 {
     AZ_ULIB_RESULT result;
@@ -64,7 +86,7 @@ int main(void)
         {
             printf("Couldn't initialize ustream_one\r\n");
         }
-        else if((result = az_ustream_get_remaining_size((AZ_USTREAM*)&ustream_one, &ustream_size)) != AZ_ULIB_SUCCESS)
+        else if((result = az_ustream_get_remaining_size(&ustream_one, &ustream_size)) != AZ_ULIB_SUCCESS)
         {
             printf("Couldn't get ustream_one remaining size\r\n");
         }
@@ -80,7 +102,7 @@ int main(void)
             {
                 printf("Couldn't initialize ustream_two\r\n");
             }
-            else if((result = az_ustream_get_remaining_size((AZ_USTREAM*)&ustream_two, &ustream_size)) != AZ_ULIB_SUCCESS)
+            else if((result = az_ustream_get_remaining_size(&ustream_two, &ustream_size)) != AZ_ULIB_SUCCESS)
             {
                 printf("Couldn't get ustream_two remaining size\r\n");
             }
@@ -95,7 +117,7 @@ int main(void)
                     printf("Couldn't concat ustream_two to ustream_one\r\n");
                 }
                 //Dispose of our instance of the second ustream (now the concatenated has the only instance)
-                else if((result = az_ustream_dispose((AZ_USTREAM*)&ustream_two)) != AZ_ULIB_SUCCESS)
+                else if((result = az_ustream_dispose(&ustream_two)) != AZ_ULIB_SUCCESS)
                 {
                     printf("Couldn't dispose ustream_two\r\n");
                 }

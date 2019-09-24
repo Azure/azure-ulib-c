@@ -12,8 +12,6 @@
 #include "ulib_port.h"
 #include "ulog.h"
 
-static const char *const USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING = "Passed ustream is not the correct type\r\n";
-
 static AZ_ULIB_RESULT concrete_set_position(AZ_USTREAM* ustream_interface, offset_t position);
 static AZ_ULIB_RESULT concrete_reset(AZ_USTREAM* ustream_interface);
 static AZ_ULIB_RESULT concrete_read(AZ_USTREAM* ustream_interface, uint8_t* const buffer, size_t buffer_length, size_t* const size);
@@ -66,7 +64,7 @@ static AZ_ULIB_RESULT concrete_set_position(AZ_USTREAM* ustream_interface, offse
     /*[az_ustream_set_position_compliance_null_buffer_failed]*/
     /*[az_ustream_set_position_compliance_non_type_of_buffer_api_failed]*/
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
+                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, AZ_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
     AZ_ULIB_RESULT result;
 
     offset_t inner_position = position - ustream_interface->offset_diff;
@@ -105,7 +103,7 @@ static AZ_ULIB_RESULT concrete_reset(AZ_USTREAM* ustream_interface)
     /*[az_ustream_reset_compliance_null_buffer_failed]*/
     /*[az_ustream_reset_compliance_non_type_of_buffer_api_failed]*/
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api), 
-                                AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
+                                AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, AZ_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
     /*[az_ustream_reset_compliance_back_to_beginning_succeed]*/
     /*[az_ustream_reset_compliance_back_position_succeed]*/
     /*[az_ustream_reset_compliance_cloned_buffer_succeed]*/
@@ -126,7 +124,7 @@ static AZ_ULIB_RESULT concrete_read(
     /*[az_ustream_read_compliance_null_return_size_failed]*/
     /*[az_ustream_read_compliance_buffer_with_zero_size_failed]*/
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api), 
-                                    AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
+                                    AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, AZ_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
                     AZ_UCONTRACT_REQUIRE_NOT_NULL(buffer, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZ_UCONTRACT_REQUIRE_NOT_EQUALS(buffer_length, 0, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZ_UCONTRACT_REQUIRE_NOT_NULL(size, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
@@ -168,7 +166,7 @@ static AZ_ULIB_RESULT concrete_get_remaining_size(AZ_USTREAM* ustream_interface,
     /*[az_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed]*/
     /*[az_ustream_get_remaining_size_compliance_null_size_failed]*/
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
+                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, AZ_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
                     AZ_UCONTRACT_REQUIRE_NOT_NULL(size, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
     /*[az_ustream_get_remaining_size_compliance_new_buffer_succeed]*/
     /*[az_ustream_get_remaining_size_compliance_new_buffer_with_non_zero_current_position_succeed]*/
@@ -184,7 +182,7 @@ static AZ_ULIB_RESULT concrete_get_position(AZ_USTREAM* ustream_interface, offse
     /*[az_ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed]*/
     /*[az_ustream_get_current_position_compliance_null_position_failed]*/
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
+                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, AZ_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
                     AZ_UCONTRACT_REQUIRE_NOT_NULL(position, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
     /*[az_ustream_get_current_position_compliance_new_buffer_succeed]*/
     /*[az_ustream_get_current_position_compliance_new_buffer_with_non_zero_current_position_succeed]*/
@@ -199,7 +197,7 @@ static AZ_ULIB_RESULT concrete_release(AZ_USTREAM* ustream_interface, offset_t p
     /*[az_ustream_release_compliance_null_buffer_failed]*/
     /*[az_ustream_release_compliance_non_type_of_buffer_api_failed]*/
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
+                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, AZ_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
 
     AZ_ULIB_RESULT result;
 
@@ -234,7 +232,7 @@ static AZ_ULIB_RESULT concrete_clone(AZ_USTREAM* ustream_interface_clone, AZ_UST
     /*[az_ustream_clone_compliance_null_buffer_clone_failed]*/
     /*[az_ustream_clone_compliance_offset_exceed_size_failed]*/
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
+                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, AZ_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
                     AZ_UCONTRACT_REQUIRE_NOT_NULL(ustream_interface_clone, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
                     AZ_UCONTRACT_REQUIRE((offset <= (UINT32_MAX - ustream_interface->length)), AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, "offset exceeds max size"));
     /*[az_ustream_clone_compliance_new_buffer_cloned_with_zero_offset_succeed]*/
@@ -255,7 +253,7 @@ static AZ_ULIB_RESULT concrete_dispose(AZ_USTREAM* ustream_interface)
     /*[az_ustream_dispose_compliance_null_buffer_failed]*/
     /*[az_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed]*/
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
-                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
+                                            AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, AZ_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
 
     AZ_USTREAM_DATA_CB* control_block = ustream_interface->control_block;
 

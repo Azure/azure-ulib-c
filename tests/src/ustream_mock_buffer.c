@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "ustream_mock_buffer.h"
 #include "ustream_base.h"
-#include "test_thread.h"
+#include "ustream_test_thread_aux.h"
 
 static AZ_ULIB_RESULT _concrete_set_position_result = AZ_ULIB_SUCCESS;
 static AZ_ULIB_RESULT _concrete_reset_result = AZ_ULIB_SUCCESS;
@@ -190,7 +190,7 @@ AZ_USTREAM* ustream_mock_create(void)
     _concrete_clone_result = AZ_ULIB_SUCCESS;
     _concrete_dispose_result = AZ_ULIB_SUCCESS;
 
-    return (AZ_USTREAM*)&USTREAM_COMPLIANCE_MOCK_BUFFER;
+    return &USTREAM_COMPLIANCE_MOCK_BUFFER;
 }
 
 void set_set_position_result(AZ_ULIB_RESULT result)

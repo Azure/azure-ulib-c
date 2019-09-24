@@ -17,7 +17,7 @@
 #include "azure_macro_utils/macro_utils.h"
 #include "ustream_ctest_aux.h"
 #include "ustream_mock_buffer.h"
-#include "test_thread.h"
+#include "ustream_test_thread_aux.h"
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 

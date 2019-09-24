@@ -130,9 +130,6 @@ TEST_SUITE_INITIALIZE(suite_init)
     ASSERT_ARE_EQUAL(int, 0, result);
 
     REGISTER_UMOCK_ALIAS_TYPE(AZ_USTREAM, void*);
-
-    REGISTER_GLOBAL_MOCK_HOOK(malloc, malloc);
-    REGISTER_GLOBAL_MOCK_HOOK(free, free);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -436,31 +433,6 @@ TEST_FUNCTION(az_ustream_concat_new_control_block_failed_on_get_remaining_size_f
     (void)az_ustream_dispose(test_buffer2);
     (void)az_ustream_dispose(&multibuffer);
 }
-
-/* az_ustream_dispose shall release all buffers in its list if the multibuffer contains concatenated buffers */
-TEST_FUNCTION(az_ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_succeed)
-{
-    ///arrange
-    AZ_USTREAM* multibuffer = USTREAM_COMPLIANCE_TARGET_FACTORY;
-
-    umock_c_reset_all_calls();
-
-    STRICT_EXPECTED_CALL(free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(free(IGNORED_PTR_ARG));
-    STRICT_EXPECTED_CALL(free(IGNORED_PTR_ARG));
-
-    ///act
-    AZ_ULIB_RESULT result = az_ustream_dispose(multibuffer);
-
-    ///assert
-    ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
-
-    ///cleanup
-}
-
 
 /* az_ustream_read shall return partial result if one of the internal buffers failed. */
 TEST_FUNCTION(az_ustream_multi_read_control_block_failed_in_read_with_some_valid_content_succeed)

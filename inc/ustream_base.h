@@ -585,7 +585,7 @@ static inline AZ_ULIB_RESULT az_ustream_reset(AZ_USTREAM* ustream_interface)
  * @param[in]       ustream_interface       The {@link AZ_USTREAM}* with the interface of the ustream. It
  *                                          cannot be <tt>NULL</tt>, and it shall be a valid ustream that is the
  *                                          implemented ustream type.
- * @param[in,out]   buffer                  The <tt>uint8_t* const</tt> that points to the local buffer. It cannot be <tt>NULL</tt>.
+ * @param[out]      buffer                  The <tt>uint8_t* const</tt> that points to the local buffer. It cannot be <tt>NULL</tt>.
  * @param[in]       buffer_length           The <tt>size_t</tt> with the size of the local buffer. It shall be
  *                                          bigger than 0.
  * @param[out]      size                    The <tt>size_t* const</tt> that points to the place where the read shall store
@@ -851,7 +851,7 @@ static inline AZ_ULIB_RESULT az_ustream_release(AZ_USTREAM* ustream_interface, o
  *          shall return <tt>NULL</tt>.
  *      - The cloned ustream shall not interfere with the instance of the original ustream and vice versa.
  *
- * @param[in]   ustream_interface_clone     The {@link AZ_USTREAM}* with the interface of the ustream.
+ * @param[out]  ustream_interface_clone     The {@link AZ_USTREAM}* with the interface of the ustream.
  *                                          It cannot be <tt>NULL</tt>, and it shall be a valid ustream instance type
  *                                          that is casted to an #AZ_USTREAM.
  * @param[in]   ustream_interface           The {@link AZ_USTREAM}* to be cloned.

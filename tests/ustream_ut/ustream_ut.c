@@ -25,7 +25,6 @@
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 
-
 #include "ustream_base.h"
 #include "ustream.h"
 
@@ -41,7 +40,7 @@ static AZ_USTREAM* ustream_factory()
     uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     az_ustream_init(&test_ustream_instance, ustream_control_block, free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
-    return (AZ_USTREAM*)&test_ustream_instance;
+    return &test_ustream_instance;
 }
 #define USTREAM_COMPLIANCE_TARGET_FACTORY         ustream_factory()
 
@@ -77,9 +76,6 @@ TEST_SUITE_INITIALIZE(suite_init)
     ASSERT_ARE_EQUAL(int, 0, result);
 
     REGISTER_UMOCK_ALIAS_TYPE(AZ_USTREAM, void*);
-
-    REGISTER_GLOBAL_MOCK_HOOK(malloc, malloc);
-    REGISTER_GLOBAL_MOCK_HOOK(free, free);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -126,7 +122,7 @@ TEST_FUNCTION(az_ustream_init_const_succeed)
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     ///cleanup
-    (void)az_ustream_dispose((AZ_USTREAM*)&ustream_instance);
+    (void)az_ustream_dispose(&ustream_instance);
 }
 
 /* az_ustream_init shall create an instance of the ustream and initialize the interface. */
@@ -154,7 +150,7 @@ TEST_FUNCTION(az_ustream_init_succeed)
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     ///cleanup
-    (void)az_ustream_dispose((AZ_USTREAM*)&ustream_instance);
+    (void)az_ustream_dispose(&ustream_instance);
 }
 
 /* az_ustream_init shall return NULL if the provided constant buffer is NULL */
