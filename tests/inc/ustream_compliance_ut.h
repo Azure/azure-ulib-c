@@ -771,7 +771,7 @@ TEST_FUNCTION(az_ustream_get_remaining_size_compliance_null_size_failed)
 }
 
 /* The get_position shall return the logical current position of the buffer. */
-TEST_FUNCTION(ustream_get_current_position_compliance_new_buffer_succeed)
+TEST_FUNCTION(az_ustream_get_current_position_compliance_new_buffer_succeed)
 {
     ///arrange
     AZ_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -789,7 +789,7 @@ TEST_FUNCTION(ustream_get_current_position_compliance_new_buffer_succeed)
     (void)az_ustream_dispose(ustream_instance);
 }
 
-TEST_FUNCTION(ustream_get_current_position_compliance_new_buffer_with_non_zero_current_position_succeed)
+TEST_FUNCTION(az_ustream_get_current_position_compliance_new_buffer_with_non_zero_current_position_succeed)
 {
     ///arrange
     AZ_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -817,7 +817,7 @@ TEST_FUNCTION(ustream_get_current_position_compliance_new_buffer_with_non_zero_c
     (void)az_ustream_dispose(ustream_instance);
 }
 
-TEST_FUNCTION(ustream_get_current_position_compliance_cloned_buffer_with_non_zero_current_position_succeed)
+TEST_FUNCTION(az_ustream_get_current_position_compliance_cloned_buffer_with_non_zero_current_position_succeed)
 {
     ///arrange
     AZ_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -858,7 +858,7 @@ TEST_FUNCTION(ustream_get_current_position_compliance_cloned_buffer_with_non_zer
 }
 
 /* If the provided interface is NULL, the get_position shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(ustream_get_current_position_compliance_null_buffer_failed)
+TEST_FUNCTION(az_ustream_get_current_position_compliance_null_buffer_failed)
 {
     ///arrange
     AZ_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -875,7 +875,7 @@ TEST_FUNCTION(ustream_get_current_position_compliance_null_buffer_failed)
 }
 
 /* If the provided interface is not the implemented buffer type, the get_position shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed)
+TEST_FUNCTION(az_ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed)
 {
     ///arrange
     AZ_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;
@@ -893,7 +893,7 @@ TEST_FUNCTION(ustream_get_current_position_compliance_buffer_is_not_type_of_buff
 }
 
 /* If the provided position is NULL, the get_position shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(ustream_get_current_position_compliance_null_position_failed)
+TEST_FUNCTION(az_ustream_get_current_position_compliance_null_position_failed)
 {
     ///arrange
     AZ_USTREAM* ustream_instance = USTREAM_COMPLIANCE_TARGET_FACTORY;

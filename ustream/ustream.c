@@ -10,7 +10,6 @@
 #include "ustream.h"
 #include "ulib_result.h"
 #include "ulib_port.h"
-#include "ulib_heap.h"
 #include "ulog.h"
 
 static const char *const USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING = "Passed ustream is not the correct type\r\n";
@@ -181,15 +180,15 @@ static AZ_ULIB_RESULT concrete_get_remaining_size(AZ_USTREAM* ustream_interface,
 
 static AZ_ULIB_RESULT concrete_get_position(AZ_USTREAM* ustream_interface, offset_t* const position)
 {
-    /*[ustream_get_current_position_compliance_null_buffer_failed]*/
-    /*[ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed]*/
-    /*[ustream_get_current_position_compliance_null_position_failed]*/
+    /*[az_ustream_get_current_position_compliance_null_buffer_failed]*/
+    /*[az_ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed]*/
+    /*[az_ustream_get_current_position_compliance_null_position_failed]*/
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
                                             AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
                     AZ_UCONTRACT_REQUIRE_NOT_NULL(position, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
-    /*[ustream_get_current_position_compliance_new_buffer_succeed]*/
-    /*[ustream_get_current_position_compliance_new_buffer_with_non_zero_current_position_succeed]*/
-    /*[ustream_get_current_position_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
+    /*[az_ustream_get_current_position_compliance_new_buffer_succeed]*/
+    /*[az_ustream_get_current_position_compliance_new_buffer_with_non_zero_current_position_succeed]*/
+    /*[az_ustream_get_current_position_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
     *position = ustream_interface->inner_current_position + ustream_interface->offset_diff;
 
     return AZ_ULIB_SUCCESS;

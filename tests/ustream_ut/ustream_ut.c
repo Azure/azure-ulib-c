@@ -25,11 +25,6 @@
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 
-#define ENABLE_MOCKS
-
-#include "ulib_heap.h"
-
-#undef ENABLE_MOCKS
 
 #include "ustream_base.h"
 #include "ustream.h"
@@ -42,10 +37,10 @@ static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const u
 static AZ_USTREAM test_ustream_instance;
 static AZ_USTREAM* ustream_factory()
 {
-    AZ_USTREAM_DATA_CB* ustream_control_block = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
-    uint8_t* buf = (uint8_t*)az_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    AZ_USTREAM_DATA_CB* ustream_control_block = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    az_ustream_init(&test_ustream_instance, ustream_control_block, az_ulib_free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, az_ulib_free);
+    az_ustream_init(&test_ustream_instance, ustream_control_block, free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
     return (AZ_USTREAM*)&test_ustream_instance;
 }
 #define USTREAM_COMPLIANCE_TARGET_FACTORY         ustream_factory()
@@ -83,8 +78,8 @@ TEST_SUITE_INITIALIZE(suite_init)
 
     REGISTER_UMOCK_ALIAS_TYPE(AZ_USTREAM, void*);
 
-    REGISTER_GLOBAL_MOCK_HOOK(az_ulib_malloc, malloc);
-    REGISTER_GLOBAL_MOCK_HOOK(az_ulib_free, free);
+    REGISTER_GLOBAL_MOCK_HOOK(malloc, malloc);
+    REGISTER_GLOBAL_MOCK_HOOK(free, free);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -113,7 +108,7 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
 TEST_FUNCTION(az_ustream_init_const_succeed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* control_block = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
+    AZ_USTREAM_DATA_CB* control_block = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
     umock_c_reset_all_calls();
     AZ_USTREAM ustream_instance;
 
@@ -121,7 +116,7 @@ TEST_FUNCTION(az_ustream_init_const_succeed)
     AZ_ULIB_RESULT result = az_ustream_init(
         &ustream_instance,
         control_block,
-        az_ulib_free,
+        free,
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
         USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
         NULL);
@@ -138,9 +133,9 @@ TEST_FUNCTION(az_ustream_init_const_succeed)
 TEST_FUNCTION(az_ustream_init_succeed)
 {
     ///arrange
-    uint8_t* buf = (uint8_t*)az_ulib_malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+    uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    AZ_USTREAM_DATA_CB* control_block = (AZ_USTREAM_DATA_CB*)az_ulib_malloc(sizeof(AZ_USTREAM_DATA_CB));
+    AZ_USTREAM_DATA_CB* control_block = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
     umock_c_reset_all_calls();
     AZ_USTREAM ustream_instance;
 

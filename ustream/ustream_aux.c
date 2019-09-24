@@ -8,7 +8,6 @@
 #include "ucontract.h"
 #include "ustream.h"
 #include "ulib_result.h"
-#include "ulib_heap.h"
 #include "az_pal_os.h"
 #include "az_pal_os_api.h"
 #include "ulog.h"
@@ -139,7 +138,7 @@ static AZ_ULIB_RESULT concrete_read(
 
         //Critical section to make sure another instance doesn't set_position before this one reads
         az_pal_os_lock_acquire(&multi_data->lock);
-        /*[ustream_multi_read_clone_and_original_in_parallel_succeed]*/
+        /*[az_ustream_multi_read_clone_and_original_in_parallel_succeed]*/
         az_ustream_set_position(current_ustream, ustream_interface->inner_current_position + *size);
         intermediate_result = az_ustream_read(current_ustream, &buffer[*size], remain_size, &copied_size);
         az_pal_os_lock_release(&multi_data->lock);
@@ -163,7 +162,7 @@ static AZ_ULIB_RESULT concrete_read(
             }
             break;
         default:
-            /*[ustream_multi_read_control_block_failed_in_read_with_some_valid_content_succeed]*/
+            /*[az_ustream_multi_read_control_block_failed_in_read_with_some_valid_content_succeed]*/
             break;
         }
     }
@@ -176,7 +175,7 @@ static AZ_ULIB_RESULT concrete_read(
     }
     else
     {
-        /*[ustream_multi_read_control_block_failed_in_read_failed]*/
+        /*[az_ustream_multi_read_control_block_failed_in_read_failed]*/
         result = intermediate_result;
     }
 
@@ -202,16 +201,16 @@ static AZ_ULIB_RESULT concrete_get_remaining_size(AZ_USTREAM* ustream_interface,
 
 static AZ_ULIB_RESULT concrete_get_position(AZ_USTREAM* ustream_interface, offset_t* const position)
 {
-    /*[ustream_get_current_position_compliance_null_buffer_failed]*/
-    /*[ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed]*/
-    /*[ustream_get_current_position_compliance_null_position_failed]*/
+    /*[az_ustream_get_current_position_compliance_null_buffer_failed]*/
+    /*[az_ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed]*/
+    /*[az_ustream_get_current_position_compliance_null_position_failed]*/
     AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE(!AZ_USTREAM_IS_NOT_TYPE_OF(ustream_interface, api),
                                             AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, "Passed ustream is not the correct type\r\n"),
                     AZ_UCONTRACT_REQUIRE_NOT_NULL(position, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
 
-    /*[ustream_get_current_position_compliance_new_buffer_succeed]*/
-    /*[ustream_get_current_position_compliance_new_buffer_with_non_zero_current_position_succeed]*/
-    /*[ustream_get_current_position_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
+    /*[az_ustream_get_current_position_compliance_new_buffer_succeed]*/
+    /*[az_ustream_get_current_position_compliance_new_buffer_with_non_zero_current_position_succeed]*/
+    /*[az_ustream_get_current_position_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
     *position = ustream_interface->inner_current_position + ustream_interface->offset_diff;
 
     return AZ_ULIB_SUCCESS;
@@ -295,7 +294,7 @@ static AZ_ULIB_RESULT concrete_dispose(AZ_USTREAM* ustream_interface)
     AZ_USTREAM_MULTI_DATA_CB* multi_data = (AZ_USTREAM_MULTI_DATA_CB*)ustream_interface->control_block->ptr;
     AZ_ULIB_PORT_ATOMIC_DEC_W(&(multi_data->ustream_one_ref_count));
     AZ_ULIB_PORT_ATOMIC_DEC_W(&(multi_data->ustream_two_ref_count));
-    /*[ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_succeed]*/
+    /*[az_ustream_multi_dispose_multibuffer_with_buffers_free_all_resources_succeed]*/
     if(multi_data->ustream_one_ref_count == 0 && multi_data->ustream_one.control_block != NULL)
     {
         az_ustream_dispose(&(multi_data->ustream_one));

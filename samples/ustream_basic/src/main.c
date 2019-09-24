@@ -7,7 +7,6 @@
 #include <string.h>
 #include <stdint.h>
 #include "ustream.h"
-#include "ulib_heap.h"
 #include "ulib_result.h"
 #include "ulog.h"
 
@@ -21,33 +20,21 @@ static AZ_ULIB_RESULT print_buffer(AZ_USTREAM* ustream)
     AZ_ULIB_RESULT result;
     size_t returned_size;
     uint8_t user_buf[USER_BUFFER_SIZE] = { 0 };
-    uint32_t printed_chars;
-    uint32_t ustream_read_iterations = 0;
 
-    //Read ustream until receive AZ_ULIB_EOF
-    (void)printf("\r\n---Printing the AZ_USTREAM---\r\n");
+    //Read ustream until receive AZIOT_ULIB_EOF
+    (void)printf("\r\n------printing the ustream------\r\n");
     while((result = az_ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == AZ_ULIB_SUCCESS)
     {
-        printed_chars = 0;
-        while(printed_chars < returned_size)
-        {
-            //Print passed data
-            printed_chars += printf("%s", &(user_buf[printed_chars]));
-
-            //Account for NULL terminator
-            printed_chars++;
-        }
-        ustream_read_iterations++;
+        user_buf[returned_size] = '\0';
+        (void)printf("%s", user_buf);
     }
-    (void)printf("-----------EOF------------\r\n");
-    (void)printf("az_ustream_read was called %i times\r\n", ustream_read_iterations);
+    (void)printf("-----------end of ustream------------\r\n\r\n");
 
     //Change return to AZ_ULIB_SUCCESS if last returned value was AZ_ULIB_EOF
     if(result == AZ_ULIB_EOF)
     {
         result = AZ_ULIB_SUCCESS;
     }
-
     return result;
 }
 
@@ -58,7 +45,7 @@ int main(void)
     char* ustream_two_string;
 
     //Allocate second string in the heap
-    ustream_two_string_len = sizeof(USTREAM_TWO_STRING);
+    ustream_two_string_len = sizeof(USTREAM_TWO_STRING) - 1;
     if((ustream_two_string = (char*)malloc(ustream_two_string_len)) == NULL)
     {
         printf("Not enough memory for string\r\n");
@@ -73,7 +60,7 @@ int main(void)
         AZ_USTREAM_DATA_CB* ustream_control_block_one = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
         size_t ustream_size;
         if((result = az_ustream_init(&ustream_one, ustream_control_block_one, free,
-                                                (const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) != AZ_ULIB_SUCCESS)
+                                                (const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING) - 1, NULL)) != AZ_ULIB_SUCCESS)
         {
             printf("Couldn't initialize ustream_one\r\n");
         }

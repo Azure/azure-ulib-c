@@ -316,9 +316,6 @@
  *      the last released one. For example, when a timeout happens for a transmitted packet without ACK, the 
  *      sender shall retransmit the data starting from that point. In this case, the consumer can call the API
  *      az_ustream_reset().
- * 
- * 
- *
  */
 
 #include "ulib_config.h"
@@ -683,7 +680,7 @@ static inline AZ_ULIB_RESULT az_ustream_get_position(AZ_USTREAM* ustream_interfa
 }
 
 /**
- * @brief   Releases all the resources related to the <tt><tt>Data Source</tt></tt> before and including the released position.
+ * @brief   Releases all the resources related to the <tt>Data Source</tt> before and including the released position.
  *
  *  Calling this API will notify the ustream that the developer will not need its content from the start
  *      to <tt>position</tt> (inclusive). It means that the implementation of the ustream can dispose

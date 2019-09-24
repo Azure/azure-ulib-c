@@ -26,7 +26,6 @@ endif()
 
 #Add library of ulib c files
 add_library(azure_ulib_c
-    ${PROJECT_SOURCE_DIR}/pal/MemMang/ulib_heap.c
     ${PROJECT_SOURCE_DIR}/ulog/ulog.c
     ${PROJECT_SOURCE_DIR}/ustream/ustream_aux.c
     ${PROJECT_SOURCE_DIR}/ustream/ustream.c

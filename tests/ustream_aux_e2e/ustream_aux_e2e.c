@@ -167,7 +167,7 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-TEST_FUNCTION(ustream_multi_read_concurrent_succeed)
+TEST_FUNCTION(az_ustream_multi_read_concurrent_succeed)
 {
     ///arrange
     AZ_USTREAM* multibuffer = ustream_mock_create();

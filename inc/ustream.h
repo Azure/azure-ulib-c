@@ -33,7 +33,7 @@ extern "C" {
  *      passed memory and will release the memory with the passed {@link AZ_RELEASE_CALLBACK} function when
  *      the ref count of the <tt>ustream_control_block</tt> goes to zero.
  *
- * @param[out]      ustream_instance        The pointer to the allocated #AZ_USTREAM struct. This memory must be valid from
+ * @param[in,out]   ustream_instance        The pointer to the allocated #AZ_USTREAM struct. This memory must be valid from
  *                                          the time az_ustream_init() is called through az_ustream_dispose(). The ustream will not
  *                                          free this struct and it is the responsibility of the developer to make sure it is valid during
  *                                          the time frame described above. It cannot be <tt>NULL</tt>.
