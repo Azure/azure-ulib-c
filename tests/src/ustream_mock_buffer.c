@@ -27,10 +27,10 @@ void set_concurrency_ustream(void)
 }
 
 static AZ_ULIB_RESULT concrete_set_position(
-        AZ_USTREAM* ustream_interface, 
+        AZ_USTREAM* ustream_instance, 
         offset_t position)
 {
-    (void)ustream_interface;
+    (void)ustream_instance;
 
     current_position = position;
 
@@ -48,9 +48,9 @@ static AZ_ULIB_RESULT concrete_set_position(
 }
 
 static AZ_ULIB_RESULT concrete_reset(
-        AZ_USTREAM* ustream_interface)
+        AZ_USTREAM* ustream_instance)
 {
-    (void)ustream_interface;
+    (void)ustream_instance;
 
     AZ_ULIB_RESULT result = _concrete_reset_result;
     _concrete_reset_result = AZ_ULIB_SUCCESS;
@@ -58,12 +58,12 @@ static AZ_ULIB_RESULT concrete_reset(
 }
 
 static AZ_ULIB_RESULT concrete_read(
-        AZ_USTREAM* ustream_interface, 
+        AZ_USTREAM* ustream_instance, 
         uint8_t* const buffer, 
         size_t buffer_length, 
         size_t* const size)
 {
-    (void)ustream_interface;
+    (void)ustream_instance;
     (void)buffer;
     (void)size;
 
@@ -77,10 +77,10 @@ static AZ_ULIB_RESULT concrete_read(
 }
 
 static AZ_ULIB_RESULT concrete_get_remaining_size(
-        AZ_USTREAM* ustream_interface, 
+        AZ_USTREAM* ustream_instance, 
         size_t* const size)
 {
-    (void)ustream_interface;
+    (void)ustream_instance;
 
     *size = 10;
 
@@ -90,10 +90,10 @@ static AZ_ULIB_RESULT concrete_get_remaining_size(
 }
 
 static AZ_ULIB_RESULT concrete_get_position(
-        AZ_USTREAM* ustream_interface, 
+        AZ_USTREAM* ustream_instance, 
         offset_t* const position)
 {
-    (void)ustream_interface;
+    (void)ustream_instance;
     
     *position = current_position;
 
@@ -103,10 +103,10 @@ static AZ_ULIB_RESULT concrete_get_position(
 }
 
 static AZ_ULIB_RESULT concrete_release(
-        AZ_USTREAM* ustream_interface, 
+        AZ_USTREAM* ustream_instance, 
         offset_t position)
 {
-    (void)ustream_interface;
+    (void)ustream_instance;
     (void)position;
 
     AZ_ULIB_RESULT result = _concrete_release_result;
@@ -115,32 +115,32 @@ static AZ_ULIB_RESULT concrete_release(
 }
 
 static AZ_ULIB_RESULT concrete_clone(
-        AZ_USTREAM* ustream_interface_clone,
-        AZ_USTREAM* ustream_interface, 
+        AZ_USTREAM* ustream_instance_clone,
+        AZ_USTREAM* ustream_instance, 
         offset_t offset)
 {
     current_position = offset;
 
     if (_concrete_clone_result == AZ_ULIB_SUCCESS)
     {
-        ustream_interface_clone->control_block = ustream_interface->control_block;
-        ustream_interface_clone->inner_current_position = ustream_interface->inner_current_position;
-        ustream_interface_clone->inner_first_valid_position = ustream_interface->inner_first_valid_position;
-        ustream_interface_clone->length = ustream_interface->length;
-        ustream_interface_clone->offset_diff = ustream_interface->offset_diff;
+        ustream_instance_clone->control_block = ustream_instance->control_block;
+        ustream_instance_clone->inner_current_position = ustream_instance->inner_current_position;
+        ustream_instance_clone->inner_first_valid_position = ustream_instance->inner_first_valid_position;
+        ustream_instance_clone->length = ustream_instance->length;
+        ustream_instance_clone->offset_diff = ustream_instance->offset_diff;
     }
     else
     {
-        ustream_interface_clone = NULL;
+        ustream_instance_clone = NULL;
         _concrete_clone_result = AZ_ULIB_SUCCESS;
     }
     return AZ_ULIB_SUCCESS;
 }
 
 static AZ_ULIB_RESULT concrete_dispose(
-        AZ_USTREAM* ustream_interface)
+        AZ_USTREAM* ustream_instance)
 {
-    (void)ustream_interface;
+    (void)ustream_instance;
 
     AZ_ULIB_RESULT result = _concrete_dispose_result;
     _concrete_dispose_result = AZ_ULIB_SUCCESS;

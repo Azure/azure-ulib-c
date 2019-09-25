@@ -303,7 +303,7 @@ TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
 }
 
 /* az_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
-TEST_FUNCTION(az_ustream_concat_null_interface_failed)
+TEST_FUNCTION(az_ustream_concat_null_instance_failed)
 {
     ///arrange
     AZ_USTREAM_DATA_CB* control_block =

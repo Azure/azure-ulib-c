@@ -100,7 +100,7 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* az_ustream_init shall create an instance of the ustream and initialize the interface. */
+/* az_ustream_init shall create an instance of the ustream and initialize the instance. */
 TEST_FUNCTION(az_ustream_init_const_succeed)
 {
     ///arrange
@@ -125,7 +125,7 @@ TEST_FUNCTION(az_ustream_init_const_succeed)
     (void)az_ustream_dispose(&ustream_instance);
 }
 
-/* az_ustream_init shall create an instance of the ustream and initialize the interface. */
+/* az_ustream_init shall create an instance of the ustream and initialize the instance. */
 TEST_FUNCTION(az_ustream_init_succeed)
 {
     ///arrange

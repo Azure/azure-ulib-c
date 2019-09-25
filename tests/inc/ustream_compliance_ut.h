@@ -857,7 +857,7 @@ TEST_FUNCTION(az_ustream_get_current_position_compliance_cloned_buffer_with_non_
     (void)az_ustream_dispose(ustream_instance);
 }
 
-/* If the provided interface is NULL, the get_position shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* If the provided instance is NULL, the get_position shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
 TEST_FUNCTION(az_ustream_get_current_position_compliance_null_buffer_failed)
 {
     ///arrange
@@ -874,7 +874,7 @@ TEST_FUNCTION(az_ustream_get_current_position_compliance_null_buffer_failed)
     (void)az_ustream_dispose(ustream_instance);
 }
 
-/* If the provided interface is not the implemented buffer type, the get_position shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
+/* If the provided instance is not the implemented buffer type, the get_position shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
 TEST_FUNCTION(az_ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed)
 {
     ///arrange

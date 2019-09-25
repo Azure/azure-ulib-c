@@ -33,7 +33,7 @@ extern "C" {
  *      passed memory and will release the memory with the passed {@link AZ_RELEASE_CALLBACK} function when
  *      the ref count of the <tt>ustream_control_block</tt> goes to zero.
  *
- * @param[in,out]   ustream_instance        The pointer to the allocated #AZ_USTREAM struct. This memory must be valid from
+ * @param[out]      ustream_instance        The pointer to the allocated #AZ_USTREAM struct. This memory must be valid from
  *                                          the time az_ustream_init() is called through az_ustream_dispose(). The ustream will not
  *                                          free this struct and it is the responsibility of the developer to make sure it is valid during
  *                                          the time frame described above. It cannot be <tt>NULL</tt>.
@@ -72,18 +72,18 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_init,
 /**
   * @brief   Concatenate a ustream to the existing ustream.
   *
-  *  The concat will effectively append a ustream at the end of the passed <tt>ustream_interface</tt>. To do that, the 
-  *     concat will copy the <tt>ustream_interface</tt> into a <tt>AZ_USTREAM_MULTI_DATA_CB</tt> and clone the 
+  *  The concat will effectively append a ustream at the end of the passed <tt>ustream_instance</tt>. To do that, the 
+  *     concat will copy the <tt>ustream_instance</tt> into a <tt>AZ_USTREAM_MULTI_DATA_CB</tt> and clone the 
   *     <tt>ustream_to_concat</tt> inside the <tt>AZ_USTREAM_MULTI_DATA_CB</tt>. When returned, the original 
-  *     <tt>ustream_interface</tt> will point to the #AZ_USTREAM_DATA_CB inside of the passed <tt>multi_data</tt>. 
-  *     The data of the passed <tt>ustream_interface</tt> will at that point be read as if the content of the orignal
-  *     <tt>ustream_interface</tt> and <tt>ustream_to_concat</tt> were one ustream. This means that both <tt>ustream_interface</tt>
+  *     <tt>ustream_instance</tt> will point to the #AZ_USTREAM_DATA_CB inside of the passed <tt>multi_data</tt>. 
+  *     The data of the passed <tt>ustream_instance</tt> will at that point be read as if the content of the orignal
+  *     <tt>ustream_instance</tt> and <tt>ustream_to_concat</tt> were one ustream. This means that both <tt>ustream_instance</tt>
   *     and <tt>ustream_to_concat</tt> will have to be disposed by the calling function.
   *
-  * @param[out]         ustream_interface       The {@link AZ_USTREAM}* with the interface of 
+  * @param[in,out]      ustream_instance        The {@link AZ_USTREAM}* with the interface of 
   *                                             the ustream. It cannot be <tt>NULL</tt>, and it shall be a valid ustream.
   * @param[in]          ustream_to_concat       The {@link AZ_USTREAM}* with the interface of 
-  *                                             the ustream to concat to <tt>ustream_interface</tt>. It cannot be <tt>NULL</tt>, 
+  *                                             the ustream to concat to <tt>ustream_instance</tt>. It cannot be <tt>NULL</tt>, 
   *                                             and it shall be a valid ustream.
   * @param[in]          multi_data              The {@link AZ_USTREAM_MULTI_DATA_CB}* pointing to the allocated multi data control block.
   *                                             It must be allocated in a way that it remains a valid address until the passed
@@ -96,7 +96,7 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_init,
   *          @retval    AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
   */
 MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_concat,
-        AZ_USTREAM*, ustream_interface,
+        AZ_USTREAM*, ustream_instance,
         AZ_USTREAM*, ustream_to_concat,
         AZ_USTREAM_MULTI_DATA_CB*, multi_data,
         AZ_RELEASE_CALLBACK, multi_data_release);
