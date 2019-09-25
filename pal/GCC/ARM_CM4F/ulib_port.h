@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef AZURE_ULIB_C_PAL_GCC_ARM_CM4F_ULIB_PORT_H_
-#define AZURE_ULIB_C_PAL_GCC_ARM_CM4F_ULIB_PORT_H_
+#ifndef AZ_ULIB_GCC_ARM_CM4F_PORT_H
+#define AZ_ULIB_GCC_ARM_CM4F_PORT_H
 
 #ifdef __cplusplus
 #include <cstdint>
@@ -12,7 +12,7 @@ extern "C"
 #include <stdint.h>
 #endif
 
-__attribute__( ( always_inline ) ) static inline uint32_t ULIB_PORT_ATOMIC_INC_W(volatile uint32_t* addr)
+__attribute__( ( always_inline ) ) static inline uint32_t AZ_ULIB_PORT_ATOMIC_INC_W(volatile uint32_t* addr)
 {
     register uint32_t result;
     register uint32_t modified = 0;
@@ -31,7 +31,7 @@ __attribute__( ( always_inline ) ) static inline uint32_t ULIB_PORT_ATOMIC_INC_W
     return result;
 }
 
-__attribute__( ( always_inline ) ) static inline uint32_t ULIB_PORT_ATOMIC_DEC_W(volatile uint32_t* addr)
+__attribute__( ( always_inline ) ) static inline uint32_t AZ_ULIB_PORT_ATOMIC_DEC_W(volatile uint32_t* addr)
 {
     register uint32_t result;
     register uint32_t modified = 0;
@@ -50,10 +50,10 @@ __attribute__( ( always_inline ) ) static inline uint32_t ULIB_PORT_ATOMIC_DEC_W
     return result;
 }
 
-#define ULIB_PORT_THROW_HARD_FAULT          (*(char*)NULL = 0)
+#define AZ_ULIB_PORT_THROW_HARD_FAULT          (*(char*)NULL = 0)
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* AZURE_ULIB_C_PAL_GCC_ARM_CM4F_ULIB_PORT_H_ */
+#endif /* AZ_ULIB_GCC_ARM_CM4F_PORT_H */

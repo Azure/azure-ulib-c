@@ -59,59 +59,8 @@ function(ulib_c_windows_unittests_add_dll what_is_building folder)
 
 endfunction()
 
-#Add windows unit test exe
-function(ulib_c_windows_unittests_add_exe what_is_building folder)
-
-    #Define target
-    add_executable(${what_is_building}_exe
-        ${${what_is_building}_test_files}
-        ${${what_is_building}_cpp_files}
-        ${${what_is_building}_c_files}
-        ${CMAKE_CURRENT_LIST_DIR}/main.c
-    )
-
-    #Set the output folder for the target
-    set_target_properties(${what_is_building}_exe
-               PROPERTIES
-               FOLDER ${folder})
-
-    #Define executable's compile definitions, linked libraries, and include dirs
-    target_compile_definitions(${what_is_building}_exe PUBLIC USE_CTEST)
-    target_include_directories(${what_is_building}_exe PUBLIC ${sharedutil_include_directories})
-    target_link_libraries(${what_is_building}_exe
-                PRIVATE umock_c ctest testrunnerswitcher azure_ulib_c
-    )
-
-    #Add test to ctest list
-    add_test(NAME ${what_is_building} COMMAND ${what_is_building}_exe)
-
-endfunction()
-
 #Build Linux unit tests with valgrind if enabled
-function(ulib_c_linux_unittests_add_exe what_is_building folder)
-
-    #Define target
-    add_executable(${what_is_building}_exe
-        ${${what_is_building}_test_files}
-        ${${what_is_building}_cpp_files}
-        ${${what_is_building}_c_files}
-        ${CMAKE_CURRENT_LIST_DIR}/main.c
-    )
-
-    #Set the output folder for the target
-    set_target_properties(${what_is_building}_exe
-               PROPERTIES
-               FOLDER ${folder})
-
-    #Define executable's compile definitions, linked libraries, and include dirs
-    target_compile_definitions(${what_is_building}_exe PUBLIC USE_CTEST)
-    target_include_directories(${what_is_building}_exe PUBLIC ${sharedutil_include_directories})
-    target_link_libraries(${what_is_building}_exe
-                PRIVATE umock_c ctest testrunnerswitcher azure_ulib_c
-    )
-
-    #Add test to ctest list
-    add_test(NAME ${what_is_building} COMMAND $<TARGET_FILE:${what_is_building}_exe>)
+function(ulib_c_linux_valgrind target_name)
 
     #Setup valgrind if applicable and add separate test for valgrind/helgrind
     if(${run_valgrind})
@@ -119,61 +68,79 @@ function(ulib_c_linux_unittests_add_exe what_is_building folder)
         if(${VALGRIND_FOUND} STREQUAL VALGRIND_FOUND-NOTFOUND)
             message(WARNING "run_valgrind was TRUE, but valgrind was not found - there will be no tests run under valgrind")
         else()
-            add_test(NAME ${what_is_building}_valgrind COMMAND valgrind                 --gen-suppressions=all --num-callers=100 --error-exitcode=1 --leak-check=full --track-origins=yes $<TARGET_FILE:${what_is_building}_exe>)
-            add_test(NAME ${what_is_building}_helgrind COMMAND valgrind --tool=helgrind --gen-suppressions=all --num-callers=100 --error-exitcode=1 $<TARGET_FILE:${what_is_building}_exe>)
-            add_test(NAME ${what_is_building}_drd      COMMAND valgrind --tool=drd      --gen-suppressions=all --num-callers=100 --error-exitcode=1 $<TARGET_FILE:${what_is_building}_exe>)
+            add_test(NAME ${target_name}_valgrind COMMAND valgrind                 --gen-suppressions=all --num-callers=100 --error-exitcode=1 --leak-check=full --track-origins=yes $<TARGET_FILE:${target_name}>)
+            add_test(NAME ${target_name}_helgrind COMMAND valgrind --tool=helgrind --gen-suppressions=all --num-callers=100 --error-exitcode=1 $<TARGET_FILE:${target_name}>)
+            add_test(NAME ${target_name}_drd      COMMAND valgrind --tool=drd      --gen-suppressions=all --num-callers=100 --error-exitcode=1 $<TARGET_FILE:${target_name}>)
         endif()
     endif()
 
 endfunction()
 
-function(ulib_build_c_test_target what_is_building folder)
+function(ulib_populate_test_target target_name)
 
     #Include repo directories
-    include_directories(${PROJECT_SOURCE_DIR}/inc)
-    include_directories(${PROJECT_SOURCE_DIR}/config)
-    include_directories(${PROJECT_SOURCE_DIR}/tests/inc)
-    include_directories(${PROJECT_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY})
+    target_sources(${target_name}
+        PRIVATE
+            ${PROJECT_SOURCE_DIR}/tests/src/ustream_mock_buffer.c
+            ${PROJECT_SOURCE_DIR}/tests/src/${ULIB_PAL_OS_DIRECTORY}/test_thread.c
+    )
 
-    #Set shared utility include directories
-    set(ulib_test_framework_includes ${sharedutil_include_directories} ${MACRO_UTILS_INC_FOLDER} ${UMOCK_C_INC_FOLDER} ${TESTRUNNERSWITCHER_INC_FOLDER} ${CTEST_INC_FOLDER})
-    include_directories(${ulib_test_framework_includes})
+    target_include_directories(${target_name}
+        PRIVATE
+            ${PROJECT_SOURCE_DIR}/inc
+            ${PROJECT_SOURCE_DIR}/config
+            ${PROJECT_SOURCE_DIR}/tests/inc
+            ${PROJECT_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY}
+            ${PROJECT_SOURCE_DIR}/pal/os/inc
+            ${PROJECT_SOURCE_DIR}/pal/os/inc/${ULIB_PAL_OS_DIRECTORY}
+    )
+
+    target_link_libraries(${target_name}
+        PRIVATE
+            azure_ulib_c
+            testrunnerswitcher
+            ctest
+            umock_c
+            azure_macro_utils_c
+            $<$<STREQUAL:"${ULIB_PAL_OS_DIRECTORY}","linux">:pthread>
+    )
+
+    target_compile_definitions(${target_name}
+        PUBLIC
+            USE_CTEST
+    )
 
     #Create Windows/Linux test executables
     if(WIN32)
         if (${use_cppunittest})
-            ulib_c_windows_unittests_add_dll(${what_is_building} ${folder} ${ARGN})
+            # ulib_c_windows_unittests_add_dll(${target_name} ${folder} ${ARGN})
         endif()
-        ulib_c_windows_unittests_add_exe(${what_is_building} ${folder} ${ARGN})
     else()
-        ulib_c_linux_unittests_add_exe(${what_is_building} ${folder} ${ARGN})
+        ulib_c_linux_valgrind(${target_name})
     endif()
+
+    add_test(NAME ${target_name} COMMAND ${target_name})
 
 endfunction()
 
 #Build sample
-function(ulib_build_c_sample_target what_is_building folder)
-
-    #Define target
-    add_executable(${what_is_building}_exe
-        ${${what_is_building}_c_files}
-    )
-
-    #Set the output folder for the target
-    set_target_properties(${what_is_building}_exe
-               PROPERTIES
-               FOLDER ${folder})
+function(ulib_populate_sample_target target_name)
 
     #Define executable's compile definitions, linked libraries, and include dirs
-    target_include_directories(${what_is_building}_exe PUBLIC 
-                ${MACRO_UTILS_INC_FOLDER}
-                ${UMOCK_C_INC_FOLDER}
-                ${PROJECT_SOURCE_DIR}/inc
-                ${PROJECT_SOURCE_DIR}/config
-                ${PROJECT_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY})
-    target_link_libraries(${what_is_building}_exe
-                PRIVATE azure_ulib_c
+    target_include_directories(${target_name}
+        PRIVATE
+            ${PROJECT_SOURCE_DIR}/inc
+            ${PROJECT_SOURCE_DIR}/config
+            ${PROJECT_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY}
+            ${PROJECT_SOURCE_DIR}/pal/os/inc
+            ${PROJECT_SOURCE_DIR}/pal/os/inc/${ULIB_PAL_OS_DIRECTORY}
+    )
+
+    target_link_libraries(${target_name}
+        PRIVATE
+            azure_ulib_c
+            azure_macro_utils_c
+            umock_c
     )
 
 endfunction()
-

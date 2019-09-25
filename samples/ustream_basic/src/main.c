@@ -15,118 +15,131 @@
 
 static const char USTREAM_ONE_STRING[] = "Hello ";
 
-static ULIB_RESULT print_buffer(USTREAM* ustream)
+static AZ_ULIB_RESULT print_buffer(AZ_USTREAM* ustream)
 {
-    ULIB_RESULT result;
+    AZ_ULIB_RESULT result;
     size_t returned_size;
     uint8_t user_buf[USER_BUFFER_SIZE] = { 0 };
-    uint32_t printed_chars;
-    uint32_t ustream_read_iterations = 0;
 
-    //Read ustream until receive ULIB_EOF
-    (void)printf("\r\n---Printing the USTREAM---\r\n");
-    while((result = ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == ULIB_SUCCESS)
+    //Read ustream until receive AZIOT_ULIB_EOF
+    (void)printf("\r\n------printing the ustream------\r\n");
+    while((result = az_ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == AZ_ULIB_SUCCESS)
     {
-        printed_chars = 0;
-        while(printed_chars < returned_size)
-        {
-            //Print passed data
-            printed_chars += printf("%s", &(user_buf[printed_chars]));
-
-            //Account for NULL terminator
-            printed_chars++;
-        }
-        ustream_read_iterations++;
+        user_buf[returned_size] = '\0';
+        (void)printf("%s", user_buf);
     }
-    (void)printf("-----------EOF------------\r\n");
-    (void)printf("ustream_read was called %i times\r\n", ustream_read_iterations);
+    (void)printf("-----------end of ustream------------\r\n\r\n");
 
-    //Change return to ULIB_SUCCESS if last returned value was ULIB_EOF
-    if(result == ULIB_EOF)
+    //Change return to AZ_ULIB_SUCCESS if last returned value was AZ_ULIB_EOF
+    if(result == AZ_ULIB_EOF)
     {
-        result = ULIB_SUCCESS;
+        result = AZ_ULIB_SUCCESS;
     }
-
     return result;
 }
 
+
+/**
+ * This sample creates two ustreams and concatenates them. It then prints the concatenated ustream
+ * as if the two original ustreams were one.
+ *      Content of ustream one: "Hello "
+ *      Content of ustream two: "World\r\n"
+ *      Content of concatenated ustream: "Hello World\r\n"
+ * With both instances, the AZ_USTREAM lives on the stack while the control blocks use stdlib malloc for
+ * allocation and stdlib free to free the memory.
+ * 
+ * Steps followed:
+ *      1) Create the first ustream for a buffer in static memory. Print the size of the ustream.
+ *      2) Create the second ustream for a buffer in the heap. Print the size of the ustream.
+ *      3) Concatenate the second ustream to the first ustream. Dispose of the local instance of ustream_two.
+ *              Remember we must do this to avoid memory leaks because while ustream_one is copied into the
+ *              AZ_USTREAM_MULTI_DATA_CB (still one reference), ustream_two is cloned (meaning there are 
+ *              now two references). We then print the size of the concatenated ustream.
+ *      4) Print the concatenated ustream. Dispose of the ustream_one instance. Underneath the covers,
+ *              since references to both buffers reaches zero, the free functions for the buffers and the
+ *              control blocks are called and no memory is leaked.
+ */
+
 int main(void)
 {
-    ULIB_RESULT result;
+    AZ_ULIB_RESULT result;
     size_t ustream_two_string_len;
     char* ustream_two_string;
 
     //Allocate second string in the heap
-    ustream_two_string_len = sizeof(USTREAM_TWO_STRING);
+    ustream_two_string_len = sizeof(USTREAM_TWO_STRING) - 1;
     if((ustream_two_string = (char*)malloc(ustream_two_string_len)) == NULL)
     {
-        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_OUT_OF_MEMORY_STRING, "string");
-        result = ULIB_OUT_OF_MEMORY_ERROR;
+        printf("Not enough memory for string\r\n");
+        result = -1;
     }
     else
     {
         memcpy(ustream_two_string, USTREAM_TWO_STRING, ustream_two_string_len);
 
-        //Create the first USTREAM from constant memory
-        USTREAM* ustream_one;
+        //Create the first AZ_USTREAM from constant memory
+        AZ_USTREAM ustream_one;
+        AZ_USTREAM_DATA_CB* ustream_control_block_one = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
         size_t ustream_size;
-        if((ustream_one = ustream_create((const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL)) == NULL)
+        if((result = az_ustream_init(&ustream_one, ustream_control_block_one, free,
+                                                (const uint8_t*)USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING) - 1, NULL)) != AZ_ULIB_SUCCESS)
         {
-            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "ustream_create", ULIB_SYSTEM_ERROR);
-            result = ULIB_SYSTEM_ERROR;
+            printf("Couldn't initialize ustream_one\r\n");
         }
-        else if((result = ustream_get_remaining_size(ustream_one, &ustream_size)) != ULIB_SUCCESS)
+        else if((result = az_ustream_get_remaining_size(&ustream_one, &ustream_size)) != AZ_ULIB_SUCCESS)
         {
-            ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "ustream_get_remaining_size", result);
+            printf("Couldn't get ustream_one remaining size\r\n");
         }
         else
         {
-            (void)printf("Size of ustream_one: %lu\r\n", ustream_size);
+            (void)printf("Size of ustream_one: %zu\r\n", ustream_size);
 
-            //Create the second USTREAM from the string in the heap, passing standard free function as release callback
-            USTREAM* ustream_two;
-            if((ustream_two = ustream_create((const uint8_t*)ustream_two_string, ustream_two_string_len, free)) == NULL)
+            //Create the second AZ_USTREAM from the string in the heap, passing standard free function as release callback
+            AZ_USTREAM ustream_two;
+            AZ_USTREAM_DATA_CB* ustream_control_block_two = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+            if((result = az_ustream_init(&ustream_two, ustream_control_block_two, free,
+                                                (const uint8_t*) ustream_two_string, ustream_two_string_len, free)) != AZ_ULIB_SUCCESS)
             {
-                ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "ustream_create", ULIB_SYSTEM_ERROR);
-                result = ULIB_SYSTEM_ERROR;
+                printf("Couldn't initialize ustream_two\r\n");
             }
-            else if((result = ustream_get_remaining_size(ustream_two, &ustream_size)) != ULIB_SUCCESS)
+            else if((result = az_ustream_get_remaining_size(&ustream_two, &ustream_size)) != AZ_ULIB_SUCCESS)
             {
-                ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "ustream_get_remaining_size", result);
+                printf("Couldn't get ustream_two remaining size\r\n");
             }
             else
             {
-                (void)printf("Size of ustream_two: %lu\r\n", ustream_size);
+                (void)printf("Size of ustream_two: %zu\r\n", ustream_size);
 
-                //Append the second USTREAM to the first USTREAM
-                if((result = ustream_append(ustream_one, ustream_two)) != ULIB_SUCCESS)
+                AZ_USTREAM_MULTI_DATA_CB* multi_data = (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+                //Concat the second AZ_USTREAM to the first AZ_USTREAM
+                if((result = az_ustream_concat(&ustream_one, &ustream_two, multi_data, free)) != AZ_ULIB_SUCCESS)
                 {
-                    ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "ustream_append", result);
+                    printf("Couldn't concat ustream_two to ustream_one\r\n");
                 }
-                //Dispose of our instance of the second ustream (now the appended has the only instance)
-                else if((result = ustream_dispose(ustream_two)) != ULIB_SUCCESS)
+                //Dispose of our instance of the second ustream (now the concatenated has the only instance)
+                else if((result = az_ustream_dispose(&ustream_two)) != AZ_ULIB_SUCCESS)
                 {
-                    ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "ustream_dispose", result);
+                    printf("Couldn't dispose ustream_two\r\n");
                 }
-                else if((result = ustream_get_remaining_size(ustream_one, &ustream_size)) != ULIB_SUCCESS)
+                else if((result = az_ustream_get_remaining_size(&ustream_one, &ustream_size)) != AZ_ULIB_SUCCESS)
                 {
-                    ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "ustream_get_remaining_size", result);
+                    printf("Couldn't get concatenated ustream remaining size\r\n");
                 }
                 else
                 {
-                    //Print the size of the appended ustream
-                    (void)printf("Size of ustream_one after append: %lu\r\n", ustream_size);
+                    //Print the size of the concat ustream
+                    (void)printf("Size of ustream_one after concat: %zu\r\n", ustream_size);
 
-                    //Print the USTREAM contents
-                    if((result = print_buffer(ustream_one)) != ULIB_SUCCESS)
+                    //Print the AZ_USTREAM contents
+                    if((result = print_buffer(&ustream_one)) != AZ_ULIB_SUCCESS)
                     {
-                        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "print_buffer", result);
+                        printf("Couldn't print concatenated ustream\r\n");
                     }
-                    //Dispose of the USTREAM (original ustream_one and original ustream_two)
+                    //Dispose of the AZ_USTREAM (original ustream_one and original ustream_two)
                     //At this point the memory malloc'd for ustream_two will be free'd
-                    else if((result = ustream_dispose(ustream_one)) != ULIB_SUCCESS)
+                    else if((result = az_ustream_dispose(&ustream_one)) != AZ_ULIB_SUCCESS)
                     {
-                        ULIB_CONFIG_LOG(ULOG_TYPE_ERROR, ULOG_REPORT_EXCEPTION_STRING, "ustream_dispose", result);
+                        printf("Couldn't dispose ustream_one\r\n");
                     }
                 }
             }

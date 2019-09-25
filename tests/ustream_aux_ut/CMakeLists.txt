@@ -3,8 +3,9 @@
 
 cmake_minimum_required(VERSION 3.2.0)
 
-add_executable(ustream_basic
-    ${CMAKE_CURRENT_LIST_DIR}/src/main.c
+add_executable(ustream_aux_ut
+    ${CMAKE_CURRENT_LIST_DIR}/main.c
+    ${CMAKE_CURRENT_LIST_DIR}/ustream_aux_ut.c
 )
 
-ulib_populate_sample_target(ustream_basic)
+ulib_populate_test_target(ustream_aux_ut)
