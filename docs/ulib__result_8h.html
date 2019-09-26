@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>uLib: C:/repos/uLib-WIP/doxy/inc/ulib_result.h File Reference</title>
+<title>uLib: E:/repos/uLib-WIP/doxy/inc/ulib_result.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -73,6 +73,9 @@ $(function() {
 <div class="title">ulib_result.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>ulib return values  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;azure_macro_utils/macro_utils.h&quot;</code><br />
 <code>#include &quot;umock_c/umock_c_prod.h&quot;</code><br />
 </div>
@@ -80,73 +83,77 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a75a08d143916a78c1889d958da3d4970"><td class="memItemLeft" align="right" valign="top"><a id="a75a08d143916a78c1889d958da3d4970"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ulib__result_8h.html#a75a08d143916a78c1889d958da3d4970">ULIB_ERROR_FLAG</a>&#160;&#160;&#160;0X80</td></tr>
-<tr class="memdesc:a75a08d143916a78c1889d958da3d4970"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error bit for error values. <br /></td></tr>
-<tr class="separator:a75a08d143916a78c1889d958da3d4970"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9653dea3185f49b40b9118652828beb3"><td class="memItemLeft" align="right" valign="top"><a id="a9653dea3185f49b40b9118652828beb3"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ulib__result_8h.html#a9653dea3185f49b40b9118652828beb3">AZ_ULIB_ERROR_FLAG</a>&#160;&#160;&#160;0X80</td></tr>
+<tr class="memdesc:a9653dea3185f49b40b9118652828beb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error bit for error values. <br /></td></tr>
+<tr class="separator:a9653dea3185f49b40b9118652828beb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a7b4ea9b3f22e66373047cf21c547b6a8"><td class="memItemLeft" align="right" valign="top"><a id="a7b4ea9b3f22e66373047cf21c547b6a8"></a>
-typedef enum <a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5ae">ULIB_RESULT_TAG</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ulib__result_8h.html#a7b4ea9b3f22e66373047cf21c547b6a8">ULIB_RESULT</a></td></tr>
-<tr class="memdesc:a7b4ea9b3f22e66373047cf21c547b6a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of uLib results. <br /></td></tr>
-<tr class="separator:a7b4ea9b3f22e66373047cf21c547b6a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a224a449162851fd8b7549f9f264829bc"><td class="memItemLeft" align="right" valign="top"><a id="a224a449162851fd8b7549f9f264829bc"></a>
+typedef enum <a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45">AZ_ULIB_RESULT_TAG</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ulib__result_8h.html#a224a449162851fd8b7549f9f264829bc">AZ_ULIB_RESULT</a></td></tr>
+<tr class="memdesc:a224a449162851fd8b7549f9f264829bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of ulib results. <br /></td></tr>
+<tr class="separator:a224a449162851fd8b7549f9f264829bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ad2cb4b4c02b7e013e3305f27cb01b5ae"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5ae">ULIB_RESULT_TAG</a> { <br />
-&#160;&#160;<a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5aeae7d5db82cb5e0fb4738071bffe0dd45f">ULIB_SUCCESS</a> = 0, 
-<a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5aea8d485c79dded6bacdd4fdc6bc55be834">ULIB_EOF</a> = 1, 
-<a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5aea975fbed97cdcc51739ec4bb3f4a60b0b">ULIB_OUT_OF_MEMORY_ERROR</a> = (ULIB_ERROR_FLAG | 0), 
-<a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5aea66b338ea7fce6e40947ff3259715980c">ULIB_NO_SUCH_ELEMENT_ERROR</a> = (ULIB_ERROR_FLAG | 1), 
+<tr class="memitem:a9222732d66d3174318eba4eb34e0dc45"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45">AZ_ULIB_RESULT_TAG</a> { <br />
+&#160;&#160;<a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a9b6525e017ad9692aec8e4123f00f6da">AZ_ULIB_SUCCESS</a> = 0, 
+<a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45ad9447f560ce6d7d0e2a7b54276076abf">AZ_ULIB_EOF</a> = 1, 
+<a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45ab4db24ce1792ae4e4d83181e9e786ab5">AZ_ULIB_OUT_OF_MEMORY_ERROR</a> = (AZ_ULIB_ERROR_FLAG | 0), 
+<a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a32cdba46eaa5a629d734a724d6a0d262">AZ_ULIB_NO_SUCH_ELEMENT_ERROR</a> = (AZ_ULIB_ERROR_FLAG | 1), 
 <br />
-&#160;&#160;<a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5aea0c876bcb7229fdf372374a1894ac2cf8">ULIB_ILLEGAL_ARGUMENT_ERROR</a> = (ULIB_ERROR_FLAG | 2), 
-<a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5aeaa8e37abfdd2aa691cd72b982fdbe0a24">ULIB_SECURITY_ERROR</a> = (ULIB_ERROR_FLAG | 3), 
-<a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5aea858193e38907ad3d0a6f2edfab9b7e7b">ULIB_SYSTEM_ERROR</a> = (ULIB_ERROR_FLAG | 4), 
-<a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5aea898d5717be84c2765509173d093b2fb6">ULIB_CANCELLED_ERROR</a> = (ULIB_ERROR_FLAG | 5), 
+&#160;&#160;<a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a10f7984297a18f0c7bc2a6a9b30954ea">AZ_ULIB_ILLEGAL_ARGUMENT_ERROR</a> = (AZ_ULIB_ERROR_FLAG | 2), 
+<a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a334eb3a5eda03cb03e05c07f8fb87bc9">AZ_ULIB_SECURITY_ERROR</a> = (AZ_ULIB_ERROR_FLAG | 3), 
+<a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a65161a8f1383c7deb7c8f8bd049c72a4">AZ_ULIB_SYSTEM_ERROR</a> = (AZ_ULIB_ERROR_FLAG | 4), 
+<a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45abb03e26a826cb17654087df94764db4e">AZ_ULIB_CANCELLED_ERROR</a> = (AZ_ULIB_ERROR_FLAG | 5), 
 <br />
-&#160;&#160;<a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5aeadc36fef3a65ded4b8ba5314da4084821">ULIB_BUSY_ERROR</a> = (ULIB_ERROR_FLAG | 6)
+&#160;&#160;<a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a98084dcd3b98af73b445f7be092cd01d">AZ_ULIB_BUSY_ERROR</a> = (AZ_ULIB_ERROR_FLAG | 6)
 <br />
  }</td></tr>
-<tr class="memdesc:ad2cb4b4c02b7e013e3305f27cb01b5ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of uLib results.  <a href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5ae">More...</a><br /></td></tr>
-<tr class="separator:ad2cb4b4c02b7e013e3305f27cb01b5ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:a9222732d66d3174318eba4eb34e0dc45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of ulib results.  <a href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45">More...</a><br /></td></tr>
+<tr class="separator:a9222732d66d3174318eba4eb34e0dc45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="ad2cb4b4c02b7e013e3305f27cb01b5ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad2cb4b4c02b7e013e3305f27cb01b5ae">&#9670;&nbsp;</a></span>ULIB_RESULT_TAG</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>ulib return values </p>
+
+<p class="definition">Definition in file <a class="el" href="ulib__result_8h_source.html">ulib_result.h</a>.</p>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a9222732d66d3174318eba4eb34e0dc45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9222732d66d3174318eba4eb34e0dc45">&#9670;&nbsp;</a></span>AZ_ULIB_RESULT_TAG</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="ulib__result_8h.html#ad2cb4b4c02b7e013e3305f27cb01b5ae">ULIB_RESULT_TAG</a></td>
+          <td class="memname">enum <a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45">AZ_ULIB_RESULT_TAG</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Enumeration of uLib results. </p>
+<p>Enumeration of ulib results. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad2cb4b4c02b7e013e3305f27cb01b5aeae7d5db82cb5e0fb4738071bffe0dd45f"></a>ULIB_SUCCESS&#160;</td><td class="fielddoc"><p>Successful return </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a9222732d66d3174318eba4eb34e0dc45a9b6525e017ad9692aec8e4123f00f6da"></a>AZ_ULIB_SUCCESS&#160;</td><td class="fielddoc"><p>Successful return </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad2cb4b4c02b7e013e3305f27cb01b5aea8d485c79dded6bacdd4fdc6bc55be834"></a>ULIB_EOF&#160;</td><td class="fielddoc"><p>End of fle (no more data to read) </p>
+<tr><td class="fieldname"><a id="a9222732d66d3174318eba4eb34e0dc45ad9447f560ce6d7d0e2a7b54276076abf"></a>AZ_ULIB_EOF&#160;</td><td class="fielddoc"><p>End of fle (no more data to read) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad2cb4b4c02b7e013e3305f27cb01b5aea975fbed97cdcc51739ec4bb3f4a60b0b"></a>ULIB_OUT_OF_MEMORY_ERROR&#160;</td><td class="fielddoc"><p>Out of memory error </p>
+<tr><td class="fieldname"><a id="a9222732d66d3174318eba4eb34e0dc45ab4db24ce1792ae4e4d83181e9e786ab5"></a>AZ_ULIB_OUT_OF_MEMORY_ERROR&#160;</td><td class="fielddoc"><p>Out of memory error </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad2cb4b4c02b7e013e3305f27cb01b5aea66b338ea7fce6e40947ff3259715980c"></a>ULIB_NO_SUCH_ELEMENT_ERROR&#160;</td><td class="fielddoc"><p>No such element error </p>
+<tr><td class="fieldname"><a id="a9222732d66d3174318eba4eb34e0dc45a32cdba46eaa5a629d734a724d6a0d262"></a>AZ_ULIB_NO_SUCH_ELEMENT_ERROR&#160;</td><td class="fielddoc"><p>No such element error </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad2cb4b4c02b7e013e3305f27cb01b5aea0c876bcb7229fdf372374a1894ac2cf8"></a>ULIB_ILLEGAL_ARGUMENT_ERROR&#160;</td><td class="fielddoc"><p>Illegal argument error </p>
+<tr><td class="fieldname"><a id="a9222732d66d3174318eba4eb34e0dc45a10f7984297a18f0c7bc2a6a9b30954ea"></a>AZ_ULIB_ILLEGAL_ARGUMENT_ERROR&#160;</td><td class="fielddoc"><p>Illegal argument error </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad2cb4b4c02b7e013e3305f27cb01b5aeaa8e37abfdd2aa691cd72b982fdbe0a24"></a>ULIB_SECURITY_ERROR&#160;</td><td class="fielddoc"><p>Security error </p>
+<tr><td class="fieldname"><a id="a9222732d66d3174318eba4eb34e0dc45a334eb3a5eda03cb03e05c07f8fb87bc9"></a>AZ_ULIB_SECURITY_ERROR&#160;</td><td class="fielddoc"><p>Security error </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad2cb4b4c02b7e013e3305f27cb01b5aea858193e38907ad3d0a6f2edfab9b7e7b"></a>ULIB_SYSTEM_ERROR&#160;</td><td class="fielddoc"><p>System error </p>
+<tr><td class="fieldname"><a id="a9222732d66d3174318eba4eb34e0dc45a65161a8f1383c7deb7c8f8bd049c72a4"></a>AZ_ULIB_SYSTEM_ERROR&#160;</td><td class="fielddoc"><p>System error </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad2cb4b4c02b7e013e3305f27cb01b5aea898d5717be84c2765509173d093b2fb6"></a>ULIB_CANCELLED_ERROR&#160;</td><td class="fielddoc"><p>Cancelled error </p>
+<tr><td class="fieldname"><a id="a9222732d66d3174318eba4eb34e0dc45abb03e26a826cb17654087df94764db4e"></a>AZ_ULIB_CANCELLED_ERROR&#160;</td><td class="fielddoc"><p>Cancelled error </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad2cb4b4c02b7e013e3305f27cb01b5aeadc36fef3a65ded4b8ba5314da4084821"></a>ULIB_BUSY_ERROR&#160;</td><td class="fielddoc"><p>Busy error </p>
+<tr><td class="fieldname"><a id="a9222732d66d3174318eba4eb34e0dc45a98084dcd3b98af73b445f7be092cd01d"></a>AZ_ULIB_BUSY_ERROR&#160;</td><td class="fielddoc"><p>Busy error </p>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="ulib__result_8h_source.html#l00026">26</a> of file <a class="el" href="ulib__result_8h_source.html">ulib_result.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ulib__result_8h_source.html#l00028">28</a> of file <a class="el" href="ulib__result_8h_source.html">ulib_result.h</a>.</p>
 
 </div>
 </div>
