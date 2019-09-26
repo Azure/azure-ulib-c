@@ -6,7 +6,7 @@
 
 /**
  * @file ustream_base.h
- *
+ * 
  * @brief **uStream Interface Definition**
  *
  *  This is the definition of a heterogeneous buffer that helps other modules in a system
@@ -339,12 +339,7 @@ extern "C" {
 typedef size_t offset_t;
 
 /**
- * @struct AZ_USTREAM_INTERFACE_TAG
- */
-typedef struct AZ_USTREAM_INTERFACE_TAG AZ_USTREAM_INTERFACE;
-
-/**
- * @brief   Interface description.
+ * @brief   Forward declaration of AZ_USTREAM. See #AZ_USTREAM_TAG for struct members.
  */
 typedef struct AZ_USTREAM_TAG AZ_USTREAM;
 
@@ -356,7 +351,7 @@ typedef struct AZ_USTREAM_TAG AZ_USTREAM;
  *  Any code that will use an exposed ustream shall call the APIs using the <tt>az_ustream_...</tt>
  *      inline functions.
  */
-struct AZ_USTREAM_INTERFACE_TAG
+typedef struct AZ_USTREAM_INTERFACE_TAG
 {
     AZ_ULIB_RESULT(*set_position)(AZ_USTREAM* ustream_instance, offset_t position);         /**<concrete <tt>set_position</tt> implementation*/
     AZ_ULIB_RESULT(*reset)(AZ_USTREAM* ustream_instance);                                   /**<concrete <tt>reset</tt> implementation*/
@@ -368,7 +363,7 @@ struct AZ_USTREAM_INTERFACE_TAG
     AZ_ULIB_RESULT(*clone)(AZ_USTREAM* ustream_instance_clone, 
                                             AZ_USTREAM* ustream_instance, offset_t offset); /**<concrete <tt>clone</tt> implementation*/
     AZ_ULIB_RESULT(*dispose)(AZ_USTREAM* ustream_instance);                                 /**<concrete <tt>dispose</tt> implementation*/
-};
+} AZ_USTREAM_INTERFACE;
 
 /**
  * @brief   Signature of the function to release memory passed to the ustream
@@ -382,10 +377,9 @@ typedef void (*AZ_RELEASE_CALLBACK)(void*);
 /**
  * @brief   Pointer to the data from which to read
  * 
- * @param[in]   void*       void pointer to memory where the data is located or any needed controls to access the data.
- *                          The content of the memory to which this points is up to the ustream implementation.
+ * void pointer to memory where the data is located or any needed controls to access the data.
+ * The content of the memory to which this points is up to the ustream implementation.
  * 
- * @return  void
  */
 typedef void* AZ_USTREAM_DATA;
 
@@ -400,8 +394,8 @@ typedef void* AZ_USTREAM_DATA;
  */
 typedef struct AZ_USTREAM_DATA_CB_TAG
 {
-    const AZ_USTREAM_INTERFACE* api;             /**<The @link AZ_USTREAM_INTERFACE_TAG AZ_USTREAM_INTERFACE*
-                                                            @endlink for this ustream instance type */
+    const AZ_USTREAM_INTERFACE* api;             /**<The #AZ_USTREAM_INTERFACE*
+                                                            for this ustream instance type */
     AZ_USTREAM_DATA* ptr;                        /**<The #AZ_USTREAM_DATA* pointing to the data to read. It can 
                                                             be anything that a given ustream implementation needs to
                                                             access the data, whether it be a memory address to a buffer,
@@ -423,11 +417,10 @@ typedef struct AZ_USTREAM_DATA_CB_TAG
  *      Each time an <tt>AZ_USTREAM</tt> is cloned using az_ustream_clone(), the
  *      <tt>ref_count</tt> inside the <tt>AZ_USTREAM_DATA_CB</tt> is incremented to signal a reference
  *      to the memory has been acquired. Once the instance is done being used, az_ustream_release() 
- *      must be called to decrememnt <tt>ref_count</tt>.
+ *      must be called to decrement <tt>ref_count</tt>.
  * 
  * @note This structure should be viewed and used as internal to the implementation of the ustream. Users should therefore not act on 
  *       it directly and only allocate the memory necessary for it to be passed to the ustream.
- *  
  */
 struct AZ_USTREAM_TAG
 {
@@ -729,7 +722,7 @@ static inline AZ_ULIB_RESULT az_ustream_release(AZ_USTREAM* ustream_instance, of
 }
 
 /**
- * @brief   Creates a new instance of the ustream and returns it.
+ * @brief   Initializes a new instance of the ustream and returns it.
  *
  *  Cloning a ustream will create a new instance of the ustream that shares the same content of the
  *      original one. The clone shall not copy the content of the ustream, but only add a reference to

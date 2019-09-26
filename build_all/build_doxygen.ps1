@@ -76,8 +76,10 @@ $currentDir = $PSScriptRoot
 $projectRoot = "$currentDir\.."
 $incfiles = Get-ChildItem "$projectRoot\inc\*.h"
 $configfiles = Get-ChildItem "$projectRoot\config\*.h"
+$palfiles = Get-ChildItem "$projectRoot\pal\os\inc\*.h"
 $incDir = "$projectRoot\doxy\inc"
 $configDir = "$projectRoot\doxy\config"
+$palDir = "$projectRoot\doxy\pal\os\inc"
 
 Push-Location $projectRoot
 
@@ -88,6 +90,9 @@ if ((Test-Path $incDir) -eq $false) {
 if ((Test-Path $configDir) -eq $false) {
     mkdir $configDir
 }
+if ((Test-Path $palDir) -eq $false) {
+    mkdir $palDir
+}
 
 # Enumerate through all files, running cleanupCUtilMacrosInFile and then a Set-Content to put into new file
 foreach ($file in $incfiles) {
@@ -97,6 +102,11 @@ foreach ($file in $incfiles) {
 }
 foreach ($file in $configfiles) {
     $outputFile = Join-Path $configDir $file.name
+    Write-Verbose ("Processing file {0} and outputting to {1}" -f $file.fullname, $outputFile)
+    Set-Content -Path $outputFile (cleanupCUtilMacrosInFile $file.fullname)
+}
+foreach ($file in $palfiles) {
+    $outputFile = Join-Path $palDir $file.name
     Write-Verbose ("Processing file {0} and outputting to {1}" -f $file.fullname, $outputFile)
     Set-Content -Path $outputFile (cleanupCUtilMacrosInFile $file.fullname)
 }

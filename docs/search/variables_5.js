@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['read',['read',['../struct_u_s_t_r_e_a_m___i_n_t_e_r_f_a_c_e___t_a_g.html#adf40017bb219a415e3f4364b7f93cc1c',1,'USTREAM_INTERFACE_TAG']]],
-  ['release',['release',['../struct_u_s_t_r_e_a_m___i_n_t_e_r_f_a_c_e___t_a_g.html#ab50b1fc047eb6307d941702ccc3a2983',1,'USTREAM_INTERFACE_TAG']]],
-  ['reset',['reset',['../struct_u_s_t_r_e_a_m___i_n_t_e_r_f_a_c_e___t_a_g.html#a8fb01cae332557d6902bb482150b63d5',1,'USTREAM_INTERFACE_TAG']]]
+  ['length',['length',['../struct_a_z___u_s_t_r_e_a_m___t_a_g.html#a9407baa8d81a7bb147f3e23b75539e13',1,'AZ_USTREAM_TAG']]],
+  ['lock',['lock',['../struct_a_z___u_s_t_r_e_a_m___m_u_l_t_i___d_a_t_a___c_b___t_a_g.html#a2df326e529fef623796c288d462cf6b9',1,'AZ_USTREAM_MULTI_DATA_CB_TAG']]]
 ];

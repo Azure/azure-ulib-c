@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>uLib: C:/repos/uLib-WIP/doxy/inc/ucontract.h File Reference</title>
+<title>uLib: E:/repos/uLib-WIP/doxy/inc/ucontract.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -71,6 +71,9 @@ $(function() {
 <div class="title">ucontract.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Public API parameter validation.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;azure_macro_utils/macro_utils.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="ulib__config_8h_source.html">ulib_config.h</a>&quot;</code><br />
 <code>#include &quot;ulib_port.h&quot;</code><br />
@@ -81,69 +84,73 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a90aa8bbeaf79da4e81f2add8ebdeeb80"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a90aa8bbeaf79da4e81f2add8ebdeeb80">UCONTRACT</a>(...)&#160;&#160;&#160;do { MU_FOR_EACH_1(EVALUATE_REQUIRE, __VA_ARGS__) } while((void)0,0)</td></tr>
-<tr class="memdesc:a90aa8bbeaf79da4e81f2add8ebdeeb80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro to define contract for public function parameters.  <a href="#a90aa8bbeaf79da4e81f2add8ebdeeb80">More...</a><br /></td></tr>
-<tr class="separator:a90aa8bbeaf79da4e81f2add8ebdeeb80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19d197acc70331db797b43fe3cdb2e68"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a19d197acc70331db797b43fe3cdb2e68">UASSERT</a>(...)&#160;&#160;&#160;<a class="el" href="ucontract_8h.html#a90aa8bbeaf79da4e81f2add8ebdeeb80">UCONTRACT</a>(__VA_ARGS__)</td></tr>
-<tr class="memdesc:a19d197acc70331db797b43fe3cdb2e68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro to define assertion for internal functions.  <a href="#a19d197acc70331db797b43fe3cdb2e68">More...</a><br /></td></tr>
-<tr class="separator:a19d197acc70331db797b43fe3cdb2e68"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d58203b9f704c51b93995618d6fec35"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a2d58203b9f704c51b93995618d6fec35">UCONTRACT_REQUIRE</a>(expression,  result,  msg)</td></tr>
-<tr class="memdesc:a2d58203b9f704c51b93995618d6fec35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluation user expression.  <a href="#a2d58203b9f704c51b93995618d6fec35">More...</a><br /></td></tr>
-<tr class="separator:a2d58203b9f704c51b93995618d6fec35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ee6543da5f29c22b1a518cb3a209a08"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a6ee6543da5f29c22b1a518cb3a209a08">UCONTRACT_REQUIRE_EQUALS</a>(val,  expected,  result)</td></tr>
-<tr class="memdesc:a6ee6543da5f29c22b1a518cb3a209a08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if two values are equal.  <a href="#a6ee6543da5f29c22b1a518cb3a209a08">More...</a><br /></td></tr>
-<tr class="separator:a6ee6543da5f29c22b1a518cb3a209a08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa83a08c3987af1f07f25dc4cc59c8a12"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#aa83a08c3987af1f07f25dc4cc59c8a12">UCONTRACT_REQUIRE_NOT_EQUALS</a>(val,  expected,  result)</td></tr>
-<tr class="memdesc:aa83a08c3987af1f07f25dc4cc59c8a12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if two values are not equal.  <a href="#aa83a08c3987af1f07f25dc4cc59c8a12">More...</a><br /></td></tr>
-<tr class="separator:aa83a08c3987af1f07f25dc4cc59c8a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a93b76907363843f8d5c89481edb23458"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a93b76907363843f8d5c89481edb23458">UCONTRACT_REQUIRE_NOT_NULL</a>(val,  result)</td></tr>
-<tr class="memdesc:a93b76907363843f8d5c89481edb23458"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if value is not <code>NULL</code>.  <a href="#a93b76907363843f8d5c89481edb23458">More...</a><br /></td></tr>
-<tr class="separator:a93b76907363843f8d5c89481edb23458"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aacb10965911f6cb7f796dc3b563a35dd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#aacb10965911f6cb7f796dc3b563a35dd">UCONTRACT_REQUIRE_HARD_FAULT</a>(expression,  msg)</td></tr>
-<tr class="memdesc:aacb10965911f6cb7f796dc3b563a35dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate user expression.  <a href="#aacb10965911f6cb7f796dc3b563a35dd">More...</a><br /></td></tr>
-<tr class="separator:aacb10965911f6cb7f796dc3b563a35dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1baa7cdb92b07cdde6b83965361bb6ed"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a1baa7cdb92b07cdde6b83965361bb6ed">UCONTRACT_REQUIRE_EQUALS_HARD_FAULT</a>(val,  expected)</td></tr>
-<tr class="memdesc:a1baa7cdb92b07cdde6b83965361bb6ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if two values are equal.  <a href="#a1baa7cdb92b07cdde6b83965361bb6ed">More...</a><br /></td></tr>
-<tr class="separator:a1baa7cdb92b07cdde6b83965361bb6ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7dff919ce26e74547026a04831b64800"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a7dff919ce26e74547026a04831b64800">UCONTRACT_REQUIRE_NOT_EQUALS_HARD_FAULT</a>(val,  expected)</td></tr>
-<tr class="memdesc:a7dff919ce26e74547026a04831b64800"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if two values are not equal.  <a href="#a7dff919ce26e74547026a04831b64800">More...</a><br /></td></tr>
-<tr class="separator:a7dff919ce26e74547026a04831b64800"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd13ee94ad8b5f5688e0f338ec2224a0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#acd13ee94ad8b5f5688e0f338ec2224a0">UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT</a>(val)</td></tr>
-<tr class="memdesc:acd13ee94ad8b5f5688e0f338ec2224a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if value is not <code>NULL</code>.  <a href="#acd13ee94ad8b5f5688e0f338ec2224a0">More...</a><br /></td></tr>
-<tr class="separator:acd13ee94ad8b5f5688e0f338ec2224a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a730fac0171d8e82b3c6ee0fb554ab10c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a730fac0171d8e82b3c6ee0fb554ab10c">AZ_UCONTRACT</a>(...)&#160;&#160;&#160;do { MU_FOR_EACH_1(EVALUATE_REQUIRE, __VA_ARGS__) } while((void)0,0)</td></tr>
+<tr class="memdesc:a730fac0171d8e82b3c6ee0fb554ab10c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro to define contract for public function parameters.  <a href="#a730fac0171d8e82b3c6ee0fb554ab10c">More...</a><br /></td></tr>
+<tr class="separator:a730fac0171d8e82b3c6ee0fb554ab10c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22a8f4524682e8c61b194d16281d3c6e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a22a8f4524682e8c61b194d16281d3c6e">AZ_UASSERT</a>(...)&#160;&#160;&#160;<a class="el" href="ucontract_8h.html#a730fac0171d8e82b3c6ee0fb554ab10c">AZ_UCONTRACT</a>(__VA_ARGS__)</td></tr>
+<tr class="memdesc:a22a8f4524682e8c61b194d16281d3c6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro to define assertion for internal functions.  <a href="#a22a8f4524682e8c61b194d16281d3c6e">More...</a><br /></td></tr>
+<tr class="separator:a22a8f4524682e8c61b194d16281d3c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1d5549c94f216c8dfa8ac3e4c9ff35d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#ab1d5549c94f216c8dfa8ac3e4c9ff35d">AZ_UCONTRACT_REQUIRE</a>(expression,  result,  msg)</td></tr>
+<tr class="memdesc:ab1d5549c94f216c8dfa8ac3e4c9ff35d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluation developer expression.  <a href="#ab1d5549c94f216c8dfa8ac3e4c9ff35d">More...</a><br /></td></tr>
+<tr class="separator:ab1d5549c94f216c8dfa8ac3e4c9ff35d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0b4d8e202b0cf0f6d48392f3a3fd198"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#ac0b4d8e202b0cf0f6d48392f3a3fd198">AZ_UCONTRACT_REQUIRE_EQUALS</a>(val,  expected,  result)</td></tr>
+<tr class="memdesc:ac0b4d8e202b0cf0f6d48392f3a3fd198"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if two values are equal.  <a href="#ac0b4d8e202b0cf0f6d48392f3a3fd198">More...</a><br /></td></tr>
+<tr class="separator:ac0b4d8e202b0cf0f6d48392f3a3fd198"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34deed4cd184df41c0718d7ab6690629"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a34deed4cd184df41c0718d7ab6690629">AZ_UCONTRACT_REQUIRE_NOT_EQUALS</a>(val,  expected,  result)</td></tr>
+<tr class="memdesc:a34deed4cd184df41c0718d7ab6690629"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if two values are not equal.  <a href="#a34deed4cd184df41c0718d7ab6690629">More...</a><br /></td></tr>
+<tr class="separator:a34deed4cd184df41c0718d7ab6690629"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c7ac2cbe138840240ab0a38c15cc51f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a4c7ac2cbe138840240ab0a38c15cc51f">AZ_UCONTRACT_REQUIRE_NOT_NULL</a>(val,  result)</td></tr>
+<tr class="memdesc:a4c7ac2cbe138840240ab0a38c15cc51f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if value is not <code>NULL</code>.  <a href="#a4c7ac2cbe138840240ab0a38c15cc51f">More...</a><br /></td></tr>
+<tr class="separator:a4c7ac2cbe138840240ab0a38c15cc51f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d49c125b27958c9bd58ea90ff2e413e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a6d49c125b27958c9bd58ea90ff2e413e">AZ_UCONTRACT_REQUIRE_HARD_FAULT</a>(expression,  msg)</td></tr>
+<tr class="memdesc:a6d49c125b27958c9bd58ea90ff2e413e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate developer expression.  <a href="#a6d49c125b27958c9bd58ea90ff2e413e">More...</a><br /></td></tr>
+<tr class="separator:a6d49c125b27958c9bd58ea90ff2e413e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ef622bfe98db0191a3d3d599d8ac869"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a2ef622bfe98db0191a3d3d599d8ac869">AZ_UCONTRACT_REQUIRE_EQUALS_HARD_FAULT</a>(val,  expected)</td></tr>
+<tr class="memdesc:a2ef622bfe98db0191a3d3d599d8ac869"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if two values are equal.  <a href="#a2ef622bfe98db0191a3d3d599d8ac869">More...</a><br /></td></tr>
+<tr class="separator:a2ef622bfe98db0191a3d3d599d8ac869"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70dbe1d7e3a30005a75afc033e25cdcc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a70dbe1d7e3a30005a75afc033e25cdcc">AZ_UCONTRACT_REQUIRE_NOT_EQUALS_HARD_FAULT</a>(val,  expected)</td></tr>
+<tr class="memdesc:a70dbe1d7e3a30005a75afc033e25cdcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if two values are not equal.  <a href="#a70dbe1d7e3a30005a75afc033e25cdcc">More...</a><br /></td></tr>
+<tr class="separator:a70dbe1d7e3a30005a75afc033e25cdcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9eca5bbdec23202095ba1f2f9eabf2b8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ucontract_8h.html#a9eca5bbdec23202095ba1f2f9eabf2b8">AZ_UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT</a>(val)</td></tr>
+<tr class="memdesc:a9eca5bbdec23202095ba1f2f9eabf2b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contract macro to evaluate if value is not <code>NULL</code>.  <a href="#a9eca5bbdec23202095ba1f2f9eabf2b8">More...</a><br /></td></tr>
+<tr class="separator:a9eca5bbdec23202095ba1f2f9eabf2b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a19d197acc70331db797b43fe3cdb2e68"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19d197acc70331db797b43fe3cdb2e68">&#9670;&nbsp;</a></span>UASSERT</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Public API parameter validation. </p>
+
+<p class="definition">Definition in file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a22a8f4524682e8c61b194d16281d3c6e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22a8f4524682e8c61b194d16281d3c6e">&#9670;&nbsp;</a></span>AZ_UASSERT</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UASSERT</td>
+          <td class="memname">#define AZ_UASSERT</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>...</em></td><td>)</td>
-          <td>&#160;&#160;&#160;<a class="el" href="ucontract_8h.html#a90aa8bbeaf79da4e81f2add8ebdeeb80">UCONTRACT</a>(__VA_ARGS__)</td>
+          <td>&#160;&#160;&#160;<a class="el" href="ucontract_8h.html#a730fac0171d8e82b3c6ee0fb554ab10c">AZ_UCONTRACT</a>(__VA_ARGS__)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Macro to define assertion for internal functions. </p>
-<p>Parameters to this macro shall be a comma separated list of UCONTRACT_... macros as listed below. </p>
+<p>Parameters to this macro shall be a comma separated list of AZ_UCONTRACT_... macros as listed below. </p>
 
-<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00046">46</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00048">48</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
 
 </div>
 </div>
-<a id="a90aa8bbeaf79da4e81f2add8ebdeeb80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a90aa8bbeaf79da4e81f2add8ebdeeb80">&#9670;&nbsp;</a></span>UCONTRACT</h2>
+<a id="a730fac0171d8e82b3c6ee0fb554ab10c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a730fac0171d8e82b3c6ee0fb554ab10c">&#9670;&nbsp;</a></span>AZ_UCONTRACT</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UCONTRACT</td>
+          <td class="memname">#define AZ_UCONTRACT</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>...</em></td><td>)</td>
@@ -153,21 +160,21 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Macro to define contract for public function parameters. </p>
-<p>Parameters to this macro shall be a comma separated list of UCONTRACT_... macros as listed below.</p>
-<p>Each public function shall have one <a class="el" href="ucontract_8h.html#a90aa8bbeaf79da4e81f2add8ebdeeb80" title="Macro to define contract for public function parameters.">UCONTRACT()</a> macro with the listed requirements inside. </p>
+<p>Parameters to this macro shall be a comma separated list of AZ_UCONTRACT_... macros as listed below.</p>
+<p>Each public function shall have one <a class="el" href="ucontract_8h.html#a730fac0171d8e82b3c6ee0fb554ab10c" title="Macro to define contract for public function parameters.">AZ_UCONTRACT()</a> macro with the listed requirements inside. </p>
 
-<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00035">35</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00037">37</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
 
 </div>
 </div>
-<a id="a2d58203b9f704c51b93995618d6fec35"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d58203b9f704c51b93995618d6fec35">&#9670;&nbsp;</a></span>UCONTRACT_REQUIRE</h2>
+<a id="ab1d5549c94f216c8dfa8ac3e4c9ff35d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1d5549c94f216c8dfa8ac3e4c9ff35d">&#9670;&nbsp;</a></span>AZ_UCONTRACT_REQUIRE</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UCONTRACT_REQUIRE</td>
+          <td class="memname">#define AZ_UCONTRACT_REQUIRE</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">expression, </td>
@@ -191,9 +198,9 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(!(expression)) \</div><div class="line">        { \</div><div class="line">            ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a>, msg); \</div><div class="line">            return result; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc"><div class="ttname"><a href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00031">ulog.h:31</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(!(expression)) \</div><div class="line">        { \</div><div class="line">            AZ_ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a>, msg); \</div><div class="line">            return result; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a"><div class="ttname"><a href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00035">ulog.h:35</a></div></div>
 </div><!-- fragment -->
-<p>Contract macro to evaluation user expression. </p>
+<p>Contract macro to evaluation developer expression. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">expression</td><td>boolean expression to be evaluated </td></tr>
@@ -203,18 +210,18 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00056">56</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00058">58</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
 
 </div>
 </div>
-<a id="a6ee6543da5f29c22b1a518cb3a209a08"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ee6543da5f29c22b1a518cb3a209a08">&#9670;&nbsp;</a></span>UCONTRACT_REQUIRE_EQUALS</h2>
+<a id="ac0b4d8e202b0cf0f6d48392f3a3fd198"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0b4d8e202b0cf0f6d48392f3a3fd198">&#9670;&nbsp;</a></span>AZ_UCONTRACT_REQUIRE_EQUALS</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UCONTRACT_REQUIRE_EQUALS</td>
+          <td class="memname">#define AZ_UCONTRACT_REQUIRE_EQUALS</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">val, </td>
@@ -238,7 +245,7 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val != expected) \</div><div class="line">        { \</div><div class="line">            ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a>, ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \</div><div class="line">            return result; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc"><div class="ttname"><a href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00031">ulog.h:31</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val != expected) \</div><div class="line">        { \</div><div class="line">            AZ_ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a>, AZ_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \</div><div class="line">            return result; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a"><div class="ttname"><a href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00035">ulog.h:35</a></div></div>
 </div><!-- fragment -->
 <p>Contract macro to evaluate if two values are equal. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -250,18 +257,18 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00072">72</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00074">74</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
 
 </div>
 </div>
-<a id="a1baa7cdb92b07cdde6b83965361bb6ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1baa7cdb92b07cdde6b83965361bb6ed">&#9670;&nbsp;</a></span>UCONTRACT_REQUIRE_EQUALS_HARD_FAULT</h2>
+<a id="a2ef622bfe98db0191a3d3d599d8ac869"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ef622bfe98db0191a3d3d599d8ac869">&#9670;&nbsp;</a></span>AZ_UCONTRACT_REQUIRE_EQUALS_HARD_FAULT</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UCONTRACT_REQUIRE_EQUALS_HARD_FAULT</td>
+          <td class="memname">#define AZ_UCONTRACT_REQUIRE_EQUALS_HARD_FAULT</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">val, </td>
@@ -279,7 +286,7 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val != expected) \</div><div class="line">        { \</div><div class="line">            ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a>, ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \</div><div class="line">            ULIB_PORT_THROW_HARD_FAULT; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc"><div class="ttname"><a href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00031">ulog.h:31</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val != expected) \</div><div class="line">        { \</div><div class="line">            AZ_ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a>, AZ_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \</div><div class="line">            AZ_ULIB_PORT_THROW_HARD_FAULT; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a"><div class="ttname"><a href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00035">ulog.h:35</a></div></div>
 </div><!-- fragment -->
 <p>Contract macro to evaluate if two values are equal. </p>
 <dl class="section warning"><dt>Warning</dt><dd>Throws hard fault if values are not equal</dd></dl>
@@ -291,18 +298,18 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00137">137</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00139">139</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
 
 </div>
 </div>
-<a id="aacb10965911f6cb7f796dc3b563a35dd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aacb10965911f6cb7f796dc3b563a35dd">&#9670;&nbsp;</a></span>UCONTRACT_REQUIRE_HARD_FAULT</h2>
+<a id="a6d49c125b27958c9bd58ea90ff2e413e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d49c125b27958c9bd58ea90ff2e413e">&#9670;&nbsp;</a></span>AZ_UCONTRACT_REQUIRE_HARD_FAULT</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UCONTRACT_REQUIRE_HARD_FAULT</td>
+          <td class="memname">#define AZ_UCONTRACT_REQUIRE_HARD_FAULT</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">expression, </td>
@@ -320,10 +327,10 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(!(expression)) \</div><div class="line">        { \</div><div class="line">            ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a>, msg); \</div><div class="line">            ULIB_PORT_THROW_HARD_FAULT; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc"><div class="ttname"><a href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00031">ulog.h:31</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(!(expression)) \</div><div class="line">        { \</div><div class="line">            AZ_ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a>, msg); \</div><div class="line">            AZ_ULIB_PORT_THROW_HARD_FAULT; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a"><div class="ttname"><a href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00035">ulog.h:35</a></div></div>
 </div><!-- fragment -->
-<p>Contract macro to evaluate user expression. </p>
-<dl class="section warning"><dt>Warning</dt><dd>Throws hard fault if user expression is false</dd></dl>
+<p>Contract macro to evaluate developer expression. </p>
+<dl class="section warning"><dt>Warning</dt><dd>Throws hard fault if developer expression is false</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">expression</td><td>expression to check </td></tr>
@@ -332,18 +339,18 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00120">120</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00122">122</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
 
 </div>
 </div>
-<a id="aa83a08c3987af1f07f25dc4cc59c8a12"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa83a08c3987af1f07f25dc4cc59c8a12">&#9670;&nbsp;</a></span>UCONTRACT_REQUIRE_NOT_EQUALS</h2>
+<a id="a34deed4cd184df41c0718d7ab6690629"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34deed4cd184df41c0718d7ab6690629">&#9670;&nbsp;</a></span>AZ_UCONTRACT_REQUIRE_NOT_EQUALS</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UCONTRACT_REQUIRE_NOT_EQUALS</td>
+          <td class="memname">#define AZ_UCONTRACT_REQUIRE_NOT_EQUALS</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">val, </td>
@@ -367,7 +374,7 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val == expected) \</div><div class="line">        { \</div><div class="line">            ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a>, ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \</div><div class="line">            return result; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc"><div class="ttname"><a href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00031">ulog.h:31</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val == expected) \</div><div class="line">        { \</div><div class="line">            AZ_ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a>, AZ_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \</div><div class="line">            return result; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a"><div class="ttname"><a href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00035">ulog.h:35</a></div></div>
 </div><!-- fragment -->
 <p>Contract macro to evaluate if two values are not equal. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -379,18 +386,18 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00088">88</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00090">90</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
 
 </div>
 </div>
-<a id="a7dff919ce26e74547026a04831b64800"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7dff919ce26e74547026a04831b64800">&#9670;&nbsp;</a></span>UCONTRACT_REQUIRE_NOT_EQUALS_HARD_FAULT</h2>
+<a id="a70dbe1d7e3a30005a75afc033e25cdcc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70dbe1d7e3a30005a75afc033e25cdcc">&#9670;&nbsp;</a></span>AZ_UCONTRACT_REQUIRE_NOT_EQUALS_HARD_FAULT</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UCONTRACT_REQUIRE_NOT_EQUALS_HARD_FAULT</td>
+          <td class="memname">#define AZ_UCONTRACT_REQUIRE_NOT_EQUALS_HARD_FAULT</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">val, </td>
@@ -408,7 +415,7 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val == expected) \</div><div class="line">        { \</div><div class="line">            ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a>, ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \</div><div class="line">            ULIB_PORT_THROW_HARD_FAULT; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc"><div class="ttname"><a href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00031">ulog.h:31</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val == expected) \</div><div class="line">        { \</div><div class="line">            AZ_ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a>, AZ_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \</div><div class="line">            AZ_ULIB_PORT_THROW_HARD_FAULT; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a"><div class="ttname"><a href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00035">ulog.h:35</a></div></div>
 </div><!-- fragment -->
 <p>Contract macro to evaluate if two values are not equal. </p>
 <dl class="section warning"><dt>Warning</dt><dd>Throws hard fault if values are equal</dd></dl>
@@ -420,18 +427,18 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00154">154</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00156">156</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
 
 </div>
 </div>
-<a id="a93b76907363843f8d5c89481edb23458"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a93b76907363843f8d5c89481edb23458">&#9670;&nbsp;</a></span>UCONTRACT_REQUIRE_NOT_NULL</h2>
+<a id="a4c7ac2cbe138840240ab0a38c15cc51f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c7ac2cbe138840240ab0a38c15cc51f">&#9670;&nbsp;</a></span>AZ_UCONTRACT_REQUIRE_NOT_NULL</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UCONTRACT_REQUIRE_NOT_NULL</td>
+          <td class="memname">#define AZ_UCONTRACT_REQUIRE_NOT_NULL</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">val, </td>
@@ -449,7 +456,7 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val == NULL) \</div><div class="line">        { \</div><div class="line">            ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a>, ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \</div><div class="line">            return result; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc"><div class="ttname"><a href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00031">ulog.h:31</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val == NULL) \</div><div class="line">        { \</div><div class="line">            AZ_ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a>, AZ_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \</div><div class="line">            return result; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a"><div class="ttname"><a href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00035">ulog.h:35</a></div></div>
 </div><!-- fragment -->
 <p>Contract macro to evaluate if value is not <code>NULL</code>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -460,18 +467,18 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00103">103</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00105">105</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
 
 </div>
 </div>
-<a id="acd13ee94ad8b5f5688e0f338ec2224a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acd13ee94ad8b5f5688e0f338ec2224a0">&#9670;&nbsp;</a></span>UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT</h2>
+<a id="a9eca5bbdec23202095ba1f2f9eabf2b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9eca5bbdec23202095ba1f2f9eabf2b8">&#9670;&nbsp;</a></span>AZ_UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT</td>
+          <td class="memname">#define AZ_UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">val</td><td>)</td>
@@ -479,7 +486,7 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val == NULL) \</div><div class="line">        { \</div><div class="line">            ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a>, ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \</div><div class="line">            ULIB_PORT_THROW_HARD_FAULT; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc"><div class="ttname"><a href="ulog_8h.html#af428c3fbafc5c93d50dc6d4d92989bc6a236b278c689f8b4c3180952abfe983fc">ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00031">ulog.h:31</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div><div class="line">        if(val == NULL) \</div><div class="line">        { \</div><div class="line">            AZ_ULIB_CONFIG_LOG(<a class="code" href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a>, AZ_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \</div><div class="line">            AZ_ULIB_PORT_THROW_HARD_FAULT; \</div><div class="line">        } \</div><div class="line">    } <span class="keywordflow">while</span>((<span class="keywordtype">void</span>)0,0)</div><div class="ttc" id="ulog_8h_html_ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a"><div class="ttname"><a href="ulog_8h.html#ae36d4b82247e8d14088dde8ce6b82e99a28805b06781ce4f35c3850f21198f04a">AZ_ULOG_TYPE_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="ulog_8h_source.html#l00035">ulog.h:35</a></div></div>
 </div><!-- fragment -->
 <p>Contract macro to evaluate if value is not <code>NULL</code>. </p>
 <dl class="section warning"><dt>Warning</dt><dd>Throws hard fault if value is <code>NULL</code></dd></dl>
@@ -490,7 +497,7 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00170">170</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ucontract_8h_source.html#l00172">172</a> of file <a class="el" href="ucontract_8h_source.html">ucontract.h</a>.</p>
 
 </div>
 </div>

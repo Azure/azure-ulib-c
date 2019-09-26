@@ -18,9 +18,15 @@ extern "C" {
 #endif
 
 /**
+ *  @struct AZ_PAL_OS_LOCK
+ *  
+ *  @brief  pointer to a platform specific struct for a lock implementation
+ */
+
+/**
  * @brief    This API initialize and returns a valid lock handle.
  *
- * @param[in/out]   lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to the lock handle.
+ * @param[in,out]   lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to the lock handle.
  */
 MOCKABLE_FUNCTION(, void, az_pal_os_lock_init, AZ_PAL_OS_LOCK *, lock);
 
