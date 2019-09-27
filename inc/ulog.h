@@ -5,6 +5,10 @@
  * @file ulog.h
  * 
  * @brief Small footprint logging functionality
+ * 
+ * Using the az_ulog_print() api, you can pass enum types to differentiate logging purposes. When the api
+ *      prints to the console, it uses constant strings which prevents duplicate strings from being
+ *      saved in the bss.
  */
 
 #ifndef AZ_ULOG_H

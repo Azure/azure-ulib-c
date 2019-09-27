@@ -6,7 +6,6 @@
 
 /**
  * @file ustream_base.h
- * 
  * @brief **uStream Interface Definition**
  *
  *  This is the definition of a heterogeneous buffer that helps other modules in a system
