@@ -59,5 +59,6 @@ var searchData=
   ['az_5fustream_5frelease',['az_ustream_release',['../ustream__base_8h.html#ab8c2c90c6d5a065610cdf54c5f48aab4',1,'ustream_base.h']]],
   ['az_5fustream_5freset',['az_ustream_reset',['../ustream__base_8h.html#a3acd897d99e958f3da9533eab17aab13',1,'ustream_base.h']]],
   ['az_5fustream_5fset_5fposition',['az_ustream_set_position',['../ustream__base_8h.html#ade0f526684863ad7c3353991950c9a0a',1,'ustream_base.h']]],
-  ['az_5fustream_5ftag',['AZ_USTREAM_TAG',['../struct_a_z___u_s_t_r_e_a_m___t_a_g.html',1,'']]]
+  ['az_5fustream_5ftag',['AZ_USTREAM_TAG',['../struct_a_z___u_s_t_r_e_a_m___t_a_g.html',1,'']]],
+  ['azure_20ulib_20c_20_2d_20preview',['Azure uLib C - PREVIEW',['../index.html',1,'']]]
 ];
