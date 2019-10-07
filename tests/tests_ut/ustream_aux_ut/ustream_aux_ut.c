@@ -99,7 +99,6 @@ static AZ_USTREAM* create_test_default_multibuffer()
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT =
         (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
 #define USTREAM_COMPLIANCE_TARGET_FACTORY           create_test_default_multibuffer()
-#define USTREAM_COMPLIANCE_TARGET_INSTANCE          AZ_USTREAM
 
 MU_DEFINE_ENUM_STRINGS(UMOCK_C_ERROR_CODE, UMOCK_C_ERROR_CODE_VALUES)
 

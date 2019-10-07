@@ -31,7 +31,7 @@ static TEST_MUTEX_HANDLE g_test_by_test;
 /* define constants for the compliance test */
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH 62
-#define USTREAM_COMPLIANCE_TARGET_INSTANCE AZ_USTREAM
+
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
 static AZ_USTREAM test_ustream_instance;
 static AZ_USTREAM* ustream_factory()
@@ -91,6 +91,8 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize)
     {
         ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
     }
+
+    memset(&test_ustream_instance, 0, sizeof(AZ_USTREAM));
 
     umock_c_reset_all_calls();
 }
