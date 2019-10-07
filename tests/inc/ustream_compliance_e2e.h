@@ -92,18 +92,16 @@ TEST_FUNCTION(az_ustream_e2e_compliance_multi_read_succeed)
     az_ustream_dispose(&concat_ustream);
 
     //Clone the multistream
-    AZ_USTREAM multibuffer_clone;
     result = az_ustream_clone(&multibuffer_clone, &multi_ustream, 0);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     compliance_thread_one_ustream = &multi_ustream;
-    compliance_thread_two_ustream = &multibuffer_clone;
+    AZ_ULIB_RESULT result = az_ustream_concat(multi_ustream, concat_ustream, multi_data1, free);
+    ASSERT_ARE_EQUAL(int, result, AZ_ULIB_SUCCESS);
 
-    ///act
-    THREAD_HANDLE test_thread_one;
-    THREAD_HANDLE test_thread_two;
-    (void)test_thread_create(&test_thread_one, &compliance_thread_one_func, NULL);
-    (void)test_thread_create(&test_thread_two, &compliance_thread_two_func, NULL);
+    az_ustream_dispose(concat_ustream);
+    free(concat_ustream);
+
 
     ///assert
     int res1;
