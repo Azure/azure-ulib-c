@@ -377,3 +377,37 @@ AZ_ULIB_RESULT az_ustream_concat(
 
     return result;
 }
+
+AZ_ULIB_RESULT az_ustream_split(
+    AZ_USTREAM* ustream_instance,
+    AZ_USTREAM* ustream_instance_split,
+    offset_t split_pos)
+{
+    /*[az_ustream_split_null_instance_failed]*/
+    /*[az_ustream_split_null_split_instance_failed]*/
+    AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
+                 AZ_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance_split, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+
+    AZ_ULIB_RESULT result;
+
+    offset_t old_position;
+    if((az_ustream_get_position(ustream_instance, &old_position)) == AZ_ULIB_SUCCESS)
+    {
+        if((result = az_ustream_set_position(ustream_instance, split_pos)) == AZ_ULIB_SUCCESS)
+        {
+            if((result = az_ustream_clone(ustream_instance_split, ustream_instance, 0)) == AZ_ULIB_SUCCESS)
+            {
+                if((result = az_ustream_set_position(ustream_instance, old_position)) == AZ_ULIB_SUCCESS)
+                {
+                    ustream_instance->length = split_pos - old_position;
+                }
+            }
+            else
+            {
+                az_ustream_set_position(ustream_instance, old_position);
+            }
+        }
+    }
+    
+    return result;
+}

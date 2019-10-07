@@ -624,6 +624,103 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
     (void)az_ustream_dispose(&multibuffer_clone);
 }
 
+/*-------------------az_ustream_split() unit tests----------------------*/
+
+/* az_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
+TEST_FUNCTION(az_ustream_split_null_instance_failed)
+{
+    ///arrange
+    AZ_USTREAM test_buffer;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(NULL, &test_buffer, 4);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+
+    ///cleanup
+}
+
+/* az_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
+TEST_FUNCTION(az_ustream_split_null_split_instance_failed)
+{
+    ///arrange
+    AZ_USTREAM test_buffer;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(&test_buffer, NULL, 4);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+
+    ///cleanup
+}
+
+/* az_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream to add is NULL */
+TEST_FUNCTION(az_ustream_split_invalid_split_position_failed)
+{
+    ///arrange
+    AZ_USTREAM_DATA_CB* control_block =
+        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    ASSERT_IS_NOT_NULL(control_block);
+    AZ_USTREAM test_ustream;
+    AZ_ULIB_RESULT result1 =
+        az_ustream_init(
+            &test_ustream,
+            control_block,
+            free,
+            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
+            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
+            NULL);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
+
+    AZ_USTREAM ustream_split;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(&test_ustream, &ustream_split, -1);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(&test_ustream);
+}
+
+/* az_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream to add is NULL */
+TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_failed)
+{
+    ///arrange
+    AZ_USTREAM_DATA_CB* control_block =
+        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    ASSERT_IS_NOT_NULL(control_block);
+    AZ_USTREAM test_ustream;
+    AZ_ULIB_RESULT result1 =
+        az_ustream_init(
+            &test_ustream,
+            control_block,
+            free,
+            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
+            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
+            NULL);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
+
+    AZ_USTREAM test_ustream_clone;
+
+    az_ustream_clone(&test_ustream_clone, &test_ustream, 10);
+
+    AZ_USTREAM ustream_split;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(&test_ustream_clone, &ustream_split, 5);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(&test_ustream);
+    az_ustream_dispose(&test_ustream_clone);
+}
+
 #include "ustream_compliance_ut.h"
 
 END_TEST_SUITE(ustream_aux_ut)
