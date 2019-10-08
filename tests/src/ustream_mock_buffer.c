@@ -19,11 +19,17 @@ static AZ_ULIB_RESULT _concrete_dispose_result = AZ_ULIB_SUCCESS;
 static offset_t current_position = 0;
 static uint8_t read_buffer[READ_BUFFER_SIZE];
 
-static bool concurrency_ustream;
+static bool concurrency_ustream = false;
+static uint32_t delay_return_value = 0;
 
 void set_concurrency_ustream(void)
 {
     concurrency_ustream = true;
+}
+
+void set_delay_return_value(uint32_t delay)
+{
+    delay_return_value = delay;
 }
 
 static AZ_ULIB_RESULT concrete_set_position(
@@ -42,8 +48,17 @@ static AZ_ULIB_RESULT concrete_set_position(
         test_thread_sleep(1000);
     }
 
-    result = _concrete_set_position_result;
-    _concrete_set_position_result = AZ_ULIB_SUCCESS;
+    if(delay_return_value == 0)
+    {
+        result = _concrete_set_position_result;
+        _concrete_set_position_result = AZ_ULIB_SUCCESS;
+    }
+    else
+    {
+        delay_return_value--;
+        result = AZ_ULIB_SUCCESS;
+    }
+
     return result;
 }
 
@@ -119,6 +134,8 @@ static AZ_ULIB_RESULT concrete_clone(
         AZ_USTREAM* ustream_instance, 
         offset_t offset)
 {
+    AZ_ULIB_RESULT result;
+
     current_position = offset;
 
     if (_concrete_clone_result == AZ_ULIB_SUCCESS)
@@ -128,13 +145,15 @@ static AZ_ULIB_RESULT concrete_clone(
         ustream_instance_clone->inner_first_valid_position = ustream_instance->inner_first_valid_position;
         ustream_instance_clone->length = ustream_instance->length;
         ustream_instance_clone->offset_diff = ustream_instance->offset_diff;
+        result = AZ_ULIB_SUCCESS;
     }
     else
     {
         ustream_instance_clone = NULL;
+        result = _concrete_clone_result;
         _concrete_clone_result = AZ_ULIB_SUCCESS;
     }
-    return AZ_ULIB_SUCCESS;
+    return result;
 }
 
 static AZ_ULIB_RESULT concrete_dispose(

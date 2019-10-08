@@ -391,12 +391,18 @@ AZ_ULIB_RESULT az_ustream_split(
     AZ_ULIB_RESULT result;
 
     offset_t old_position;
-    if((az_ustream_get_position(ustream_instance, &old_position)) == AZ_ULIB_SUCCESS)
+    /*[az_ustream_split_get_position_failed]*/
+    if((result = az_ustream_get_position(ustream_instance, &old_position)) == AZ_ULIB_SUCCESS)
     {
+        /*[az_ustream_split_invalid_split_position_with_offset_failed]*/
+        /*[az_ustream_split_invalid_split_position_with_offset_after_failed]*/
+        /*[az_ustream_split_set_position_failed]*/
         if((result = az_ustream_set_position(ustream_instance, split_pos)) == AZ_ULIB_SUCCESS)
         {
+            /*[az_ustream_split_clone_failed]*/
             if((result = az_ustream_clone(ustream_instance_split, ustream_instance, 0)) == AZ_ULIB_SUCCESS)
             {
+                /*[az_ustream_split_set_position_second_failed]*/
                 if((result = az_ustream_set_position(ustream_instance, old_position)) == AZ_ULIB_SUCCESS)
                 {
                     ustream_instance->length = split_pos - old_position;
@@ -408,6 +414,6 @@ AZ_ULIB_RESULT az_ustream_split(
             }
         }
     }
-    
+
     return result;
 }
