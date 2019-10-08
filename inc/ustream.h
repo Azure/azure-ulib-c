@@ -105,19 +105,19 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_concat,
   * @brief   Split a ustream at a given position.
   *
   *  The split will divide a given ustream into two parts, divided at a passed position. The result of this operation will be two
-  *     ustream instances. The first and original ustream will contain the data from the original position up to the passed
-  *     <tt>split_pos</tt>. The second ustream will contain the data from the passed <tt>split_pos</tt> up to the end of the
+  *     ustream instances. The first and original ustream will contain the data from the original position up to but not including 
+  *     the passed <tt>split_pos</tt>. The second ustream will contain the data from the passed <tt>split_pos</tt> up to the end of the
   *     <tt>ustream_instance</tt> before the function was called. The <tt>split_pos</tt> should be relative to the position returned
   *     from az_ustream_get_position() and the remaining size of <tt>ustream_instance</tt>.
   *
   * @param[in,out]      ustream_instance        The {@link AZ_USTREAM}* with the interface of 
   *                                             the ustream. It cannot be <tt>NULL</tt>, and it shall be a valid ustream.
   * @param[out]         ustream_instance_split  The {@link AZ_USTREAM}* with the interface of the ustream which will contain the 
-  *                                             controls to the data after <tt>split_pos>. It cannot be <tt>NULL</tt>.
+  *                                             controls to the data after <tt>split_pos</tt>. It cannot be <tt>NULL</tt>.
   * @param[in]          split_pos               The position at which to split the passed <tt>ustream_instance</tt>.
   * 
   * @return The {@link AZ_ULIB_RESULT} with the result of the <tt>concat</tt> operation.
-  *          @retval    AZ_ULIB_SUCCESS                If the AZ_USTREAM is concatenated with success.
+  *          @retval    AZ_ULIB_SUCCESS                If the AZ_USTREAM is split with success.
   *          @retval    AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
   */
 MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_split,
