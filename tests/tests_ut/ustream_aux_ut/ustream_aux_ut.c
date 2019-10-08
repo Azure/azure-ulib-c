@@ -656,7 +656,7 @@ TEST_FUNCTION(az_ustream_split_null_split_instance_failed)
     ///cleanup
 }
 
-/* az_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream to add is NULL */
+/* az_ustream_split shall return AZ_ULIB_NO_SUCH_ELEMENT_ERROR if the provided split position is invalid */
 TEST_FUNCTION(az_ustream_split_invalid_split_position_failed)
 {
     ///arrange
@@ -686,7 +686,7 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_failed)
     az_ustream_dispose(&test_ustream);
 }
 
-/* az_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream to add is NULL */
+/* az_ustream_split shall return AZ_ULIB_NO_SUCH_ELEMENT_ERROR if the provided split position is invalid */
 TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_failed)
 {
     ///arrange
@@ -721,7 +721,7 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_failed)
     az_ustream_dispose(&test_ustream_clone);
 }
 
-/* az_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream to add is NULL */
+/* az_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided split position is invalid */
 TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_after_failed)
 {
     ///arrange
@@ -757,6 +757,7 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_after_failed)
     az_ustream_dispose(&test_ustream_clone);
 }
 
+/* az_ustream_split shall return the return value of az_ustream_get_position if it fails */
 TEST_FUNCTION(az_ustream_split_get_position_failed)
 {
     ///arrange
@@ -776,6 +777,7 @@ TEST_FUNCTION(az_ustream_split_get_position_failed)
     az_ustream_dispose(test_ustream);
 }
 
+/* az_ustream_split shall return the return value of az_ustream_set_position if it fails */
 TEST_FUNCTION(az_ustream_split_set_position_failed)
 {
     ///arrange
@@ -795,6 +797,7 @@ TEST_FUNCTION(az_ustream_split_set_position_failed)
     az_ustream_dispose(test_ustream);
 }
 
+/* az_ustream_split shall return the return value of az_ustream_clone if it fails */
 TEST_FUNCTION(az_ustream_split_clone_failed)
 {
     ///arrange
@@ -814,6 +817,7 @@ TEST_FUNCTION(az_ustream_split_clone_failed)
     az_ustream_dispose(test_ustream);
 }
 
+/* az_ustream_split shall return the return value of az_ustream_set_position if it fails */
 TEST_FUNCTION(az_ustream_split_set_position_second_failed)
 {
     ///arrange
