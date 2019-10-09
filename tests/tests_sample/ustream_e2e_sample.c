@@ -30,17 +30,13 @@ static TEST_MUTEX_HANDLE g_test_by_test;
 
 
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
-static AZ_USTREAM* ustream_factory()
+static void ustream_factory(AZ_USTREAM* ustream)
 {
-    AZ_USTREAM *test_ustream_instance = (AZ_USTREAM*)malloc(sizeof(AZ_USTREAM));
     /*
-        TODO:<Insert your code here which initializes test_ustream_instance with your implementation>
-        Keep in mind the e2e tests will need multiple instances of your ustream which is why each instance
-            is created using malloc. Each test will free the instance as it should so no memory will leak.
+        TODO:<Insert your code here which initializes the ustream parameter with your implementation>
     */
-    return test_ustream_instance;
 }
-#define USTREAM_COMPLIANCE_TARGET_FACTORY         ustream_factory()
+#define USTREAM_COMPLIANCE_TARGET_FACTORY(ustream)         ustream_factory(ustream)
 
 #define TEST_CONST_BUFFER_LENGTH    (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH + 2)
 #define TEST_CONST_MAX_BUFFER_SIZE  (TEST_CONST_BUFFER_LENGTH - 1)

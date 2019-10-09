@@ -31,9 +31,8 @@ static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3 =
         (const uint8_t* const)"abcdefghijklmnopqrstuvwxyz";
 
 
-static AZ_USTREAM* create_test_default_multibuffer()
+static void create_test_default_multibuffer(AZ_USTREAM* ustream)
 {
-    AZ_USTREAM* test_multi = (AZ_USTREAM*)malloc(sizeof(AZ_USTREAM));
     //Set up required structs for first multi
     AZ_USTREAM_MULTI_DATA_CB* default_multi_data1 = (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
     ASSERT_IS_NOT_NULL(default_multi_data1);
@@ -47,7 +46,7 @@ static AZ_USTREAM* create_test_default_multibuffer()
     //Set up first ustream
     AZ_USTREAM_DATA_CB* ustream_control_block1 = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
     memset(ustream_control_block1, 0, sizeof(AZ_USTREAM_DATA_CB));
-    AZ_ULIB_RESULT result = az_ustream_init(test_multi,
+    AZ_ULIB_RESULT result = az_ustream_init(ustream,
             ustream_control_block1,
             free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
@@ -78,15 +77,14 @@ static AZ_USTREAM* create_test_default_multibuffer()
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     //Concat buffers together
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ustream_concat(test_multi, &default_buffer2, 
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ustream_concat(ustream, &default_buffer2, 
                         default_multi_data1, free));
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ustream_concat(test_multi, &default_buffer3,
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ustream_concat(ustream, &default_buffer3,
                         default_multi_data2, free));
 
     (void)az_ustream_dispose(&default_buffer2);
     (void)az_ustream_dispose(&default_buffer3);
 
-    return test_multi;
 }
 
 /* define constants for the compliance test */
@@ -94,7 +92,7 @@ static AZ_USTREAM* create_test_default_multibuffer()
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH 62
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT =
         (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
-#define USTREAM_COMPLIANCE_TARGET_FACTORY           create_test_default_multibuffer()
+#define USTREAM_COMPLIANCE_TARGET_FACTORY(ustream)           create_test_default_multibuffer(ustream)
 
 #define TEST_POSITION 10
 #define TEST_SIZE 10

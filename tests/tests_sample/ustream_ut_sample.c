@@ -35,13 +35,12 @@ static TEST_MUTEX_HANDLE g_test_by_test;
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
 
 //Factory to create your implementation of a ustream.
-static AZ_USTREAM test_ustream_instance;
-static AZ_USTREAM* ustream_factory()
+static void ustream_factory(AZ_USTREAM* ustream)
 {
-    /*TODO:<Insert your code here which initializes and returns test_ustream_instance>*/
-    return &test_ustream_instance;
+    /*TODO:<Insert your code here which initializes the ustream parameter>*/
 }
-#define USTREAM_COMPLIANCE_TARGET_FACTORY         ustream_factory()
+
+#define USTREAM_COMPLIANCE_TARGET_FACTORY(ustream)         ustream_factory(ustream)
 
 #define TEST_CONST_BUFFER_LENGTH    (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH + 2)
 #define TEST_CONST_MAX_BUFFER_SIZE  (TEST_CONST_BUFFER_LENGTH - 1)

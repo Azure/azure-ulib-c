@@ -34,9 +34,7 @@ static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2 =
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3 =
         (const uint8_t* const)"abcdefghijklmnopqrstuvwxyz";
     
-static AZ_USTREAM test_multi;
-
-static AZ_USTREAM* create_test_default_multibuffer()
+static void create_test_default_multibuffer(AZ_USTREAM* ustream)
 {
     //Set up required structs for first multi
     AZ_USTREAM_MULTI_DATA_CB* default_multi_data1 = (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
@@ -51,7 +49,7 @@ static AZ_USTREAM* create_test_default_multibuffer()
     //Set up first ustream
     AZ_USTREAM_DATA_CB* ustream_control_block1 = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
     memset(ustream_control_block1, 0, sizeof(AZ_USTREAM_DATA_CB));
-    AZ_ULIB_RESULT result = az_ustream_init(&test_multi,
+    AZ_ULIB_RESULT result = az_ustream_init(ustream,
             ustream_control_block1,
             free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
@@ -82,15 +80,14 @@ static AZ_USTREAM* create_test_default_multibuffer()
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     //Concat buffers together
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ustream_concat(&test_multi, &default_buffer2, 
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ustream_concat(ustream, &default_buffer2, 
                         default_multi_data1, free));
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ustream_concat(&test_multi, &default_buffer3,
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ustream_concat(ustream, &default_buffer3,
                         default_multi_data2, free));
 
     (void)az_ustream_dispose(&default_buffer2);
     (void)az_ustream_dispose(&default_buffer3);
 
-    return &test_multi;
 }
 
 /* define constants for the compliance test */
@@ -98,7 +95,7 @@ static AZ_USTREAM* create_test_default_multibuffer()
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH 62
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT =
         (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
-#define USTREAM_COMPLIANCE_TARGET_FACTORY           create_test_default_multibuffer()
+#define USTREAM_COMPLIANCE_TARGET_FACTORY(ustream)           create_test_default_multibuffer(ustream)
 
 MU_DEFINE_ENUM_STRINGS(UMOCK_C_ERROR_CODE, UMOCK_C_ERROR_CODE_VALUES)
 
@@ -150,7 +147,6 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize)
 
 TEST_FUNCTION_CLEANUP(test_method_cleanup)
 {
-    memset(&test_multi, 0, sizeof(AZ_USTREAM));
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
@@ -529,11 +525,12 @@ TEST_FUNCTION(az_ustream_multi_read_control_block_failed_in_read_failed)
 TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
 {
     ///arrange
-    AZ_USTREAM* multibuffer = USTREAM_COMPLIANCE_TARGET_FACTORY;
+    AZ_USTREAM multibuffer;
+    USTREAM_COMPLIANCE_TARGET_FACTORY(&multibuffer);
 
     AZ_USTREAM multibuffer_clone;
 
-    az_ustream_clone(&multibuffer_clone, multibuffer, 0);
+    az_ustream_clone(&multibuffer_clone, &multibuffer, 0);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
     size_t size_result;
@@ -542,7 +539,7 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
         int,
         AZ_ULIB_SUCCESS,
         az_ustream_read(
-            multibuffer,
+            &multibuffer,
             buf_result,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
             &size_result));
@@ -564,12 +561,12 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
     memset(buf_result, 0, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS,
-                     az_ustream_reset(multibuffer));
+                     az_ustream_reset(&multibuffer));
 
     ///act
     AZ_ULIB_RESULT result =
         az_ustream_read(
-            multibuffer,
+            &multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
             &size_result);
@@ -581,14 +578,14 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
     ///assert
     result =
         az_ustream_read(
-            multibuffer,
+            &multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
             &size_result);
 
     ASSERT_ARE_EQUAL(int, AZ_ULIB_EOF, result);
 
-    (void)az_ustream_dispose(multibuffer);
+    (void)az_ustream_dispose(&multibuffer);
 
     memset(buf_result, 0, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
