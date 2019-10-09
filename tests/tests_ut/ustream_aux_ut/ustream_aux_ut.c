@@ -626,6 +626,24 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
 
 /*-------------------az_ustream_split() unit tests----------------------*/
 
+/* az_ustream_split shall return AZ_ULIB_SUCCESS if the split is successful */
+TEST_FUNCTION(az_ustream_split_success)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
+}
+
 /* az_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
 TEST_FUNCTION(az_ustream_split_null_instance_failed)
 {
@@ -810,7 +828,11 @@ TEST_FUNCTION(az_ustream_split_clone_failed)
     ///act
     AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
 
-    ///assert
+    ///assert]
+    size_t cur_pos;
+    az_ustream_get_position(test_ustream, &cur_pos);
+    ASSERT_ARE_EQUAL(int, 0, cur_pos);
+
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup

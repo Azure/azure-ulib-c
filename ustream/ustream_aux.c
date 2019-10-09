@@ -405,7 +405,12 @@ AZ_ULIB_RESULT az_ustream_split(
                 /*[az_ustream_split_set_position_second_failed]*/
                 if((result = az_ustream_set_position(ustream_instance, old_position)) == AZ_ULIB_SUCCESS)
                 {
+                    /*[az_ustream_split_success]*/
                     ustream_instance->length = split_pos - old_position;
+                }
+                else
+                {
+                    az_ustream_dispose(ustream_instance_split);
                 }
             }
             else
