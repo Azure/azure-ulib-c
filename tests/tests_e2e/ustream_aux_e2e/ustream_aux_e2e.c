@@ -22,6 +22,7 @@
 static TEST_MUTEX_HANDLE g_test_by_test;
 
 #include "ustream.h"
+
 #define USTREAM_AUX_E2E_EXPECTED_CONTENT_2 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define USTREAM_AUX_E2E_EXPECTED_CONTENT_3 "abcdefghijklmnopqrstuvwxyz" 
 
@@ -37,7 +38,6 @@ static const uint8_t *const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3 =
 
 static void create_test_default_multibuffer(AZ_USTREAM* ustream)
 {
-    AZ_USTREAM* test_multi = (AZ_USTREAM*)malloc(sizeof(AZ_USTREAM));
     //Set up required structs for first multi
     AZ_USTREAM_MULTI_DATA_CB* default_multi_data1 = (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
     ASSERT_IS_NOT_NULL(default_multi_data1);
@@ -98,6 +98,10 @@ static void create_test_default_multibuffer(AZ_USTREAM* ustream)
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT =
         (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
 #define USTREAM_COMPLIANCE_TARGET_FACTORY(ustream)           create_test_default_multibuffer(ustream)
+
+#define TEST_POSITION 10
+#define TEST_SIZE 10
+static AZ_USTREAM* thread_one_ustream;
 static AZ_USTREAM* thread_two_ustream;
 
 static int thread_one_func(void* arg)

@@ -273,6 +273,11 @@ TEST_FUNCTION(az_ustream_clone_compliance_empty_buffer_succeed)
         int, 
         AZ_ULIB_SUCCESS, 
         az_ustream_release(&ustream_instance, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1));
+    AZ_USTREAM ustream_instance_clone;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_clone(&ustream_instance_clone, &ustream_instance, 0);
+
     ///assert
     /* clone succeed */
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
@@ -332,7 +337,11 @@ TEST_FUNCTION(az_ustream_clone_compliance_new_buffer_with_non_zero_current_and_r
     ///act
     AZ_ULIB_RESULT result =
         az_ustream_clone(&ustream_instance_clone, &ustream_instance, 100);
+
     ///assert
+    /* clone succeed */
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
+
     /* current position was moved to the start of the buffer with the offset. */
     offset_t ustream_clone_current_position;
     ASSERT_ARE_EQUAL(
@@ -398,6 +407,9 @@ TEST_FUNCTION(az_ustream_clone_compliance_new_buffer_with_non_zero_current_and_r
         AZ_ULIB_SUCCESS, 
         az_ustream_release(&ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
     AZ_USTREAM ustream_instance_clone;
+
+    ///act
+    AZ_ULIB_RESULT result =
         az_ustream_clone(&ustream_instance_clone, &ustream_instance, USTREAM_COMPLIANCE_LENGTH_1);
 
     ///assert
@@ -974,7 +986,11 @@ TEST_FUNCTION(az_ustream_read_compliance_get_from_cloned_buffer_succeed)
         AZ_ULIB_SUCCESS, 
         az_ustream_set_position(&ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
     AZ_USTREAM ustream_instance_clone;
+    AZ_ULIB_RESULT result =
         az_ustream_clone(&ustream_instance_clone, &ustream_instance, 100);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
+    (void)az_ustream_dispose(&ustream_instance);
+
     uint8_t buf_result1[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     uint8_t buf_result2[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
     uint8_t buf_result3[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1857,6 +1873,10 @@ TEST_FUNCTION(az_ustream_set_position_compliance_back_before_first_valid_positio
     ///arrange
     AZ_USTREAM ustream_instance;
     USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+    AZ_USTREAM ustream_instance_clone;
+    AZ_ULIB_RESULT result =
+        az_ustream_clone(&ustream_instance_clone, &ustream_instance, 100);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     ///act
     result = az_ustream_set_position(&ustream_instance_clone, 0);
@@ -2055,7 +2075,14 @@ TEST_FUNCTION(az_ustream_release_compliance_cloned_buffer_release_all_succeed)
         int, 
         AZ_ULIB_SUCCESS, 
         az_ustream_set_position(&ustream_instance, USTREAM_COMPLIANCE_LENGTH_1));
+    AZ_USTREAM ustream_instance_clone;
+    AZ_ULIB_RESULT result =
+        az_ustream_clone(&ustream_instance_clone, &ustream_instance, 1000);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
     (void)az_ustream_dispose(&ustream_instance);
+    ASSERT_ARE_EQUAL(
+            int, 
+            AZ_ULIB_SUCCESS, 
             az_ustream_set_position(
                 &ustream_instance_clone, 
                 USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_COMPLIANCE_LENGTH_1 + 1000));
