@@ -31,18 +31,17 @@ static TEST_MUTEX_HANDLE g_test_by_test;
 /* define constants for the compliance test */
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH 62
-#define USTREAM_COMPLIANCE_TARGET_INSTANCE AZ_USTREAM
+
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
 static AZ_USTREAM test_ustream_instance;
-static AZ_USTREAM* ustream_factory()
+static void ustream_factory(AZ_USTREAM* ustream)
 {
     AZ_USTREAM_DATA_CB* ustream_control_block = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
     uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    az_ustream_init(&test_ustream_instance, ustream_control_block, free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
-    return &test_ustream_instance;
+    az_ustream_init(ustream, ustream_control_block, free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
 }
-#define USTREAM_COMPLIANCE_TARGET_FACTORY         ustream_factory()
+#define USTREAM_COMPLIANCE_TARGET_FACTORY(ustream)         ustream_factory(ustream)
 
 #define TEST_CONST_BUFFER_LENGTH    (USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH + 2)
 #define TEST_CONST_MAX_BUFFER_SIZE  (TEST_CONST_BUFFER_LENGTH - 1)
@@ -91,6 +90,8 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize)
     {
         ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
     }
+
+    memset(&test_ustream_instance, 0, sizeof(AZ_USTREAM));
 
     umock_c_reset_all_calls();
 }

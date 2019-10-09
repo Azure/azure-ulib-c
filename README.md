@@ -75,6 +75,14 @@ This repo is built using cmake. The minimum requirement is version 3.2. You can 
 
     The -C option chooses the build configuration to test and the -V turns on verbose output from the tests.
 
+## Creating Your Own uStream
+
+Using the specification listed [here](https://azure.github.io/azure-ulib-c/ustream__base_8h.html) in the
+documentation, you can create your own implementation of a ustream. In order to ensure that it behaves
+according to the specification, we have created tests which you can run against your implementation. 
+You can use `ustream_ut_sample.c` and `ustream_e2e_sample.c` in [tests_sample](tests/tests_sample) as a
+reference. `TODO`'s have been placed in the sample files to help guide what you need to implement.
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
