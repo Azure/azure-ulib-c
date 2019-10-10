@@ -106,16 +106,17 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_concat,
   *
   *  The split will divide a given ustream into two parts, divided at a passed position. The result of this operation will be two
   *     ustream instances. The first and original ustream will contain the data from the original first valid position up to but 
-  *     not including the passed <tt>split_pos</tt>. The second ustream will contain the data from the passed <tt>split_pos</tt>
-  *     up to the end of the <tt>ustream_instance</tt> before the function was called. The <tt>split_pos</tt> should be relative 
+  *     not including the passed <tt>split_pos</tt>. It's current position will be the same as it was passed. The second ustream 
+  *     will contain the data from the passed <tt>split_pos</tt> up to the end of the <tt>ustream_instance</tt> before the function
+  *     was called. It's current position will be the same as <tt>split_pos</tt>. The <tt>split_pos</tt> should be relative 
   *     to the position returned from az_ustream_get_position() and the remaining size of <tt>ustream_instance</tt>.
   *
   * @param[in,out]      ustream_instance        The {@link AZ_USTREAM}* with the interface of 
   *                                             the ustream. It cannot be <tt>NULL</tt>, and it shall be a valid ustream.
   * @param[out]         ustream_instance_split  The {@link AZ_USTREAM}* with the interface of the ustream which will contain the 
   *                                             controls to the data after <tt>split_pos</tt>. It cannot be <tt>NULL</tt>.
-  * @param[in]          split_pos               The position at which to split the passed <tt>ustream_instance</tt>. It cannot
-  *                                             be equal to the current position of <tt>ustream_instance</tt> or equal to
+  * @param[in]          split_pos               The <tt>offset_t</tt> at which to split the passed <tt>ustream_instance</tt>.
+  *                                             It cannot be equal to the current position of <tt>ustream_instance</tt> or equal to
   *                                             the current position + remaining size. In other words, resulting ustreams of
   *                                             size 0 are not allowed.
   * 

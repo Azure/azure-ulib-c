@@ -411,7 +411,7 @@ TEST_FUNCTION(az_ustream_concat_new_control_block_failed_on_get_remaining_size_f
         az_ustream_init(&multibuffer, control_block1, free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
-    ASSERT_ARE_EQUAL(int, result, AZ_ULIB_SUCCESS);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     AZ_USTREAM* test_buffer2 = ustream_mock_create();
 
@@ -441,7 +441,7 @@ TEST_FUNCTION(az_ustream_multi_read_control_block_failed_in_read_with_some_valid
         az_ustream_init(&multibuffer, control_block1, free,
                            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
                            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
-    ASSERT_ARE_EQUAL(int, result, AZ_ULIB_SUCCESS);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     AZ_USTREAM* test_buffer2 = ustream_mock_create();
 
@@ -482,7 +482,7 @@ TEST_FUNCTION(az_ustream_multi_read_control_block_failed_in_read_failed)
         az_ustream_init(&multibuffer, control_block1, free,
                            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
                            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
-    ASSERT_ARE_EQUAL(int, result, AZ_ULIB_SUCCESS);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     AZ_USTREAM* test_buffer2 = ustream_mock_create();
 
