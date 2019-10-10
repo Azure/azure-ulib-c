@@ -63,10 +63,12 @@ int main(void)
         }
         else if((result = print_ustream(&ustream_instance)) != AZ_ULIB_SUCCESS)
         {
+            az_ustream_dispose(&ustream_instance);
             printf("Could not print the original ustream_instance\r\n");
         }
         else if((result = az_ustream_reset(&ustream_instance)) != AZ_ULIB_SUCCESS)
         {
+            az_ustream_dispose(&ustream_instance);
             printf("Could not reset ustream_instance\r\n");
         }
         else
@@ -75,18 +77,24 @@ int main(void)
 
             if((result = az_ustream_split(&ustream_instance, &ustream_instance_split, SPLIT_POSITION)) != AZ_ULIB_SUCCESS)
             {
+                az_ustream_dispose(&ustream_instance);
                 printf("Could not split ustream_instance\r\n");
             }
             else if((result = print_ustream(&ustream_instance)) != AZ_ULIB_SUCCESS)
             {
+                az_ustream_dispose(&ustream_instance);
+                az_ustream_dispose(&ustream_instance_split);
                 printf("Could not print the split ustream_instance\r\n");
             }
             else if((result = print_ustream(&ustream_instance_split)) != AZ_ULIB_SUCCESS)
             {
+                az_ustream_dispose(&ustream_instance);
+                az_ustream_dispose(&ustream_instance_split);
                 printf("Could not print ustream_instance_split\r\n");
             }
             else if((result = az_ustream_dispose(&ustream_instance)) != AZ_ULIB_SUCCESS)
             {
+                az_ustream_dispose(&ustream_instance_split);
                 printf("Could not dispose of ustream_instance\r\n");
             }
             else if((result = az_ustream_dispose(&ustream_instance_split)) != AZ_ULIB_SUCCESS)
