@@ -424,7 +424,7 @@ AZ_ULIB_RESULT az_ustream_split(
                             if((result = az_ustream_set_position(ustream_instance, old_position)) == AZ_ULIB_SUCCESS)
                             {
                                 /*[az_ustream_split_success]*/
-                                ustream_instance->length = split_pos - old_position;
+                                ustream_instance->length = split_pos - ustream_instance->inner_first_valid_position;
                             }
                             else
                             {
