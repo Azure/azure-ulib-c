@@ -105,10 +105,10 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_concat,
   * @brief   Split a ustream at a given position.
   *
   *  The split will divide a given ustream into two parts, divided at a passed position. The result of this operation will be two
-  *     ustream instances. The first and original ustream will contain the data from the original position up to but not including 
-  *     the passed <tt>split_pos</tt>. The second ustream will contain the data from the passed <tt>split_pos</tt> up to the end of the
-  *     <tt>ustream_instance</tt> before the function was called. The <tt>split_pos</tt> should be relative to the position returned
-  *     from az_ustream_get_position() and the remaining size of <tt>ustream_instance</tt>.
+  *     ustream instances. The first and original ustream will contain the data from the original first valid position up to but 
+  *     not including the passed <tt>split_pos</tt>. The second ustream will contain the data from the passed <tt>split_pos</tt>
+  *     up to the end of the <tt>ustream_instance</tt> before the function was called. The <tt>split_pos</tt> should be relative 
+  *     to the position returned from az_ustream_get_position() and the remaining size of <tt>ustream_instance</tt>.
   *
   * @param[in,out]      ustream_instance        The {@link AZ_USTREAM}* with the interface of 
   *                                             the ustream. It cannot be <tt>NULL</tt>, and it shall be a valid ustream.

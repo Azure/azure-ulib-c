@@ -684,7 +684,7 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_failed)
         (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(control_block);
     AZ_USTREAM test_ustream;
-    AZ_ULIB_RESULT result1 =
+    AZ_ULIB_RESULT result =
         az_ustream_init(
             &test_ustream,
             control_block,
@@ -692,12 +692,12 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_failed)
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
             NULL);
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     AZ_USTREAM ustream_split;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(&test_ustream, &ustream_split, -1);
+    result = az_ustream_split(&test_ustream, &ustream_split, -1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
@@ -714,7 +714,7 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_failed)
         (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
     ASSERT_IS_NOT_NULL(control_block);
     AZ_USTREAM test_ustream;
-    AZ_ULIB_RESULT result1 =
+    AZ_ULIB_RESULT result =
         az_ustream_init(
             &test_ustream,
             control_block,
@@ -722,7 +722,7 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_failed)
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
             NULL);
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     AZ_USTREAM test_ustream_clone;
 
@@ -731,7 +731,7 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_failed)
     AZ_USTREAM ustream_split;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(&test_ustream_clone, &ustream_split, 5);
+    result = az_ustream_split(&test_ustream_clone, &ustream_split, 5);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
@@ -750,7 +750,7 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_after_failed)
     ASSERT_IS_NOT_NULL(control_block);
     AZ_USTREAM test_ustream;
     size_t content_length = strlen((const char *)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1);
-    AZ_ULIB_RESULT result1 =
+    AZ_ULIB_RESULT result =
         az_ustream_init(
             &test_ustream,
             control_block,
@@ -758,7 +758,7 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_after_failed)
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             content_length,
             NULL);
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     AZ_USTREAM test_ustream_clone;
 
@@ -767,7 +767,7 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_after_failed)
     AZ_USTREAM ustream_split;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(&test_ustream_clone, &ustream_split, 10 + content_length + 1);
+    result = az_ustream_split(&test_ustream_clone, &ustream_split, 10 + content_length + 1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
