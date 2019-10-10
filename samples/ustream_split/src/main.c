@@ -39,44 +39,59 @@ static AZ_ULIB_RESULT print_ustream(AZ_USTREAM* ustream)
 
 
 /**
- * This sample creates two ustreams and concatenates them. It then prints the concatenated ustream
- * as if the two original ustreams were one.
- *      Content of ustream one: "Hello "
- *      Content of ustream two: "World\r\n"
- *      Content of concatenated ustream: "Hello World\r\n"
- * With both instances, the AZ_USTREAM lives on the stack while the control blocks use stdlib malloc for
- * allocation and stdlib free to free the memory.
- * 
- * Steps followed:
- *      1) Create the first ustream for a buffer in static memory. Print the size of the ustream.
- *      2) Create the second ustream for a buffer in the heap. Print the size of the ustream.
- *      3) Concatenate the second ustream to the first ustream. Dispose of the local instance of ustream_two.
- *              Remember we must do this to avoid memory leaks because while ustream_one is copied into the
- *              AZ_USTREAM_MULTI_DATA_CB (still one reference), ustream_two is cloned (meaning there are 
- *              now two references). We then print the size of the concatenated ustream.
- *      4) Print the concatenated ustream. Dispose of the ustream_one instance. Underneath the covers,
- *              since references to both buffers reaches zero, the free functions for the buffers and the
- *              control blocks are called and no memory is leaked.
+ * This sample creates a ustream and then splits it into two ustreams at a desired position.
+ * The following steps are followed:
+ *      1. Create the ustream and print the ustream to the console. It needs to be reset
+ *          before splitting so that the current position is restored to the beginning.
+ *      2. Split the ustream at the desired position.
+ *      3. Print each ustream to the console.
+ *      4. Dispose of the two ustreams.
  */
 
 int main(void)
 {
     AZ_ULIB_RESULT result;
-    
-    AZ_USTREAM_DATA_CB* data_cb = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
-    AZ_USTREAM ustream_instance;
-    az_ustream_init(&ustream_instance, data_cb, free, USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL);
-    print_ustream(&ustream_instance);
-    az_ustream_reset(&ustream_instance);
 
-    AZ_USTREAM ustream_instance_split;
+    AZ_USTREAM_DATA_CB *data_cb;
+    if((data_cb = (AZ_USTREAM_DATA_CB *)malloc(sizeof(AZ_USTREAM_DATA_CB))) != NULL)
+    {
+        AZ_USTREAM ustream_instance;
+        if(az_ustream_init(&ustream_instance, data_cb, free, USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL) != AZ_ULIB_SUCCESS)
+        {
+            printf("Could not initialize ustream_instance\r\n");
+        }
+        else if(print_ustream(&ustream_instance) != AZ_ULIB_SUCCESS)
+        {
+            printf("Could not print the original ustream_instance\r\n");
+        }
+        else if(az_ustream_reset(&ustream_instance) != AZ_ULIB_SUCCESS)
+        {
+            printf("Could not reset ustream_instance\r\n");
+        }
 
-    az_ustream_split(&ustream_instance, &ustream_instance_split, 12);
-    print_ustream(&ustream_instance);
-    print_ustream(&ustream_instance_split);
+        AZ_USTREAM ustream_instance_split;
 
-    az_ustream_dispose(&ustream_instance);
-    az_ustream_dispose(&ustream_instance_split);
+        if(az_ustream_split(&ustream_instance, &ustream_instance_split, 12) != AZ_ULIB_SUCCESS)
+        {
+            printf("Could not split ustream_instance\r\n");
+        }
+        else if(print_ustream(&ustream_instance) != AZ_ULIB_SUCCESS)
+        {
+            printf("Could not print the split ustream_instance\r\n");
+        }
+        else if((print_ustream(&ustream_instance_split)) != AZ_ULIB_SUCCESS)
+        {
+            printf("Could not print ustream_instance_split\r\n");
+        }
+        else if((az_ustream_dispose(&ustream_instance)) != AZ_ULIB_SUCCESS)
+        {
+            printf("Could not dispose of ustream_instance\r\n");
+        }
+        else if((az_ustream_dispose(&ustream_instance_split)) != AZ_ULIB_SUCCESS)
+        {
+            printf("Could not dispose of ustream_instance_split\r\n");
+        }
+    }
 
     return result;
 }
