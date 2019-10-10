@@ -418,7 +418,7 @@ AZ_ULIB_RESULT az_ustream_split(
                     if((result = az_ustream_set_position(ustream_instance, split_pos)) == AZ_ULIB_SUCCESS)
                     {
                         /*[az_ustream_split_clone_failed]*/
-                        if((result = az_ustream_clone(ustream_instance_split, ustream_instance, 0)) == AZ_ULIB_SUCCESS)
+                        if((result = az_ustream_clone(ustream_instance_split, ustream_instance, split_pos)) == AZ_ULIB_SUCCESS)
                         {
                             /*[az_ustream_split_set_position_second_failed]*/
                             if((result = az_ustream_set_position(ustream_instance, old_position)) == AZ_ULIB_SUCCESS)

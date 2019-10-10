@@ -47,7 +47,6 @@ static AZ_ULIB_RESULT print_ustream(AZ_USTREAM* ustream)
  *      3. Print each ustream to the console.
  *      4. Dispose of the two ustreams.
  */
-
 int main(void)
 {
     AZ_ULIB_RESULT result;

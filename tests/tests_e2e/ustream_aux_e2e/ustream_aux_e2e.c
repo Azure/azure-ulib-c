@@ -236,10 +236,18 @@ TEST_FUNCTION(az_ustream_split_split_succeed)
     size_t returned_size;
 
     AZ_USTREAM ustream_instance_split;
-
+    
+    ///act
     az_ustream_split(&ustream_instance, &ustream_instance_split, split_location);
 
-    ///act
+    ///assert
+    size_t current_pos;
+    az_ustream_get_position(&ustream_instance, &current_pos);
+    ASSERT_ARE_EQUAL(int, 0, current_pos);
+
+    az_ustream_get_position(&ustream_instance_split, &current_pos);
+    ASSERT_ARE_EQUAL(int, split_location, current_pos);
+
     az_ustream_read(&ustream_instance, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
     ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
                                                        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2)));
@@ -249,8 +257,6 @@ TEST_FUNCTION(az_ustream_split_split_succeed)
     az_ustream_read(&ustream_instance_split, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
     ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
                                                        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3)));
-
-    ///assert
 
     ///cleanup
     az_ustream_dispose(&ustream_instance);
