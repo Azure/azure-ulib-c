@@ -22,6 +22,13 @@ static uint8_t read_buffer[READ_BUFFER_SIZE];
 static bool concurrency_ustream = false;
 static uint32_t delay_return_value = 0;
 
+void reset_mock_buffer(void)
+{
+    current_position = 0;
+    concurrency_ustream = false;
+    delay_return_value = 0;
+}
+
 void set_concurrency_ustream(void)
 {
     concurrency_ustream = true;

@@ -12,6 +12,7 @@
 
 #define USER_BUFFER_SIZE 5
 
+#define SPLIT_POSITION 12
 static const char USTREAM_ONE_STRING[] = "Split BeforeSplit After";
 
 static AZ_ULIB_RESULT print_ustream(AZ_USTREAM* ustream)
@@ -36,7 +37,6 @@ static AZ_ULIB_RESULT print_ustream(AZ_USTREAM* ustream)
     }
     return result;
 }
-
 
 /**
  * This sample creates a ustream and then splits it into two ustreams at a desired position.
@@ -73,7 +73,7 @@ int main(void)
         {
             AZ_USTREAM ustream_instance_split;
 
-            if((result = az_ustream_split(&ustream_instance, &ustream_instance_split, 12)) != AZ_ULIB_SUCCESS)
+            if((result = az_ustream_split(&ustream_instance, &ustream_instance_split, SPLIT_POSITION)) != AZ_ULIB_SUCCESS)
             {
                 printf("Could not split ustream_instance\r\n");
             }

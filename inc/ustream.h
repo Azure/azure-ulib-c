@@ -114,11 +114,15 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_concat,
   *                                             the ustream. It cannot be <tt>NULL</tt>, and it shall be a valid ustream.
   * @param[out]         ustream_instance_split  The {@link AZ_USTREAM}* with the interface of the ustream which will contain the 
   *                                             controls to the data after <tt>split_pos</tt>. It cannot be <tt>NULL</tt>.
-  * @param[in]          split_pos               The position at which to split the passed <tt>ustream_instance</tt>.
+  * @param[in]          split_pos               The position at which to split the passed <tt>ustream_instance</tt>. It cannot
+  *                                             be equal to the current position of <tt>ustream_instance</tt> or equal to
+  *                                             the current position + remaining size. In other words, resulting ustreams of
+  *                                             size 0 are not allowed.
   * 
   * @return The {@link AZ_ULIB_RESULT} with the result of the <tt>concat</tt> operation.
   *          @retval    AZ_ULIB_SUCCESS                If the AZ_USTREAM is split with success.
   *          @retval    AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+  *          @retval    AZ_ULIB_NO_SUCH_ELEMENT_ERROR  If the input <tt>split_pos</tt> is outside the allowed range. 
   */
 MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_split,
         AZ_USTREAM*, ustream_instance,

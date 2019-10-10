@@ -147,6 +147,8 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize)
 
 TEST_FUNCTION_CLEANUP(test_method_cleanup)
 {
+    reset_mock_buffer();
+    
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
@@ -790,6 +792,65 @@ TEST_FUNCTION(az_ustream_split_get_position_failed)
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
+}
+
+/* az_ustream_split shall return AZ_ILLEGAL_ARGUMENT_ERROR if the input size_pos is equal to the current position */
+TEST_FUNCTION(az_ustream_split_position_same_as_current_failed)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 0);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
+}
+
+/* az_ustream_split shall return the return value of az_ustream_get_position if it fails */
+TEST_FUNCTION(az_ustream_split_get_remaining_size_failed)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    set_get_remaining_size_result(AZ_ULIB_SYSTEM_ERROR);
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
+}
+
+/* az_ustream_split shall return AZ_ILLEGAL_ARGUMENT_ERROR if the input size_pos is equal to the current position + remaining size */
+TEST_FUNCTION(az_ustream_split_position_end_of_ustream_failed)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    size_t remaining_size;
+    az_ustream_get_remaining_size(test_ustream, &remaining_size);
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, remaining_size);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
     az_ustream_dispose(test_ustream);

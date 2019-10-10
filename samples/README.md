@@ -7,6 +7,6 @@ This sample will create two ustreams: the first manages dynamic memory allocated
 ## uStream Split
 
 This sample demonstrates the ability to split a ustream at a desired position into two ustreams.
-The result of this operation gives the first ustream truncated at the position passed (not inclusive)
-to `az_ustream_split()` and the second ustream begins at the input position and ends at the end of
-the original input ustream.
+The result of this operation returns the first ustream truncated at the position passed 
+(not inclusive) to `az_ustream_split()` and the second ustream begins at the input position and ends 
+at the end of the original input ustream.
