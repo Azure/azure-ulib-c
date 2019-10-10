@@ -147,6 +147,8 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize)
 
 TEST_FUNCTION_CLEANUP(test_method_cleanup)
 {
+    reset_mock_buffer();
+    
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
@@ -622,6 +624,301 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
 
     ///cleanup
     (void)az_ustream_dispose(&multibuffer_clone);
+}
+
+/*-------------------az_ustream_split() unit tests----------------------*/
+
+/* az_ustream_split shall return AZ_ULIB_SUCCESS if the split is successful */
+TEST_FUNCTION(az_ustream_split_success)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
+}
+
+/* az_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
+TEST_FUNCTION(az_ustream_split_null_instance_failed)
+{
+    ///arrange
+    AZ_USTREAM test_buffer;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(NULL, &test_buffer, 4);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+
+    ///cleanup
+}
+
+/* az_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
+TEST_FUNCTION(az_ustream_split_null_split_instance_failed)
+{
+    ///arrange
+    AZ_USTREAM test_buffer;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(&test_buffer, NULL, 4);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+
+    ///cleanup
+}
+
+/* az_ustream_split shall return AZ_ULIB_NO_SUCH_ELEMENT_ERROR if the provided split position is invalid */
+TEST_FUNCTION(az_ustream_split_invalid_split_position_failed)
+{
+    ///arrange
+    AZ_USTREAM_DATA_CB* control_block =
+        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    ASSERT_IS_NOT_NULL(control_block);
+    AZ_USTREAM test_ustream;
+    AZ_ULIB_RESULT result1 =
+        az_ustream_init(
+            &test_ustream,
+            control_block,
+            free,
+            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
+            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
+            NULL);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
+
+    AZ_USTREAM ustream_split;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(&test_ustream, &ustream_split, -1);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(&test_ustream);
+}
+
+/* az_ustream_split shall return AZ_ULIB_NO_SUCH_ELEMENT_ERROR if the provided split position is invalid */
+TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_failed)
+{
+    ///arrange
+    AZ_USTREAM_DATA_CB* control_block =
+        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    ASSERT_IS_NOT_NULL(control_block);
+    AZ_USTREAM test_ustream;
+    AZ_ULIB_RESULT result1 =
+        az_ustream_init(
+            &test_ustream,
+            control_block,
+            free,
+            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
+            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
+            NULL);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
+
+    AZ_USTREAM test_ustream_clone;
+
+    az_ustream_clone(&test_ustream_clone, &test_ustream, 10);
+
+    AZ_USTREAM ustream_split;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(&test_ustream_clone, &ustream_split, 5);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(&test_ustream);
+    az_ustream_dispose(&test_ustream_clone);
+}
+
+/* az_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided split position is invalid */
+TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_after_failed)
+{
+    ///arrange
+    AZ_USTREAM_DATA_CB* control_block =
+        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    ASSERT_IS_NOT_NULL(control_block);
+    AZ_USTREAM test_ustream;
+    size_t content_length = strlen((const char *)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1);
+    AZ_ULIB_RESULT result1 =
+        az_ustream_init(
+            &test_ustream,
+            control_block,
+            free,
+            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
+            content_length,
+            NULL);
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
+
+    AZ_USTREAM test_ustream_clone;
+
+    az_ustream_clone(&test_ustream_clone, &test_ustream, 10);
+
+    AZ_USTREAM ustream_split;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(&test_ustream_clone, &ustream_split, 10 + content_length + 1);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(&test_ustream);
+    az_ustream_dispose(&test_ustream_clone);
+}
+
+/* az_ustream_split shall return the return value of az_ustream_get_position if it fails */
+TEST_FUNCTION(az_ustream_split_get_position_failed)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    set_get_position_result(AZ_ULIB_SYSTEM_ERROR);
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
+}
+
+/* az_ustream_split shall return AZ_ILLEGAL_ARGUMENT_ERROR if the input size_pos is equal to the current position */
+TEST_FUNCTION(az_ustream_split_position_same_as_current_failed)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 0);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
+}
+
+/* az_ustream_split shall return the return value of az_ustream_get_position if it fails */
+TEST_FUNCTION(az_ustream_split_get_remaining_size_failed)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    set_get_remaining_size_result(AZ_ULIB_SYSTEM_ERROR);
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
+}
+
+/* az_ustream_split shall return AZ_ILLEGAL_ARGUMENT_ERROR if the input size_pos is equal to the current position + remaining size */
+TEST_FUNCTION(az_ustream_split_position_end_of_ustream_failed)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    size_t remaining_size;
+    az_ustream_get_remaining_size(test_ustream, &remaining_size);
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, remaining_size);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
+}
+
+/* az_ustream_split shall return the return value of az_ustream_set_position if it fails */
+TEST_FUNCTION(az_ustream_split_set_position_failed)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    set_set_position_result(AZ_ULIB_SYSTEM_ERROR);
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
+}
+
+/* az_ustream_split shall return the return value of az_ustream_clone if it fails */
+TEST_FUNCTION(az_ustream_split_clone_failed)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    set_clone_result(AZ_ULIB_SYSTEM_ERROR);
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+
+    ///assert]
+    size_t cur_pos;
+    az_ustream_get_position(test_ustream, &cur_pos);
+    ASSERT_ARE_EQUAL(int, 0, cur_pos);
+
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
+}
+
+/* az_ustream_split shall return the return value of az_ustream_set_position if it fails */
+TEST_FUNCTION(az_ustream_split_set_position_second_failed)
+{
+    ///arrange
+    AZ_USTREAM* test_ustream = ustream_mock_create();
+
+    AZ_USTREAM ustream_split;
+
+    set_set_position_result(AZ_ULIB_SYSTEM_ERROR);
+    set_delay_return_value(1);
+
+    ///act
+    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+
+    ///assert
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
+
+    ///cleanup
+    az_ustream_dispose(test_ustream);
 }
 
 #include "ustream_compliance_ut.h"

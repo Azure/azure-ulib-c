@@ -98,6 +98,8 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize)
 
 TEST_FUNCTION_CLEANUP(test_method_cleanup)
 {
+    reset_mock_buffer();
+    
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 

@@ -23,12 +23,17 @@ static TEST_MUTEX_HANDLE g_test_by_test;
 
 #include "ustream.h"
 
+#define USTREAM_AUX_E2E_EXPECTED_CONTENT_2 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+#define USTREAM_AUX_E2E_EXPECTED_CONTENT_3 "abcdefghijklmnopqrstuvwxyz" 
+
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1 =
         (const uint8_t* const)"0123456789";
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2 =
-        (const uint8_t* const)"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        (const uint8_t* const)USTREAM_AUX_E2E_EXPECTED_CONTENT_2;
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3 =
-        (const uint8_t* const)"abcdefghijklmnopqrstuvwxyz";
+        (const uint8_t* const)USTREAM_AUX_E2E_EXPECTED_CONTENT_3;
+static const uint8_t *const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3 =
+    (const uint8_t *const)USTREAM_AUX_E2E_EXPECTED_CONTENT_2 USTREAM_AUX_E2E_EXPECTED_CONTENT_3;
 
 
 static void create_test_default_multibuffer(AZ_USTREAM* ustream)
@@ -208,6 +213,138 @@ TEST_FUNCTION(az_ustream_multi_read_concurrent_succeed)
     ///cleanup
     (void)az_ustream_dispose(multi_ustream);
     (void)az_ustream_dispose(&multibuffer_clone);
+}
+
+/*-------------------az_ustream_split() e2e tests----------------------*/
+
+TEST_FUNCTION(az_ustream_split_split_succeed)
+{
+    ///arrange
+    AZ_USTREAM_DATA_CB* data_cb = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    AZ_USTREAM ustream_instance;
+    az_ustream_init(
+        &ustream_instance,
+        data_cb,
+        free,
+        USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3,
+        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3),
+        NULL
+    );
+
+    uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
+    size_t split_location = strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2);
+    size_t returned_size;
+
+    AZ_USTREAM ustream_instance_split;
+    
+    ///act
+    az_ustream_split(&ustream_instance, &ustream_instance_split, split_location);
+
+    ///assert
+    size_t current_pos;
+    az_ustream_get_position(&ustream_instance, &current_pos);
+    ASSERT_ARE_EQUAL(int, 0, current_pos);
+
+    az_ustream_get_position(&ustream_instance_split, &current_pos);
+    ASSERT_ARE_EQUAL(int, split_location, current_pos);
+
+    az_ustream_read(&ustream_instance, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
+    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
+                                                       strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2)));
+
+    memset(&buf_result, 0, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+
+    az_ustream_read(&ustream_instance_split, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
+    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
+                                                       strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3)));
+
+    ///cleanup
+    az_ustream_dispose(&ustream_instance);
+    az_ustream_dispose(&ustream_instance_split);
+}
+
+TEST_FUNCTION(az_ustream_split_split_and_reset_succeed)
+{
+    ///arrange
+    AZ_USTREAM_DATA_CB* data_cb = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    AZ_USTREAM ustream_instance;
+    az_ustream_init(
+        &ustream_instance,
+        data_cb,
+        free,
+        USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3,
+        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3),
+        NULL
+    );
+
+    uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
+    size_t split_location = strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2);
+    size_t returned_size;
+
+    AZ_USTREAM ustream_instance_split;
+
+    az_ustream_read(&ustream_instance, buf_result, 2, &returned_size);
+    ASSERT_ARE_EQUAL(int, 2, returned_size);
+
+    ///act
+    az_ustream_split(&ustream_instance, &ustream_instance_split, split_location);
+    az_ustream_reset(&ustream_instance);
+
+    ///assert
+    size_t remaining_size;
+    az_ustream_get_remaining_size(&ustream_instance, &remaining_size);
+    ASSERT_ARE_EQUAL(int, split_location, remaining_size);
+
+    ///cleanup
+    az_ustream_dispose(&ustream_instance);
+    az_ustream_dispose(&ustream_instance_split);
+}
+
+TEST_FUNCTION(az_ustream_split_split_and_concat_succeed)
+{
+    ///arrange
+    AZ_USTREAM_DATA_CB* data_cb = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    AZ_USTREAM ustream_instance;
+    az_ustream_init(
+        &ustream_instance,
+        data_cb,
+        free,
+        USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3,
+        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3),
+        NULL);
+
+    uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
+    size_t split_location = strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2);
+    size_t returned_size;
+
+    AZ_USTREAM ustream_instance_split;
+
+    az_ustream_split(&ustream_instance, &ustream_instance_split, split_location);
+
+    ///act
+    az_ustream_read(&ustream_instance, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
+    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
+                                                       strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2)));
+
+    memset(&buf_result, 0, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+
+    az_ustream_read(&ustream_instance_split, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
+    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
+                                                       strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3)));
+
+    az_ustream_reset(&ustream_instance);
+    az_ustream_reset(&ustream_instance_split);
+    AZ_USTREAM_MULTI_DATA_CB* multi_data = (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    az_ustream_concat(&ustream_instance, &ustream_instance_split, multi_data, free);
+
+    ///assert
+    az_ustream_read(&ustream_instance, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
+    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3,
+                                                       strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3)));
+
+    ///cleanup
+    az_ustream_dispose(&ustream_instance);
+    az_ustream_dispose(&ustream_instance_split);
 }
 
 #include "ustream_compliance_e2e.h"

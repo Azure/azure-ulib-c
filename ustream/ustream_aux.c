@@ -377,3 +377,69 @@ AZ_ULIB_RESULT az_ustream_concat(
 
     return result;
 }
+
+AZ_ULIB_RESULT az_ustream_split(
+    AZ_USTREAM* ustream_instance,
+    AZ_USTREAM* ustream_instance_split,
+    offset_t split_pos)
+{
+    /*[az_ustream_split_null_instance_failed]*/
+    /*[az_ustream_split_null_split_instance_failed]*/
+    AZ_UCONTRACT(AZ_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
+                 AZ_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance_split, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+
+    AZ_ULIB_RESULT result;
+
+    offset_t old_position;
+    /*[az_ustream_split_get_position_failed]*/
+    if((result = az_ustream_get_position(ustream_instance, &old_position)) == AZ_ULIB_SUCCESS)
+    {
+        /*[az_ustream_split_position_same_as_current_failed]*/
+        if(split_pos == old_position)
+        {
+            result = AZ_ULIB_ILLEGAL_ARGUMENT_ERROR;
+        }
+        else
+        {
+            size_t ustream_remaining_size;
+            /*[az_ustream_split_get_remaining_size_failed]*/
+            if((result = az_ustream_get_remaining_size(ustream_instance, &ustream_remaining_size)) == AZ_ULIB_SUCCESS)
+            {
+                /*[az_ustream_split_position_end_of_ustream_failed]*/
+                if(old_position + ustream_remaining_size == split_pos)
+                {
+                    result = AZ_ULIB_ILLEGAL_ARGUMENT_ERROR;
+                }
+                else
+                {
+                    /*[az_ustream_split_invalid_split_position_with_offset_failed]*/
+                    /*[az_ustream_split_invalid_split_position_with_offset_after_failed]*/
+                    /*[az_ustream_split_set_position_failed]*/
+                    if((result = az_ustream_set_position(ustream_instance, split_pos)) == AZ_ULIB_SUCCESS)
+                    {
+                        /*[az_ustream_split_clone_failed]*/
+                        if((result = az_ustream_clone(ustream_instance_split, ustream_instance, split_pos)) == AZ_ULIB_SUCCESS)
+                        {
+                            /*[az_ustream_split_set_position_second_failed]*/
+                            if((result = az_ustream_set_position(ustream_instance, old_position)) == AZ_ULIB_SUCCESS)
+                            {
+                                /*[az_ustream_split_success]*/
+                                ustream_instance->length = split_pos - ustream_instance->inner_first_valid_position;
+                            }
+                            else
+                            {
+                                az_ustream_dispose(ustream_instance_split);
+                            }
+                        }
+                        else
+                        {
+                            az_ustream_set_position(ustream_instance, old_position);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return result;
+}
