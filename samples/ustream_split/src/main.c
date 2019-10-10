@@ -56,41 +56,48 @@ int main(void)
     if((data_cb = (AZ_USTREAM_DATA_CB *)malloc(sizeof(AZ_USTREAM_DATA_CB))) != NULL)
     {
         AZ_USTREAM ustream_instance;
-        if(az_ustream_init(&ustream_instance, data_cb, free, USTREAM_ONE_STRING, sizeof(USTREAM_ONE_STRING), NULL) != AZ_ULIB_SUCCESS)
+        if((result = az_ustream_init(&ustream_instance, data_cb, free, (const uint8_t*)USTREAM_ONE_STRING, 
+                                                        sizeof(USTREAM_ONE_STRING), NULL)) != AZ_ULIB_SUCCESS)
         {
             printf("Could not initialize ustream_instance\r\n");
         }
-        else if(print_ustream(&ustream_instance) != AZ_ULIB_SUCCESS)
+        else if((result = print_ustream(&ustream_instance)) != AZ_ULIB_SUCCESS)
         {
             printf("Could not print the original ustream_instance\r\n");
         }
-        else if(az_ustream_reset(&ustream_instance) != AZ_ULIB_SUCCESS)
+        else if((result = az_ustream_reset(&ustream_instance)) != AZ_ULIB_SUCCESS)
         {
             printf("Could not reset ustream_instance\r\n");
         }
+        else
+        {
+            AZ_USTREAM ustream_instance_split;
 
-        AZ_USTREAM ustream_instance_split;
-
-        if(az_ustream_split(&ustream_instance, &ustream_instance_split, 12) != AZ_ULIB_SUCCESS)
-        {
-            printf("Could not split ustream_instance\r\n");
+            if((result = az_ustream_split(&ustream_instance, &ustream_instance_split, 12)) != AZ_ULIB_SUCCESS)
+            {
+                printf("Could not split ustream_instance\r\n");
+            }
+            else if((result = print_ustream(&ustream_instance)) != AZ_ULIB_SUCCESS)
+            {
+                printf("Could not print the split ustream_instance\r\n");
+            }
+            else if((result = print_ustream(&ustream_instance_split)) != AZ_ULIB_SUCCESS)
+            {
+                printf("Could not print ustream_instance_split\r\n");
+            }
+            else if((result = az_ustream_dispose(&ustream_instance)) != AZ_ULIB_SUCCESS)
+            {
+                printf("Could not dispose of ustream_instance\r\n");
+            }
+            else if((result = az_ustream_dispose(&ustream_instance_split)) != AZ_ULIB_SUCCESS)
+            {
+                printf("Could not dispose of ustream_instance_split\r\n");
+            }
         }
-        else if(print_ustream(&ustream_instance) != AZ_ULIB_SUCCESS)
-        {
-            printf("Could not print the split ustream_instance\r\n");
-        }
-        else if((print_ustream(&ustream_instance_split)) != AZ_ULIB_SUCCESS)
-        {
-            printf("Could not print ustream_instance_split\r\n");
-        }
-        else if((az_ustream_dispose(&ustream_instance)) != AZ_ULIB_SUCCESS)
-        {
-            printf("Could not dispose of ustream_instance\r\n");
-        }
-        else if((az_ustream_dispose(&ustream_instance_split)) != AZ_ULIB_SUCCESS)
-        {
-            printf("Could not dispose of ustream_instance_split\r\n");
-        }
+    }
+    else
+    {
+        result = AZ_ULIB_OUT_OF_MEMORY_ERROR;
     }
 
     return result;

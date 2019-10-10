@@ -227,12 +227,12 @@ TEST_FUNCTION(az_ustream_split_split_succeed)
         data_cb,
         free,
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3,
-        strlen(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3),
+        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3),
         NULL
     );
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
-    size_t split_location = strlen(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2);
+    size_t split_location = strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2);
     size_t returned_size;
 
     AZ_USTREAM ustream_instance_split;
@@ -241,12 +241,14 @@ TEST_FUNCTION(az_ustream_split_split_succeed)
 
     ///act
     az_ustream_read(&ustream_instance, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
-    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2, strlen(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2)));
+    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
+                                                       strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2)));
 
     memset(&buf_result, 0, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     az_ustream_read(&ustream_instance_split, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
-    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3, strlen(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3)));
+    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
+                                                       strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3)));
 
     ///assert
 
@@ -265,11 +267,11 @@ TEST_FUNCTION(az_ustream_split_split_and_concat_succeed)
         data_cb,
         free,
         USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3,
-        strlen(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3),
+        strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3),
         NULL);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
-    size_t split_location = strlen(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2);
+    size_t split_location = strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2);
     size_t returned_size;
 
     AZ_USTREAM ustream_instance_split;
@@ -278,12 +280,14 @@ TEST_FUNCTION(az_ustream_split_split_and_concat_succeed)
 
     ///act
     az_ustream_read(&ustream_instance, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
-    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2, strlen(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2)));
+    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
+                                                       strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2)));
 
     memset(&buf_result, 0, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     az_ustream_read(&ustream_instance_split, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
-    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3, strlen(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3)));
+    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
+                                                       strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3)));
 
     az_ustream_reset(&ustream_instance);
     az_ustream_reset(&ustream_instance_split);
@@ -292,7 +296,8 @@ TEST_FUNCTION(az_ustream_split_split_and_concat_succeed)
 
     ///assert
     az_ustream_read(&ustream_instance, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
-    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3, strlen(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3)));
+    ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3,
+                                                       strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3)));
 
     ///cleanup
     az_ustream_dispose(&ustream_instance);
