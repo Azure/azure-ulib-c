@@ -202,7 +202,7 @@ static AZ_USTREAM USTREAM_COMPLIANCE_MOCK_BUFFER =
     .offset_diff = 0,
     .inner_current_position = 0,
     .inner_first_valid_position = 0,
-    .length = 1
+    .length = 10
 };
 
 AZ_USTREAM* ustream_mock_create(void)
