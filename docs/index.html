@@ -99,7 +99,7 @@ $(function() {
 <p class="startli">```bash cd cmake ```</p>
 </li>
 <li><p class="startli">Run cmake. Here you have the option of building the tests as well. If you would like to build the tests, run:</p>
-<p class="startli">```bash cmake .. -Drun_ulib_unit_tests:bool=ON ```</p>
+<p class="startli">```bash cmake .. -Drun_ulib_unit_tests:BOOL=ON -Drun_ulib_e2e_tests:BOOL=ON ```</p>
 <p class="startli">Otherwise, to just build the source files, run:</p>
 <p class="startli">```bash cmake .. ```</p>
 </li>
@@ -111,6 +111,8 @@ $(function() {
 <p class="startli">The -C option chooses the build configuration to test and the -V turns on verbose output from the tests.</p>
 </li>
 </ol>
+<h2>Creating Your Own uStream</h2>
+<p>Using the specification listed <a href="https://azure.github.io/azure-ulib-c/ustream__base_8h.html">here</a> in the documentation, you can create your own implementation of a ustream. In order to ensure that it behaves according to the specification, we have created tests which you can run against your implementation. You can use <code>ustream_ut_sample.c</code> and <code>ustream_e2e_sample.c</code> in <a href="tests/tests_sample">tests_sample</a> as a reference. <code>TODO</code>'s have been placed in the sample files to help guide what you need to implement.</p>
 <h2>Contributing</h2>
 <p>This project welcomes contributions and suggestions. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit <a href="https://cla.microsoft.com">Microsoft CLA</a>.</p>
 <p>When you submit a pull request, a CLA-bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.</p>

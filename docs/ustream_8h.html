@@ -91,6 +91,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a8bc99a74b8ee2e3c3d0fbb8625de7e96"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ulib__result_8h.html#a224a449162851fd8b7549f9f264829bc">AZ_ULIB_RESULT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ustream_8h.html#a8bc99a74b8ee2e3c3d0fbb8625de7e96">az_ustream_concat</a> (<a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d">AZ_USTREAM</a> *ustream_instance, <a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d">AZ_USTREAM</a> *ustream_to_concat, <a class="el" href="ustream__base_8h.html#a5fd3eefa94919e5dafc9bdd9a3d80f33">AZ_USTREAM_MULTI_DATA_CB</a> *multi_data, <a class="el" href="ustream__base_8h.html#ae39e80e866043231e3535a6270110255">AZ_RELEASE_CALLBACK</a> multi_data_release)</td></tr>
 <tr class="memdesc:a8bc99a74b8ee2e3c3d0fbb8625de7e96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenate a ustream to the existing ustream.  <a href="#a8bc99a74b8ee2e3c3d0fbb8625de7e96">More...</a><br /></td></tr>
 <tr class="separator:a8bc99a74b8ee2e3c3d0fbb8625de7e96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeb1d4c0ba9cea1aec3adce7f19c823b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ulib__result_8h.html#a224a449162851fd8b7549f9f264829bc">AZ_ULIB_RESULT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ustream_8h.html#aaeb1d4c0ba9cea1aec3adce7f19c823b">az_ustream_split</a> (<a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d">AZ_USTREAM</a> *ustream_instance, <a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d">AZ_USTREAM</a> *ustream_instance_split, <a class="el" href="ustream__base_8h.html#ad6d3ac7a653ebc380309a369ca677d58">offset_t</a> split_pos)</td></tr>
+<tr class="memdesc:aaeb1d4c0ba9cea1aec3adce7f19c823b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Split a ustream at a given position.  <a href="#aaeb1d4c0ba9cea1aec3adce7f19c823b">More...</a><br /></td></tr>
+<tr class="separator:aaeb1d4c0ba9cea1aec3adce7f19c823b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>ustream implementation for local memory </p>
@@ -225,6 +228,60 @@ Functions</h2></td></tr>
   <table class="retval">
     <tr><td class="paramname">AZ_ULIB_SUCCESS</td><td>If the <a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d">AZ_USTREAM</a>* is successfully initialized. </td></tr>
     <tr><td class="paramname">AZ_ULIB_ILLEGAL_ARGUMENT_EXCEPTION</td><td>If one of the provided parameters is invalid. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aaeb1d4c0ba9cea1aec3adce7f19c823b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaeb1d4c0ba9cea1aec3adce7f19c823b">&#9670;&nbsp;</a></span>az_ustream_split()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ulib__result_8h.html#a224a449162851fd8b7549f9f264829bc">AZ_ULIB_RESULT</a> az_ustream_split </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d">AZ_USTREAM</a> *&#160;</td>
+          <td class="paramname"><em>ustream_instance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d">AZ_USTREAM</a> *&#160;</td>
+          <td class="paramname"><em>ustream_instance_split</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="ustream__base_8h.html#ad6d3ac7a653ebc380309a369ca677d58">offset_t</a>&#160;</td>
+          <td class="paramname"><em>split_pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Split a ustream at a given position. </p>
+<p>The split will divide a given ustream into two parts, divided at the passed <code>split_pos</code>. The result of this operation will be two ustream instances. The first and original ustream will contain the data from the original first valid position up to but not including the passed <code>split_pos</code>. Its current position will be the same as it was when passed. The second ustream will contain the data from the passed <code>split_pos</code> up to the end of the <code>ustream_instance</code> before the function was called. It's current position will be the same as <code>split_pos</code>. The <code>split_pos</code> should be relative to the position returned from <a class="el" href="ustream__base_8h.html#ac5c96cc3810b571304cc9ed4c3fc86e5" title="Returns the current position in the ustream.">az_ustream_get_position()</a> and the remaining size of <code>ustream_instance</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ustream_instance</td><td>The <a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d">AZ_USTREAM</a>* with the interface of the ustream. It cannot be <code>NULL</code>, and it shall be a valid ustream. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">ustream_instance_split</td><td>The <a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d">AZ_USTREAM</a>* with the interface of the ustream which will contain the controls to the data after <code>split_pos</code>. It cannot be <code>NULL</code>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">split_pos</td><td>The <code>offset_t</code> at which to split the passed <code>ustream_instance</code>. It cannot be equal to the current position of <code>ustream_instance</code> or equal to the current position + remaining size. In other words, resulting ustreams of size 0 are not allowed.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="ulib__result_8h.html#a224a449162851fd8b7549f9f264829bc">AZ_ULIB_RESULT</a> with the result of the <code>concat</code> operation. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">AZ_ULIB_SUCCESS</td><td>If the AZ_USTREAM is split with success. </td></tr>
+    <tr><td class="paramname">AZ_ULIB_ILLEGAL_ARGUMENT_ERROR</td><td>If one of the provided parameters is invalid. </td></tr>
+    <tr><td class="paramname">AZ_ULIB_NO_SUCH_ELEMENT_ERROR</td><td>If the input <code>split_pos</code> is outside the allowed range. </td></tr>
   </table>
   </dd>
 </dl>
