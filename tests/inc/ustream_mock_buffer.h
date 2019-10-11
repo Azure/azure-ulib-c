@@ -13,7 +13,9 @@ extern "C" {
 
 AZ_USTREAM* ustream_mock_create(void);
 
+void reset_mock_buffer(void);
 void set_concurrency_ustream(void);
+void set_delay_return_value(uint32_t delay);
 
 void set_set_position_result(AZ_ULIB_RESULT result);
 void set_reset_result(AZ_ULIB_RESULT result);
