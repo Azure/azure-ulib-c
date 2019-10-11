@@ -14,5 +14,6 @@ var searchData=
   ['az_5fustream_5fread',['az_ustream_read',['../ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931',1,'ustream_base.h']]],
   ['az_5fustream_5frelease',['az_ustream_release',['../ustream__base_8h.html#ab8c2c90c6d5a065610cdf54c5f48aab4',1,'ustream_base.h']]],
   ['az_5fustream_5freset',['az_ustream_reset',['../ustream__base_8h.html#a3acd897d99e958f3da9533eab17aab13',1,'ustream_base.h']]],
-  ['az_5fustream_5fset_5fposition',['az_ustream_set_position',['../ustream__base_8h.html#ade0f526684863ad7c3353991950c9a0a',1,'ustream_base.h']]]
+  ['az_5fustream_5fset_5fposition',['az_ustream_set_position',['../ustream__base_8h.html#ade0f526684863ad7c3353991950c9a0a',1,'ustream_base.h']]],
+  ['az_5fustream_5fsplit',['az_ustream_split',['../ustream_8h.html#aaeb1d4c0ba9cea1aec3adce7f19c823b',1,'ustream.h']]]
 ];
