@@ -76,7 +76,6 @@ int main(void)
 
             if((result = az_ustream_split(&ustream_instance, &ustream_instance_split, SPLIT_POSITION)) != AZ_ULIB_SUCCESS)
             {
-                az_ustream_dispose(&ustream_instance);
                 printf("Could not split ustream_instance\r\n");
             }
             else
@@ -90,14 +89,15 @@ int main(void)
                     printf("Could not print ustream_instance_split\r\n");
                 }
 
-                if((result = az_ustream_dispose(&ustream_instance)) != AZ_ULIB_SUCCESS)
-                {
-                    printf("Could not dispose of ustream_instance\r\n");
-                }
                 if((result = az_ustream_dispose(&ustream_instance_split)) != AZ_ULIB_SUCCESS)
                 {
                     printf("Could not dispose of ustream_instance_split\r\n");
                 }
+            }
+
+            if((result = az_ustream_dispose(&ustream_instance)) != AZ_ULIB_SUCCESS)
+            {
+                printf("Could not dispose of ustream_instance\r\n");
             }
         }
     }
