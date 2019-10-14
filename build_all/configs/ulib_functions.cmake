@@ -110,6 +110,11 @@ function(ulib_populate_test_target target_name)
             USE_CTEST
     )
 
+    set_target_properties(${target_name}
+        PROPERTIES
+            FOLDER "uLib Tests"
+    )
+
     #Create Windows/Linux test executables
     if(WIN32)
         if (${use_cppunittest})
@@ -141,6 +146,11 @@ function(ulib_populate_sample_target target_name)
             azure_ulib_c
             azure_macro_utils_c
             umock_c
+    )
+
+    set_target_properties(${target_name}
+        PROPERTIES
+            FOLDER "uLib Samples"
     )
 
 endfunction()

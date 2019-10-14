@@ -45,6 +45,11 @@ target_include_directories(azure_ulib_c
         ${PROJECT_SOURCE_DIR}/deps/azure-macro-utils-c/inc
 )
 
+set_target_properties(azure_ulib_c
+    PROPERTIES
+        FOLDER "uLib Library"
+)
+
 set(AZURE_ULIB_C_INC_FOLDER ${CMAKE_CURRENT_LIST_DIR}/inc CACHE INTERNAL "this is what needs to be included if using sharedLib lib" FORCE)
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-macro-utils-c EXCLUDE_FROM_ALL)
