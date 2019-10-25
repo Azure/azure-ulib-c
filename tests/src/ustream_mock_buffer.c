@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "ustream_mock_buffer.h"
 #include "ustream_base.h"
-#include "ustream_test_thread_aux.h"
+#include "test_thread.h"
 
 static AZ_ULIB_RESULT _concrete_set_position_result = AZ_ULIB_SUCCESS;
 static AZ_ULIB_RESULT _concrete_reset_result = AZ_ULIB_SUCCESS;

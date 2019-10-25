@@ -5,7 +5,7 @@
 #define USTREAM_COMPLIANCE_E2E_H
 
 #include "ustream_mock_buffer.h"
-#include "ustream_test_thread_aux.h"
+#include "test_thread.h"
 #include "ustream_ctest_aux.h"
 
 /* check for test artifacts. */
