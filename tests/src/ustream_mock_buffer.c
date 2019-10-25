@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include "ustream_mock_buffer.h"
-#include "ustream_base.h"
+#include "az_ulib_ustream_base.h"
 #include "test_thread.h"
 
 static AZ_ULIB_RESULT _concrete_set_position_result = AZ_ULIB_SUCCESS;

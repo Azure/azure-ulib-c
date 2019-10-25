@@ -8,9 +8,9 @@
 #include "consumer.h"
 #include "math.h"
 #include "math_tlb.h"
-#include "ucontract.h"
-#include "ulib_result.h"
-#include "ulog.h"
+#include "az_ulib_ucontract.h"
+#include "az_ulib_result.h"
+#include "az_ulib_ulog.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>

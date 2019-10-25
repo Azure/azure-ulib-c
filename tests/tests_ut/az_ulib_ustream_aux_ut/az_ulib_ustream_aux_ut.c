@@ -25,7 +25,7 @@
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 
-#include "ustream.h"
+#include "az_ulib_ustream.h"
 
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1 =
         (const uint8_t* const)"0123456789";

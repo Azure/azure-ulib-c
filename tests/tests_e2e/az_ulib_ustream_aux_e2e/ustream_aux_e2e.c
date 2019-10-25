@@ -21,7 +21,7 @@
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 
-#include "ustream.h"
+#include "az_ulib_ustream.h"
 
 #define USTREAM_AUX_E2E_EXPECTED_CONTENT_1 "0123456789"
 #define USTREAM_AUX_E2E_EXPECTED_CONTENT_2 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

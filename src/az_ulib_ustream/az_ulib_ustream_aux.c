@@ -5,12 +5,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "ucontract.h"
-#include "ustream.h"
-#include "ulib_result.h"
-#include "az_pal_os.h"
-#include "az_pal_os_api.h"
-#include "ulog.h"
+#include "az_ulib_ucontract.h"
+#include "az_ulib_ustream.h"
+#include "az_ulib_result.h"
+#include "az_ulib_pal_os.h"
+#include "az_ulib_pal_os_api.h"
+#include "az_ulib_ulog.h"
 
 static AZ_ULIB_RESULT concrete_set_position(AZ_USTREAM* ustream_instance, offset_t position);
 static AZ_ULIB_RESULT concrete_reset(AZ_USTREAM* ustream_instance);

@@ -1,19 +1,19 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef WINDOWS_AZ_PAL_OS_H
-#define WINDOWS_AZ_PAL_OS_H
+#ifndef AZ_ULIB_PAL_OS_LINUX_H
+#define AZ_ULIB_PAL_OS_LINUX_H
 
-#include <windows.h>
+#include <pthread.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef SRWLOCK AZ_PAL_OS_LOCK;
+typedef pthread_mutex_t AZ_PAL_OS_LOCK;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* WINDOWS_AZ_PAL_OS_H */
+#endif /* AZ_ULIB_PAL_OS_LINUX_H */

@@ -20,8 +20,8 @@
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 
-#include "ustream_base.h"
-#include "ustream.h"
+#include "az_ulib_ustream_base.h"
+#include "az_ulib_ustream.h"
 /*TODO:<insert your header file here for testing>*/
 
 /* define constants for the compliance test */

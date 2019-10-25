@@ -29,11 +29,11 @@ endif()
 
 #Add library of ulib c files
 add_library(azure_ulib_c
-    ${PROJECT_SOURCE_DIR}/ulog/ulog.c
-    ${PROJECT_SOURCE_DIR}/ustream/ustream_aux.c
-    ${PROJECT_SOURCE_DIR}/ustream/ustream.c
+    ${PROJECT_SOURCE_DIR}/src/az_ulib_ulog/az_ulib_ulog.c
+    ${PROJECT_SOURCE_DIR}/src/az_ulib_ustream/az_ulib_ustream_aux.c
+    ${PROJECT_SOURCE_DIR}/src/az_ulib_ustream/az_ulib_ustream.c
     ${PROJECT_SOURCE_DIR}/src/az_ulib_ipc/az_ulib_ipc.c
-    ${PROJECT_SOURCE_DIR}/pal/os/src/${ULIB_PAL_OS_DIRECTORY}/az_pal_os.c
+    ${PROJECT_SOURCE_DIR}/pal/os/src/${ULIB_PAL_OS_DIRECTORY}/az_ulib_pal_os.c
 )
 
 #Add include directories for this target and anyone linking against it

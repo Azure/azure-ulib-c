@@ -10,7 +10,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * @file ulib_config.h
+ * @file az_ulib_config.h
  *
  * @brief Configuration options for ulib
  */

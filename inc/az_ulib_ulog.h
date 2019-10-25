@@ -3,8 +3,8 @@
 // See LICENSE file in the project root for full license information.
 
 /**
- * @file ulog.h
- *
+ * @file az_ulib_ulog.h
+ * 
  * @brief Small footprint logging functionality
  *
  * Using the az_ulog_print() api, you can pass enum types to differentiate logging purposes. When
@@ -12,11 +12,11 @@
  * being saved in the bss.
  */
 
-#ifndef AZ_ULOG_H
-#define AZ_ULOG_H
+#ifndef AZ_ULIB_ULOG_H
+#define AZ_ULIB_ULOG_H
 
 #include "azure_macro_utils/macro_utils.h"
-#include "ulib_config.h"
+#include "az_ulib_config.h"
 
 #include <stdio.h>
 
@@ -62,4 +62,4 @@ void az_ulog_print(AZ_ULOG_TYPE type, const char* const format, ...);
 }
 #endif /* __cplusplus */
 
-#endif /* AZ_ULOG_H */
+#endif /* AZ_ULIB_ULOG_H */

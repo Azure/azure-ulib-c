@@ -2,15 +2,15 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 /**
- * @file ustream.h
+ * @file az_ulib_ustream.h
  * 
  * @brief ustream implementation for local memory
  */
 
-#ifndef AZ_USTREAM_H
-#define AZ_USTREAM_H
+#ifndef AZ_ULIB_USTREAM_H
+#define AZ_ULIB_USTREAM_H
 
-#include "ustream_base.h"
+#include "az_ulib_ustream_base.h"
 
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
@@ -136,4 +136,4 @@ MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, az_ustream_split,
 }
 #endif /* __cplusplus */
 
-#endif /* AZ_USTREAM_H */
+#endif /* AZ_ULIB_USTREAM_H */

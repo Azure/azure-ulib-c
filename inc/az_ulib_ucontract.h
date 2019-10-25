@@ -3,18 +3,18 @@
 // See LICENSE file in the project root for full license information.
 
 /**
- * @file ucontract.h
- *
+ * @file az_ulib_ucontract.h
+ * 
  * @brief Public API parameter validation
  */
 
-#ifndef AZ_UCONTRACT_H
-#define AZ_UCONTRACT_H
+#ifndef AZ_ULIB_UCONTRACT_H
+#define AZ_ULIB_UCONTRACT_H
 
 #include "azure_macro_utils/macro_utils.h"
-#include "ulib_config.h"
-#include "ulib_port.h"
-#include "ulog.h"
+#include "az_ulib_config.h"
+#include "az_ulib_port.h"
+#include "az_ulib_ulog.h"
 
 #include <stdio.h>
 
@@ -208,4 +208,4 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif /* AZ_UCONTRACT_H */
+#endif /* AZ_ULIB_UCONTRACT_H */

@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef AZ_USTREAM_BASE_H
-#define AZ_USTREAM_BASE_H
+#ifndef AZ_ULIB_USTREAM_BASE_H
+#define AZ_ULIB_USTREAM_BASE_H
 
 /**
- * @file ustream_base.h
+ * @file az_ulib_ustream_base.h
  * @brief **uStream Interface Definition**
  *
  *  This is the definition of a heterogeneous buffer that helps other modules in a system
@@ -315,9 +315,9 @@
  *      az_ustream_reset().
  */
 
-#include "ulib_config.h"
-#include "ulib_result.h"
-#include "az_pal_os.h"
+#include "az_ulib_config.h"
+#include "az_ulib_result.h"
+#include "az_ulib_pal_os.h"
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
 
@@ -878,4 +878,4 @@ static inline AZ_ULIB_RESULT az_ustream_dispose(AZ_USTREAM* ustream_instance)
 }
 #endif /* __cplusplus */
 
-#endif /* AZ_USTREAM_BASE_H */
+#endif /* AZ_ULIB_USTREAM_BASE_H */

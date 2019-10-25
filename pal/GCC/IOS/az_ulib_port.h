@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-// This file gets included into ulib_port.h as a means of extending the behavior of
+// This file gets included into az_ulib_port.h as a means of extending the behavior of
 // atomic increment, decrement, and test.
 #ifndef AZ_ULIB_GCC_IOS_PORT_H
 #define AZ_ULIB_GCC_IOS_PORT_H

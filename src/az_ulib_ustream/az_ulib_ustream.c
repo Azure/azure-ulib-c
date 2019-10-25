@@ -6,11 +6,11 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "ucontract.h"
-#include "ustream.h"
-#include "ulib_result.h"
-#include "ulib_port.h"
-#include "ulog.h"
+#include "az_ulib_ucontract.h"
+#include "az_ulib_ustream.h"
+#include "az_ulib_result.h"
+#include "az_ulib_port.h"
+#include "az_ulib_ulog.h"
 
 static AZ_ULIB_RESULT concrete_set_position(AZ_USTREAM* ustream_instance, offset_t position);
 static AZ_ULIB_RESULT concrete_reset(AZ_USTREAM* ustream_instance);

@@ -5,7 +5,7 @@
 #define USTREAM_MOCK_BUFFER_H
 
 #include <stdbool.h>
-#include "ustream_base.h"
+#include "az_ulib_ustream_base.h"
 
 #ifdef __cplusplus
 extern "C" {

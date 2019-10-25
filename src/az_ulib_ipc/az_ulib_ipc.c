@@ -7,17 +7,17 @@
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
 
-#include "az_pal_os_api.h"
+#include "az_ulib_pal_os_api.h"
 #include "az_ulib_action_api.h"
 #include "az_ulib_base.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "internal/az_ulib_ipc.h"
-#include "ucontract.h"
-#include "ulib_config.h"
-#include "ulib_port.h"
-#include "ulib_result.h"
-#include "ulog.h"
+#include "az_ulib_ucontract.h"
+#include "az_ulib_config.h"
+#include "az_ulib_port.h"
+#include "az_ulib_result.h"
+#include "az_ulib_ulog.h"
 
 /*
  * IPC is a singleton component, and shall be initialized only once.

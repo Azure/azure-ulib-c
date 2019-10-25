@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-/** @file az_pal_os_api.h
+/** @file az_ulib_pal_os_api.h
 *    @brief      A minimalistic platform agnostic abstraction.
 */
 
-#ifndef AZ_PAL_OS_API_H
-#define AZ_PAL_OS_API_H
+#ifndef AZ_ULIB_PAL_OS_API_H
+#define AZ_ULIB_PAL_OS_API_H
 
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
 
-#include "az_pal_os.h"
+#include "az_ulib_pal_os.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -57,4 +57,4 @@ MOCKABLE_FUNCTION(, void, az_pal_os_lock_release, AZ_PAL_OS_LOCK *, lock);
 }
 #endif
 
-#endif /* AZ_PAL_OS_API_H */
+#endif /* AZ_ULIB_PAL_OS_API_H */

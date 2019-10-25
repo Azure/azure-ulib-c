@@ -6,9 +6,9 @@
 #include <stddef.h>
 #include <string.h>
 #include <stdint.h>
-#include "ustream.h"
-#include "ulib_result.h"
-#include "ulog.h"
+#include "az_ulib_ustream.h"
+#include "az_ulib_result.h"
+#include "az_ulib_ulog.h"
 
 #define USER_BUFFER_SIZE 5
 #define USTREAM_TWO_STRING "World\r\n"

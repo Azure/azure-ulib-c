@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include "azure_macro_utils/macro_utils.h"
 #include "testrunnerswitcher.h"
-#include "ustream_base.h"
+#include "az_ulib_ustream_base.h"
 
 /**
  * Missing CTEST function to compare arrays.

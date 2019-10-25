@@ -3,7 +3,7 @@
 // See LICENSE file in the project root for full license information.
 
 #include "az_ulib_ipc_api.h"
-#include "ulib_result.h"
+#include "az_ulib_result.h"
 #include <stdint.h>
 
 /*
