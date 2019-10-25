@@ -51,6 +51,11 @@ set_target_properties(azure_ulib_c
         FOLDER "uLib Library"
 )
 
+target_compile_options(azure_ulib_c
+    PRIVATE
+        $<$<C_COMPILER_ID:Clang>:-Wdocumentation>
+)
+
 set(AZURE_ULIB_C_INC_FOLDER ${CMAKE_CURRENT_LIST_DIR}/inc CACHE INTERNAL "this is what needs to be included if using sharedLib lib" FORCE)
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-macro-utils-c EXCLUDE_FROM_ALL)
