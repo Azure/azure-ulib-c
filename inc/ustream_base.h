@@ -367,11 +367,10 @@ typedef struct AZ_USTREAM_INTERFACE_TAG
 /**
  * @brief   Signature of the function to release memory passed to the ustream
  * 
- * @param[in]   void*       void pointer to memory that needs to be free'd
+ * @param[in]   release_pointer       void pointer to memory that needs to be free'd
  * 
- * @return  void
  */
-typedef void (*AZ_RELEASE_CALLBACK)(void*);
+typedef void (*AZ_RELEASE_CALLBACK)(void* release_pointer);
 
 /**
  * @brief   Pointer to the data from which to read

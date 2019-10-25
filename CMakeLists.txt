@@ -18,7 +18,10 @@ ulib_add_standards()
 option(run_ulib_e2e_tests "set run_ulib_e2e_tests to ON to run e2e tests (default is OFF)" OFF)
 option(run_ulib_unit_tests "set run_ulib_unit_tests to ON to run unittests (default is OFF)" OFF)
 option(skip_samples "set skip_samples to ON to skip building samples (default is OFF)[if possible, they are always built]" OFF)
-option(use_installed_dependencies "set use_installed_dependencies to ON to use installed packages instead of building dependencies from submodules" OFF)
+option(use_installed_dependencies "set use_installed_dependencies to ON to use installed packages 
+                                    instead of building dependencies from submodules" OFF)
+option(validate_documentation "set to enable the -Wdocumentation flag on clang to validate documentation.
+                                If not using clang this will have no effect." OFF)
 
 if(${run_ulib_e2e_tests} OR ${run_ulib_unit_tests})
     include(CTest)
@@ -51,10 +54,12 @@ set_target_properties(azure_ulib_c
         FOLDER "uLib Library"
 )
 
-target_compile_options(azure_ulib_c
-    PRIVATE
-        $<$<C_COMPILER_ID:Clang>:-Wdocumentation>
-)
+if(${validate_documentation})
+    target_compile_options(azure_ulib_c
+        PRIVATE
+            $<$<C_COMPILER_ID:Clang>:-Wdocumentation>
+    )
+endif()
 
 set(AZURE_ULIB_C_INC_FOLDER ${CMAKE_CURRENT_LIST_DIR}/inc CACHE INTERNAL "this is what needs to be included if using sharedLib lib" FORCE)
 
