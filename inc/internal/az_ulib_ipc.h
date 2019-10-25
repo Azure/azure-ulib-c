@@ -37,16 +37,16 @@ typedef struct _az_ulib_ipc_tag {
   _az_ulib_ipc_interface interface_list[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE];
 } _az_ulib_ipc;
 
-MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_init_no_test, _az_ulib_ipc *, ipc_handle);
+MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_init_no_contract, _az_ulib_ipc *, ipc_handle);
 MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_init, _az_ulib_ipc *, ipc_handle);
 
-MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_deinit_no_test);
+MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_deinit_no_contract);
 MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_deinit);
 
 MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
-    _az_ulib_ipc_publish_no_test,
+    _az_ulib_ipc_publish_no_contract,
     const az_ulib_interface_descriptor *,
     interface_descriptor);
 MOCKABLE_FUNCTION(
@@ -59,7 +59,7 @@ MOCKABLE_FUNCTION(
 MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
-    _az_ulib_ipc_unpublish_no_test,
+    _az_ulib_ipc_unpublish_no_contract,
     const az_ulib_interface_descriptor *,
     interface_descriptor,
     uint32_t,
@@ -76,7 +76,7 @@ MOCKABLE_FUNCTION(
 MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
-    _az_ulib_ipc_try_get_interface_no_test,
+    _az_ulib_ipc_try_get_interface_no_contract,
     const char *const,
     name,
     az_ulib_version,
@@ -101,7 +101,7 @@ MOCKABLE_FUNCTION(
 MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
-    _az_ulib_ipc_get_interface_no_test,
+    _az_ulib_ipc_get_interface_no_contract,
     _az_ulib_ipc_interface_handle,
     original_interface_handle,
     _az_ulib_ipc_interface_handle *,
@@ -118,7 +118,7 @@ MOCKABLE_FUNCTION(
 MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
-    _az_ulib_ipc_release_interface_no_test,
+    _az_ulib_ipc_release_interface_no_contract,
     _az_ulib_ipc_interface_handle,
     interface_handle);
 MOCKABLE_FUNCTION(
@@ -131,7 +131,7 @@ MOCKABLE_FUNCTION(
 MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
-    _az_ulib_ipc_call_no_test,
+    _az_ulib_ipc_call_no_contract,
     _az_ulib_ipc_interface_handle,
     interface_handle,
     az_ulib_action_index,

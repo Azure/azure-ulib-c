@@ -65,7 +65,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_init(az_ulib_ipc *ipc_handle) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_init((_az_ulib_ipc *)ipc_handle);
 #else
-  return _az_ulib_ipc_init_no_test((_az_ulib_ipc *)ipc_handle);
+  return _az_ulib_ipc_init_no_contract((_az_ulib_ipc *)ipc_handle);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 
@@ -97,7 +97,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_deinit(void) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_deinit();
 #else
-  return _az_ulib_ipc_deinit_no_test();
+  return _az_ulib_ipc_deinit_no_contract();
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 
@@ -120,7 +120,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_publish(
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_publish(interface_descriptor);
 #else
-  return _az_ulib_ipc_publish_no_test(interface_descriptor);
+  return _az_ulib_ipc_publish_no_contract(interface_descriptor);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 
@@ -150,7 +150,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_unpublish(
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_unpublish(interface_descriptor, wait_option_ms);
 #else
-  return _az_ulib_ipc_unpublish_no_test(interface_descriptor, wait_option_ms);
+  return _az_ulib_ipc_unpublish_no_contract(interface_descriptor, wait_option_ms);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 
@@ -194,7 +194,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_try_get_interface(
   return _az_ulib_ipc_try_get_interface(
       name, version, match_criteria, (_az_ulib_ipc_interface_handle *)interface_handle);
 #else
-  return _az_ulib_ipc_try_get_interface_no_test(
+  return _az_ulib_ipc_try_get_interface_no_contract(
       name, version, match_criteria, (_az_ulib_ipc_interface_handle *)interface_handle);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
@@ -231,7 +231,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_get_interface(
       (_az_ulib_ipc_interface_handle)original_interface_handle,
       (_az_ulib_ipc_interface_handle *)interface_handle);
 #else
-  return _az_ulib_ipc_get_interface_no_test(
+  return _az_ulib_ipc_get_interface_no_contract(
       (_az_ulib_ipc_interface_handle)original_interface_handle,
       (_az_ulib_ipc_interface_handle *)interface_handle);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
@@ -265,7 +265,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_release_interface(
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_release_interface((_az_ulib_ipc_interface_handle)interface_handle);
 #else
-  return _az_ulib_ipc_release_interface_no_test((_az_ulib_ipc_interface_handle)interface_handle);
+  return _az_ulib_ipc_release_interface_no_contract((_az_ulib_ipc_interface_handle)interface_handle);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 
@@ -297,7 +297,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_call(
   return _az_ulib_ipc_call(
       (_az_ulib_ipc_interface_handle)interface_handle, method_index, model_in, model_out);
 #else
-  return _az_ulib_ipc_call_no_test(
+  return _az_ulib_ipc_call_no_contract(
       (_az_ulib_ipc_interface_handle)interface_handle, method_index, model_in, model_out);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
