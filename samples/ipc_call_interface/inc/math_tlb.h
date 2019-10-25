@@ -48,6 +48,8 @@ static inline AZ_ULIB_RESULT sum(math_handle handle, int32_t a, int32_t b, int64
   sum_in.a = a;
   sum_in.b = b;
 
+  sum_out = 0;
+
   // Call
   AZ_ULIB_RESULT result = az_ulib_ipc_call(
       handle, (az_ulib_action_index)MATH_INTERFACE_SUM_METHOD, &sum_in, &sum_out);
@@ -80,6 +82,8 @@ static inline AZ_ULIB_RESULT subtraction(math_handle handle, int32_t a, int32_t 
   // Marshalling
   sub_in.a = a;
   sub_in.b = b;
+
+  sub_out = 0;
 
   // Call
   AZ_ULIB_RESULT result = az_ulib_ipc_call(

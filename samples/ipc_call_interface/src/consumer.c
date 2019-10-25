@@ -19,7 +19,7 @@ void client_use_math(void) {
   } else {
     int32_t a = 10;
     int32_t b = 20;
-    int64_t res;
+    int64_t res = 0;
 
     if ((result = sum(handle, a, b, &res)) == AZ_ULIB_SUCCESS) {
       (void)printf("math.sum calculates %d + %d = %" PRId64 "\r\n", a, b, res);
