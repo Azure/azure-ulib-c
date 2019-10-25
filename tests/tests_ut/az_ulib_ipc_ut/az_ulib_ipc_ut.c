@@ -714,7 +714,7 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_failed) {
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
-  AZ_ULIB_RESULT out;
+  AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
 
   az_ulib_ipc_interface_handle interface_handle;
   ASSERT_ARE_EQUAL(
@@ -1455,7 +1455,7 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_with_method_running_failed) {
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_RELEASE_INTERFACE;
   in.handle = interface_handle;
-  AZ_ULIB_RESULT out;
+  AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
 
   umock_c_reset_all_calls();
 
