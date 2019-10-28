@@ -91,7 +91,7 @@ Data Fields</h2></td></tr>
 <p>For any given ustream that is created, there may be mutliple <code>AZ_USTREAM</code>'s pointing to the same <code>AZ_USTREAM_DATA_CB</code>. Each instance control block serves to manage a given developer's usage of the memory pointed to inside the <code>AZ_USTREAM_DATA_CB</code>. Each time an <code>AZ_USTREAM</code> is cloned using <a class="el" href="ustream__base_8h.html#a253a316f8421a1fe1d4dd707b7e3b113" title="Initializes a new instance of the ustream and returns it.">az_ustream_clone()</a>, the <code>ref_count</code> inside the <code>AZ_USTREAM_DATA_CB</code> is incremented to signal a reference to the memory has been acquired. Once the instance is done being used, <a class="el" href="ustream__base_8h.html#ab8c2c90c6d5a065610cdf54c5f48aab4" title="Releases all the resources related to the Data Source before and including the released position.">az_ustream_release()</a> must be called to decrement <code>ref_count</code>.</p>
 <dl class="section note"><dt>Note</dt><dd>This structure should be viewed and used as internal to the implementation of the ustream. Users should therefore not act on it directly and only allocate the memory necessary for it to be passed to the ustream. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00424">424</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00422">422</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
 <a id="af318a9311c5406c3caabddabb2c6c824"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af318a9311c5406c3caabddabb2c6c824">&#9670;&nbsp;</a></span>control_block</h2>
@@ -106,7 +106,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>The <a class="el" href="ustream__base_8h.html#a1623a90861ab99bc920b1611873d4951" title="Structure for data control block.">AZ_USTREAM_DATA_CB</a>* on which this instance operates on. </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00427">427</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00425">425</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -123,7 +123,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>The <a class="el" href="ustream__base_8h.html#ad6d3ac7a653ebc380309a369ca677d58" title="Define offset_t with the same size as size_t.">offset_t</a> used to keep track of the current position (next returned position). </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00431">431</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00429">429</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -140,7 +140,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>The <a class="el" href="ustream__base_8h.html#ad6d3ac7a653ebc380309a369ca677d58" title="Define offset_t with the same size as size_t.">offset_t</a> used to keep track of the earliest position to reset. </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00432">432</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00430">430</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -157,7 +157,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>The <code>size_t</code> with the length of the data in the control_block </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00433">433</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00431">431</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -174,7 +174,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>The <a class="el" href="ustream__base_8h.html#ad6d3ac7a653ebc380309a369ca677d58" title="Define offset_t with the same size as size_t.">offset_t</a> used as the logical position for this instance. </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00430">430</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00428">428</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>

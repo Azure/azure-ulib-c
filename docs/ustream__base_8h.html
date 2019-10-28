@@ -173,60 +173,8 @@ Functions</h2></td></tr>
 </ul>
 <p><em><b>Example</b></em></p>
 <p>A provider wants to create a ustream to expose data to the consumer. The provider will store the content in the HEAP, and will create a ustream from it, passing the ownership of the content to the ustream. Consumer will print the content of the ustream, using a local buffer of 1K. The following diagram represents this operation.</p>
-<pre><code>
- +----------------+        +----------------+              +------------------+     +------------+
- |    Provider    |        |    Consumer    |              |      ustream     |     |    HEAP    |
- +----------------+        +----------------+              +------------------+     +------------+
-         |           +-------------+                                  |                    |
-         |           | [Allocate on stack or heap]                    |                    |
-         |           | [In this example the stack]                    |                    |
-         |           | AZ_USTREAM ustream_instance                    |                    |
-         |           +-------------+                                  |                    |
-         |                         |                                  |                    |
-         |&lt;-get_provider_content                                      |                    |
-              (&amp;ustream_instance)--+                                  |                    |
-         +----------------------------malloc(content_size)--------------------------------&gt;|
-         |&lt;--------------------------------content_ptr-------------------------------------+
-         +--------------------malloc(sizeof(AZ_USTREAM_DATA_CB))--------------------------&gt;|
-         &lt;---------------------------------control_block_ptr-------------------------------+
-  +------+                         |                                  |                    |
-  | generate the content and store in the content_ptr                 |                    |
-  +-----&gt;|                         |                                  |                    |
-         +-----az_ustream_init                                        |                    |
-         |       (ustream_instance,                                   |                    |
-         |        control_block_ptr, free,                            |                    |
-         |        content_ptr, content_size, free)-------------------&gt;|                    |
-         |                         |                           +------+                    |
-         |                         |                           | data_source = content_ptr |
-         |                         |                           | data_source_size = content_size
-         |                         |                           +-----&gt;|                    |
-         |&lt;-----------------ustream_instance--------------------------+                    |
-         +----AZ_ULIB_SUCCESS-----&gt;|                                  |                    |</code></pre><pre><code></code></pre><p>Now that the consumer has it's local ustream intialized with the content, it will print it using the iterator <a class="el" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931" title="Gets the next portion of the ustream starting at the current position.">az_ustream_read()</a>.</p>
-<pre><code></code></pre><pre><code>         |                         +------------------malloc(1024)------------------------&gt;|
-         |                         |&lt;-----------------local_buffer-------------------------+
- .. while az_ustream_read return AZ_ULIB_SUCCESS ...............................................
- :       |                         +--az_ustream_read                 |                    |         :
- :       |                         |  (ustream_instance,              |                    |         :
- :       |                         |   local_buffer,                  |                    |         :
- :       |                         |   1024,                          |                    |         :
- :       |                         |   &amp;size)------------------------&gt;|                    |         :
- :       |                         |                 +----------------+                    |         :
- :       |                         |                 | copy the next 1024 bytes from the   |         :
- :       |                         |                 |  data_source to the local_buffer.   |         :
- :       |                         |                 +---------------&gt;|                    |         :
- :       |                         |&lt;---AZ_ULIB_SUCCESS---------------+                    |         :
- :       |                     +---+                                  |                    |         :
- :       |                     | use the content in the local_buffer  |                    |         :
- :       |                     +--&gt;|                                  |                    |         :
- .....................................................................................................
-         |                         +---------------free(local_buffer)---------------------&gt;|
-         |                         +-az_ustream_dispose               |                    |
-         |                         |       (ustream_instance)--------&gt;|                    |
-         |                         |                            +-----+                    |
-         |                         |                            | free(control_block_ptr)-&gt;|
-         |                         |                            | free(data_source)-------&gt;|
-         |                         |                            +-----+
-</code></pre><h2>Heterogeneous buffer</h2>
+<div class="fragment"><div class="line">+----------------+        +----------------+              +------------------+     +------------+</div><div class="line">|    Provider    |        |    Consumer    |              |      ustream     |     |    HEAP    |</div><div class="line">+----------------+        +----------------+              +------------------+     +------------+</div><div class="line">        |           +-------------+                                  |                    |</div><div class="line">        |           | [Allocate on stack or heap]                    |                    |</div><div class="line">        |           | [In <span class="keyword">this</span> example the stack]                    |                    |</div><div class="line">        |           | <a class="code" href="struct_a_z___u_s_t_r_e_a_m___t_a_g.html">AZ_USTREAM</a> ustream_instance                    |                    |</div><div class="line">        |           +-------------+                                  |                    |</div><div class="line">        |                         |                                  |                    |</div><div class="line">        |&lt;-get_provider_content                                      |                    |</div><div class="line">             (&amp;ustream_instance)--+                                  |                    |</div><div class="line">        +----------------------------malloc(content_size)--------------------------------&gt;|</div><div class="line">        |&lt;--------------------------------content_ptr-------------------------------------+</div><div class="line">        +--------------------malloc(<span class="keyword">sizeof</span>(<a class="code" href="struct_a_z___u_s_t_r_e_a_m___d_a_t_a___c_b___t_a_g.html">AZ_USTREAM_DATA_CB</a>))--------------------------&gt;|</div><div class="line">        &lt;---------------------------------control_block_ptr-------------------------------+</div><div class="line"> +------+                         |                                  |                    |</div><div class="line"> | generate the content and store in the content_ptr                 |                    |</div><div class="line"> +-----&gt;|                         |                                  |                    |</div><div class="line">        +-----<a class="code" href="ustream_8h.html#aafaff7831a2c20902430450ad490f9ea">az_ustream_init</a>                                        |                    |</div><div class="line">        |       (ustream_instance,                                   |                    |</div><div class="line">        |        control_block_ptr, free,                            |                    |</div><div class="line">        |        content_ptr, content_size, free)-------------------&gt;|                    |</div><div class="line">        |                         |                           +------+                    |</div><div class="line">        |                         |                           | data_source = content_ptr |</div><div class="line">        |                         |                           | data_source_size = content_size</div><div class="line">        |                         |                           +-----&gt;|                    |</div><div class="line">        |&lt;-----------------ustream_instance--------------------------+                    |</div><div class="line">        +----<a class="code" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a9b6525e017ad9692aec8e4123f00f6da">AZ_ULIB_SUCCESS</a>-----&gt;|                                  |                    |</div></div><!-- fragment --><p>Now that the consumer has it's local ustream intialized with the content, it will print it using the iterator <a class="el" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931" title="Gets the next portion of the ustream starting at the current position.">az_ustream_read()</a>.</p>
+<div class="fragment"><div class="line">        |                         +------------------malloc(1024)------------------------&gt;|</div><div class="line">        |                         |&lt;-----------------local_buffer-------------------------+</div><div class="line">.. <span class="keywordflow">while</span> <a class="code" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931">az_ustream_read</a> <span class="keywordflow">return</span> <a class="code" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a9b6525e017ad9692aec8e4123f00f6da">AZ_ULIB_SUCCESS</a> ...............................................</div><div class="line">:       |                         +--<a class="code" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931">az_ustream_read</a>                 |                    |         :</div><div class="line">:       |                         |  (ustream_instance,              |                    |         :</div><div class="line">:       |                         |   local_buffer,                  |                    |         :</div><div class="line">:       |                         |   1024,                          |                    |         :</div><div class="line">:       |                         |   &amp;size)------------------------&gt;|                    |         :</div><div class="line">:       |                         |                 +----------------+                    |         :</div><div class="line">:       |                         |                 | copy the next 1024 bytes from the   |         :</div><div class="line">:       |                         |                 |  data_source to the local_buffer.   |         :</div><div class="line">:       |                         |                 +---------------&gt;|                    |         :</div><div class="line">:       |                         |&lt;---<a class="code" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a9b6525e017ad9692aec8e4123f00f6da">AZ_ULIB_SUCCESS</a>---------------+                    |         :</div><div class="line">:       |                     +---+                                  |                    |         :</div><div class="line">:       |                     | use the content in the local_buffer  |                    |         :</div><div class="line">:       |                     +--&gt;|                                  |                    |         :</div><div class="line">.....................................................................................................</div><div class="line">        |                         +---------------free(local_buffer)---------------------&gt;|</div><div class="line">        |                         +-<a class="code" href="ustream__base_8h.html#a6744370e7b8b8df0d2dd442e31d628cb">az_ustream_dispose</a>               |                    |</div><div class="line">        |                         |       (ustream_instance)--------&gt;|                    |</div><div class="line">        |                         |                            +-----+                    |</div><div class="line">        |                         |                            | free(control_block_ptr)-&gt;|</div><div class="line">        |                         |                            | free(data_source)-------&gt;|</div><div class="line">        |                         |                            +-----+</div></div><!-- fragment --><h2>Heterogeneous buffer</h2>
 <p>Data can be stored in multiple, different medias, like RAM, flash, file, or cloud. Each media has its own read requirements. A simple way to unify it is copying it all to the RAM. For example, if an HTTP package contains a header that is in the flash, with some data in the RAM and the content in a file in the external flash, to concatenate it all in a single datagram you can allocate a single area in the RAM that fits it all, and bring all the data to this memory. The problem with this approach is the amount of memory required for that, which can be multiple times the total RAM that you have for the entire system.</p>
 <p>A second option to solve this problem is to make each component that needs to access this data understand each media and implement code to handle it. This approach will not require storing all data in the RAM, but will increase the size of the program itself, and is not easily portable, as different hardware will contain different media with different requirements.</p>
 <p>The ustream solves this problem by creating a single interface that can handle any media, exposing it as a standard iterator. Whoever wants to expose a type of media as a ustream shall implement the functions described on the interface, handling all implementation details for each API. For example, the <a class="el" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931" title="Gets the next portion of the ustream starting at the current position.">az_ustream_read()</a> can be a simple copy of the flash to the RAM for a buffer that handles constants, or be as complex as creating a TCP/IP connection to bring the data for a buffer that handles data in the cloud.</p>
@@ -259,20 +207,7 @@ Functions</h2></td></tr>
 <p><em><b>Example</b></em> A random number generator can expose random numbers using the ustream. To do that it shall generate a new number when the consumer calls <a class="el" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931" title="Gets the next portion of the ustream starting at the current position.">az_ustream_read()</a>. But to preserve the immutability, the implementation of the <a class="el" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931" title="Gets the next portion of the ustream starting at the current position.">az_ustream_read()</a> shall store the number in a recover queue, up to the point that the consumer releases this data. Because, if at some point in time, the consumer seeks this old position, the <a class="el" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931" title="Gets the next portion of the ustream starting at the current position.">az_ustream_read()</a> shall return the same value created in the first call of <a class="el" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931" title="Gets the next portion of the ustream starting at the current position.">az_ustream_read()</a>.</p>
 <h2>Data conversion</h2>
 <p>When the data is copied from the data source to the local buffer, the <a class="el" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931" title="Gets the next portion of the ustream starting at the current position.">az_ustream_read()</a> may do a data conversion, which means that the content exposed on the local buffer is a function of the content in the data source. It directly implies that the number of bytes written in the local buffer may be different than the number of bytes read from the data source.</p>
-<p><em><b>Example</b></em> A ustream can have the data source in binary format with 36 bytes, but it shall expose the content encoded in base64. The base64 creates 4 encoded bytes for each 3 bytes read. So, seeking the beginning of the file, the <a class="el" href="ustream__base_8h.html#a137e52142dd79b713d7134015e36d59d" title="Returns the remaining size of the ustream.">az_ustream_get_remaining_size()</a> shall return 48 (= 36 / 3 * 4), instead of 36. If the consumer provides a local buffer of 16 bytes, the <a class="el" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931" title="Gets the next portion of the ustream starting at the current position.">az_ustream_read()</a> shall read only 12 bytes from the data source, and encode it in base64 expanding the 12 bytes to 16 bytes on the local buffer. </p><pre><code>
-                 ustream domain                      ::      consumer domain
-                                                     ::
-                   Data source                       ::
-                   +-------+--------------------+    ::
-   binary data --&gt; |       |                    |    ::
-                   +-------+--------------------+    ::
-inner position --&gt; 0       12                   36   ::
-                    --+--/                          ::      Local buffer
-                       | size = 12                   ::      +----------------+
-                       +---&gt; base64 encoder ---------------&gt; | base64         |
-                                                     ::      +----------------+
-                                                     ::        size' = 16
-</code></pre><h2>Data offset</h2>
+<p><em><b>Example</b></em> A ustream can have the data source in binary format with 36 bytes, but it shall expose the content encoded in base64. The base64 creates 4 encoded bytes for each 3 bytes read. So, seeking the beginning of the file, the <a class="el" href="ustream__base_8h.html#a137e52142dd79b713d7134015e36d59d" title="Returns the remaining size of the ustream.">az_ustream_get_remaining_size()</a> shall return 48 (= 36 / 3 * 4), instead of 36. If the consumer provides a local buffer of 16 bytes, the <a class="el" href="ustream__base_8h.html#a5b0eec09d8bb3443e4d4bc6a5d668931" title="Gets the next portion of the ustream starting at the current position.">az_ustream_read()</a> shall read only 12 bytes from the data source, and encode it in base64 expanding the 12 bytes to 16 bytes on the local buffer. </p><div class="fragment"><div class="line">                 ustream domain                      ::      consumer domain</div><div class="line">                                                     ::</div><div class="line">                   Data source                       ::</div><div class="line">                   +-------+--------------------+    ::</div><div class="line">   binary data --&gt; |       |                    |    ::</div><div class="line">                   +-------+--------------------+    ::</div><div class="line">inner position --&gt; 0       12                   36   ::</div><div class="line">                    \--+--/                          ::      Local buffer</div><div class="line">                       | size = 12                   ::      +----------------+</div><div class="line">                       +---&gt; base64 encoder ---------------&gt; | base64         |</div><div class="line">                                                     ::      +----------------+</div><div class="line">                                                     ::        size<span class="stringliteral">&#39; = 16</span></div></div><!-- fragment --><h2>Data offset</h2>
 <p>In the data source, each byte is associated with a position, called <code>inner position</code>. The first byte is always placed at the inner position <code>0</code>, followed by the other bytes which are incremented in a sequential manner. The ustream assigns a sequential number to each byte in the local buffer as well, called <code>logical position</code>. When a new ustream is created, the logical position matches the inner position, both starting at position <code>0</code>.</p>
 <p>When the ustream is cloned, an offset shall be provided. This offset is the new first logical position. The implementation of the ustream shall handle the difference between the inner and logical position, making the conversion in all the ustream API. Providing an offset to a ustream can be useful in many cases. For example, to concatenate buffers, the second ustream can have an offset of the end of the first ustream plus one, or in a TCP connection, make the logical position the same value of the octet sequence number.</p>
 <p><em><b>Example</b></em> A ustream was created from the flash with 100 bytes. The inner position is a sequence from <code>0</code> to <code>99</code>, and it matches the logical position. The consumer clones this ustream providing an offset of <code>1000</code>. The new instance contains the same content as the original one, but the logical positions are now from <code>1000</code> to <code>1099</code>.</p>
@@ -280,17 +215,7 @@ inner position --&gt; 0       12                   36   ::
 <h2>Sliding window</h2>
 <p>One of the target use cases of the ustream is to accelerate and simplify the implementation of sliding window protocols, like TCP. As described in this document, the ustream associates a single byte (octet) to a single position, which means that every byte can be accessed by its position. For the consumer, this position is the logical position.</p>
 <p>To better understand the sliding window concept of the ustream, the Data source can be split in 4 segments.</p>
-<pre><code>
-     Data Source:
-          Released                       Pending                          Future
-      |----------------|---------------------:--------------------|---------------------|
-      |\                \                    :       Read         |\                    |
-      | 0           First Valid Position     :                    | Current Position    |
-      |                                      :                    |                     |
-      |                                      :&lt;--- Read Size ----&gt;|                     |
-      |                                                                                 |
-      |&lt;------------------------------ Data Source Size -------------------------------&gt;|
-</code></pre><ul>
+<div class="fragment"><div class="line">Data Source:</div><div class="line">     Released                       Pending                          Future</div><div class="line"> |----------------|---------------------:--------------------|---------------------|</div><div class="line"> |\                \                    :       Read         |\                    |</div><div class="line"> | 0           First Valid Position     :                    | Current Position    |</div><div class="line"> |                                      :                    |                     |</div><div class="line"> |                                      :&lt;--- Read Size ----&gt;|                     |</div><div class="line"> |                                                                                 |</div><div class="line"> |&lt;------------------------------ Data Source Size -------------------------------&gt;|</div></div><!-- fragment --><ul>
 <li><b>Released</b> - Sequence of bytes in the data source that is already acknowledged by the consumer, and shall not be accessed anymore.</li>
 <li><b>Pending</b> - Sequence of bytes in the data source that is already read by the consumer, but not acknowledged yet. The consumer can seek these bytes with <a class="el" href="ustream__base_8h.html#ade0f526684863ad7c3353991950c9a0a" title="Change the current position of the ustream.">az_ustream_set_position()</a> and read it again. This sequence starts at the <code>First Valid Position</code> and ends at the last byte before the <code>Current Position</code>.</li>
 <li><b>Read</b> - The last read portion of the data source. On the read operation, the <code>Read</code> starts at the <code>Current Position</code> up to the <code>Read Size</code>. At the end of the read, this segment is incorporated to <code>Pending</code> by changing the <code>Current Position</code> to the end of the Read.</li>
@@ -332,7 +257,7 @@ inner position --&gt; 0       12                   36   ::
 <p>Check if a handle is the same type of the API. </p>
 <p>It will return true if the handle is valid and it is the same type of the API. It will return false if the handle is <code>NULL</code> or not the correct type. </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00465">465</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00463">463</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -358,7 +283,7 @@ inner position --&gt; 0       12                   36   ::
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00374">374</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00372">372</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -377,7 +302,7 @@ inner position --&gt; 0       12                   36   ::
 <p>Pointer to the data from which to read. </p>
 <p>void pointer to memory where the data is located or any needed controls to access the data. The content of the memory to which this points is up to the ustream implementation. </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00383">383</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00381">381</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -483,33 +408,19 @@ inner position --&gt; 0       12                   36   ::
 <p><em><b>Example 1</b></em></p>
 <p>Consider a ustream with 1500 bytes, that was created from the factory, with <code>Logical</code> and <code>Inner</code> positions equal to <code>0</code>. After some operations, 1000 bytes were read (from 0 to 999). The current position is <code>1000</code>, and 200 bytes were released (from 0 to 199), so the released position is <code>199</code>. For the following examples, the positions are represented by <code>[Logical, Inner]</code>.</p>
 <p>Original ustream:</p>
-<pre><code></code></pre><pre><code> |      Released     |             Pending             |               Future              |
- |-------------------|---------------------------------|-----------------------------------|
- |&lt;- start [0, 0]    |&lt;- released [199, 199]           |&lt;- current [1000, 1000]            |&lt;- end [1499, 1499]</code></pre><pre><code></code></pre><p>Cloning the original ustream with offset 0 will result in the following ustream:</p>
-<pre><code></code></pre><pre><code>                      |||             Future                |
-                      |||-----------------------------------|
- released [-1, 999] -&gt;|||&lt;- start, current [0, 1000]        |&lt;- end [499, 1499]</code></pre><pre><code></code></pre><p>Cloning the same original ustream with offset 100 will result in the following ustream:</p>
-<pre><code></code></pre><pre><code>                      |||             Future                |
-                      |||-----------------------------------|
- released [99, 999] -&gt;|||&lt;- start, current [100, 1000]      |&lt;- end [599, 1499]</code></pre><pre><code></code></pre><p><em><b>Example 2</b></em></p>
+<div class="fragment"><div class="line">|      Released     |             Pending             |               Future              |</div><div class="line">|-------------------|---------------------------------|-----------------------------------|</div><div class="line">|&lt;- start [0, 0]    |&lt;- released [199, 199]           |&lt;- current [1000, 1000]            |&lt;- end [1499, 1499]</div></div><!-- fragment --><p>Cloning the original ustream with offset 0 will result in the following ustream:</p>
+<div class="fragment"><div class="line">                     |||             Future                |</div><div class="line">                     |||-----------------------------------|</div><div class="line">released [-1, 999] -&gt;|||&lt;- start, current [0, 1000]        |&lt;- end [499, 1499]</div></div><!-- fragment --><p>Cloning the same original ustream with offset 100 will result in the following ustream:</p>
+<div class="fragment"><div class="line">                     |||             Future                |</div><div class="line">                     |||-----------------------------------|</div><div class="line">released [99, 999] -&gt;|||&lt;- start, current [100, 1000]      |&lt;- end [599, 1499]</div></div><!-- fragment --><p><em><b>Example 2</b></em></p>
 <p>Consider a ustream with 5000 bytes, that was created from the factory, with <code>Logical</code> and <code>Inner</code> positions equal to <code>0</code>. After some operations, 250 bytes were read (from 0 to 249), so the current position is <code>250</code>, and no release was made, so the released position is still <code>-1</code>.</p>
 <p>For the following examples, the positions are represented by <code>[Logical, Inner]</code>.</p>
 <p>Original ustream:</p>
-<pre><code></code></pre><pre><code>                    ||     Pending       |                         Future                      |
-                    ||-------------------+-----------------------------------------------------|
- released [-1, 0] -&gt;||&lt;- start [0, 0]    |&lt;- current [250, 250]                                |&lt;- end [4999, 4999]</code></pre><pre><code></code></pre><p>Cloning this original ustream with offset 10000 will result in the following ustream:</p>
-<pre><code></code></pre><pre><code>                        |||                Future                |
-                        |||--------------------------------------|
- released [9999, 249] -&gt;|||&lt;- start, current [10000, 250]        |&lt;- end [14749, 4999]</code></pre><pre><code></code></pre><p><em><b>Example 3</b></em></p>
+<div class="fragment"><div class="line">                   ||     Pending       |                         Future                      |</div><div class="line">                   ||-------------------+-----------------------------------------------------|</div><div class="line">released [-1, 0] -&gt;||&lt;- start [0, 0]    |&lt;- current [250, 250]                                |&lt;- end [4999, 4999]</div></div><!-- fragment --><p>Cloning this original ustream with offset 10000 will result in the following ustream:</p>
+<div class="fragment"><div class="line">                       |||                Future                |</div><div class="line">                       |||--------------------------------------|</div><div class="line">released [9999, 249] -&gt;|||&lt;- start, current [10000, 250]        |&lt;- end [14749, 4999]</div></div><!-- fragment --><p><em><b>Example 3</b></em></p>
 <p>From the previous cloned ustream, after some operations, the <code>Logical</code> current position is moved to <code>11000</code>, and the <code>Logical</code> released position is <code>10499</code>.</p>
 <p>For the following examples, the positions are represented by <code>[Logical, Inner]</code>.</p>
 <p>Previous cloned ustream:</p>
-<pre><code></code></pre><pre><code> |          Released       |           Pending          |               Future              |
- |-------------------------+----------------------------+-----------------------------------|
- |&lt;- start [10000, 250]    |&lt;- released [10499, 749]    |&lt;- current [11000, 1250]           |&lt;- end [14749, 4999]</code></pre><pre><code></code></pre><p>Cloning this cloned ustream with offset 0 will result in the following ustream:</p>
-<pre><code></code></pre><pre><code>                       |||                Future                |
-                       |||--------------------------------------|
- released [-1, 1249] -&gt;|||&lt;- start, current [0, 1250]           |&lt;- end [3749, 4999]</code></pre><pre><code></code></pre><dl class="section note"><dt>Note</dt><dd>From the point of view of a consumer, the <code>Inner</code> position never matters, it will always use the <code>Logical</code> position for all operations. </dd>
+<div class="fragment"><div class="line">|          Released       |           Pending          |               Future              |</div><div class="line">|-------------------------+----------------------------+-----------------------------------|</div><div class="line">|&lt;- start [10000, 250]    |&lt;- released [10499, 749]    |&lt;- current [11000, 1250]           |&lt;- end [14749, 4999]</div></div><!-- fragment --><p>Cloning this cloned ustream with offset 0 will result in the following ustream:</p>
+<div class="fragment"><div class="line">                      |||                Future                |</div><div class="line">                      |||--------------------------------------|</div><div class="line">released [-1, 1249] -&gt;|||&lt;- start, current [0, 1250]           |&lt;- end [3749, 4999]</div></div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>From the point of view of a consumer, the <code>Inner</code> position never matters, it will always use the <code>Logical</code> position for all operations. </dd>
 <dd>
 If the position is not important to the consumer, making the offset equal to <code>0</code> is a safe option.</dd></dl>
 <p>The <code>az_ustream_clone</code> API shall follow the following minimum requirements:</p><ul>
@@ -537,7 +448,7 @@ If the position is not important to the consumer, making the offset equal to <co
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00860">860</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00844">844</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -588,7 +499,7 @@ If the position is not important to the consumer, making the offset equal to <co
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00888">888</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00872">872</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -655,7 +566,7 @@ If the position is not important to the consumer, making the offset equal to <co
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00669">669</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00667">667</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -722,7 +633,7 @@ If the position is not important to the consumer, making the offset equal to <co
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00633">633</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00631">631</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -811,7 +722,7 @@ If the position is not important to the consumer, making the offset equal to <co
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00597">597</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00595">595</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -851,13 +762,7 @@ If the position is not important to the consumer, making the offset equal to <co
 
 <p>Releases all the resources related to the <code>Data Source</code> before and including the released position. </p>
 <p>Calling this API will notify the ustream that the developer will not need its content from the start to <code>position</code> (inclusive). It means that the implementation of the ustream can dispose any resources allocated to control and maintain this part of the ustream. It is up to the implementation of the ustream to decide to release any resource. For example, if the ustream is a string in the Flash, it does not make sense to release it. The provided position shall be the logical position, and it shall be between the logical first valid position of the ustream and the logical current position minus one. For example, the following code releases all bytes from the start to the last received position:</p>
-<pre><code>
-offset_t pos;
-if(az_ustream_get_position(my_buffer, &amp;pos) == AZ_ULIB_SUCCESS)
-{
-    az_ustream_release(my_buffer, pos - 1);
-}
-</code></pre><p>The <code>az_ustream_release</code> API shall follow the following minimum requirements:</p><ul>
+<div class="fragment"><div class="line"><a class="code" href="ustream__base_8h.html#ad6d3ac7a653ebc380309a369ca677d58">offset_t</a> pos;</div><div class="line"><span class="keywordflow">if</span>(<a class="code" href="ustream__base_8h.html#ac5c96cc3810b571304cc9ed4c3fc86e5">az_ustream_get_position</a>(my_buffer, &amp;pos) == <a class="code" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a9b6525e017ad9692aec8e4123f00f6da">AZ_ULIB_SUCCESS</a>)</div><div class="line">{</div><div class="line">    <a class="code" href="ustream__base_8h.html#ab8c2c90c6d5a065610cdf54c5f48aab4">az_ustream_release</a>(my_buffer, pos - 1);</div><div class="line">}</div></div><!-- fragment --><p>The <code>az_ustream_release</code> API shall follow the following minimum requirements:</p><ul>
 <li>The <code>release</code> shall dispose all resources necessary to handle the content of ustream before and including the release position.</li>
 <li>If the release position is after the current position or the ustream size, the <code>release</code> shall return <a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a10f7984297a18f0c7bc2a6a9b30954ea">AZ_ULIB_ILLEGAL_ARGUMENT_ERROR</a>, and do not release any resource.</li>
 <li>If the release position is already released, the <code>release</code> shall return <a class="el" href="ulib__result_8h.html#a9222732d66d3174318eba4eb34e0dc45a32cdba46eaa5a629d734a724d6a0d262">AZ_ULIB_NO_SUCH_ELEMENT_ERROR</a>, and do not release any resource.</li>
@@ -882,7 +787,7 @@ if(az_ustream_get_position(my_buffer, &amp;pos) == AZ_ULIB_SUCCESS)
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00718">718</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00716">716</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -939,7 +844,7 @@ if(az_ustream_get_position(my_buffer, &amp;pos) == AZ_ULIB_SUCCESS)
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00540">540</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00538">538</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -1008,7 +913,7 @@ if(az_ustream_get_position(my_buffer, &amp;pos) == AZ_ULIB_SUCCESS)
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00501">501</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00499">499</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
