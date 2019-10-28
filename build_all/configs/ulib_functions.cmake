@@ -82,7 +82,7 @@ function(ulib_populate_test_target target_name)
     target_sources(${target_name}
         PRIVATE
             ${PROJECT_SOURCE_DIR}/tests/src/ustream_mock_buffer.c
-            ${PROJECT_SOURCE_DIR}/tests/src/${ULIB_PAL_OS_DIRECTORY}/test_thread.c
+            ${PROJECT_SOURCE_DIR}/tests/src/${ULIB_PAL_OS_DIRECTORY}/az_ulib_test_thread.c
     )
 
     target_include_directories(${target_name}

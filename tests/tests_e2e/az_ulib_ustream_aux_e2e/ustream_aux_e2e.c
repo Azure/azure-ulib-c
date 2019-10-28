@@ -15,9 +15,9 @@
 
 #include "testrunnerswitcher.h"
 #include "azure_macro_utils/macro_utils.h"
-#include "ustream_ctest_aux.h"
-#include "ustream_mock_buffer.h"
-#include "test_thread.h"
+#include "az_ulib_ustream_ctest_aux.h"
+#include "az_ulib_ustream_mock_buffer.h"
+#include "az_ulib_test_thread.h"
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 
@@ -462,6 +462,6 @@ TEST_FUNCTION(az_ustream_split_concat_and_split_and_dispose_succeed)
     az_ustream_dispose(&ustream_instance);
 }
 
-#include "ustream_compliance_e2e.h"
+#include "az_ulib_ustream_compliance_e2e.h"
 
 END_TEST_SUITE(ustream_aux_e2e)

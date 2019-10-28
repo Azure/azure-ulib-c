@@ -2,9 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include <stdbool.h>
-#include "ustream_mock_buffer.h"
+#include "az_ulib_ustream_mock_buffer.h"
 #include "az_ulib_ustream_base.h"
-#include "test_thread.h"
+#include "az_ulib_test_thread.h"
 
 static AZ_ULIB_RESULT _concrete_set_position_result = AZ_ULIB_SUCCESS;
 static AZ_ULIB_RESULT _concrete_reset_result = AZ_ULIB_SUCCESS;

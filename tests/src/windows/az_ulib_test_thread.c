@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include "windows.h"
-#include "test_thread.h"
+#include "az_ulib_test_thread.h"
 
 TEST_THREAD_RESULT test_thread_create(THREAD_HANDLE* thread_handle, THREAD_START_FUNC func, void* arg)
 {

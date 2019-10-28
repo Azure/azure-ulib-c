@@ -4,9 +4,9 @@
 #ifndef USTREAM_COMPLIANCE_E2E_H
 #define USTREAM_COMPLIANCE_E2E_H
 
-#include "ustream_mock_buffer.h"
-#include "test_thread.h"
-#include "ustream_ctest_aux.h"
+#include "az_ulib_ustream_mock_buffer.h"
+#include "az_ulib_test_thread.h"
+#include "az_ulib_ustream_ctest_aux.h"
 
 /* check for test artifacts. */
 #ifndef USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH

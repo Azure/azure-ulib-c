@@ -12,7 +12,7 @@
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "azure_macro_utils/macro_utils.h"
-#include "test_thread.h"
+#include "az_ulib_test_thread.h"
 #include "testrunnerswitcher.h"
 #include "az_ulib_result.h"
 #include "umock_c/umock_c.h"

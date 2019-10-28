@@ -15,8 +15,8 @@
 
 #include "testrunnerswitcher.h"
 #include "azure_macro_utils/macro_utils.h"
-#include "ustream_ctest_aux.h"
-#include "ustream_mock_buffer.h"
+#include "az_ulib_ustream_ctest_aux.h"
+#include "az_ulib_ustream_mock_buffer.h"
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 
@@ -75,6 +75,6 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
 }
 
 //This include will add the tests to validate your ustream implementation.
-#include "ustream_compliance_e2e.h"
+#include "az_ulib_ustream_compliance_e2e.h"
 
 END_TEST_SUITE(ustream_e2e)
