@@ -93,7 +93,7 @@ Data Fields</h2></td></tr>
 <p>When concatenating a ustream to another ustream, the instances are placed into a <code>AZ_USTREAM_MULTI_DATA_CB</code>. The base ustream onto which you wish to concatenate will be copied into the <code>ustream_one</code> structure and the ustream to concatenate will be cloned into the <code>ustream_two</code> structure. The difference being that the first <a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d" title="Forward declaration of AZ_USTREAM. See AZ_USTREAM_TAG for struct members.">AZ_USTREAM</a>*, when returned, will point to the newly populated multi instance and the ownership of the passed instance will be assumed by the multi instance. The second ustream which was passed will not be changed, only cloned into the <code>AZ_USTREAM_MULTI_DATA_CB</code> structure.</p>
 <dl class="section note"><dt>Note</dt><dd>This structure should be viewed and used as internal to the implementation of the ustream. Users should therefore not act on it directly and only allocate the memory necessary for it to be passed to the ustream. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00449">449</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00447">447</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
 <a id="a9f2a01b3d464c12ec370c5b51a77b774"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9f2a01b3d464c12ec370c5b51a77b774">&#9670;&nbsp;</a></span>control_block</h2>
@@ -108,7 +108,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>The <a class="el" href="ustream__base_8h.html#a1623a90861ab99bc920b1611873d4951" title="Structure for data control block.">AZ_USTREAM_DATA_CB</a> to manage the multi data structure </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00451">451</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00449">449</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -125,7 +125,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>The <a class="el" href="struct_a_z___p_a_l___o_s___l_o_c_k.html" title="pointer to a platform specific struct for a lock implementation">AZ_PAL_OS_LOCK</a> with controls the critical section of the read from the multi ustream </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00456">456</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00454">454</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -142,7 +142,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>The <a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d" title="Forward declaration of AZ_USTREAM. See AZ_USTREAM_TAG for struct members.">AZ_USTREAM</a> with the first ustream instance </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00452">452</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00450">450</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -159,7 +159,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>The <code>uint32_t</code> with the number of references to the first ustream </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00454">454</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00452">452</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -176,7 +176,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>The <a class="el" href="ustream__base_8h.html#a8d812e625be7ef03e078367e49d6089d" title="Forward declaration of AZ_USTREAM. See AZ_USTREAM_TAG for struct members.">AZ_USTREAM</a> with the second ustream instance </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00453">453</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00451">451</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>
@@ -193,7 +193,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>The <code>uint32_t</code> with the number of references to the second ustream </p>
 
-<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00455">455</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ustream__base_8h_source.html#l00453">453</a> of file <a class="el" href="ustream__base_8h_source.html">ustream_base.h</a>.</p>
 
 </div>
 </div>

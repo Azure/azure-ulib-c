@@ -41,7 +41,7 @@
  *      the content to the ustream. Consumer will print the content of the ustream, using a 
  *      local buffer of 1K. The following diagram represents this operation.
  *
- * <pre><code>
+ * @code
  *  +----------------+        +----------------+              +------------------+     +------------+
  *  |    Provider    |        |    Consumer    |              |      ustream     |     |    HEAP    |
  *  +----------------+        +----------------+              +------------------+     +------------+
@@ -70,15 +70,13 @@
  *          |                         |                           +----->|                    |
  *          |<-----------------ustream_instance--------------------------+                    |
  *          +----AZ_ULIB_SUCCESS----->|                                  |                    |
- *
- * </code></pre>
+ * @endcode
  *
  *
  *  Now that the consumer has it's local ustream intialized with the content, it will print it using the 
  *   iterator az_ustream_read().
  *
- * <pre><code>
- *
+ * @code
  *          |                         +------------------malloc(1024)------------------------>|
  *          |                         |<-----------------local_buffer-------------------------+
  *  .. while az_ustream_read return AZ_ULIB_SUCCESS ...............................................
@@ -103,7 +101,7 @@
  *          |                         |                            | free(control_block_ptr)->|
  *          |                         |                            | free(data_source)------->|
  *          |                         |                            +-----+
- * </code></pre>
+ * @endcode
  *
  * <h2>Heterogeneous buffer</h2>
  *  Data can be stored in multiple, different medias, like RAM, flash, file, or cloud. Each media
@@ -226,7 +224,7 @@
  *      instead of 36. If the consumer provides a local buffer of 16 bytes, the az_ustream_read() 
  *      shall read only 12 bytes from the data source, and encode it in base64 expanding the 12 bytes to 
  *      16 bytes on the local buffer.
- * <pre><code>
+ * @code
  *                  ustream domain                      ::      consumer domain
  *                                                      ::
  *                    Data source                       ::
@@ -239,7 +237,7 @@
  *                        +---> base64 encoder ---------------> | base64         |
  *                                                      ::      +----------------+
  *                                                      ::        size' = 16
- * </code></pre>
+ * @endcode
  *
  * <h2>Data offset</h2>
  *  In the data source, each byte is associated with a position, called <tt>inner position</tt>. The first 
@@ -274,7 +272,7 @@
  *  To better understand the sliding window concept of the ustream, the Data source can be split
  *      in 4 segments.
  *
- * <pre><code>
+ * @code
  *      Data Source:
  *           Released                       Pending                          Future
  *       |----------------|---------------------:--------------------|---------------------|
@@ -284,7 +282,7 @@
  *       |                                      :<--- Read Size ---->|                     |
  *       |                                                                                 |
  *       |<------------------------------ Data Source Size ------------------------------->|
- * </code></pre>
+ * @endcode
  *      - @b Released - Sequence of bytes in the data source that is already acknowledged by the consumer, 
  *          and shall not be accessed anymore.
  *      - @b Pending - Sequence of bytes in the data source that is already read by the consumer, but not 
@@ -682,13 +680,13 @@ static inline AZ_ULIB_RESULT az_ustream_get_position(AZ_USTREAM* ustream_instanc
  *      valid position of the ustream and the logical current position minus one. For example, the following
  *      code releases all bytes from the start to the last received position:
  *
- * <pre><code>
+ * @code
  * offset_t pos;
  * if(az_ustream_get_position(my_buffer, &pos) == AZ_ULIB_SUCCESS)
  * {
  *     az_ustream_release(my_buffer, pos - 1);
  * }
- * </code></pre>
+ * @endcode
  *
  *  The <tt>az_ustream_release</tt> API shall follow the following minimum requirements:
  *      - The <tt>release</tt> shall dispose all resources necessary to handle the content of ustream before and 
@@ -743,33 +741,27 @@ static inline AZ_ULIB_RESULT az_ustream_release(AZ_USTREAM* ustream_instance, of
  *
  * Original ustream:
  *
- * <pre><code>
- *
+ * @code
  *  |      Released     |             Pending             |               Future              |
  *  |-------------------|---------------------------------|-----------------------------------|
  *  |<- start [0, 0]    |<- released [199, 199]           |<- current [1000, 1000]            |<- end [1499, 1499]
- *
- * </code></pre>
+ * @endcode
  *
  * Cloning the original ustream with offset 0 will result in the following ustream:
  *
- * <pre><code>
- *
+ * @code
  *                       |||             Future                |
  *                       |||-----------------------------------|
  *  released [-1, 999] ->|||<- start, current [0, 1000]        |<- end [499, 1499]
- *
- * </code></pre>
+ * @endcode
  *
  * Cloning the same original ustream with offset 100 will result in the following ustream:
  *
- * <pre><code>
- *
+ * @code
  *                       |||             Future                |
  *                       |||-----------------------------------|
  *  released [99, 999] ->|||<- start, current [100, 1000]      |<- end [599, 1499]
- *
- * </code></pre>
+ * @endcode
  *
  * <i><b>Example 2</b></i>
  *
@@ -782,23 +774,19 @@ static inline AZ_ULIB_RESULT az_ustream_release(AZ_USTREAM* ustream_instance, of
  *
  * Original ustream:
  *
- * <pre><code>
- *
+ * @code
  *                     ||     Pending       |                         Future                      |
  *                     ||-------------------+-----------------------------------------------------|
  *  released [-1, 0] ->||<- start [0, 0]    |<- current [250, 250]                                |<- end [4999, 4999]
- *
- * </code></pre>
+ * @endcode
  *
  * Cloning this original ustream with offset 10000 will result in the following ustream:
  *
- * <pre><code>
- *
+ * @code
  *                         |||                Future                |
  *                         |||--------------------------------------|
  *  released [9999, 249] ->|||<- start, current [10000, 250]        |<- end [14749, 4999]
- *
- * </code></pre>
+ * @endcode
  *
  * <i><b>Example 3</b></i>
  *
@@ -809,23 +797,19 @@ static inline AZ_ULIB_RESULT az_ustream_release(AZ_USTREAM* ustream_instance, of
  *
  * Previous cloned ustream:
  *
- * <pre><code>
- *
+ * @code
  *  |          Released       |           Pending          |               Future              |
  *  |-------------------------+----------------------------+-----------------------------------|
  *  |<- start [10000, 250]    |<- released [10499, 749]    |<- current [11000, 1250]           |<- end [14749, 4999]
- *
- * </code></pre>
+ * @endcode
  *
  * Cloning this cloned ustream with offset 0 will result in the following ustream:
  *
- * <pre><code>
- *
+ * @code
                           |||                Future                |
  *                        |||--------------------------------------|
  *  released [-1, 1249] ->|||<- start, current [0, 1250]           |<- end [3749, 4999]
- *
- * </code></pre>
+ * @endcode
  *
  *  @note
  *  From the point of view of a consumer, the <tt>Inner</tt> position never matters, it will
