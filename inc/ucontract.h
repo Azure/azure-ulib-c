@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed under the MIT license. 
+// See LICENSE file in the project root for full license information.
 
 /**
  * @file ucontract.h
- * 
+ *
  * @brief Public API parameter validation
  */
 
@@ -34,7 +35,10 @@ extern "C" {
  *  Each public function shall have one AZ_UCONTRACT() macro with the listed
  *  requirements inside.
  */
-#define AZ_UCONTRACT(...) do { MU_FOR_EACH_1(EVALUATE_REQUIRE, __VA_ARGS__) } while((void)0,0)
+#define AZ_UCONTRACT(...) \
+  do { \
+    MU_FOR_EACH_1(EVALUATE_REQUIRE, __VA_ARGS__) \
+  } while ((void)0, 0)
 
 /**
  * @brief   Macro to define assertion for internal functions
@@ -56,13 +60,12 @@ extern "C" {
  * @param   msg         message to log if expression is false
  */
 #define AZ_UCONTRACT_REQUIRE(expression, result, msg) \
-    do { \
-        if(!(expression)) \
-        { \
-            AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, msg); \
-            return result; \
-        } \
-    } while((void)0,0)
+  do { \
+    if (!(expression)) { \
+      AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, msg); \
+      return result; \
+    } \
+  } while ((void)0, 0)
 
 /**
  * @brief   Contract macro to evaluate if two values are equal.
@@ -72,13 +75,16 @@ extern "C" {
  * @param   result      returned result if values are not equal
  */
 #define AZ_UCONTRACT_REQUIRE_EQUALS(val, expected, result) \
-    do { \
-        if(val != expected) \
-        { \
-            AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, AZ_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
-            return result; \
-        } \
-    } while((void)0,0)
+  do { \
+    if (val != expected) { \
+      AZ_ULIB_CONFIG_LOG( \
+          AZ_ULOG_TYPE_ERROR, \
+          AZ_ULOG_REQUIRE_EQUALS_STRING, \
+          MU_TOSTRING(val), \
+          MU_TOSTRING(expected)); \
+      return result; \
+    } \
+  } while ((void)0, 0)
 
 /**
  * @brief   Contract macro to evaluate if two values are not equal.
@@ -88,13 +94,16 @@ extern "C" {
  * @param   result      returned result if values are equal.
  */
 #define AZ_UCONTRACT_REQUIRE_NOT_EQUALS(val, expected, result) \
-    do { \
-        if(val == expected) \
-        { \
-            AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, AZ_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
-            return result; \
-        } \
-    } while((void)0,0)
+  do { \
+    if (val == expected) { \
+      AZ_ULIB_CONFIG_LOG( \
+          AZ_ULOG_TYPE_ERROR, \
+          AZ_ULOG_REQUIRE_NOT_EQUALS_STRING, \
+          MU_TOSTRING(val), \
+          MU_TOSTRING(expected)); \
+      return result; \
+    } \
+  } while ((void)0, 0)
 
 /**
  * @brief   Contract macro to evaluate if value is not `NULL`.
@@ -103,13 +112,12 @@ extern "C" {
  * @param   result      returned result if value is `NULL`
  */
 #define AZ_UCONTRACT_REQUIRE_NOT_NULL(val, result) \
-    do { \
-        if(val == NULL) \
-        { \
-            AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, AZ_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
-            return result; \
-        } \
-    } while((void)0,0)
+  do { \
+    if (val == NULL) { \
+      AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, AZ_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
+      return result; \
+    } \
+  } while ((void)0, 0)
 
 /**
  * @brief   Contract macro to evaluate if value is `NULL`.
@@ -118,13 +126,12 @@ extern "C" {
  * @param   result      returned result if value is not `NULL`
  */
 #define AZ_UCONTRACT_REQUIRE_NULL(val, result) \
-    do { \
-        if(val != NULL) \
-        { \
-            AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, AZ_ULOG_REQUIRE_NULL_STRING, MU_TOSTRING(val)); \
-            return result; \
-        } \
-    } while((void)0,0)
+  do { \
+    if (val != NULL) { \
+      AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, AZ_ULOG_REQUIRE_NULL_STRING, MU_TOSTRING(val)); \
+      return result; \
+    } \
+  } while ((void)0, 0)
 
 /**
  * @brief   Contract macro to evaluate user expression.
@@ -135,13 +142,12 @@ extern "C" {
  * @param   msg         message to log if expression is false
  */
 #define AZ_UCONTRACT_REQUIRE_HARD_FAULT(expression, msg) \
-    do { \
-        if(!(expression)) \
-        { \
-            AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, msg); \
-            AZ_ULIB_PORT_THROW_HARD_FAULT; \
-        } \
-    } while((void)0,0)
+  do { \
+    if (!(expression)) { \
+      AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, msg); \
+      AZ_ULIB_PORT_THROW_HARD_FAULT; \
+    } \
+  } while ((void)0, 0)
 
 /**
  * @brief   Contract macro to evaluate if two values are equal.
@@ -152,13 +158,16 @@ extern "C" {
  * @param   expected    value expected
  */
 #define AZ_UCONTRACT_REQUIRE_EQUALS_HARD_FAULT(val, expected) \
-    do { \
-        if(val != expected) \
-        { \
-            AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, AZ_ULOG_REQUIRE_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
-            AZ_ULIB_PORT_THROW_HARD_FAULT; \
-        } \
-    } while((void)0,0)
+  do { \
+    if (val != expected) { \
+      AZ_ULIB_CONFIG_LOG( \
+          AZ_ULOG_TYPE_ERROR, \
+          AZ_ULOG_REQUIRE_EQUALS_STRING, \
+          MU_TOSTRING(val), \
+          MU_TOSTRING(expected)); \
+      AZ_ULIB_PORT_THROW_HARD_FAULT; \
+    } \
+  } while ((void)0, 0)
 
 /**
  * @brief   Contract macro to evaluate if two values are not equal.
@@ -169,13 +178,16 @@ extern "C" {
  * @param   expected    value not expected
  */
 #define AZ_UCONTRACT_REQUIRE_NOT_EQUALS_HARD_FAULT(val, expected) \
-    do { \
-        if(val == expected) \
-        { \
-            AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, AZ_ULOG_REQUIRE_NOT_EQUALS_STRING, MU_TOSTRING(val), MU_TOSTRING(expected)); \
-            AZ_ULIB_PORT_THROW_HARD_FAULT; \
-        } \
-    } while((void)0,0)
+  do { \
+    if (val == expected) { \
+      AZ_ULIB_CONFIG_LOG( \
+          AZ_ULOG_TYPE_ERROR, \
+          AZ_ULOG_REQUIRE_NOT_EQUALS_STRING, \
+          MU_TOSTRING(val), \
+          MU_TOSTRING(expected)); \
+      AZ_ULIB_PORT_THROW_HARD_FAULT; \
+    } \
+  } while ((void)0, 0)
 
 /**
  * @brief   Contract macro to evaluate if value is not `NULL`.
@@ -185,14 +197,12 @@ extern "C" {
  * @param   val         value to check
  */
 #define AZ_UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT(val) \
-    do { \
-        if(val == NULL) \
-        { \
-            AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, AZ_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
-            AZ_ULIB_PORT_THROW_HARD_FAULT; \
-        } \
-    } while((void)0,0)
-
+  do { \
+    if (val == NULL) { \
+      AZ_ULIB_CONFIG_LOG(AZ_ULOG_TYPE_ERROR, AZ_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
+      AZ_ULIB_PORT_THROW_HARD_FAULT; \
+    } \
+  } while ((void)0, 0)
 
 #ifdef __cplusplus
 }

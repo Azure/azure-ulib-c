@@ -28,11 +28,11 @@ extern "C" {
 MU_DEFINE_ENUM(
     az_ulib_action_type,
     AZ_ULIB_ACTION_TYPE_PROPERTY = 0x00, /**<Read and write property */
-    AZ_ULIB_ACTION_TYPE_METHOD = 0x01, /**<Synchronous method that can be invoked by other modules 
+    AZ_ULIB_ACTION_TYPE_METHOD = 0x01, /**<Synchronous method that can be invoked by other modules
                                        in the system */
     AZ_ULIB_ACTION_TYPE_METHOD_ASYNC = 0x02, /**<Asynchronous task that can be invoked by other
                                             modules in the system */
-    AZ_ULIB_ACTION_TYPE_EVENT = 0x03 /**<Event that other modules in the system can subscribe to 
+    AZ_ULIB_ACTION_TYPE_EVENT = 0x03 /**<Event that other modules in the system can subscribe to
                                      be notified */
 );
 
@@ -42,7 +42,7 @@ MU_DEFINE_ENUM(
  * The action token is the way that the action's caller associates the call to its answer. It can
  * have any value that is meaningful for the caller.
  */
-typedef void *az_ulib_action_token;
+typedef void* az_ulib_action_token;
 
 /**
  * @brief       Handle that uniquely identifies the action instance.
@@ -55,12 +55,12 @@ typedef uint16_t az_ulib_action_index;
 typedef void (*az_ulib_action_result_callback)(
     const az_ulib_action_token action_token,
     AZ_ULIB_RESULT result,
-    const void *const model_out);
+    const void* const model_out);
 
 /**
  * @brief       Event prototype.
  */
-typedef void (*az_ulib_action_event)(const void *const model_out);
+typedef void (*az_ulib_action_event)(const void* const model_out);
 
 /**
  * @brief       Cancellation token prototype.
@@ -92,26 +92,26 @@ typedef AZ_ULIB_RESULT (*az_ulib_action_cancellation_callback)(
  * @return The #AZ_ULIB_RESULT with the result of the method call. All possible results shall be
  * defined as part of the interface.
  */
-typedef AZ_ULIB_RESULT (*az_ulib_action_method)(const void *const model_in, const void *model_out);
+typedef AZ_ULIB_RESULT (*az_ulib_action_method)(const void* const model_in, const void* model_out);
 
 /**
  * @brief       IPC asynchronous task signature.
  */
 typedef AZ_ULIB_RESULT (*az_ulib_action_method_async)(
-    const void *const model_in,
+    const void* const model_in,
     az_ulib_action_result_callback callback,
     const az_ulib_action_token action_token,
-    az_ulib_action_cancellation_callback *cancel);
+    az_ulib_action_cancellation_callback* cancel);
 
 /**
  * @brief       IPC get signature.
  */
-typedef AZ_ULIB_RESULT (*az_ulib_action_get)(const void *model_out);
+typedef AZ_ULIB_RESULT (*az_ulib_action_get)(const void* model_out);
 
 /**
  * @brief       IPC set signature.
  */
-typedef AZ_ULIB_RESULT (*az_ulib_action_set)(const void *const model_in);
+typedef AZ_ULIB_RESULT (*az_ulib_action_set)(const void* const model_in);
 
 #ifdef __cplusplus
 }

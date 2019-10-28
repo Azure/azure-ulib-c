@@ -28,23 +28,23 @@ static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code) {
 
 static uint32_t my_property = 0;
 
-static AZ_ULIB_RESULT get_my_property(const void *model_out) {
-  uint32_t *new_val = (uint32_t *)model_out;
+static AZ_ULIB_RESULT get_my_property(const void* model_out) {
+  uint32_t* new_val = (uint32_t*)model_out;
 
   *new_val = my_property;
 
   return AZ_ULIB_SUCCESS;
 }
 
-static AZ_ULIB_RESULT set_my_property(const void *const model_in) {
-  uint32_t *new_val = (uint32_t *)model_in;
+static AZ_ULIB_RESULT set_my_property(const void* const model_in) {
+  uint32_t* new_val = (uint32_t*)model_in;
 
   my_property = *new_val;
 
   return AZ_ULIB_SUCCESS;
 }
 
-static AZ_ULIB_RESULT my_method(const void *const model_in, const void *model_out) {
+static AZ_ULIB_RESULT my_method(const void* const model_in, const void* model_out) {
   (void)model_in;
   (void)model_out;
 
@@ -52,10 +52,10 @@ static AZ_ULIB_RESULT my_method(const void *const model_in, const void *model_ou
 }
 
 static AZ_ULIB_RESULT my_method_async(
-    const void *const model_in,
-    const void *model_out,
+    const void* const model_in,
+    const void* model_out,
     const az_ulib_action_token action_token,
-    az_ulib_action_cancellation_callback *cancel) {
+    az_ulib_action_cancellation_callback* cancel) {
   (void)model_in;
   (void)model_out;
   (void)action_token;

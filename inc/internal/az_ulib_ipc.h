@@ -24,10 +24,10 @@
 extern "C" {
 #endif
 
-typedef void *_az_ulib_ipc_interface_handle;
+typedef void* _az_ulib_ipc_interface_handle;
 
 typedef struct _az_ulib_ipc_interface_tag {
-  const az_ulib_interface_descriptor *interface_descriptor;
+  const az_ulib_interface_descriptor* interface_descriptor;
   volatile long ref_count;
   volatile long running_count;
 } _az_ulib_ipc_interface;
@@ -37,8 +37,8 @@ typedef struct _az_ulib_ipc_tag {
   _az_ulib_ipc_interface interface_list[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE];
 } _az_ulib_ipc;
 
-MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_init_no_contract, _az_ulib_ipc *, ipc_handle);
-MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_init, _az_ulib_ipc *, ipc_handle);
+MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_init_no_contract, _az_ulib_ipc*, ipc_handle);
+MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_init, _az_ulib_ipc*, ipc_handle);
 
 MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_deinit_no_contract);
 MOCKABLE_FUNCTION(, AZ_ULIB_RESULT, _az_ulib_ipc_deinit);
@@ -47,20 +47,20 @@ MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
     _az_ulib_ipc_publish_no_contract,
-    const az_ulib_interface_descriptor *,
+    const az_ulib_interface_descriptor*,
     interface_descriptor);
 MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
     _az_ulib_ipc_publish,
-    const az_ulib_interface_descriptor *,
+    const az_ulib_interface_descriptor*,
     interface_descriptor);
 
 MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
     _az_ulib_ipc_unpublish_no_contract,
-    const az_ulib_interface_descriptor *,
+    const az_ulib_interface_descriptor*,
     interface_descriptor,
     uint32_t,
     wait_option_ms);
@@ -68,7 +68,7 @@ MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
     _az_ulib_ipc_unpublish,
-    const az_ulib_interface_descriptor *,
+    const az_ulib_interface_descriptor*,
     interface_descriptor,
     uint32_t,
     wait_option_ms);
@@ -77,25 +77,25 @@ MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
     _az_ulib_ipc_try_get_interface_no_contract,
-    const char *const,
+    const char* const,
     name,
     az_ulib_version,
     version,
     az_ulib_version_match_criteria,
     match_criteria,
-    _az_ulib_ipc_interface_handle *,
+    _az_ulib_ipc_interface_handle*,
     interface_handle);
 MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
     _az_ulib_ipc_try_get_interface,
-    const char *const,
+    const char* const,
     name,
     az_ulib_version,
     version,
     az_ulib_version_match_criteria,
     match_criteria,
-    _az_ulib_ipc_interface_handle *,
+    _az_ulib_ipc_interface_handle*,
     interface_handle);
 
 MOCKABLE_FUNCTION(
@@ -104,7 +104,7 @@ MOCKABLE_FUNCTION(
     _az_ulib_ipc_get_interface_no_contract,
     _az_ulib_ipc_interface_handle,
     original_interface_handle,
-    _az_ulib_ipc_interface_handle *,
+    _az_ulib_ipc_interface_handle*,
     interface_handle);
 MOCKABLE_FUNCTION(
     ,
@@ -112,7 +112,7 @@ MOCKABLE_FUNCTION(
     _az_ulib_ipc_get_interface,
     _az_ulib_ipc_interface_handle,
     original_interface_handle,
-    _az_ulib_ipc_interface_handle *,
+    _az_ulib_ipc_interface_handle*,
     interface_handle);
 
 MOCKABLE_FUNCTION(
@@ -136,9 +136,9 @@ MOCKABLE_FUNCTION(
     interface_handle,
     az_ulib_action_index,
     method_index,
-    const void *const,
+    const void* const,
     modelIn,
-    const void *,
+    const void*,
     modelOut);
 MOCKABLE_FUNCTION(
     ,
@@ -148,9 +148,9 @@ MOCKABLE_FUNCTION(
     interface_handle,
     az_ulib_action_index,
     method_index,
-    const void *const,
+    const void* const,
     modelIn,
-    const void *,
+    const void*,
     modelOut);
 
 #ifdef __cplusplus

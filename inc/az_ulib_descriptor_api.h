@@ -40,17 +40,17 @@ extern "C" {
  * structure is a superset of the fields of all types of actions.
  */
 typedef struct az_ulib_action_descriptor_tag {
-  const char *name; /**<The `\0` terminated `const char *` with the action name.*/
+  const char* name; /**<The `\0` terminated `const char *` with the action name.*/
   const union /**<The primary function of the action. */
   {
-    const void *action;
+    const void* action;
     const az_ulib_action_get get;
     const az_ulib_action_method method;
     const az_ulib_action_method_async method_async;
   } action_ptr_1;
   const union /**<The secondary function of the action. */
   {
-    const void *action;
+    const void* action;
     const az_ulib_action_set set;
     const az_ulib_action_cancellation_callback cancel;
   } action_ptr_2;
@@ -64,10 +64,10 @@ typedef struct az_ulib_action_descriptor_tag {
  * interface.
  */
 typedef struct az_ulib_interface_descriptor_tag {
-  const char *name; /**<The `\0` terminated `const char*` with the interface name. */
+  const char* name; /**<The `\0` terminated `const char*` with the interface name. */
   az_ulib_version version; /**<The #az_ulib_version with the interface version. */
   uint8_t size; /**<The `uint8_t` with the number of actions in the interface. */
-  az_ulib_action_descriptor *action_list; /**<The list of #az_ulib_action_descriptor with the
+  az_ulib_action_descriptor* action_list; /**<The list of #az_ulib_action_descriptor with the
                                           actions in this interface. */
 } az_ulib_interface_descriptor;
 
@@ -99,7 +99,7 @@ typedef struct az_ulib_interface_descriptor_tag {
       = { (interface_name), \
           (version), \
           (uint8_t)(MU_COUNT_ARG(__VA_ARGS__) / 4), \
-          (az_ulib_action_descriptor *)MU_C2(interface_var, _ACTION_LIST) };
+          (az_ulib_action_descriptor*)MU_C2(interface_var, _ACTION_LIST) };
 
 /**
  * @brief   Add property to the interface descriptor.
@@ -123,7 +123,7 @@ typedef struct az_ulib_interface_descriptor_tag {
  */
 #define AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(name, get, set) \
   { \
-    (name), { (const void *)(get) }, { (const void *)(set) }, \
+    (name), { (const void*)(get) }, { (const void*)(set) }, \
         (uint8_t)(AZ_ULIB_ACTION_TYPE_PROPERTY) \
   }
 
@@ -146,7 +146,7 @@ typedef struct az_ulib_interface_descriptor_tag {
  */
 #define AZ_ULIB_DESCRIPTOR_ADD_METHOD(name, method) \
   { \
-    (name), { (const void *)(method) }, { (const void *)NULL }, \
+    (name), { (const void*)(method) }, { (const void*)NULL }, \
         (uint8_t)(AZ_ULIB_ACTION_TYPE_METHOD) \
   }
 
@@ -180,7 +180,7 @@ typedef struct az_ulib_interface_descriptor_tag {
  */
 #define AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC(name, method_async, cancel) \
   { \
-    (name), { (const void *)(method_async) }, { (const void *)(cancel) }, \
+    (name), { (const void*)(method_async) }, { (const void*)(cancel) }, \
         (uint8_t)(AZ_ULIB_ACTION_TYPE_METHOD_ASYNC) \
   }
 
@@ -198,10 +198,7 @@ typedef struct az_ulib_interface_descriptor_tag {
  * @return The #az_ulib_action_descriptor with the method.
  */
 #define AZ_ULIB_DESCRIPTOR_ADD_EVENT(name) \
-  { \
-    (name), { (const void *)(NULL) }, { (const void *)(NULL) }, \
-        (uint8_t)(AZ_ULIB_ACTION_TYPE_EVENT) \
-  }
+  { (name), { (const void*)(NULL) }, { (const void*)(NULL) }, (uint8_t)(AZ_ULIB_ACTION_TYPE_EVENT) }
 
 #ifdef __cplusplus
 }

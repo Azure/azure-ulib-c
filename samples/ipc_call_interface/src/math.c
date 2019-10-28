@@ -18,26 +18,26 @@
 /*
  * Concrete implementations of the math methods.
  */
-static AZ_ULIB_RESULT sum_concrete(const void *const model_in, const void *model_out) {
+static AZ_ULIB_RESULT sum_concrete(const void* const model_in, const void* model_out) {
   AZ_UCONTRACT(
       AZ_UCONTRACT_REQUIRE_NOT_NULL(model_in, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
       AZ_UCONTRACT_REQUIRE_NOT_NULL(model_out, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
 
-  sum_model_in *in = (sum_model_in *)model_in;
-  sum_model_out *out = (sum_model_out *)model_out;
+  sum_model_in* in = (sum_model_in*)model_in;
+  sum_model_out* out = (sum_model_out*)model_out;
 
   *out = (uint64_t)in->a + (uint64_t)in->b;
 
   return AZ_ULIB_SUCCESS;
 }
 
-static AZ_ULIB_RESULT subtraction_concrete(const void *const model_in, const void *model_out) {
+static AZ_ULIB_RESULT subtraction_concrete(const void* const model_in, const void* model_out) {
   AZ_UCONTRACT(
       AZ_UCONTRACT_REQUIRE_NOT_NULL(model_in, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
       AZ_UCONTRACT_REQUIRE_NOT_NULL(model_out, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
 
-  subtraction_model_in *in = (subtraction_model_in *)model_in;
-  subtraction_model_out *out = (subtraction_model_out *)model_out;
+  subtraction_model_in* in = (subtraction_model_in*)model_in;
+  subtraction_model_out* out = (subtraction_model_out*)model_out;
 
   *out = (uint64_t)in->a - (uint64_t)in->b;
 

@@ -27,16 +27,16 @@ static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code) {
 
 static uint32_t my_property = 0;
 
-static AZ_ULIB_RESULT get_my_property(const void *model_out) {
-  uint32_t *new_val = (uint32_t *)model_out;
+static AZ_ULIB_RESULT get_my_property(const void* model_out) {
+  uint32_t* new_val = (uint32_t*)model_out;
 
   *new_val = my_property;
 
   return AZ_ULIB_SUCCESS;
 }
 
-static AZ_ULIB_RESULT set_my_property(const void *const model_in) {
-  uint32_t *new_val = (uint32_t *)model_in;
+static AZ_ULIB_RESULT set_my_property(const void* const model_in) {
+  uint32_t* new_val = (uint32_t*)model_in;
 
   my_property = *new_val;
 
@@ -45,7 +45,7 @@ static AZ_ULIB_RESULT set_my_property(const void *const model_in) {
 
 typedef struct my_method_model_in_tag {
   uint8_t action;
-  const az_ulib_interface_descriptor *descriptor;
+  const az_ulib_interface_descriptor* descriptor;
   az_ulib_ipc_interface_handle handle;
   az_ulib_action_index method_index;
   AZ_ULIB_RESULT return_result;
@@ -60,9 +60,9 @@ MU_DEFINE_ENUM(
     MY_METHOD_ACTION_CALL_AGAIN,
     MY_METHOD_ACTION_RETURN_ERROR)
 
-static AZ_ULIB_RESULT my_method(const void *const model_in, const void *model_out) {
-  my_method_model_in *in = (my_method_model_in *)model_in;
-  AZ_ULIB_RESULT *result = (AZ_ULIB_RESULT *)model_out;
+static AZ_ULIB_RESULT my_method(const void* const model_in, const void* model_out) {
+  my_method_model_in* in = (my_method_model_in*)model_in;
+  AZ_ULIB_RESULT* result = (AZ_ULIB_RESULT*)model_out;
   my_method_model_in in_2;
 
   switch (in->action) {
@@ -92,10 +92,10 @@ static AZ_ULIB_RESULT my_method(const void *const model_in, const void *model_ou
 }
 
 static AZ_ULIB_RESULT my_method_async(
-    const void *const model_in,
-    const void *model_out,
+    const void* const model_in,
+    const void* model_out,
     const az_ulib_action_token action_token,
-    az_ulib_action_cancellation_callback *cancel) {
+    az_ulib_action_cancellation_callback* cancel) {
   (void)model_in;
   (void)model_out;
   (void)action_token;
@@ -224,7 +224,7 @@ void unpublish_interfaces_and_deinit_ipc(void) {
 #define NUMBER_CALLS_IN_THREAD 100000
 #define MAX_THREAD AZ_ULIB_CONFIG_MAX_IPC_INSTANCES
 
-static int call_sync_thread(void *arg) {
+static int call_sync_thread(void* arg) {
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_JUST_RETURN;
   in.return_result = AZ_ULIB_SUCCESS;
