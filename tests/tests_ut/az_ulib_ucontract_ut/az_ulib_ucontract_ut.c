@@ -16,13 +16,12 @@
 
 #include "azure_macro_utils/macro_utils.h"
 #include "testrunnerswitcher.h"
-#include "ucontract.h"
+#include "az_ulib_ucontract.h"
 #include "umock_c/umock_c.h"
 #include "umock_c/umock_c_negative_tests.h"
 #include "umock_c/umocktypes_bool.h"
 #include "umock_c/umocktypes_charptr.h"
 #include "umock_c/umocktypes_stdint.h"
-#include "az_ulib_ucontract.h"
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 
