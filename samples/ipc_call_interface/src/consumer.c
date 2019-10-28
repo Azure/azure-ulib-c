@@ -4,9 +4,9 @@
 
 #include "math_tlb.h"
 #include "ulib_result.h"
+#include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <inttypes.h>
 
 /*
  *client code.

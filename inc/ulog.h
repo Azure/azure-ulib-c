@@ -1,14 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed under the MIT license.
+// See LICENSE file in the project root for full license information.
 
 /**
  * @file ulog.h
- * 
+ *
  * @brief Small footprint logging functionality
- * 
- * Using the az_ulog_print() api, you can pass enum types to differentiate logging purposes. When the api
- *      prints to the console, it uses constant strings which prevents duplicate strings from being
- *      saved in the bss.
+ *
+ * Using the az_ulog_print() api, you can pass enum types to differentiate logging purposes. When
+ * the api prints to the console, it uses constant strings which prevents duplicate strings from
+ * being saved in the bss.
  */
 
 #ifndef AZ_ULOG_H
@@ -31,15 +32,16 @@ extern const char* const AZ_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING;
 extern const char* const AZ_ULOG_OUT_OF_MEMORY_STRING;
 extern const char* const AZ_ULOG_REPORT_EXCEPTION_STRING;
 
-static const char* const AZ_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING = "Passed ustream is not the correct type\r\n";
+static const char* const AZ_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING
+    = "Passed ustream is not the correct type\r\n";
 
 /**
  * @brief   enum to select the log type
  */
 MU_DEFINE_ENUM(
     AZ_ULOG_TYPE,
-    AZ_ULOG_TYPE_ERROR   = 0,    /**<error log message */
-    AZ_ULOG_TYPE_INFO    = 1     /**<info log message */
+    AZ_ULOG_TYPE_ERROR = 0, /**<error log message. */
+    AZ_ULOG_TYPE_INFO = 1 /**<info log message. */
 );
 
 /**
@@ -50,9 +52,9 @@ extern const char* const AZ_ULOG_TYPE_STRING[];
 /**
  * @brief log function for ulib_config
  *
- * @param   type    AZ_ULOG_TYPE to signify error or info log
- * @param   format  Format prefix for the passed string in (...)
- * @param   ...     Passed string (with any % formatting parameters) to print to the log
+ * @param[in]   type    #AZ_ULOG_TYPE to signify error or info log.
+ * @param[in]   format  Format prefix for the passed string in (...).
+ * @param[in]   ...     Passed string (with any % formatting parameters) to print to the log.
  */
 void az_ulog_print(AZ_ULOG_TYPE type, const char* const format, ...);
 

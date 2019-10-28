@@ -5,7 +5,7 @@ TabWidth: 2
 IndentWidth: 2
 IncludeBlocks: Preserve
 NamespaceIndentation: None
-PointerAlignment: Right
+PointerAlignment: Left
 AlignAfterOpenBracket: AlwaysBreak
 AlignEscapedNewlines: DontAlign
 AllowAllParametersOfDeclarationOnNextLine: false

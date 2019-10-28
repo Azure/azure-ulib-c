@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed under the MIT license. 
+// See LICENSE file in the project root for full license information.
 
 #include "ulog.h"
 #include <stdarg.h>
@@ -13,19 +14,13 @@ const char* const AZ_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING = "ustream is not the c
 const char* const AZ_ULOG_OUT_OF_MEMORY_STRING = "Not enough memory to create the %s\r\n";
 const char* const AZ_ULOG_REPORT_EXCEPTION_STRING = "%s got exception [%d]\r\n";
 
-const char* const AZ_ULOG_TYPE_STRING[] = 
-{ 
-    "ERROR", 
-    "INFO" 
-};
+const char* const AZ_ULOG_TYPE_STRING[] = { "ERROR", "INFO" };
 
-void az_ulog_print(AZ_ULOG_TYPE type, const char* const format, ...)
-{
-    char temp[AZ_ULIB_CONFIG_MAX_LOG_SIZE];
-    va_list args;
-    va_start(args, format);
-    vsnprintf(temp, AZ_ULIB_CONFIG_MAX_LOG_SIZE, format, args);
-    printf("[%s]%s", AZ_ULOG_TYPE_STRING[type], temp);
-    va_end(args);
+void az_ulog_print(AZ_ULOG_TYPE type, const char* const format, ...) {
+  char temp[AZ_ULIB_CONFIG_MAX_LOG_SIZE];
+  va_list args;
+  va_start(args, format);
+  vsnprintf(temp, AZ_ULIB_CONFIG_MAX_LOG_SIZE, format, args);
+  printf("[%s]%s", AZ_ULOG_TYPE_STRING[type], temp);
+  va_end(args);
 }
-

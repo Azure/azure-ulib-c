@@ -40,7 +40,7 @@ typedef int64_t sum_model_out;
 /*
  * Inter-component Calling Wrapper for sum.
  */
-static inline AZ_ULIB_RESULT sum(math_handle handle, int32_t a, int32_t b, int64_t *res) {
+static inline AZ_ULIB_RESULT sum(math_handle handle, int32_t a, int32_t b, int64_t* res) {
   sum_model_in sum_in;
   sum_model_out sum_out;
 
@@ -75,7 +75,7 @@ typedef int64_t subtraction_model_out;
 /*
  * Inter-component Calling Wrapper for subtraction.
  */
-static inline AZ_ULIB_RESULT subtraction(math_handle handle, int32_t a, int32_t b, int64_t *res) {
+static inline AZ_ULIB_RESULT subtraction(math_handle handle, int32_t a, int32_t b, int64_t* res) {
   subtraction_model_in sub_in;
   subtraction_model_out sub_out;
 

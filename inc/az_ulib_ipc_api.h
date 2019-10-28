@@ -61,11 +61,11 @@ typedef _az_ulib_ipc_interface_handle az_ulib_ipc_interface_handle;
  *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR     If one of the arguments is invalid.
  *  @retval #AZ_ULIB_ALREADY_INITIALIZED_ERROR  If the IPC is already initialized.
  */
-static inline AZ_ULIB_RESULT az_ulib_ipc_init(az_ulib_ipc *ipc_handle) {
+static inline AZ_ULIB_RESULT az_ulib_ipc_init(az_ulib_ipc* ipc_handle) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
-  return _az_ulib_ipc_init((_az_ulib_ipc *)ipc_handle);
+  return _az_ulib_ipc_init((_az_ulib_ipc*)ipc_handle);
 #else
-  return _az_ulib_ipc_init_no_contract((_az_ulib_ipc *)ipc_handle);
+  return _az_ulib_ipc_init_no_contract((_az_ulib_ipc*)ipc_handle);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 
@@ -116,7 +116,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_deinit(void) {
  *                                            interface.
  */
 static inline AZ_ULIB_RESULT az_ulib_ipc_publish(
-    const az_ulib_interface_descriptor *interface_descriptor) {
+    const az_ulib_interface_descriptor* interface_descriptor) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_publish(interface_descriptor);
 #else
@@ -145,7 +145,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_publish(
  *                                            now.
  */
 static inline AZ_ULIB_RESULT az_ulib_ipc_unpublish(
-    const az_ulib_interface_descriptor *interface_descriptor,
+    const az_ulib_interface_descriptor* interface_descriptor,
     uint32_t wait_option_ms) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_unpublish(interface_descriptor, wait_option_ms);
@@ -186,16 +186,16 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_unpublish(
  *  @retval #AZ_ULIB_INCOMPATIBLE_VERSION_ERROR   If the required version is not available.
  */
 static inline AZ_ULIB_RESULT az_ulib_ipc_try_get_interface(
-    const char *const name,
+    const char* const name,
     az_ulib_version version,
     az_ulib_version_match_criteria match_criteria,
-    az_ulib_ipc_interface_handle *interface_handle) {
+    az_ulib_ipc_interface_handle* interface_handle) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_try_get_interface(
-      name, version, match_criteria, (_az_ulib_ipc_interface_handle *)interface_handle);
+      name, version, match_criteria, (_az_ulib_ipc_interface_handle*)interface_handle);
 #else
   return _az_ulib_ipc_try_get_interface_no_contract(
-      name, version, match_criteria, (_az_ulib_ipc_interface_handle *)interface_handle);
+      name, version, match_criteria, (_az_ulib_ipc_interface_handle*)interface_handle);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 
@@ -225,15 +225,15 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_try_get_interface(
  */
 static inline AZ_ULIB_RESULT az_ulib_ipc_get_interface(
     az_ulib_ipc_interface_handle original_interface_handle,
-    az_ulib_ipc_interface_handle *interface_handle) {
+    az_ulib_ipc_interface_handle* interface_handle) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_get_interface(
       (_az_ulib_ipc_interface_handle)original_interface_handle,
-      (_az_ulib_ipc_interface_handle *)interface_handle);
+      (_az_ulib_ipc_interface_handle*)interface_handle);
 #else
   return _az_ulib_ipc_get_interface_no_contract(
       (_az_ulib_ipc_interface_handle)original_interface_handle,
-      (_az_ulib_ipc_interface_handle *)interface_handle);
+      (_az_ulib_ipc_interface_handle*)interface_handle);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 
@@ -265,7 +265,8 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_release_interface(
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_release_interface((_az_ulib_ipc_interface_handle)interface_handle);
 #else
-  return _az_ulib_ipc_release_interface_no_contract((_az_ulib_ipc_interface_handle)interface_handle);
+  return _az_ulib_ipc_release_interface_no_contract(
+      (_az_ulib_ipc_interface_handle)interface_handle);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 
@@ -291,8 +292,8 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_release_interface(
 static inline AZ_ULIB_RESULT az_ulib_ipc_call(
     az_ulib_ipc_interface_handle interface_handle,
     az_ulib_action_index method_index,
-    const void *const model_in,
-    const void *model_out) {
+    const void* const model_in,
+    const void* model_out) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_call(
       (_az_ulib_ipc_interface_handle)interface_handle, method_index, model_in, model_out);
