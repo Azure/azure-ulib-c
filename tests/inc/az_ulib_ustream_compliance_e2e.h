@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef USTREAM_COMPLIANCE_E2E_H
-#define USTREAM_COMPLIANCE_E2E_H
+#ifndef AZ_ULIB_USTREAM_COMPLIANCE_E2E_H
+#define AZ_ULIB_USTREAM_COMPLIANCE_E2E_H
 
 #include "az_ulib_ustream_mock_buffer.h"
 #include "az_ulib_test_thread.h"
@@ -146,4 +146,4 @@ TEST_FUNCTION(az_ustream_e2e_compliance_read_and_reset_succeed)
 
 }
 
-#endif /* USTREAM_COMPLIANCE_E2E_H */
+#endif /* AZ_ULIB_USTREAM_COMPLIANCE_E2E_H */

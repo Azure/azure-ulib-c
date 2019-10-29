@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef USTREAM_CTEST_AUX_H
-#define USTREAM_CTEST_AUX_H
+#ifndef AZ_ULIB_CTEST_AUX_H
+#define AZ_ULIB_CTEST_AUX_H
 
 #include <stdint.h>
 #include "azure_macro_utils/macro_utils.h"
@@ -123,4 +123,4 @@ static void check_buffer(
     ASSERT_ARE_EQUAL(int, 0, size_result);
 }
 
-#endif /* USTREAM_CTEST_AUX_H */
+#endif /* AZ_ULIB_CTEST_AUX_H */

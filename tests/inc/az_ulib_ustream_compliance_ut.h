@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef USTREAM_COMPLIANCE_UT_H
-#define USTREAM_COMPLIANCE_UT_H
+#ifndef AZ_ULIB_USTREAM_COMPLIANCE_UT_H
+#define AZ_ULIB_USTREAM_COMPLIANCE_UT_H
 
 #include "az_ulib_ustream_mock_buffer.h"
 #include "az_ulib_ctest_aux.h"
@@ -2395,4 +2395,4 @@ TEST_FUNCTION(az_ustream_reset_compliance_non_type_of_buffer_api_failed)
     (void)az_ustream_dispose(&ustream_instance);
 }
 
-#endif /* USTREAM_COMPLIANCE_UT_H */
+#endif /* AZ_ULIB_USTREAM_COMPLIANCE_UT_H */

@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef USTREAM_MOCK_BUFFER_H
-#define USTREAM_MOCK_BUFFER_H
+#ifndef AZ_ULIB_USTREAM_MOCK_BUFFER_H
+#define AZ_ULIB_USTREAM_MOCK_BUFFER_H
 
 #include <stdbool.h>
 #include "az_ulib_ustream_base.h"
@@ -30,4 +30,4 @@ void set_dispose_result(AZ_ULIB_RESULT result);
 }
 #endif /* __cplusplus */
 
-#endif /* USTREAM_MOCK_BUFFER_H */
+#endif /* AZ_ULIB_USTREAM_MOCK_BUFFER_H */

@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#ifndef TEST_THREAD_H
-#define TEST_THREAD_H
+#ifndef AZ_ULIB_TEST_THREAD_H
+#define AZ_ULIB_TEST_THREAD_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,4 +32,4 @@ void test_thread_sleep(unsigned int milliseconds);
 }
 #endif
 
-#endif /* TEST_THREAD_H */
+#endif /* AZ_ULIB_TEST_THREAD_H */
