@@ -20,7 +20,7 @@
 #include "umock_c/umocktypes_stdint.h"
 #include "umock_c/umock_c_negative_tests.h"
 #include "azure_macro_utils/macro_utils.h"
-#include "az_ulib_ustream_ctest_aux.h"
+#include "az_ulib_ctest_aux.h"
 #include "az_ulib_ustream_mock_buffer.h"
 
 static TEST_MUTEX_HANDLE g_test_by_test;

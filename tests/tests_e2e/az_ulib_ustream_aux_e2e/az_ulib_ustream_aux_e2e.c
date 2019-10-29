@@ -15,7 +15,7 @@
 
 #include "testrunnerswitcher.h"
 #include "azure_macro_utils/macro_utils.h"
-#include "az_ulib_ustream_ctest_aux.h"
+#include "az_ulib_ctest_aux.h"
 #include "az_ulib_ustream_mock_buffer.h"
 #include "az_ulib_test_thread.h"
 

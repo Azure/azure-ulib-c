@@ -5,7 +5,7 @@
 #define USTREAM_COMPLIANCE_UT_H
 
 #include "az_ulib_ustream_mock_buffer.h"
-#include "az_ulib_ustream_ctest_aux.h"
+#include "az_ulib_ctest_aux.h"
 
 /* check for test artifacts. */
 #ifndef USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH
