@@ -7,7 +7,7 @@
 
 #include "az_ulib_base.h"
 #include "azure_macro_utils/macro_utils.h"
-#include "ulib_result.h"
+#include "az_ulib_result.h"
 #include "umock_c/umock_c_prod.h"
 
 #ifdef __cplusplus

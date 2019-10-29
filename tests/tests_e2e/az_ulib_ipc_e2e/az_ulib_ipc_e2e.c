@@ -7,14 +7,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "az_pal_os_api.h"
+#include "az_ulib_pal_os_api.h"
 #include "az_ulib_action_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "azure_macro_utils/macro_utils.h"
-#include "test_thread.h"
+#include "az_ulib_test_thread.h"
 #include "testrunnerswitcher.h"
-#include "ulib_result.h"
+#include "az_ulib_result.h"
 #include "umock_c/umock_c.h"
 
 static TEST_MUTEX_HANDLE g_test_by_test;

@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.2.0)
 #Add any additional .c files here that are needed to run your tests.
 add_executable(ustream_ut_sample
     ${CMAKE_CURRENT_LIST_DIR}/main.c
-    ${CMAKE_CURRENT_LIST_DIR}/ustream_ut.c
+    ${CMAKE_CURRENT_LIST_DIR}/az_ulib_ustream_ut_sample.c
 )
 
 #Links to appropriate libraries and adds to ctest

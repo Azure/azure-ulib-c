@@ -6,9 +6,9 @@
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "math_tlb.h"
-#include "ucontract.h"
-#include "ulib_result.h"
-#include "ulog.h"
+#include "az_ulib_ucontract.h"
+#include "az_ulib_result.h"
+#include "az_ulib_ulog.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>

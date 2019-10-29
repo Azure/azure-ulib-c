@@ -12,9 +12,9 @@
 #include "az_ulib_base.h"
 #include "az_ulib_descriptor_api.h"
 #include "internal/az_ulib_ipc.h"
-#include "ulib_config.h"
-#include "ulib_port.h"
-#include "ulib_result.h"
+#include "az_ulib_config.h"
+#include "az_ulib_port.h"
+#include "az_ulib_result.h"
 
 #ifndef __cplusplus
 #include <stdint.h>

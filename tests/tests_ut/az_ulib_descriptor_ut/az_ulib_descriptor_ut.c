@@ -11,7 +11,7 @@
 #include "az_ulib_descriptor_api.h"
 #include "azure_macro_utils/macro_utils.h"
 #include "testrunnerswitcher.h"
-#include "ulib_result.h"
+#include "az_ulib_result.h"
 #include "umock_c/umock_c.h"
 #include "umock_c/umock_c_negative_tests.h"
 #include "umock_c/umocktypes_bool.h"
