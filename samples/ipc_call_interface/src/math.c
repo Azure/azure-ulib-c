@@ -54,5 +54,9 @@ AZ_ULIB_DESCRIPTOR_CREATE(
 AZ_ULIB_RESULT math_publish_interface(void) { return az_ulib_ipc_publish(&MATH_DESCRIPTOR); }
 
 AZ_ULIB_RESULT math_unpublish_interface(void) {
+#ifdef AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
   return az_ulib_ipc_unpublish(&MATH_DESCRIPTOR, AZ_ULIB_NO_WAIT);
+#else
+  return AZ_ULIB_SUCCESS;
+#endif // AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
 }

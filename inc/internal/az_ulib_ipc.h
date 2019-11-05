@@ -27,9 +27,12 @@ extern "C" {
 typedef void* _az_ulib_ipc_interface_handle;
 
 typedef struct _az_ulib_ipc_interface_tag {
-  const az_ulib_interface_descriptor* interface_descriptor;
+  volatile const az_ulib_interface_descriptor* interface_descriptor;
   volatile long ref_count;
+#ifdef AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
   volatile long running_count;
+  volatile long running_count_low_watermark;
+#endif // AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
 } _az_ulib_ipc_interface;
 
 typedef struct _az_ulib_ipc_tag {
@@ -56,6 +59,7 @@ MOCKABLE_FUNCTION(
     const az_ulib_interface_descriptor*,
     interface_descriptor);
 
+#ifdef AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
 MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
@@ -72,6 +76,7 @@ MOCKABLE_FUNCTION(
     interface_descriptor,
     uint32_t,
     wait_option_ms);
+#endif //  AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
 
 MOCKABLE_FUNCTION(
     ,
