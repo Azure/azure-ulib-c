@@ -76,9 +76,10 @@ AZ_ULIB_RESULT _az_ulib_ipc_init_no_contract(_az_ulib_ipc* handle) {
 
   for (size_t i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++) {
     ipc->interface_list[i].ref_count = 0;
-#ifdef AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
     ipc->interface_list[i].running_count = 0;
-#endif // AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+    ipc->interface_list[i].running_count_low_watermark = 0;
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
     ipc->interface_list[i].interface_descriptor = NULL;
   }
 
@@ -101,9 +102,9 @@ AZ_ULIB_RESULT _az_ulib_ipc_deinit_no_contract(void) {
   for (size_t i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++) {
     if ((ipc->interface_list[i].interface_descriptor != NULL)
         || (ipc->interface_list[i].ref_count != 0)
-#ifdef AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
         || (ipc->interface_list[i].running_count != 0)
-#endif // AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
     ) {
       /*az_ulib_ipc_deinit_with_published_interface_failed*/
       /*az_ulib_ipc_deinit_with_instace_failed*/
@@ -148,9 +149,10 @@ AZ_ULIB_RESULT _az_ulib_ipc_publish_no_contract(
       AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
           &(new_interface->interface_descriptor), interface_descriptor);
       new_interface->ref_count = 0;
-#ifdef AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
       new_interface->running_count = 0;
-#endif // AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+      new_interface->running_count_low_watermark = 0;
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
       result = AZ_ULIB_SUCCESS;
     }
   }
@@ -169,7 +171,7 @@ _az_ulib_ipc_publish(const az_ulib_interface_descriptor* interface_descriptor) {
   return _az_ulib_ipc_publish_no_contract(interface_descriptor);
 }
 
-#ifdef AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
 AZ_ULIB_RESULT
 _az_ulib_ipc_unpublish_no_contract(
     const az_ulib_interface_descriptor* interface_descriptor,
@@ -263,7 +265,7 @@ _az_ulib_ipc_unpublish(
       AZ_UCONTRACT_REQUIRE_NOT_NULL(interface_descriptor, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
   return _az_ulib_ipc_unpublish_no_contract(interface_descriptor, wait_option_ms);
 }
-#endif // AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
 AZ_ULIB_RESULT
 _az_ulib_ipc_try_get_interface_no_contract(
@@ -376,7 +378,7 @@ _az_ulib_ipc_release_interface(_az_ulib_ipc_interface_handle interface_handle) {
   return _az_ulib_ipc_release_interface_no_contract(interface_handle);
 }
 
-#ifdef AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
 AZ_ULIB_RESULT
 _az_ulib_ipc_call_no_contract(
     _az_ulib_ipc_interface_handle interface_handle,
@@ -411,7 +413,7 @@ _az_ulib_ipc_call_no_contract(
 
   return result;
 }
-#else // AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+#else // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 AZ_ULIB_RESULT
 _az_ulib_ipc_call_no_contract(
     _az_ulib_ipc_interface_handle interface_handle,
@@ -422,7 +424,7 @@ _az_ulib_ipc_call_no_contract(
       ->interface_descriptor->action_list[method_index]
       .action_ptr_1.method(model_in, model_out);
 }
-#endif // AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
 AZ_ULIB_RESULT _az_ulib_ipc_call(
     _az_ulib_ipc_interface_handle interface_handle,

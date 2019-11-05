@@ -81,7 +81,7 @@ extern "C" {
  * AZ_ULIB_REMOVE_UNPUBLISH as part of the make file that will build the project.**
  */
 #ifndef AZ_ULIB_REMOVE_UNPUBLISH
-#define AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+#define AZ_ULIB_CONFIG_IPC_UNPUBLISH
 #endif /*AZ_ULIB_REMOVE_UNPUBLISH*/
 
 #ifdef __cplusplus

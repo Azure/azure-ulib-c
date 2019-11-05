@@ -51,6 +51,11 @@ MOCKABLE_FUNCTION(, void, az_pal_os_lock_acquire, AZ_PAL_OS_LOCK*, lock);
  */
 MOCKABLE_FUNCTION(, void, az_pal_os_lock_release, AZ_PAL_OS_LOCK*, lock);
 
+/**
+ * @brief   Sleep for some milliseconds.
+ *
+ * @param[in]       sleep_time_ms    The `uint32_t` with the number of milliseconds to sleep.
+ */
 MOCKABLE_FUNCTION(, void, az_pal_os_sleep, uint32_t, sleep_time_ms);
 
 #ifdef __cplusplus

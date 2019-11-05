@@ -124,10 +124,11 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_publish(
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
 /**
  * @brief   Unpublish an interface from the IPC.
  *
- * @node    Please uncomment #AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH on az_ulib_config.h to enable this
+ * @node    Please uncomment #AZ_ULIB_CONFIG_IPC_UNPUBLISH on az_ulib_config.h to enable this
  * API.
  *
  * @param[in]   interface_descriptor  The `const` #az_ulib_interface_descriptor * with the
@@ -147,7 +148,6 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_publish(
  *  @retval #AZ_ULIB_BUSY_ERROR               If the interface is busy and cannot be unpublished
  *                                            now.
  */
-#ifdef AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
 static inline AZ_ULIB_RESULT az_ulib_ipc_unpublish(
     const az_ulib_interface_descriptor* interface_descriptor,
     uint32_t wait_option_ms) {
@@ -157,7 +157,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_unpublish(
   return _az_ulib_ipc_unpublish_no_contract(interface_descriptor, wait_option_ms);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
-#endif // AZ_ULIB_CONFIG_MAX_IPC_UNPUBLISH
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
 /**
  * @brief   Try get an interface handle by the name from the IPC.
