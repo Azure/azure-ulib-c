@@ -6,7 +6,6 @@
 #define AZ_ULIB_PAL_OS_LINUX_H
 
 #include <pthread.h>
-#include <semaphore.h>
 
 #ifdef __cplusplus
 extern "C" {

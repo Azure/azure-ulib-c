@@ -64,6 +64,7 @@ extern "C" {
  */
 #define AZ_ULIB_CONFIG_MAX_IPC_INSTANCES 20
 
+#ifndef AZ_ULIB_CONFIG_REMOVE_UNPUBLISH
 /**
  * @brief   Enable unpublish on IPC.
  *
@@ -78,11 +79,10 @@ extern "C" {
  * space and improving the az_ulib_ipc_call performance.
  *
  * @note  **To avoid conflicts in the linker, instead of comment this line, define
- * AZ_ULIB_REMOVE_UNPUBLISH as part of the make file that will build the project.**
+ * AZ_ULIB_CONFIG_REMOVE_UNPUBLISH as part of the make file that will build the project.**
  */
-#ifndef AZ_ULIB_REMOVE_UNPUBLISH
 #define AZ_ULIB_CONFIG_IPC_UNPUBLISH
-#endif /*AZ_ULIB_REMOVE_UNPUBLISH*/
+#endif /*AZ_ULIB_CONFIG_REMOVE_UNPUBLISH*/
 
 #ifdef __cplusplus
 }

@@ -47,13 +47,25 @@ C11
 #if defined(AZURE_ULIB_C_ATOMIC_DONTCARE)
 #define AZ_ULIB_PORT_ATOMIC_INC_W(count) ++(*(count))
 #define AZ_ULIB_PORT_ATOMIC_DEC_W(count) --(*(count))
-#define AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(target, value) *(target) = (value)
-#define AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(target, value) *(target) = (value)
+static inline uint32_t AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(volatile uint32_t* addr, uint32_t val) {
+  uint32_t prev = *addr;
+  *addr = val;
+  return prev;
+}
+static inline uint32_t AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(volatile void** addr, void* val) {
+  void* prev = *addr;
+  *addr = val;
+  return prev;
+}
 
 #elif defined(AZURE_ULIB_C_USE_STD_ATOMIC)
 #include <stdatomic.h>
-#define AZ_ULIB_PORT_ATOMIC_INC_W(count) atomic_fetch_add((count), 1)
-#define AZ_ULIB_PORT_ATOMIC_DEC_W(count) atomic_fetch_sub((count), 1)
+static inline uint32_t AZ_ULIB_PORT_ATOMIC_INC_W(volatile uint32_t* addr) {
+  return atomic_fetch_add(addr, 1) + 1;
+}
+static inline uint32_t AZ_ULIB_PORT_ATOMIC_DEC_W(volatile uint32_t* addr) {
+  return atomic_fetch_sub(addr, 1) - 1;
+}
 #define AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(target, value) atomic_exchange((target), (value))
 #define AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(target, value) atomic_exchange((target), (value))
 
@@ -61,9 +73,9 @@ C11
 #define AZ_ULIB_PORT_ATOMIC_INC_W(count) __sync_add_and_fetch((count), 1)
 #define AZ_ULIB_PORT_ATOMIC_DEC_W(count) __sync_sub_and_fetch((count), 1)
 #define AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(target, value) \
-  __sync_bool_compare_and_swap((target), *(target), (value))
+  __sync_val_compare_and_swap((target), *(target), (value))
 #define AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(target, value) \
-  __sync_bool_compare_and_swap((target), *(target), (value))
+  __sync_val_compare_and_swap((target), *(target), (value))
 
 #endif /*defined(AZURE_ULIB_C_USE_GNU_C_ATOMIC)*/
 

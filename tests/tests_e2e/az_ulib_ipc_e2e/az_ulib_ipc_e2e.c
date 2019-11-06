@@ -64,6 +64,7 @@ MU_DEFINE_ENUM(
 
 static volatile long g_is_running;
 static volatile long g_lock_thread;
+static volatile long g_sum_sleep;
 
 static AZ_ULIB_RESULT my_method(const void* const model_in, const void* model_out) {
   my_method_model_in* in = (my_method_model_in*)model_in;
@@ -71,15 +72,19 @@ static AZ_ULIB_RESULT my_method(const void* const model_in, const void* model_ou
   my_method_model_in in_2;
   uint64_t sum = 0;
 
-  AZ_ULIB_PORT_ATOMIC_INC_W(&g_is_running);
+  (void)AZ_ULIB_PORT_ATOMIC_INC_W(&g_is_running);
   switch (in->action) {
     case MY_METHOD_ACTION_JUST_RETURN:
       *result = in->return_result;
       break;
     case MY_METHOD_ACTION_SUM:
       while (g_lock_thread != 0) {
+        az_pal_os_sleep(10);
       };
       for (uint32_t i = 0; i < in->max_sum; i++) {
+        if (g_sum_sleep != 0) {
+          az_pal_os_sleep(g_sum_sleep);
+        }
         sum += i;
       }
       *result = in->return_result;
@@ -102,7 +107,7 @@ static AZ_ULIB_RESULT my_method(const void* const model_in, const void* model_ou
       *result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;
       break;
   }
-  AZ_ULIB_PORT_ATOMIC_DEC_W(&g_is_running);
+  (void)AZ_ULIB_PORT_ATOMIC_DEC_W(&g_is_running);
 
   return AZ_ULIB_SUCCESS;
 }
@@ -272,6 +277,9 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize) {
     ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
   }
 
+  g_sum_sleep = 0;
+  g_lock_thread = 0;
+
   umock_c_reset_all_calls();
 }
 
@@ -296,7 +304,6 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_method_succeed) {
   in.max_sum = 10000;
   in.return_result = AZ_ULIB_SUCCESS;
   AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
-  g_lock_thread = 0;
 
   /// act
   AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
@@ -558,7 +565,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_method_in_multiple_threads_unpublish_tim
 
   g_is_running = 0; // Assume that the method is not running in the thread.
 
-  AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
+  (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
       &g_lock_thread, 1); // Lock the method that will run in the thread to do not finish until we
                           // complete the test.
 
@@ -574,7 +581,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_method_in_multiple_threads_unpublish_tim
   AZ_ULIB_RESULT result = az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, 3);
 
   // As soon as the unpublish failed, release the method to end its execution.
-  AZ_ULIB_PORT_ATOMIC_DEC_W(&g_lock_thread);
+  (void)AZ_ULIB_PORT_ATOMIC_DEC_W(&g_lock_thread);
   az_ulib_ipc_release_interface(interface_handle);
 
   /// assert
@@ -597,7 +604,8 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_method_in_multiple_threads_unpublish_tim
 
 TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_method_in_multiple_threads_and_unpublish_succeed) {
   /// arrange
-  g_thread_max_sum = 1000;
+  g_thread_max_sum = 30;
+  g_sum_sleep = 10;
   init_ipc_and_publish_interfaces(true);
 
   az_ulib_ipc_interface_handle interface_handle;
@@ -612,19 +620,17 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_method_in_multiple_threads_and_unpublish
 
   g_is_running = 0; // Assume that the method is not running in the thread.
 
-  AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
-      &g_lock_thread, 1); // Lock the method that will run in the thread to do not finish until we
+  (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
+      &g_lock_thread, 0); // Lock the method that will run in the thread to do not finish until we
                           // complete the test.
 
 
   /// act
   THREAD_HANDLE thread_handle[SMALL_NUMBER_THREAD];
   for (int count_thread = 0; count_thread < SMALL_NUMBER_THREAD; count_thread++) {
+    az_pal_os_sleep(100);
     (void)test_thread_create(&thread_handle[count_thread], &call_sync_thread, interface_handle);
   }
-  while (g_is_running < SMALL_NUMBER_THREAD) {
-  };
-  AZ_ULIB_PORT_ATOMIC_DEC_W(&g_lock_thread);
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, 1000));
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, 1000));
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, 1000));

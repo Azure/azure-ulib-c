@@ -52,7 +52,7 @@ static AZ_ULIB_RESULT set_my_property(const void* const model_in) {
 typedef struct my_method_model_in_tag {
   uint8_t action;
   const az_ulib_interface_descriptor* descriptor;
-  uint32_t wait_police_ms;
+  uint32_t wait_policy_ms;
   az_ulib_ipc_interface_handle handle;
   az_ulib_action_index method_index;
   AZ_ULIB_RESULT return_result;
@@ -77,7 +77,7 @@ static AZ_ULIB_RESULT my_method(const void* const model_in, const void* model_ou
       *result = in->return_result;
       break;
     case MY_METHOD_ACTION_UNPUBLISH:
-      *result = az_ulib_ipc_unpublish(in->descriptor, in->wait_police_ms);
+      *result = az_ulib_ipc_unpublish(in->descriptor, in->wait_policy_ms);
       break;
     case MY_METHOD_ACTION_RELEASE_INTERFACE:
       *result = az_ulib_ipc_release_interface(in->handle);
@@ -544,7 +544,7 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_succeed) {
   az_ulib_ipc_deinit();
 }
 
-TEST_FUNCTION(az_ulib_ipc_unpublish_randon_order_succeed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_random_order_succeed) {
   /// arrange
   init_ipc_and_publish_interfaces();
   umock_c_reset_all_calls();
@@ -716,7 +716,7 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_failed) {
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
-  in.wait_police_ms = AZ_ULIB_NO_WAIT;
+  in.wait_policy_ms = AZ_ULIB_NO_WAIT;
   AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
 
   az_ulib_ipc_interface_handle interface_handle;
@@ -758,7 +758,7 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_with_small_timeout_faile
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
-  in.wait_police_ms = 10000;
+  in.wait_policy_ms = 10000;
   AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
 
   az_ulib_ipc_interface_handle interface_handle;
@@ -775,7 +775,7 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_with_small_timeout_faile
 
   STRICT_EXPECTED_CALL(az_pal_os_lock_acquire(IGNORED_PTR_ARG));
   for (int i = 0; i < 8; i++) {
-    STRICT_EXPECTED_CALL(az_pal_os_sleep((in.wait_police_ms >> 3)));
+    STRICT_EXPECTED_CALL(az_pal_os_sleep((in.wait_policy_ms >> 3)));
   }
   STRICT_EXPECTED_CALL(az_pal_os_lock_release(IGNORED_PTR_ARG));
 

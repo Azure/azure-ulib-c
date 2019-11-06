@@ -63,7 +63,7 @@ static AZ_ULIB_RESULT get_instance(_az_ulib_ipc_interface* ipc_interface) {
     result = AZ_ULIB_BUSY_ERROR;
   } else {
     result = AZ_ULIB_SUCCESS;
-    AZ_ULIB_PORT_ATOMIC_INC_W(&(ipc_interface->ref_count));
+    (void)AZ_ULIB_PORT_ATOMIC_INC_W(&(ipc_interface->ref_count));
   }
   return result;
 }
@@ -146,7 +146,7 @@ AZ_ULIB_RESULT _az_ulib_ipc_publish_no_contract(
       result = AZ_ULIB_OUT_OF_MEMORY_ERROR;
     } else {
       /*az_ulib_ipc_publish_succeed*/
-      AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
+      (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
           &(new_interface->interface_descriptor), interface_descriptor);
       new_interface->ref_count = 0;
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
@@ -196,7 +196,7 @@ _az_ulib_ipc_unpublish_no_contract(
 
       // Block access to this interface. After this point, any new call to az_ulib_ipc_call that
       // didn't get the interface pointer yet will return AZ_ULIB_NO_SUCH_ELEMENT_ERROR.
-      AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(&(release_interface->interface_descriptor), NULL);
+      (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(&(release_interface->interface_descriptor), NULL);
 
       // If the running_count is `0` is because no other process is inside of any of the functions
       // methods, and they may be removed from the memory. There will be the case that the other
@@ -213,15 +213,15 @@ _az_ulib_ipc_unpublish_no_contract(
         }
       }
 
-      AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
+      (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
           &(release_interface->running_count_low_watermark), release_interface->running_count);
       uint32_t retry_total_time = 0;
 
       // A semaphore here would be more efficient, but it would force a synchronization between
       // az_ulib_ipc_call and az_ulib_ipc_unpublish that would add extra code on az_ulib_ipc_call,
-      // making it heavier. On the other hand, there is no expectations about heavy usage of the 
-      // function az_ulib_ipc_unpublish, in many applications, it will not be used at all. So, we 
-      // decided to open an exception here and use a busy loop on the az_ulib_ipc_unpublish 
+      // making it heavier. On the other hand, there is no expectations about heavy usage of the
+      // function az_ulib_ipc_unpublish, in many applications, it will not be used at all. So, we
+      // decided to open an exception here and use a busy loop on the az_ulib_ipc_unpublish
       // instead of a semaphore.
       /*az_ulib_ipc_unpublish_with_method_running_with_small_timeout_failed*/
       while ((retry_total_time < wait_option_ms)
@@ -235,7 +235,7 @@ _az_ulib_ipc_unpublish_no_contract(
       }
 
       if (release_interface->running_count_low_watermark == 0) {
-        /*az_ulib_ipc_unpublish_randon_order_succeed*/
+        /*az_ulib_ipc_unpublish_random_order_succeed*/
         /*az_ulib_ipc_unpublish_release_resource_succeed*/
         /*az_ulib_ipc_unpublish_with_valid_interface_instance_succeed*/
         result = AZ_ULIB_SUCCESS;
@@ -243,7 +243,7 @@ _az_ulib_ipc_unpublish_no_contract(
         /*az_ulib_ipc_unpublish_with_method_running_failed*/
         // If caller doesn't want to wait anymore, recover the interface and return
         // AZ_ULIB_BUSY_ERROR.
-        AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
+        (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
             &(release_interface->interface_descriptor), recover_interface_descriptor);
         result = AZ_ULIB_BUSY_ERROR;
       }
@@ -392,7 +392,7 @@ _az_ulib_ipc_call_no_contract(
   // and az_ulib_ipc_unpublish. It will allow a interface to be unpublished even if it has a high
   // volume of calls.
   if (ipc_interface->interface_descriptor != NULL) {
-    AZ_ULIB_PORT_ATOMIC_INC_W(&(ipc_interface->running_count));
+    (void)AZ_ULIB_PORT_ATOMIC_INC_W(&(ipc_interface->running_count));
     register const az_ulib_interface_descriptor* descriptor
         = (const az_ulib_interface_descriptor*)ipc_interface->interface_descriptor;
 
@@ -403,9 +403,10 @@ _az_ulib_ipc_call_no_contract(
       /*az_ulib_ipc_call_calls_the_method_succeed*/
       result = descriptor->action_list[method_index].action_ptr_1.method(model_in, model_out);
     }
-
-    if (AZ_ULIB_PORT_ATOMIC_DEC_W(&(ipc_interface->running_count)) == 0) {
-      AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(&(ipc_interface->running_count_low_watermark), 0);
+    long new_running_count = AZ_ULIB_PORT_ATOMIC_DEC_W(&(ipc_interface->running_count));
+    if (new_running_count < ipc_interface->running_count_low_watermark) {
+      (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
+          &(ipc_interface->running_count_low_watermark), new_running_count);
     }
   } else {
     result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;

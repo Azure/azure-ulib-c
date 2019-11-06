@@ -128,8 +128,8 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_publish(
 /**
  * @brief   Unpublish an interface from the IPC.
  *
- * @node    Please uncomment #AZ_ULIB_CONFIG_IPC_UNPUBLISH on az_ulib_config.h to enable this
- * API.
+ * @note    You may remove this API defining a global key `AZ_ULIB_CONFIG_REMOVE_UNPUBLISH` on your
+ * compilation enviroment. See more at #AZ_ULIB_CONFIG_IPC_UNPUBLISH.
  *
  * @param[in]   interface_descriptor  The `const` #az_ulib_interface_descriptor * with the
  *                                    descriptor of the interface. It cannot be `NULL`.
