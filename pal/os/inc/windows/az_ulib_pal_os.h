@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-/**
+/*
  *  @struct AZ_PAL_OS_LOCK
  *
  *  @brief  pointer to a platform specific struct for a lock implementation
