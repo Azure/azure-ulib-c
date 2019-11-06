@@ -7,6 +7,10 @@
 #ifndef AZ_ULIB_GCC_IOS_PORT_H
 #define AZ_ULIB_GCC_IOS_PORT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 // This iOS-specific header offers 3 strategies:
 //   AZURE_ULIB_C_ATOMIC_DONTCARE     -- no atomicity guarantee
 //   AZURE_ULIB_C_USE_STD_ATOMIC      -- C11 atomicity
@@ -20,14 +24,6 @@
 #define AZURE_ULIB_C_USE_STD_ATOMIC 1
 #undef AZURE_ULIB_C_USE_GNU_C_ATOMIC
 #endif
-
-#if defined(AZURE_ULIB_C_ATOMIC_DONTCARE)
-#define COUNT_TYPE uint32_t
-#elif defined(AZURE_ULIB_C_USE_STD_ATOMIC)
-#define COUNT_TYPE _Atomic uint32_t
-#else // AZURE_ULIB_C_USE_GNU_C_ATOMIC
-#define COUNT_TYPE uint32_t
-#endif // defined(AZURE_ULIB_C_ATOMIC_DONTCARE)
 
 /*the following macros increment/decrement a ref count in an atomic way, depending on the platform*/
 /*The following mechanisms are considered in this order
@@ -59,7 +55,11 @@ static inline uint32_t AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(volatile void** addr, vo
 }
 
 #elif defined(AZURE_ULIB_C_USE_STD_ATOMIC)
+#ifndef __cplusplus
 #include <stdatomic.h>
+#else
+#include <atomic>
+#endif /* __cplusplus */
 static inline uint32_t AZ_ULIB_PORT_ATOMIC_INC_W(volatile uint32_t* addr) {
   return atomic_fetch_add(addr, 1) + 1;
 }
@@ -80,5 +80,9 @@ static inline uint32_t AZ_ULIB_PORT_ATOMIC_DEC_W(volatile uint32_t* addr) {
 #endif /*defined(AZURE_ULIB_C_USE_GNU_C_ATOMIC)*/
 
 #define AZ_ULIB_PORT_THROW_HARD_FAULT (*(char*)NULL = 0)
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif // AZ_ULIB_GCC_IOS_PORT_H

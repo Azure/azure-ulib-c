@@ -735,7 +735,7 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_failed) {
   STRICT_EXPECTED_CALL(az_pal_os_lock_release(IGNORED_PTR_ARG));
 
   /// act
-  // call umpublish inside of the methond.
+  // call unpublish inside of the method.
   AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert
@@ -780,7 +780,7 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_with_small_timeout_faile
   STRICT_EXPECTED_CALL(az_pal_os_lock_release(IGNORED_PTR_ARG));
 
   /// act
-  // call umpublish inside of the methond.
+  // call unpublish inside of the method.
   AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert
@@ -1511,7 +1511,7 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_with_method_running_failed) {
   STRICT_EXPECTED_CALL(az_pal_os_lock_release(IGNORED_PTR_ARG));
 
   /// act
-  // call umpublish inside of the methond.
+  // call unpublish inside of the method.
   AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert
@@ -1548,7 +1548,7 @@ TEST_FUNCTION(az_ulib_ipc_call_calls_the_method_succeed) {
   umock_c_reset_all_calls();
 
   /// act
-  // call umpublish inside of the methond.
+  // call unpublish inside of the method.
   AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert
@@ -1575,7 +1575,7 @@ TEST_FUNCTION(az_ulib_ipc_call_with_ipc_not_initialized_failed) {
   umock_c_reset_all_calls();
 
   /// act
-  // call umpublish inside of the methond.
+  // call unpublish inside of the method.
   AZ_ULIB_RESULT result
       = az_ulib_ipc_call((az_ulib_ipc_interface_handle)0x1234, MY_INTERFACE_METHOD, &in, &out);
 
@@ -1602,7 +1602,7 @@ TEST_FUNCTION(az_ulib_ipc_call_with_null_interface_handle_failed) {
   umock_c_reset_all_calls();
 
   /// act
-  // call umpublish inside of the methond.
+  // call unpublish inside of the method.
   AZ_ULIB_RESULT result = az_ulib_ipc_call(NULL, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert
@@ -1641,7 +1641,7 @@ TEST_FUNCTION(az_ulib_ipc_call_unpublished_interface_failed) {
   umock_c_reset_all_calls();
 
   /// act
-  // call umpublish inside of the methond.
+  // call unpublish inside of the method.
   AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert

@@ -70,7 +70,7 @@ extern "C" {
  *
  * @note    Comment this line will:
  *            - Improve performance.
- *            - Reduce memory in 2 longs per IPC interface.
+ *            - Reduce memory by 2 longs per IPC interface.
  *            - Remove the API az_ulib_ipc_unpublish.
  *
  * To allow users to unpublish interfaces in the IPC, it is necessary to add a flag to avoid an
@@ -79,7 +79,8 @@ extern "C" {
  * space and improving the az_ulib_ipc_call performance.
  *
  * @note  **To avoid conflicts in the linker, instead of comment this line, define
- * AZ_ULIB_CONFIG_REMOVE_UNPUBLISH as part of the make file that will build the project.**
+ *        AZ_ULIB_CONFIG_REMOVE_UNPUBLISH as part of the make file that will build the project. 
+ *        For cmake, use the option -Dremove_ipc_unpublish.**
  */
 #define AZ_ULIB_CONFIG_IPC_UNPUBLISH
 #endif /*AZ_ULIB_CONFIG_REMOVE_UNPUBLISH*/
