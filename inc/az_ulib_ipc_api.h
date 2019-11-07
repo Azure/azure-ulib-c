@@ -51,7 +51,7 @@ typedef _az_ulib_ipc_interface_handle az_ulib_ipc_interface_handle;
  * execution.
  *
  * @note    This API **is not** thread safe, the other IPC API shall only be called after the
- * initialization process is completely done.
+ *          initialization process is completely done.
  *
  * @param[in]   ipc_handle      The #az_ulib_ipc* that points to a memory position where
  *                              the IPC shall create its control block. It cannot be `NULL`.
@@ -104,10 +104,23 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_deinit(void) {
 /**
  * @brief   Publish a new interface on the IPC.
  *
+ * This API publishes a new interface in the IPC using the interface descriptor. The interface
+ * descriptor shall be valid up to the interface is unpublished with success.
+ *
+ * Optionally, this API may return the handle of the interface in the IPC. This handle will be
+ * automatically release when the interface is unpublished.
+ *
+ * @note    **Try to release the handle returned by this API may result in
+ *          #AZ_ULIB_NO_SUCH_ELEMENT_ERROR or a future segmentation fault.**
+ *
  * @param[in]   interface_descriptor  The `const` #az_ulib_interface_descriptor* with the
  *                                    descriptor of the interface. It cannot be `NULL` and
  *                                    shall be valid up to the interface is unpublished with
  *                                    success.
+ * @param[out]  interface_handle      A pointer to #az_ulib_ipc_interface_handle to return the
+ *                                    handle of the published interface in the IPC. It may be
+ *                                    `NULL`. If it is `NULL`, this API will not return the
+ *                                    interface handle.
  *
  * @return The #AZ_ULIB_RESULT with the result of the interface publish.
  *  @retval #AZ_ULIB_SUCCESS                  If the interface is published with success.
@@ -116,11 +129,14 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_deinit(void) {
  *                                            interface.
  */
 static inline AZ_ULIB_RESULT az_ulib_ipc_publish(
-    const az_ulib_interface_descriptor* interface_descriptor) {
+    const az_ulib_interface_descriptor* interface_descriptor,
+    az_ulib_ipc_interface_handle* interface_handle) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
-  return _az_ulib_ipc_publish(interface_descriptor);
+  return _az_ulib_ipc_publish(
+      interface_descriptor, (_az_ulib_ipc_interface_handle*)interface_handle);
 #else
-  return _az_ulib_ipc_publish_no_contract(interface_descriptor);
+  return _az_ulib_ipc_publish_no_contract(
+      interface_descriptor, (_az_ulib_ipc_interface_handle*)interface_handle);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 

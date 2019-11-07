@@ -51,13 +51,17 @@ MOCKABLE_FUNCTION(
     AZ_ULIB_RESULT,
     _az_ulib_ipc_publish_no_contract,
     const az_ulib_interface_descriptor*,
-    interface_descriptor);
+    interface_descriptor,
+    _az_ulib_ipc_interface_handle*,
+    interface_handle);
 MOCKABLE_FUNCTION(
     ,
     AZ_ULIB_RESULT,
     _az_ulib_ipc_publish,
     const az_ulib_interface_descriptor*,
-    interface_descriptor);
+    interface_descriptor,
+    _az_ulib_ipc_interface_handle*,
+    interface_handle);
 
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
 MOCKABLE_FUNCTION(
