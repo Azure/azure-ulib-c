@@ -105,10 +105,10 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_deinit(void) {
  * @brief   Publish a new interface on the IPC.
  *
  * This API publishes a new interface in the IPC using the interface descriptor. The interface
- * descriptor shall be valid up to the interface is unpublished with success.
+ * descriptor shall be valid up to the point when the interface is unpublished with success.
  *
  * Optionally, this API may return the handle of the interface in the IPC. This handle will be
- * automatically release when the interface is unpublished.
+ * automatically released when the interface is unpublished.
  *
  * @note    **Try to release the handle returned by this API may result in
  *          #AZ_ULIB_NO_SUCH_ELEMENT_ERROR or a future segmentation fault.**
