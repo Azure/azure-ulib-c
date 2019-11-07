@@ -51,7 +51,7 @@ AZ_ULIB_DESCRIPTOR_CREATE(
     AZ_ULIB_DESCRIPTOR_ADD_METHOD(MATH_INTERFACE_SUM_METHOD_NAME, sum_concrete),
     AZ_ULIB_DESCRIPTOR_ADD_METHOD(MATH_INTERFACE_SUBTRACTION_METHOD_NAME, subtraction_concrete));
 
-AZ_ULIB_RESULT math_publish_interface(void) { return az_ulib_ipc_publish(&MATH_DESCRIPTOR); }
+AZ_ULIB_RESULT math_publish_interface(void) { return az_ulib_ipc_publish(&MATH_DESCRIPTOR, NULL); }
 
 AZ_ULIB_RESULT math_unpublish_interface(void) {
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
