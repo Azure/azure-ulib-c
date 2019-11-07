@@ -631,10 +631,10 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_method_in_multiple_threads_and_unpublish
     az_pal_os_sleep(100);
     (void)test_thread_create(&thread_handle[count_thread], &call_sync_thread, interface_handle);
   }
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, 1000));
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, 1000));
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, 1000));
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, 1000));
+  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, 10000));
+  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, 10000));
+  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, 10000));
+  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, 10000));
   az_ulib_ipc_release_interface(interface_handle);
 
   /// assert
