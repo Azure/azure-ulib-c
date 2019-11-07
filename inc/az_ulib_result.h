@@ -40,7 +40,7 @@ MU_DEFINE_ENUM(
     AZ_ULIB_NO_SUCH_ELEMENT_ERROR      = (AZ_ULIB_ERROR_FLAG | 1),    /**<No such element error */
     AZ_ULIB_ILLEGAL_ARGUMENT_ERROR     = (AZ_ULIB_ERROR_FLAG | 2),    /**<Illegal argument error */
     AZ_ULIB_SECURITY_ERROR             = (AZ_ULIB_ERROR_FLAG | 3),    /**<Security error */
-    AZ_ULIB_SYSTEM_ERROR               = (AZ_ULIB_ERROR_FLAG | 4),    /**<System error */
+    AZ_ULIB_SYSTEM_ERROR               = (AZ_ULIB_ERROR_FLAG | 4),    /**<System error (unrecoverable!) */
     AZ_ULIB_CANCELLED_ERROR            = (AZ_ULIB_ERROR_FLAG | 5),    /**<Cancelled error */
     AZ_ULIB_BUSY_ERROR                 = (AZ_ULIB_ERROR_FLAG | 6),    /**<Busy error */
     AZ_ULIB_PRECONDITION_ERROR         = (AZ_ULIB_ERROR_FLAG | 7),    /**<Precondition for executing the command was not met */

@@ -62,7 +62,28 @@ extern "C" {
  * az_ulib_ipc_get_interface() or az_ulib_ipc_try_get_interface(). This value does not affect the
  * amount of memory that the IPC will use. It just impose a limit on the interface `ref_count`.
  */
-#define AZ_ULIB_CONFIG_MAX_IPC_INSTANCES 100
+#define AZ_ULIB_CONFIG_MAX_IPC_INSTANCES 20
+
+#ifndef AZ_ULIB_CONFIG_REMOVE_UNPUBLISH
+/**
+ * @brief   Enable unpublish on IPC.
+ *
+ * @note    Comment this line will:
+ *            - Improve performance.
+ *            - Reduce memory by 2 longs per IPC interface.
+ *            - Remove the API az_ulib_ipc_unpublish.
+ *
+ * To allow users to unpublish interfaces in the IPC, it is necessary to add a flag to avoid an
+ * interface to be unpublished if at least one of its methods are in execution at that time. So, if
+ * the system doesn't need to unpublish interfaces, this controls can be removed, saving memory
+ * space and improving the az_ulib_ipc_call performance.
+ *
+ * @note  **To avoid conflicts in the linker, instead of comment this line, define
+ *        AZ_ULIB_CONFIG_REMOVE_UNPUBLISH as part of the make file that will build the project. 
+ *        For cmake, use the option -Dremove_ipc_unpublish.**
+ */
+#define AZ_ULIB_CONFIG_IPC_UNPUBLISH
+#endif /*AZ_ULIB_CONFIG_REMOVE_UNPUBLISH*/
 
 #ifdef __cplusplus
 }

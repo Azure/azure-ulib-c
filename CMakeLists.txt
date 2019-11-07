@@ -22,6 +22,7 @@ option(use_installed_dependencies "set use_installed_dependencies to ON to use i
                                     instead of building dependencies from submodules" OFF)
 option(validate_documentation "set to enable the -Wdocumentation flag on clang to validate documentation.
                                 If not using clang this will have no effect." OFF)
+option(remove_ipc_unpublish "remove the ipc unpublish and all the extra code required to handle it." OFF)
 
 if(${run_ulib_e2e_tests} OR ${run_ulib_unit_tests})
     include(CTest)
@@ -58,6 +59,13 @@ if(${validate_documentation})
     target_compile_options(azure_ulib_c
         PRIVATE
             $<$<C_COMPILER_ID:Clang>:-Wdocumentation>
+    )
+endif()
+
+if(${remove_ipc_unpublish})
+    target_compile_definitions(azure_ulib_c
+        PUBLIC
+            AZ_ULIB_CONFIG_REMOVE_UNPUBLISH
     )
 endif()
 

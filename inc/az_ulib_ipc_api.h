@@ -124,8 +124,12 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_publish(
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
 /**
  * @brief   Unpublish an interface from the IPC.
+ *
+ * @note    You may remove this API defining a global key `AZ_ULIB_CONFIG_REMOVE_UNPUBLISH` on your
+ * compilation enviroment. See more at #AZ_ULIB_CONFIG_IPC_UNPUBLISH.
  *
  * @param[in]   interface_descriptor  The `const` #az_ulib_interface_descriptor * with the
  *                                    descriptor of the interface. It cannot be `NULL`.
@@ -153,6 +157,7 @@ static inline AZ_ULIB_RESULT az_ulib_ipc_unpublish(
   return _az_ulib_ipc_unpublish_no_contract(interface_descriptor, wait_option_ms);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
 /**
  * @brief   Try get an interface handle by the name from the IPC.

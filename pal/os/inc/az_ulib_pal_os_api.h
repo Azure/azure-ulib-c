@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed under the MIT license.
+// See LICENSE file in the project root for full license information.
 
 /** @file az_ulib_pal_os_api.h
 *    @brief      A minimalistic platform agnostic abstraction.
@@ -13,45 +14,49 @@
 
 #include "az_ulib_pal_os.h"
 
-#ifdef __cplusplus
+#ifndef __cplusplus
+#include <stdint.h>
+#else
+#include <cstdint>
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 /**
- *  @struct AZ_PAL_OS_LOCK
- *  
- *  @brief  pointer to a platform specific struct for a lock implementation
- */
-
-/**
- * @brief    This API initialize and returns a valid lock handle.
+ * @brief   This API initialize and returns a valid lock handle.
  *
- * @param[in,out]   lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to the lock handle.
+ * @param[in,out]   lock    The #AZ_PAL_OS_LOCK* that points to the lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_init, AZ_PAL_OS_LOCK *, lock);
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_init, AZ_PAL_OS_LOCK*, lock);
 
 /**
- * @brief    The lock instance is destroyed.
+ * @brief   The lock instance is destroyed.
  *
- * @param[in]       lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to a valid lock handle.
+ * @param[in]       lock    The #AZ_PAL_OS_LOCK* that points to a valid lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_deinit, AZ_PAL_OS_LOCK *, lock);
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_deinit, AZ_PAL_OS_LOCK*, lock);
 
 /**
- * @brief    Acquires a lock on the given lock handle. Uses platform
- *             specific mutex primitives in its implementation.
+ * @brief   Acquires a lock on the given lock handle. Uses platform specific mutex primitives in
+ *          its implementation.
  *
- * @param[in]       lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to a valid lock handle.
+ * @param[in]       lock    The #AZ_PAL_OS_LOCK* that points to a valid lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_acquire, AZ_PAL_OS_LOCK *, lock);
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_acquire, AZ_PAL_OS_LOCK*, lock);
 
 /**
- * @brief    Releases the lock on the given lock handle. Uses platform
- *             specific mutex primitives in its implementation.
+ * @brief   Releases the lock on the given lock handle. Uses platform specific mutex primitives in
+ *          its implementation.
  *
- * @param[in]       lock    The <tt>AZ_PAL_OS_LOCK *</tt> that points to a valid lock handle.
+ * @param[in]       lock    The #AZ_PAL_OS_LOCK* that points to a valid lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_release, AZ_PAL_OS_LOCK *, lock);
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_release, AZ_PAL_OS_LOCK*, lock);
+
+/**
+ * @brief   Sleep for some milliseconds.
+ *
+ * @param[in]       sleep_time_ms    The `uint32_t` with the number of milliseconds to sleep.
+ */
+MOCKABLE_FUNCTION(, void, az_pal_os_sleep, uint32_t, sleep_time_ms);
 
 #ifdef __cplusplus
 }
