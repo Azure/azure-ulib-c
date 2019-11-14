@@ -162,3 +162,7 @@ phases:
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
     displayName: 'cleanup'
     condition: always()    
+pr:
+  paths:
+    exclude:
+      - README.md
