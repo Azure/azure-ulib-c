@@ -45,7 +45,6 @@ target_include_directories(azure_ulib_c
         ${PROJECT_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY}
         ${PROJECT_SOURCE_DIR}/pal/os/inc
         ${PROJECT_SOURCE_DIR}/pal/os/inc/${ULIB_PAL_OS_DIRECTORY}
-    PRIVATE
         ${PROJECT_SOURCE_DIR}/deps/umock-c/inc
         ${PROJECT_SOURCE_DIR}/deps/azure-macro-utils-c/inc
 )
