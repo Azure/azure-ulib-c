@@ -11,9 +11,6 @@
 #ifndef AZ_ULIB_RESULT_H
 #define AZ_ULIB_RESULT_H
 
-#include "azure_macro_utils/macro_utils.h"
-#include "umock_c/umock_c_prod.h"
-
 #ifndef __cplusplus
 #else
 extern "C" {

@@ -15,7 +15,6 @@
 #ifndef AZ_ULIB_ULOG_H
 #define AZ_ULIB_ULOG_H
 
-#include "azure_macro_utils/macro_utils.h"
 #include "az_ulib_config.h"
 
 #include <stdio.h>

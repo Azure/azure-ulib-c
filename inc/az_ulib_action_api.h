@@ -6,9 +6,7 @@
 #define AZ_ULIB_ACTION_API_H
 
 #include "az_ulib_base.h"
-#include "azure_macro_utils/macro_utils.h"
 #include "az_ulib_result.h"
-#include "umock_c/umock_c_prod.h"
 
 #ifdef __cplusplus
 #include <stdint.h>
