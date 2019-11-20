@@ -45,7 +45,6 @@ target_include_directories(azure_ulib_c
         ${PROJECT_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY}
         ${PROJECT_SOURCE_DIR}/pal/os/inc
         ${PROJECT_SOURCE_DIR}/pal/os/inc/${ULIB_PAL_OS_DIRECTORY}
-    PRIVATE
         ${PROJECT_SOURCE_DIR}/deps/umock-c/inc
         ${PROJECT_SOURCE_DIR}/deps/azure-macro-utils-c/inc
 )
@@ -71,7 +70,7 @@ endif()
 
 set(AZURE_ULIB_C_INC_FOLDER ${CMAKE_CURRENT_LIST_DIR}/inc CACHE INTERNAL "this is what needs to be included if using sharedLib lib" FORCE)
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-macro-utils-c EXCLUDE_FROM_ALL)
+# add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-macro-utils-c EXCLUDE_FROM_ALL)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/umock-c EXCLUDE_FROM_ALL)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-ctest EXCLUDE_FROM_ALL)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-c-testrunnerswitcher EXCLUDE_FROM_ALL)
