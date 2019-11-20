@@ -35,7 +35,7 @@ static TEST_MUTEX_HANDLE g_test_by_test;
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
 
 //Factory to create your implementation of a ustream.
-static void ustream_factory(AZ_USTREAM* ustream)
+static void ustream_factory(az_ulib_ustream* ustream)
 {
     /*TODO:<Insert your code here which initializes the ustream parameter>*/
 }
@@ -74,7 +74,7 @@ TEST_SUITE_INITIALIZE(suite_init)
     result = umocktypes_bool_register_types();
     ASSERT_ARE_EQUAL(int, 0, result);
 
-    REGISTER_UMOCK_ALIAS_TYPE(AZ_USTREAM, void*);
+    REGISTER_UMOCK_ALIAS_TYPE(az_ulib_ustream, void*);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -91,7 +91,7 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize)
         ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
     }
 
-    memset(&test_ustream_instance, 0, sizeof(AZ_USTREAM));
+    memset(&test_ustream_instance, 0, sizeof(az_ulib_ustream));
 
     umock_c_reset_all_calls();
 }

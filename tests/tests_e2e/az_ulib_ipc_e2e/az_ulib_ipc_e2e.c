@@ -25,7 +25,7 @@ static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code) {
 
 static uint32_t my_property = 0;
 
-static AZ_ULIB_RESULT get_my_property(const void* model_out) {
+static az_ulib_result get_my_property(const void* model_out) {
   uint32_t* new_val = (uint32_t*)model_out;
 
   *new_val = my_property;
@@ -33,7 +33,7 @@ static AZ_ULIB_RESULT get_my_property(const void* model_out) {
   return AZ_ULIB_SUCCESS;
 }
 
-static AZ_ULIB_RESULT set_my_property(const void* const model_in) {
+static az_ulib_result set_my_property(const void* const model_in) {
   uint32_t* new_val = (uint32_t*)model_in;
 
   my_property = *new_val;
@@ -47,7 +47,7 @@ typedef struct my_method_model_in_tag {
   const az_ulib_interface_descriptor* descriptor;
   az_ulib_ipc_interface_handle handle;
   az_ulib_action_index method_index;
-  AZ_ULIB_RESULT return_result;
+  az_ulib_result return_result;
 } my_method_model_in;
 
 typedef enum my_method_action_tag {
@@ -64,9 +64,9 @@ static volatile long g_is_running;
 static volatile long g_lock_thread;
 static volatile long g_sum_sleep;
 
-static AZ_ULIB_RESULT my_method(const void* const model_in, const void* model_out) {
+static az_ulib_result my_method(const void* const model_in, const void* model_out) {
   my_method_model_in* in = (my_method_model_in*)model_in;
-  AZ_ULIB_RESULT* result = (AZ_ULIB_RESULT*)model_out;
+  az_ulib_result* result = (az_ulib_result*)model_out;
   my_method_model_in in_2;
   uint64_t sum = 0;
 
@@ -110,7 +110,7 @@ static AZ_ULIB_RESULT my_method(const void* const model_in, const void* model_ou
   return AZ_ULIB_SUCCESS;
 }
 
-static AZ_ULIB_RESULT my_method_async(
+static az_ulib_result my_method_async(
     const void* const model_in,
     const void* model_out,
     const az_ulib_action_token action_token,
@@ -123,7 +123,7 @@ static AZ_ULIB_RESULT my_method_async(
   return AZ_ULIB_SUCCESS;
 }
 
-static AZ_ULIB_RESULT my_method_cancel(const az_ulib_action_token action_token) {
+static az_ulib_result my_method_cancel(const az_ulib_action_token action_token) {
   (void)action_token;
 
   return AZ_ULIB_SUCCESS;
@@ -215,7 +215,7 @@ static int call_sync_thread(void* arg) {
 
   az_ulib_ipc_interface_handle local_handle;
 
-  AZ_ULIB_RESULT result
+  az_ulib_result result
       = az_ulib_ipc_get_interface((az_ulib_ipc_interface_handle)arg, &local_handle);
 
   if (result != AZ_ULIB_SUCCESS) {
@@ -224,8 +224,8 @@ static int call_sync_thread(void* arg) {
     }
   } else {
     for (int i = 0; i < NUMBER_CALLS_IN_THREAD; i++) {
-      AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
-      AZ_ULIB_RESULT local_result
+      az_ulib_result out = AZ_ULIB_PENDING;
+      az_ulib_result local_result
           = az_ulib_ipc_call((az_ulib_ipc_interface_handle)arg, MY_INTERFACE_METHOD, &in, &out);
       if (result == AZ_ULIB_SUCCESS) {
         if (local_result != AZ_ULIB_SUCCESS) {
@@ -240,7 +240,7 @@ static int call_sync_thread(void* arg) {
       }
     }
 
-    AZ_ULIB_RESULT release_result;
+    az_ulib_result release_result;
     if ((release_result = az_ulib_ipc_release_interface(local_handle)) != AZ_ULIB_SUCCESS) {
       (void)printf("release interface returned: %d\r\n", release_result);
       if (result == AZ_ULIB_SUCCESS) {
@@ -301,10 +301,10 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_method_succeed) {
   in.action = MY_METHOD_ACTION_SUM;
   in.max_sum = 10000;
   in.return_result = AZ_ULIB_SUCCESS;
-  AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
+  az_ulib_result out = AZ_ULIB_PENDING;
 
   /// act
-  AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
+  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
@@ -332,10 +332,10 @@ TEST_FUNCTION(az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed) {
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
-  AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
+  az_ulib_result out = AZ_ULIB_PENDING;
 
   /// act
-  AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
+  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
@@ -363,10 +363,10 @@ TEST_FUNCTION(az_ulib_ipc_e2e_release_interface_in_the_call_succeed) {
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_RELEASE_INTERFACE;
   in.handle = interface_handle;
-  AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
+  az_ulib_result out = AZ_ULIB_PENDING;
 
   /// act
-  AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
+  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
@@ -393,10 +393,10 @@ TEST_FUNCTION(az_ulib_ipc_e2e_deinit_ipc_in_the_call_failed) {
 
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_DEINIT;
-  AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
+  az_ulib_result out = AZ_ULIB_PENDING;
 
   /// act
-  AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
+  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
@@ -425,10 +425,10 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_recursive_in_the_call_succeed) {
   in.action = MY_METHOD_ACTION_CALL_AGAIN;
   in.handle = interface_handle;
   in.method_index = MY_INTERFACE_METHOD;
-  AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
+  az_ulib_result out = AZ_ULIB_PENDING;
 
   /// act
-  AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
+  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
@@ -456,12 +456,12 @@ TEST_FUNCTION(az_ulib_ipc_e2e_unpublish_interface_before_call_succeed) {
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
-  AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
+  az_ulib_result out = AZ_ULIB_PENDING;
 
   /// act
   ASSERT_ARE_EQUAL(
       int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
-  AZ_ULIB_RESULT result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
+  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
@@ -492,14 +492,14 @@ TEST_FUNCTION(az_ulib_ipc_e2e_release_after_unpublish_succeed) {
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_JUST_RETURN;
   in.return_result = AZ_ULIB_SUCCESS;
-  AZ_ULIB_RESULT out = AZ_ULIB_PENDING;
+  az_ulib_result out = AZ_ULIB_PENDING;
 
   /// act
   ASSERT_ARE_EQUAL(
       int, AZ_ULIB_SUCCESS, az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out));
   ASSERT_ARE_EQUAL(
       int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
-  AZ_ULIB_RESULT result = az_ulib_ipc_release_interface(interface_handle);
+  az_ulib_result result = az_ulib_ipc_release_interface(interface_handle);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
@@ -576,7 +576,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_method_in_multiple_threads_unpublish_tim
   };
 
   // Try to unpublish the interface during the time that one of its method is running.
-  AZ_ULIB_RESULT result = az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, 3);
+  az_ulib_result result = az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, 3);
 
   // As soon as the unpublish failed, release the method to end its execution.
   (void)AZ_ULIB_PORT_ATOMIC_DEC_W(&g_lock_thread);

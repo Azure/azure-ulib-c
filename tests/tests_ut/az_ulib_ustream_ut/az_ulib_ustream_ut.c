@@ -33,13 +33,13 @@ static TEST_MUTEX_HANDLE g_test_by_test;
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH 62
 
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
-static AZ_USTREAM test_ustream_instance;
-static void ustream_factory(AZ_USTREAM* ustream)
+static az_ulib_ustream test_ustream_instance;
+static void ustream_factory(az_ulib_ustream* ustream)
 {
-    AZ_USTREAM_DATA_CB* ustream_control_block = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* ustream_control_block = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    az_ustream_init(ustream, ustream_control_block, free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
+    az_ulib_ustream_init(ustream, ustream_control_block, free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
 }
 #define USTREAM_COMPLIANCE_TARGET_FACTORY(ustream)         ustream_factory(ustream)
 
@@ -72,7 +72,7 @@ TEST_SUITE_INITIALIZE(suite_init)
     result = umocktypes_bool_register_types();
     ASSERT_ARE_EQUAL(int, 0, result);
 
-    REGISTER_UMOCK_ALIAS_TYPE(AZ_USTREAM, void*);
+    REGISTER_UMOCK_ALIAS_TYPE(az_ulib_ustream, void*);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -89,7 +89,7 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize)
         ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
     }
 
-    memset(&test_ustream_instance, 0, sizeof(AZ_USTREAM));
+    memset(&test_ustream_instance, 0, sizeof(az_ulib_ustream));
 
     umock_c_reset_all_calls();
 }
@@ -101,16 +101,16 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* az_ustream_init shall create an instance of the ustream and initialize the instance. */
-TEST_FUNCTION(az_ustream_init_const_succeed)
+/* az_ulib_ustream_init shall create an instance of the ustream and initialize the instance. */
+TEST_FUNCTION(az_ulib_ustream_init_const_succeed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* control_block = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     umock_c_reset_all_calls();
-    AZ_USTREAM ustream_instance;
+    az_ulib_ustream ustream_instance;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_init(
+    az_ulib_result result = az_ulib_ustream_init(
         &ustream_instance,
         control_block,
         free,
@@ -123,22 +123,22 @@ TEST_FUNCTION(az_ustream_init_const_succeed)
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     ///cleanup
-    (void)az_ustream_dispose(&ustream_instance);
+    (void)az_ulib_ustream_dispose(&ustream_instance);
 }
 
-/* az_ustream_init shall create an instance of the ustream and initialize the instance. */
-TEST_FUNCTION(az_ustream_init_succeed)
+/* az_ulib_ustream_init shall create an instance of the ustream and initialize the instance. */
+TEST_FUNCTION(az_ulib_ustream_init_succeed)
 {
     ///arrange
     uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    AZ_USTREAM_DATA_CB* control_block = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     umock_c_reset_all_calls();
-    AZ_USTREAM ustream_instance;
+    az_ulib_ustream ustream_instance;
 
     ///act
-    AZ_ULIB_RESULT result =
-        az_ustream_init(
+    az_ulib_result result =
+        az_ulib_ustream_init(
             &ustream_instance,
             control_block,
             free,
@@ -151,18 +151,18 @@ TEST_FUNCTION(az_ustream_init_succeed)
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     ///cleanup
-    (void)az_ustream_dispose(&ustream_instance);
+    (void)az_ulib_ustream_dispose(&ustream_instance);
 }
 
-/* az_ustream_init shall return NULL if the provided constant buffer is NULL */
-TEST_FUNCTION(az_ustream_init_null_buffer_failed)
+/* az_ulib_ustream_init shall return NULL if the provided constant buffer is NULL */
+TEST_FUNCTION(az_ulib_ustream_init_null_buffer_failed)
 {
     ///arrange
-    AZ_USTREAM ustream_instance;
-    AZ_USTREAM_DATA_CB control_block;
+    az_ulib_ustream ustream_instance;
+    az_ulib_ustream_data_cb control_block;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_init(&ustream_instance, &control_block, NULL, NULL, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
+    az_ulib_result result = az_ulib_ustream_init(&ustream_instance, &control_block, NULL, NULL, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -170,15 +170,15 @@ TEST_FUNCTION(az_ustream_init_null_buffer_failed)
     ///cleanup
 }
 
-/* az_ustream_init shall return NULL if the provided buffer length is zero */
-TEST_FUNCTION(az_ustream_init_zero_length_failed)
+/* az_ulib_ustream_init shall return NULL if the provided buffer length is zero */
+TEST_FUNCTION(az_ulib_ustream_init_zero_length_failed)
 {
     ///arrange
-    AZ_USTREAM ustream_instance;
-    AZ_USTREAM_DATA_CB control_block;
+    az_ulib_ustream ustream_instance;
+    az_ulib_ustream_data_cb control_block;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_init(&ustream_instance, &control_block, NULL, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, NULL);
+    az_ulib_result result = az_ulib_ustream_init(&ustream_instance, &control_block, NULL, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -186,14 +186,14 @@ TEST_FUNCTION(az_ustream_init_zero_length_failed)
     ///cleanup
 }
 
-/* az_ustream_init shall return NULL if the provided buffer length is zero */
-TEST_FUNCTION(az_ustream_init_NULL_ustream_instance_failed)
+/* az_ulib_ustream_init shall return NULL if the provided buffer length is zero */
+TEST_FUNCTION(az_ulib_ustream_init_NULL_ustream_instance_failed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB control_block;
+    az_ulib_ustream_data_cb control_block;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_init(NULL, &control_block, NULL, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
+    az_ulib_result result = az_ulib_ustream_init(NULL, &control_block, NULL, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -201,14 +201,14 @@ TEST_FUNCTION(az_ustream_init_NULL_ustream_instance_failed)
     ///cleanup
 }
 
-/* az_ustream_init shall return NULL if the provided buffer length is zero */
-TEST_FUNCTION(az_ustream_init_NULL_control_block_failed)
+/* az_ulib_ustream_init shall return NULL if the provided buffer length is zero */
+TEST_FUNCTION(az_ulib_ustream_init_NULL_control_block_failed)
 {
     ///arrange
-    AZ_USTREAM ustream_instance;
+    az_ulib_ustream ustream_instance;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_init(&ustream_instance, NULL, NULL, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
+    az_ulib_result result = az_ulib_ustream_init(&ustream_instance, NULL, NULL, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);

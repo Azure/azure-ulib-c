@@ -18,7 +18,7 @@ typedef enum {
   MATH_INTERFACE_SUBTRACTION_METHOD = 1
 } math_interface_index;
 
-static inline AZ_ULIB_RESULT math_create(math_handle handle) {
+static inline az_ulib_result math_create(math_handle handle) {
   return az_ulib_ipc_try_get_interface(
       MATH_INTERFACE_NAME, MATH_INTERFACE_VERSION, AZ_ULIB_VERSION_EQUALS_TO, handle);
 }
@@ -40,7 +40,7 @@ typedef int64_t sum_model_out;
 /*
  * Inter-component Calling Wrapper for sum.
  */
-static inline AZ_ULIB_RESULT sum(math_handle handle, int32_t a, int32_t b, int64_t* res) {
+static inline az_ulib_result sum(math_handle handle, int32_t a, int32_t b, int64_t* res) {
   sum_model_in sum_in;
   sum_model_out sum_out;
 
@@ -51,7 +51,7 @@ static inline AZ_ULIB_RESULT sum(math_handle handle, int32_t a, int32_t b, int64
   sum_out = 0;
 
   // Call
-  AZ_ULIB_RESULT result = az_ulib_ipc_call(
+  az_ulib_result result = az_ulib_ipc_call(
       handle, (az_ulib_action_index)MATH_INTERFACE_SUM_METHOD, &sum_in, &sum_out);
 
   // Unmarshalling
@@ -75,7 +75,7 @@ typedef int64_t subtraction_model_out;
 /*
  * Inter-component Calling Wrapper for subtraction.
  */
-static inline AZ_ULIB_RESULT subtraction(math_handle handle, int32_t a, int32_t b, int64_t* res) {
+static inline az_ulib_result subtraction(math_handle handle, int32_t a, int32_t b, int64_t* res) {
   subtraction_model_in sub_in;
   subtraction_model_out sub_out;
 
@@ -86,7 +86,7 @@ static inline AZ_ULIB_RESULT subtraction(math_handle handle, int32_t a, int32_t 
   sub_out = 0;
 
   // Call
-  AZ_ULIB_RESULT result = az_ulib_ipc_call(
+  az_ulib_result result = az_ulib_ipc_call(
       handle, (az_ulib_action_index)MATH_INTERFACE_SUBTRACTION_METHOD, &sub_in, &sub_out);
 
   // Unmarshalling

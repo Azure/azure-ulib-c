@@ -6,14 +6,14 @@
 #include "az_ulib_ustream_base.h"
 #include "az_ulib_test_thread.h"
 
-static AZ_ULIB_RESULT _concrete_set_position_result = AZ_ULIB_SUCCESS;
-static AZ_ULIB_RESULT _concrete_reset_result = AZ_ULIB_SUCCESS;
-static AZ_ULIB_RESULT _concrete_read_result = AZ_ULIB_SUCCESS;
-static AZ_ULIB_RESULT _concrete_get_remaining_size_result = AZ_ULIB_SUCCESS;
-static AZ_ULIB_RESULT _concrete_get_position_result = AZ_ULIB_SUCCESS;
-static AZ_ULIB_RESULT _concrete_release_result = AZ_ULIB_SUCCESS;
-static AZ_ULIB_RESULT _concrete_clone_result = AZ_ULIB_SUCCESS;
-static AZ_ULIB_RESULT _concrete_dispose_result = AZ_ULIB_SUCCESS;
+static az_ulib_result _concrete_set_position_result = AZ_ULIB_SUCCESS;
+static az_ulib_result _concrete_reset_result = AZ_ULIB_SUCCESS;
+static az_ulib_result _concrete_read_result = AZ_ULIB_SUCCESS;
+static az_ulib_result _concrete_get_remaining_size_result = AZ_ULIB_SUCCESS;
+static az_ulib_result _concrete_get_position_result = AZ_ULIB_SUCCESS;
+static az_ulib_result _concrete_release_result = AZ_ULIB_SUCCESS;
+static az_ulib_result _concrete_clone_result = AZ_ULIB_SUCCESS;
+static az_ulib_result _concrete_dispose_result = AZ_ULIB_SUCCESS;
 
 #define READ_BUFFER_SIZE 10
 static offset_t current_position = 0;
@@ -39,15 +39,15 @@ void set_delay_return_value(uint32_t delay)
     delay_return_value = delay;
 }
 
-static AZ_ULIB_RESULT concrete_set_position(
-        AZ_USTREAM* ustream_instance, 
+static az_ulib_result concrete_set_position(
+        az_ulib_ustream* ustream_instance, 
         offset_t position)
 {
     (void)ustream_instance;
 
     current_position = position;
 
-    AZ_ULIB_RESULT result;
+    az_ulib_result result;
 
     if(concurrency_ustream)
     {
@@ -69,18 +69,18 @@ static AZ_ULIB_RESULT concrete_set_position(
     return result;
 }
 
-static AZ_ULIB_RESULT concrete_reset(
-        AZ_USTREAM* ustream_instance)
+static az_ulib_result concrete_reset(
+        az_ulib_ustream* ustream_instance)
 {
     (void)ustream_instance;
 
-    AZ_ULIB_RESULT result = _concrete_reset_result;
+    az_ulib_result result = _concrete_reset_result;
     _concrete_reset_result = AZ_ULIB_SUCCESS;
     return result;
 }
 
-static AZ_ULIB_RESULT concrete_read(
-        AZ_USTREAM* ustream_instance, 
+static az_ulib_result concrete_read(
+        az_ulib_ustream* ustream_instance, 
         uint8_t* const buffer, 
         size_t buffer_length, 
         size_t* const size)
@@ -93,55 +93,55 @@ static AZ_ULIB_RESULT concrete_read(
     
     *size = buffer_length;
 
-    AZ_ULIB_RESULT result = _concrete_read_result;
+    az_ulib_result result = _concrete_read_result;
     _concrete_read_result = AZ_ULIB_SUCCESS;
     return result;
 }
 
-static AZ_ULIB_RESULT concrete_get_remaining_size(
-        AZ_USTREAM* ustream_instance, 
+static az_ulib_result concrete_get_remaining_size(
+        az_ulib_ustream* ustream_instance, 
         size_t* const size)
 {
     (void)ustream_instance;
 
     *size = 10;
 
-    AZ_ULIB_RESULT result = _concrete_get_remaining_size_result;
+    az_ulib_result result = _concrete_get_remaining_size_result;
     _concrete_get_remaining_size_result = AZ_ULIB_SUCCESS;
     return result;
 }
 
-static AZ_ULIB_RESULT concrete_get_position(
-        AZ_USTREAM* ustream_instance, 
+static az_ulib_result concrete_get_position(
+        az_ulib_ustream* ustream_instance, 
         offset_t* const position)
 {
     (void)ustream_instance;
     
     *position = current_position;
 
-    AZ_ULIB_RESULT result = _concrete_get_position_result;
+    az_ulib_result result = _concrete_get_position_result;
     _concrete_get_position_result = AZ_ULIB_SUCCESS;
     return result;
 }
 
-static AZ_ULIB_RESULT concrete_release(
-        AZ_USTREAM* ustream_instance, 
+static az_ulib_result concrete_release(
+        az_ulib_ustream* ustream_instance, 
         offset_t position)
 {
     (void)ustream_instance;
     (void)position;
 
-    AZ_ULIB_RESULT result = _concrete_release_result;
+    az_ulib_result result = _concrete_release_result;
     _concrete_release_result = AZ_ULIB_SUCCESS;
     return result;
 }
 
-static AZ_ULIB_RESULT concrete_clone(
-        AZ_USTREAM* ustream_instance_clone,
-        AZ_USTREAM* ustream_instance, 
+static az_ulib_result concrete_clone(
+        az_ulib_ustream* ustream_instance_clone,
+        az_ulib_ustream* ustream_instance, 
         offset_t offset)
 {
-    AZ_ULIB_RESULT result;
+    az_ulib_result result;
 
     current_position = offset;
 
@@ -163,17 +163,17 @@ static AZ_ULIB_RESULT concrete_clone(
     return result;
 }
 
-static AZ_ULIB_RESULT concrete_dispose(
-        AZ_USTREAM* ustream_instance)
+static az_ulib_result concrete_dispose(
+        az_ulib_ustream* ustream_instance)
 {
     (void)ustream_instance;
 
-    AZ_ULIB_RESULT result = _concrete_dispose_result;
+    az_ulib_result result = _concrete_dispose_result;
     _concrete_dispose_result = AZ_ULIB_SUCCESS;
     return result;
 }
 
-static const AZ_USTREAM_INTERFACE api =
+static const az_ulib_ustream_interface api =
 {
         concrete_set_position,
         concrete_reset,
@@ -187,25 +187,25 @@ static const AZ_USTREAM_INTERFACE api =
 
 static const int TEST_DATA = 1;
 
-static AZ_USTREAM_DATA_CB USTREAM_COMPLIANCE_MOCK_CONTROL_BLOCK =
+static az_ulib_ustream_data_cb USTREAM_COMPLIANCE_MOCK_CONTROL_BLOCK =
 {
-    .api = (const AZ_USTREAM_INTERFACE*)&api,
+    .api = (const az_ulib_ustream_interface*)&api,
     .ptr = NULL,
     .ref_count = 0,
     .data_release = NULL,
     .control_block_release = NULL
 };
 
-static AZ_USTREAM USTREAM_COMPLIANCE_MOCK_BUFFER =
+static az_ulib_ustream USTREAM_COMPLIANCE_MOCK_BUFFER =
 {
-    .control_block = (AZ_USTREAM_DATA_CB*)&USTREAM_COMPLIANCE_MOCK_CONTROL_BLOCK,
+    .control_block = (az_ulib_ustream_data_cb*)&USTREAM_COMPLIANCE_MOCK_CONTROL_BLOCK,
     .offset_diff = 0,
     .inner_current_position = 0,
     .inner_first_valid_position = 0,
     .length = 10
 };
 
-AZ_USTREAM* ustream_mock_create(void)
+az_ulib_ustream* ustream_mock_create(void)
 {
     _concrete_set_position_result = AZ_ULIB_SUCCESS;
     _concrete_reset_result = AZ_ULIB_SUCCESS;
@@ -219,42 +219,42 @@ AZ_USTREAM* ustream_mock_create(void)
     return &USTREAM_COMPLIANCE_MOCK_BUFFER;
 }
 
-void set_set_position_result(AZ_ULIB_RESULT result)
+void set_set_position_result(az_ulib_result result)
 {
     _concrete_set_position_result = result;
 }
 
-void set_reset_result(AZ_ULIB_RESULT result)
+void set_reset_result(az_ulib_result result)
 {
     _concrete_reset_result = result;
 }
 
-void set_read_result(AZ_ULIB_RESULT result)
+void set_read_result(az_ulib_result result)
 {
     _concrete_read_result = result;
 }
 
-void set_get_remaining_size_result(AZ_ULIB_RESULT result)
+void set_get_remaining_size_result(az_ulib_result result)
 {
     _concrete_get_remaining_size_result = result;
 }
 
-void set_get_position_result(AZ_ULIB_RESULT result)
+void set_get_position_result(az_ulib_result result)
 {
     _concrete_get_position_result = result;
 }
 
-void set_release_result(AZ_ULIB_RESULT result)
+void set_release_result(az_ulib_result result)
 {
     _concrete_release_result = result;
 }
 
-void set_clone_result(AZ_ULIB_RESULT result)
+void set_clone_result(az_ulib_result result)
 {
     _concrete_clone_result = result;
 }
 
-void set_dispose_result(AZ_ULIB_RESULT result)
+void set_dispose_result(az_ulib_result result)
 {
     _concrete_dispose_result = result;
 }

@@ -4,5 +4,5 @@
 
 #include "az_ulib_result.h"
 
-AZ_ULIB_RESULT math_publish_interface(void);
-AZ_ULIB_RESULT math_unpublish_interface(void);
+az_ulib_result math_publish_interface(void);
+az_ulib_result math_unpublish_interface(void);

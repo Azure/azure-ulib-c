@@ -23,7 +23,7 @@ static az_ulib_ipc ipc_handle;
  * OS code.
  */
 int main(void) {
-  AZ_ULIB_RESULT result;
+  az_ulib_result result;
 
   (void)printf("Start ipc_call_interface sample\r\n\r\n");
 

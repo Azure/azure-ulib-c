@@ -24,7 +24,7 @@ extern "C" {
 /**
  * @brief   Enumeration of ulib results.
  */
-typedef enum AZ_ULIB_RESULT_TAG {
+typedef enum az_ulib_result_tag {
 
     //SUCCESS RESULTS
     AZ_ULIB_SUCCESS                    = 0,                           /**<Successful return */
@@ -45,7 +45,7 @@ typedef enum AZ_ULIB_RESULT_TAG {
     AZ_ULIB_INCOMPATIBLE_VERSION_ERROR = (AZ_ULIB_ERROR_FLAG | 10),   /**<Required version is not available error */
     AZ_ULIB_NOT_INITIALIZED_ERROR      = (AZ_ULIB_ERROR_FLAG | 11),   /**<Use a component that was not properly initialized */
     AZ_ULIB_ALREADY_INITIALIZED_ERROR  = (AZ_ULIB_ERROR_FLAG | 12)    /**<A singleton component is already initialized */
-} AZ_ULIB_RESULT;
+} az_ulib_result;
 
 #ifdef __cplusplus
 }

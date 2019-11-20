@@ -12,5 +12,5 @@ samples/ustream_basic/src/main.c#L43) in the `main.c` file.
 
 This sample demonstrates the ability to split a ustream at a desired position into two ustreams.
 The result of this operation returns the first ustream truncated at the position passed 
-(not inclusive) to `az_ustream_split()` and the second ustream begins at the input position and ends 
+(not inclusive) to `az_ulib_ustream_split()` and the second ustream begins at the input position and ends 
 at the end of the original input ustream.
