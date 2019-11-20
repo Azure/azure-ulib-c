@@ -318,8 +318,6 @@
 #include "az_ulib_config.h"
 #include "az_ulib_result.h"
 #include "az_ulib_pal_os.h"
-#include "azure_macro_utils/macro_utils.h"
-#include "umock_c/umock_c_prod.h"
 
 #ifdef __cplusplus
 #include <cstdint>

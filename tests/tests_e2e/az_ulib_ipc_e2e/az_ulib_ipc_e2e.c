@@ -19,10 +19,8 @@
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 
-MU_DEFINE_ENUM_STRINGS(UMOCK_C_ERROR_CODE, UMOCK_C_ERROR_CODE_VALUES)
-
 static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code) {
-  ASSERT_FAIL("umock_c reported error :%s", MU_ENUM_TO_STRING(UMOCK_C_ERROR_CODE, error_code));
+  ASSERT_FAIL("umock_c reported error :%i", error_code);
 }
 
 static uint32_t my_property = 0;
@@ -52,15 +50,15 @@ typedef struct my_method_model_in_tag {
   AZ_ULIB_RESULT return_result;
 } my_method_model_in;
 
-MU_DEFINE_ENUM(
-    my_method_action,
+typedef enum my_method_action_tag {
     MY_METHOD_ACTION_JUST_RETURN,
     MY_METHOD_ACTION_SUM,
     MY_METHOD_ACTION_UNPUBLISH,
     MY_METHOD_ACTION_RELEASE_INTERFACE,
     MY_METHOD_ACTION_DEINIT,
     MY_METHOD_ACTION_CALL_AGAIN,
-    MY_METHOD_ACTION_RETURN_ERROR)
+    MY_METHOD_ACTION_RETURN_ERROR
+} my_method_action;
 
 static volatile long g_is_running;
 static volatile long g_lock_thread;

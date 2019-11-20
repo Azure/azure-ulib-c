@@ -11,9 +11,6 @@
 #ifndef AZ_ULIB_BASE_H
 #define AZ_ULIB_BASE_H
 
-#include "azure_macro_utils/macro_utils.h"
-#include "umock_c/umock_c_prod.h"
-
 #ifndef __cplusplus
 #include <stdbool.h>
 #include <stdint.h>
@@ -39,13 +36,12 @@ extern "C" {
  */
 typedef uint32_t az_ulib_version;
 
-MU_DEFINE_ENUM(
-    az_ulib_version_match_criteria,
-    AZ_ULIB_VERSION_ANY = 0b00000111, /**<Accept any version */
-    AZ_ULIB_VERSION_GREATER_THAN = 0b00000100, /**<Accept version greater than the provided one */
-    AZ_ULIB_VERSION_EQUALS_TO = 0b00000010, /**<Accept version equals to the provided one */
-    AZ_ULIB_VERSION_LOWER_THAN = 0b00000001 /**<Accept version lower than the provided one */
-);
+typedef enum az_ulib_version_match_criteria_tag {
+    AZ_ULIB_VERSION_ANY             = 0b00000111, /**<Accept any version */
+    AZ_ULIB_VERSION_GREATER_THAN    = 0b00000100, /**<Accept version greater than the provided one */
+    AZ_ULIB_VERSION_EQUALS_TO       = 0b00000010, /**<Accept version equals to the provided one */
+    AZ_ULIB_VERSION_LOWER_THAN      = 0b00000001 /**<Accept version lower than the provided one */
+ } az_ulib_version_match_criteria;
 
 static inline bool az_ulib_version_match(
     az_ulib_version current_version,

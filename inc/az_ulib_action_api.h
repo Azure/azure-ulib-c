@@ -6,9 +6,7 @@
 #define AZ_ULIB_ACTION_API_H
 
 #include "az_ulib_base.h"
-#include "azure_macro_utils/macro_utils.h"
 #include "az_ulib_result.h"
-#include "umock_c/umock_c_prod.h"
 
 #ifdef __cplusplus
 #include <stdint.h>
@@ -25,16 +23,15 @@ extern "C" {
 /**
  * @brief Enumerator that defines the type of the action.
  */
-MU_DEFINE_ENUM(
-    az_ulib_action_type,
-    AZ_ULIB_ACTION_TYPE_PROPERTY = 0x00, /**<Read and write property */
-    AZ_ULIB_ACTION_TYPE_METHOD = 0x01, /**<Synchronous method that can be invoked by other modules
-                                       in the system */
-    AZ_ULIB_ACTION_TYPE_METHOD_ASYNC = 0x02, /**<Asynchronous task that can be invoked by other
-                                            modules in the system */
-    AZ_ULIB_ACTION_TYPE_EVENT = 0x03 /**<Event that other modules in the system can subscribe to
-                                     be notified */
-);
+typedef enum az_ulib_action_type_tag {
+    AZ_ULIB_ACTION_TYPE_PROPERTY        = 0x00, /**<Read and write property */
+    AZ_ULIB_ACTION_TYPE_METHOD          = 0x01, /**<Synchronous method that can be invoked by other modules
+                                                in the system */
+    AZ_ULIB_ACTION_TYPE_METHOD_ASYNC    = 0x02, /**<Asynchronous task that can be invoked by other
+                                                modules in the system */
+    AZ_ULIB_ACTION_TYPE_EVENT           = 0x03 /**<Event that other modules in the system can subscribe to
+                                                be notified */
+} az_ulib_action_type;
 
 /**
  * @brief       Token that uniquely identifies the action.
