@@ -38,11 +38,10 @@ static const char* const AZ_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING
 /**
  * @brief   enum to select the log type
  */
-MU_DEFINE_ENUM(
-    AZ_ULOG_TYPE,
+typedef enum AZ_ULOG_TYPE_TAG {
     AZ_ULOG_TYPE_ERROR = 0, /**<error log message. */
     AZ_ULOG_TYPE_INFO = 1 /**<info log message. */
-);
+} AZ_ULOG_TYPE;
 
 /**
  * @brief   AZ_ULOG_TYPE string values
