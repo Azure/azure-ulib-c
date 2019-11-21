@@ -79,11 +79,21 @@ extern "C" {
  * space and improving the az_ulib_ipc_call performance.
  *
  * @note  **To avoid conflicts in the linker, instead of comment this line, define
- *        AZ_ULIB_CONFIG_REMOVE_UNPUBLISH as part of the make file that will build the project. 
+ *        AZ_ULIB_CONFIG_REMOVE_UNPUBLISH as part of the make file that will build the project.
  *        For cmake, use the option -Dremove_ipc_unpublish.**
  */
 #define AZ_ULIB_CONFIG_IPC_UNPUBLISH
 #endif /*AZ_ULIB_CONFIG_REMOVE_UNPUBLISH*/
+
+/**
+ * @brief   Task public API shall validate the contract
+ *
+ * This definition enables the argument check on all Task public APIs. This check will verify if the
+ * provided arguments follow the contract defined in the documentation.
+ *
+ * Commenting this definition, the Task public APIs will not test any of the received arguments.
+ */
+#define AZ_ULIB_CONFIG_TASK_VALIDATE_CONTRACT
 
 #ifdef __cplusplus
 }

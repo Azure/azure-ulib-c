@@ -6,7 +6,6 @@
 #define AZ_ULIB_DESCRIPTOR_H
 
 #include "azure_macro_utils/macro_utils.h"
-#include "umock_c/umock_c_prod.h"
 
 #include "az_ulib_action_api.h"
 #include "az_ulib_base.h"
@@ -100,6 +99,9 @@ typedef struct az_ulib_interface_descriptor_tag {
           (version), \
           (uint8_t)(MU_COUNT_ARG(__VA_ARGS__) / 4), \
           (az_ulib_action_descriptor*)MU_C2(interface_var, _ACTION_LIST) };
+
+// TODO:  On all the ADD macros, we need to find a way to check it the function pointer correspond
+//        to the write type.
 
 /**
  * @brief   Add property to the interface descriptor.

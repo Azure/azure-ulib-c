@@ -34,12 +34,12 @@ typedef enum az_ulib_action_type_tag {
 } az_ulib_action_type;
 
 /**
- * @brief       Token that uniquely identifies the action.
+ * @brief       Context that uniquely identifies the action.
  *
- * The action token is the way that the action's caller associates the call to its answer. It can
+ * The action context is the way that the action's caller associates the call to its answer. It can
  * have any value that is meaningful for the caller.
  */
-typedef void* az_ulib_action_token;
+typedef void* az_ulib_action_context;
 
 /**
  * @brief       Handle that uniquely identifies the action instance.
@@ -50,7 +50,7 @@ typedef uint16_t az_ulib_action_index;
  * @brief       Callback prototype for action result.
  */
 typedef void (*az_ulib_action_result_callback)(
-    const az_ulib_action_token action_token,
+    const az_ulib_action_context action_context,
     az_ulib_result result,
     const void* const model_out);
 
@@ -60,23 +60,16 @@ typedef void (*az_ulib_action_result_callback)(
 typedef void (*az_ulib_action_event)(const void* const model_out);
 
 /**
- * @brief       Cancellation token prototype.
+ * @brief       Cancellation context prototype.
  */
 typedef az_ulib_result (*az_ulib_action_cancellation_callback)(
-    const az_ulib_action_token action_token);
+    const az_ulib_action_context action_context);
 
 /**
  * @brief       IPC synchronous method signature.
  *
- * This type defines the signature for the synchronous methods that will be published in an IPC
- * interface. A synchronous method is the one which runs in the same call stack as the caller. The
- * data in the `model_in` will be used only during the execution of the method and may be released
- * as soon as the method returns.
- *
- * As a standard, the synchronous method shall return #az_ulib_result. If the method needs to return
- * anything else, the data shall be stored it on the `model_out`.
- *
- * Both `model_in` and `model_out` shall be defined as part of the interface definition.
+ * This type defines the signature for the synchronous methods that will be called by 
+ * az_ulib_ipc_call().
  *
  * @param[in]   model_in    The `const void* const` that contains the input arguments for the
  *                          method. It may be `NULL`, the IPC will not do any validation on it.
@@ -93,12 +86,35 @@ typedef az_ulib_result (*az_ulib_action_method)(const void* const model_in, cons
 
 /**
  * @brief       IPC asynchronous task signature.
+ *
+ * This type defines the signature for the asynchronous methods that will be called by 
+ * az_ulib_ipc_call_async() and az_ulib_ipc_call_async_and_wait().
+ *
+ * @param[in]   model_in          The `const void* const` that contains the input arguments for the
+ *                                method. It may be `NULL`, the IPC will not do any validation
+ *                                on it. The method itself shall implement any needed validation.
+ * @param[out]  model_out         The `const void*` that contains the memory to store the output
+ *                                arguments from the method. It may be `NULL`, the IPC will not do
+ *                                any validation on it. The method itself shall implement any needed
+ *                                validation.
+ * @param[in]   result_callback   The #az_ulib_action_result_callback that points to the method
+ *                                that IPC shall call when the asynchronous call ends its
+ *                                execution. This callback is optional and may be `NULL`. If the
+ *                                callback is `NULL`, the IPC will make this call *fire and forget*.
+ * @param[in]   action_context      The #az_ulib_action_context that unique identify the current
+ *                                asynchronous call to the caller. The IPC will use this context
+ *                                when call the `result_callback`. The caller shall use this context
+ *                                to cancel an asynchronous call as well. This context is a opaque
+ *                                value for the IPC, no validation will be performed on it.
+ *
+ * @return The #az_ulib_result with the result of the method call. All possible results shall be
+ * defined as part of the interface.
  */
 typedef az_ulib_result (*az_ulib_action_method_async)(
     const void* const model_in,
+    const void* model_out,
     az_ulib_action_result_callback callback,
-    const az_ulib_action_token action_token,
-    az_ulib_action_cancellation_callback* cancel);
+    const az_ulib_action_context action_context);
 
 /**
  * @brief       IPC get signature.

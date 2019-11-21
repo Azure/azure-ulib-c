@@ -5,16 +5,14 @@
 #ifndef AZ_ULIB_IPC_H
 #define AZ_ULIB_IPC_H
 
-#include "azure_macro_utils/macro_utils.h"
-#include "umock_c/umock_c_prod.h"
-
 #include "az_ulib_action_api.h"
 #include "az_ulib_base.h"
-#include "az_ulib_descriptor_api.h"
-#include "internal/az_ulib_ipc.h"
 #include "az_ulib_config.h"
+#include "az_ulib_descriptor_api.h"
+#include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
+#include "internal/az_ulib_ipc.h"
 
 #ifndef __cplusplus
 #include <stdint.h>
@@ -182,7 +180,7 @@ static inline az_ulib_result az_ulib_ipc_unpublish(
  * fits this criteria, this API will return its handle. If no published procedure fits it, this API
  * will return #AZ_ULIB_NO_SUCH_ELEMENT_ERROR.
  *
- * Get a interface handle will increment the number of references to this interface, which means
+ * Get an interface handle will increment the number of references to this interface, which means
  * that the IPC will know how many components is using this interface. When a component does not
  * need this interface anymore, it shall release it by calling az_ulib_ipc_release_interface().
  *
@@ -226,7 +224,7 @@ static inline az_ulib_result az_ulib_ipc_try_get_interface(
  * This API will return an interface handle based on a provided interface handle. If the provided
  * interface handle was disabled, this API will return #AZ_ULIB_DISABLED_ERROR.
  *
- * Get a interface handle will increment the number of references to this interface, which means
+ * Get an interface handle will increment the number of references to this interface, which means
  * that the IPC will know how many components is using this interface. When a component does not
  * need this interface anymore, it shall release it by calling az_ulib_ipc_release_interface().
  *
@@ -294,6 +292,15 @@ static inline az_ulib_result az_ulib_ipc_release_interface(
 /**
  * @brief   Synchronously Call a published procedure.
  *
+ * Calls a synchronous method published in an IPC interface. A synchronous method is the one which
+ * runs in the same call stack as the caller. The data in the `model_in` will be used only during
+ * the execution of the method and may be released as soon as the method returns.
+ *
+ * As a standard, the synchronous method shall return #az_ulib_result. If the method needs to return
+ * anything else, the data shall be stored it on the `model_out`.
+ *
+ * Both `model_in` and `model_out` shall be defined as part of the interface definition.
+ *
  * @param[in]   interface_handle  The #az_ulib_ipc_interface_handle with the interface handle. It
  *                                cannot be `NULL`. Call
  *                                az_ulib_ipc_try_get_interface() to get the interface handle.
@@ -305,8 +312,8 @@ static inline az_ulib_result az_ulib_ipc_release_interface(
  * @return The #az_ulib_result with the result of the call.
  *  @retval #AZ_ULIB_SUCCESS                  If the IPC get success calling the procedure.
  *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR   If one of the arguments is invalid.
- *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR    If the target method was disabled.
- *  @retval #AZ_ULIB_CANCELLED_ERROR          If the target method was unpublished.
+ *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR    If the target method was unpublished. The
+ *                                            `interface_handle` shall be released.
  *  @retval #AZ_ULIB_BUSY_ERROR               If the target method is cannot be executed at that
  *                                            moment.
  */
@@ -321,6 +328,212 @@ static inline az_ulib_result az_ulib_ipc_call(
 #else
   return _az_ulib_ipc_call_no_contract(
       (_az_ulib_ipc_interface_handle)interface_handle, method_index, model_in, model_out);
+#endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
+}
+
+/**
+ * @brief   Asynchronously Call a published procedure.
+ *
+ * Calls an asynchronous method published in an IPC interface. An asynchronous method is the one
+ * which runs in background, in a thread or another hardware, and will call a callback when it
+ * finish its execution providing the result of the operation. The IPC will **not copy** the
+ * content of the `model_in`, instead, it will bypass the reference to the asynchronous method.
+ * The decision between copy the data or not is part of the contract exposed by the component
+ * which published the method.
+ *
+ * The published shall define the `model_in` retention policy. Three possible options are:
+ *
+ * 1. The asynchronous method will copy the content pointed by the `model_in` on its own area of
+ *    memory. On this way, the caller may release the `model_in` memory as soon as the
+ *    az_ulib_ipc_call_async() returns. This method is safer, but expensive.
+ * 2. The asynchronous method will use the `model_in` from the provided memory for the whole
+ *    asynchronous execution. It means, that the caller shall only release this memory when the IPC
+ *    calls the callback with the conclusion of the asynchronous operation. This method will save
+ *    resources, but may be riskier.
+ * 3. The asynchronous method will require the `model_in` as a smart pointer (any variation of
+ *    #az_ulib_ustream), and will clone it locally. With it, the caller may release its own copy of
+ *    the `model_in` as soon as the az_ulib_ipc_call_async() returns. This method is less expensive
+ *    than the first one (mainly for big `model_in`), and safer that the other 2 options.
+ *
+ * As a standard, the asynchronous method shall return #az_ulib_result. If the method needs to
+ * return anything else, the data shall be stored it on the `model_out`, on the callback.
+ *
+ * Both `model_in` and `model_out` shall be defined as part of the interface definition.
+ *
+ * An asynchronous call may be cancel by the caller by calling az_ulib_ipc_cancel() API passing the
+ * #az_ulib_action_context.
+ *
+ * The following diagram represents a asynchronous call through IPC. Observe that the IPC will not
+ * take care of the background process or the future callback, it become a contract between the 
+ * consumer and the publisher directly. 
+ *
+ * @code
+ * +---------------+         +---------------+         +---------------+
+ * |    Consumer   |         |      IPC      |         |   Publisher   |
+ * +---------------+         +---------------+         +---------------+
+ *         |                         |                         |
+ *         +-az_ulib_ipc_call_async( |                         |
+ *         |    interface_handle,    |                         |
+ *         |    method_index,        |                         |
+ *         |    model_in,            |                         |
+ *         |    model_out,           |                         |
+ *         |    complete_task_cb,    |                         |
+ *         |    (context)task)------>|                         |
+ *         |            +------------+                         |
+ *         |            |interface_handle->running_count++     |
+ *         |            |my_method_async <- interface_handle[method_index]
+ *         |            +----------->|                         |
+ *         |                         +-my_method_async(        |
+ *         |                         |   model_in, model_out,  |
+ *         |                         |   complete_task_cb,     |
+ *         |                         |   (context)task)------->|
+ *         |                         | +-----------------------+
+ *         |                         | |Execute the synchronous portion of
+ *         |                         | |the asynchronous method, starting
+ *         |                         | |the background process.
+ *         |                         | +---------------------->|
+ *         |                         |                         +---+
+ *         |                         |<---<AZ_ULIB_SUCCESS>----+   |b
+ *         |                  +------+                         |   |a
+ *         |                  | interface_handle->running_count--  |c
+ *         |                  +----->|                         |   |k
+ *         |<---<AZ_ULIB_SUCCESS>----+                         |   |g
+ *         |                         |                         |   |r
+ *         |                         |                         |   |o
+ *         |                         |                         |   |u
+ *         |                         |                         |   |n
+ *         |                         |                         |   |d
+ *                                                                 |
+ *    Consumer may do other stuffs while wait for the callback.    |
+ *                                                                 |
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *    Background ends an generates a hardware interruption (IRQ)   |
+ *                                                             |<--+
+ *         |            complete_task_cb((context)task,  ------+
+ *         |<----------------- AZ_ULIB_SUCCESS, model_out)     |
+ *     +---+                         |                         |
+ *     | Use the information in the task.                      |
+ *     | release(task->model_in)     |                         |
+ *     | release(task->model_out)    |                         |
+ *     | release(task)               |                         |
+ *     +-->|                         |                         |
+ *         +-------------------------------------------------->|
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *         |                         |                         |
+ * @endcode
+ *
+ * @param[in]   interface_handle  The #az_ulib_ipc_interface_handle with the interface handle. It
+ *                                cannot be `NULL`. Call
+ *                                az_ulib_ipc_try_get_interface() to get the interface handle.
+ * @param[in]   method_index      The #az_ulib_action_index with the method handle.
+ * @param[in]   model_in          The `const void *const` that points to the memory with the
+ *                                input model content.
+ * @param[out]  model_out         The `const void *` that points to the memory where the action
+ *                                should store the output model content.
+ * @param[in]   result_callback   The #az_ulib_action_result_callback that points to the method
+ *                                that IPC shall call when the asynchronous call ends its
+ *                                execution. This callback is optional and may be `NULL`. If the
+ *                                callback is `NULL`, the IPC will make this call *fire and forget*.
+ * @param[in]   action_context    The #az_ulib_action_context that unique identify the current
+ *                                asynchronous call to the caller. The IPC will use this context
+ *                                when call the `result_callback`. The caller shall use this context
+ *                                to cancel an asynchronous call as well. This context is an opaque
+ *                                value for the IPC, no validation will be performed on it.
+ * @return The #az_ulib_result with the result of the call.
+ *  @retval #AZ_ULIB_SUCCESS                  If the IPC get success calling the procedure.
+ *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR   If one of the arguments is invalid.
+ *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR    If the target method was unpublished. The
+ *                                            `interface_handle` shall be released.
+ *  @retval #AZ_ULIB_BUSY_ERROR               If the target method cannot be executed at that
+ *                                            moment.
+ */
+static inline az_ulib_result az_ulib_ipc_call_async(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_action_index method_index,
+    const void* const model_in,
+    const void* model_out,
+    az_ulib_action_result_callback result_callback,
+    az_ulib_action_context action_context) {
+#ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
+  return _az_ulib_ipc_call_async(
+      (_az_ulib_ipc_interface_handle)interface_handle,
+      method_index,
+      model_in,
+      model_out,
+      result_callback,
+      action_context);
+#else
+  return _az_ulib_ipc_call_async_no_contract(
+      (_az_ulib_ipc_interface_handle)interface_handle,
+      method_index,
+      model_in,
+      model_out,
+      result_callback,
+      action_context);
+#endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
+}
+
+/**
+ * @brief   Cancel an asynchronously Call.
+ *
+ * @param[in]   action_context    The #az_ulib_action_context that unique identify the current
+ *                                asynchronous call to the caller.
+ * @return The #az_ulib_result with the result of the call.
+ *  @retval #AZ_ULIB_SUCCESS                  If the IPC get success calling the procedure.
+ *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR    If the target method `action_context` didn't belong to
+ *                                            any current asynchronous call.
+ *  @retval #AZ_ULIB_BUSY_ERROR               If the target method cannot be cancelled at that
+ *                                            moment.
+ */
+static inline az_ulib_result az_ulib_ipc_cancel(az_ulib_action_context action_context) {
+#ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
+  return AZ_ULIB_NOT_SUPPORTED_ERROR;
+#else
+  return AZ_ULIB_NOT_SUPPORTED_ERROR;
+#endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
+}
+
+/**
+ * @brief   Asynchronously Call a published procedure and wait until end of execution.
+ *
+ * Calls an asynchronous method published in the IPC and use a semaphore to wait for the callback,
+ * converting the asynchronous call in a synchronous (blocking) call.
+ *
+ * @param[in]   interface_handle  The #az_ulib_ipc_interface_handle with the interface handle. It
+ *                                cannot be `NULL`. Call
+ *                                az_ulib_ipc_try_get_interface() to get the interface handle.
+ * @param[in]   method_index      The #az_ulib_action_index with the method handle.
+ * @param[in]   model_in          The `const void *const` that points to the memory with the
+ *                                input model content.
+ * @param[out]  model_out         The `const void *` that points to the memory where the action
+ *                                should store the output model content.
+ * @param[in]   wait_option_ms    The `uint32_t` with the maximum number of milliseconds the
+ *                                IPC may wait to the end of the execution before generate a
+ *                                timeout error:
+ *                                        - #AZ_ULIB_NO_WAIT (0x00000000)
+ *                                        - #AZ_ULIB_WAIT_FOREVER (0xFFFFFFFF)
+ *                                        - timeout value (0x00000001 through 0xFFFFFFFE)
+ *
+ * @return The #az_ulib_result with the result of the call.
+ *  @retval #AZ_ULIB_SUCCESS                  If the IPC get success calling the procedure.
+ *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR   If one of the arguments is invalid.
+ *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR    If the target method was unpublished. The
+ *                                            `interface_handle` shall be released.
+ *  @retval #AZ_ULIB_BUSY_ERROR               If the target method cannot be executed at that
+ *                                            moment.
+ *  @retval #AZ_ULIB_TIMEOUT_ERROR            If the method didn't return the callback before the
+ *                                            provided `wait_option_ms` expires.
+ */
+static inline az_ulib_result az_ulib_ipc_call_async_and_wait(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_action_index method_index,
+    const void* const model_in,
+    const void* model_out,
+    uint32_t wait_option_ms) {
+#ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
+  return AZ_ULIB_NOT_SUPPORTED_ERROR;
+#else
+  return AZ_ULIB_NOT_SUPPORTED_ERROR;
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 

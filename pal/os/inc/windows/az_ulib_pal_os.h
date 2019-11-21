@@ -18,6 +18,14 @@ extern "C" {
  */
 typedef SRWLOCK az_ulib_pal_os_lock;
 
+/*
+ *  @struct az_ulib_pal_os_queue
+ *
+ *  @brief  pointer to a platform specific struct for a queue implementation
+ */
+// TODO: replace by the Windows queue handle.
+typedef void* az_ulib_pal_os_queue;
+
 #ifdef __cplusplus
 }
 #endif

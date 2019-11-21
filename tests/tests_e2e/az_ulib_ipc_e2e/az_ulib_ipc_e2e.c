@@ -113,18 +113,18 @@ static az_ulib_result my_method(const void* const model_in, const void* model_ou
 static az_ulib_result my_method_async(
     const void* const model_in,
     const void* model_out,
-    const az_ulib_action_token action_token,
-    az_ulib_action_cancellation_callback* cancel) {
+    az_ulib_action_result_callback callback,
+    const az_ulib_action_context action_context) {
   (void)model_in;
   (void)model_out;
-  (void)action_token;
-  (void)cancel;
+  (void)callback;
+  (void)action_context;
 
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_method_cancel(const az_ulib_action_token action_token) {
-  (void)action_token;
+static az_ulib_result my_method_cancel(const az_ulib_action_context action_context) {
+  (void)action_context;
 
   return AZ_ULIB_SUCCESS;
 }

@@ -50,7 +50,7 @@ static az_ulib_result set_my_property(const void* const model_in) {
 typedef struct my_method_model_in_tag {
   uint8_t action;
   const az_ulib_interface_descriptor* descriptor;
-  uint32_t wait_policy_ms;
+  uint32_t wait_option_ms;
   az_ulib_ipc_interface_handle handle;
   az_ulib_action_index method_index;
   az_ulib_result return_result;
@@ -75,7 +75,7 @@ static az_ulib_result my_method(const void* const model_in, const void* model_ou
       *result = in->return_result;
       break;
     case MY_METHOD_ACTION_UNPUBLISH:
-      *result = az_ulib_ipc_unpublish(in->descriptor, in->wait_policy_ms);
+      *result = az_ulib_ipc_unpublish(in->descriptor, in->wait_option_ms);
       break;
     case MY_METHOD_ACTION_RELEASE_INTERFACE:
       *result = az_ulib_ipc_release_interface(in->handle);
@@ -99,18 +99,18 @@ static az_ulib_result my_method(const void* const model_in, const void* model_ou
 static az_ulib_result my_method_async(
     const void* const model_in,
     const void* model_out,
-    const az_ulib_action_token action_token,
-    az_ulib_action_cancellation_callback* cancel) {
+    az_ulib_action_result_callback callback,
+    const az_ulib_action_context action_context) {
   (void)model_in;
   (void)model_out;
-  (void)action_token;
-  (void)cancel;
+  (void)callback;
+  (void)action_context;
 
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_method_cancel(const az_ulib_action_token action_token) {
-  (void)action_token;
+static az_ulib_result my_method_cancel(const az_ulib_action_context action_context) {
+  (void)action_context;
 
   return AZ_ULIB_SUCCESS;
 }
@@ -770,7 +770,7 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_failed) {
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
-  in.wait_policy_ms = AZ_ULIB_NO_WAIT;
+  in.wait_option_ms = AZ_ULIB_NO_WAIT;
   az_ulib_result out = AZ_ULIB_PENDING;
 
   az_ulib_ipc_interface_handle interface_handle;
@@ -812,7 +812,7 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_with_small_timeout_faile
   my_method_model_in in;
   in.action = MY_METHOD_ACTION_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
-  in.wait_policy_ms = 10000;
+  in.wait_option_ms = 10000;
   az_ulib_result out = AZ_ULIB_PENDING;
 
   az_ulib_ipc_interface_handle interface_handle;
@@ -829,7 +829,7 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_with_small_timeout_faile
 
   STRICT_EXPECTED_CALL(az_pal_os_lock_acquire(IGNORED_PTR_ARG));
   for (int i = 0; i < 8; i++) {
-    STRICT_EXPECTED_CALL(az_pal_os_sleep((in.wait_policy_ms >> 3)));
+    STRICT_EXPECTED_CALL(az_pal_os_sleep((in.wait_option_ms >> 3)));
   }
   STRICT_EXPECTED_CALL(az_pal_os_lock_release(IGNORED_PTR_ARG));
 
