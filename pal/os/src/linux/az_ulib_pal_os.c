@@ -14,13 +14,13 @@
 #include "az_ulib_pal_os.h"
 #include "az_ulib_pal_os_api.h"
 
-void az_pal_os_lock_init(AZ_PAL_OS_LOCK* lock) { pthread_mutex_init((pthread_mutex_t*)lock, NULL); }
+void az_pal_os_lock_init(az_ulib_pal_os_lock* lock) { pthread_mutex_init((pthread_mutex_t*)lock, NULL); }
 
-void az_pal_os_lock_deinit(AZ_PAL_OS_LOCK* lock) { pthread_mutex_destroy((pthread_mutex_t*)lock); }
+void az_pal_os_lock_deinit(az_ulib_pal_os_lock* lock) { pthread_mutex_destroy((pthread_mutex_t*)lock); }
 
-void az_pal_os_lock_acquire(AZ_PAL_OS_LOCK* lock) { pthread_mutex_lock((pthread_mutex_t*)lock); }
+void az_pal_os_lock_acquire(az_ulib_pal_os_lock* lock) { pthread_mutex_lock((pthread_mutex_t*)lock); }
 
-void az_pal_os_lock_release(AZ_PAL_OS_LOCK* lock) { pthread_mutex_unlock((pthread_mutex_t*)lock); }
+void az_pal_os_lock_release(az_ulib_pal_os_lock* lock) { pthread_mutex_unlock((pthread_mutex_t*)lock); }
 
 void az_pal_os_sleep(uint32_t sleep_time_ms) {
 #ifdef TI_RTOS

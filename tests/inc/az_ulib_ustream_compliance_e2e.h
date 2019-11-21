@@ -31,8 +31,8 @@
 #define TEST_POSITION 10
 #define TEST_SIZE 10
 
-static AZ_USTREAM* compliance_thread_one_ustream;
-static AZ_USTREAM* compliance_thread_two_ustream;
+static az_ulib_ustream* compliance_thread_one_ustream;
+static az_ulib_ustream* compliance_thread_two_ustream;
 static const uint8_t* const compliance_expected_content = (const uint8_t*)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
 
 static int compliance_thread_one_func(void* arg)
@@ -40,12 +40,12 @@ static int compliance_thread_one_func(void* arg)
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
     size_t size_result;
     offset_t cur_pos;
-    az_ustream_read(
+    az_ulib_ustream_read(
         compliance_thread_one_ustream,
         buf_result,
         TEST_SIZE,
         &size_result);
-    az_ustream_get_position(compliance_thread_one_ustream, &cur_pos);
+    az_ulib_ustream_get_position(compliance_thread_one_ustream, &cur_pos);
     ASSERT_ARE_EQUAL(int, TEST_SIZE, cur_pos);
     ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, (const char*)buf_result, TEST_SIZE));
 
@@ -58,13 +58,13 @@ static int compliance_thread_two_func(void* arg)
     size_t size_result;
     offset_t cur_pos;
     size_t position = USTREAM_COMPLIANCE_LENGTH_1;
-    az_ustream_set_position(compliance_thread_two_ustream, TEST_POSITION);
-    az_ustream_read(
+    az_ulib_ustream_set_position(compliance_thread_two_ustream, TEST_POSITION);
+    az_ulib_ustream_read(
         compliance_thread_two_ustream,
         buf_result,
         TEST_SIZE,
         &size_result);
-    az_ustream_get_position(compliance_thread_two_ustream, &cur_pos);
+    az_ulib_ustream_get_position(compliance_thread_two_ustream, &cur_pos);
     ASSERT_ARE_EQUAL(int, TEST_POSITION + TEST_SIZE, cur_pos);
     ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + TEST_POSITION), (const char*)buf_result, TEST_SIZE));
 
@@ -74,26 +74,26 @@ static int compliance_thread_two_func(void* arg)
 /*
  * Start compliance tests:
  */
-TEST_FUNCTION(az_ustream_e2e_compliance_multi_read_succeed)
+TEST_FUNCTION(az_ulib_ustream_e2e_compliance_multi_read_succeed)
 {
     ///arrange
-    AZ_USTREAM multi_ustream;
+    az_ulib_ustream multi_ustream;
     USTREAM_COMPLIANCE_TARGET_FACTORY(&multi_ustream);
-    AZ_USTREAM concat_ustream;
+    az_ulib_ustream concat_ustream;
     USTREAM_COMPLIANCE_TARGET_FACTORY(&concat_ustream);
 
-    AZ_USTREAM_MULTI_DATA_CB* multi_data1 =
-        (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    az_ulib_ustream_multi_data_cb* multi_data1 =
+        (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
     ASSERT_IS_NOT_NULL(multi_data1);
 
-    AZ_ULIB_RESULT result = az_ustream_concat(&multi_ustream, &concat_ustream, multi_data1, free);
+    az_ulib_result result = az_ulib_ustream_concat(&multi_ustream, &concat_ustream, multi_data1, free);
     ASSERT_ARE_EQUAL(int, result, AZ_ULIB_SUCCESS);
 
-    az_ustream_dispose(&concat_ustream);
+    az_ulib_ustream_dispose(&concat_ustream);
 
     //Clone the multistream
-    AZ_USTREAM multibuffer_clone;
-    result = az_ustream_clone(&multibuffer_clone, &multi_ustream, 0);
+    az_ulib_ustream multibuffer_clone;
+    result = az_ulib_ustream_clone(&multibuffer_clone, &multi_ustream, 0);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     compliance_thread_one_ustream = &multi_ustream;
@@ -112,37 +112,37 @@ TEST_FUNCTION(az_ustream_e2e_compliance_multi_read_succeed)
     test_thread_join(test_thread_two, &res2);
 
     ///cleanup
-    (void)az_ustream_dispose(&multi_ustream);
-    (void)az_ustream_dispose(&multibuffer_clone);
+    (void)az_ulib_ustream_dispose(&multi_ustream);
+    (void)az_ulib_ustream_dispose(&multibuffer_clone);
 
 }
 
-TEST_FUNCTION(az_ustream_e2e_compliance_read_and_reset_succeed)
+TEST_FUNCTION(az_ulib_ustream_e2e_compliance_read_and_reset_succeed)
 {
     ///arrange
-    AZ_USTREAM ustream;
+    az_ulib_ustream ustream;
     USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
 
     //act
     size_t returned_size;
-    az_ustream_read(&ustream, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
+    az_ulib_ustream_read(&ustream, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
     ASSERT_ARE_EQUAL(int, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, returned_size);
     ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH));
 
-    az_ustream_reset(&ustream);
+    az_ulib_ustream_reset(&ustream);
 
-    az_ustream_read(&ustream, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
+    az_ulib_ustream_read(&ustream, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
     ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH));
 
-    az_ustream_reset(&ustream);
+    az_ulib_ustream_reset(&ustream);
 
-    az_ustream_read(&ustream, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
+    az_ulib_ustream_read(&ustream, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
     ASSERT_ARE_EQUAL(int, 0, strncmp((const char*)buf_result, (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH));
 
     ///cleanup
-    (void)az_ustream_dispose(&ustream);
+    (void)az_ulib_ustream_dispose(&ustream);
 
 }
 

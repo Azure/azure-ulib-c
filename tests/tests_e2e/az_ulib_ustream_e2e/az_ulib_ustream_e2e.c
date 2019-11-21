@@ -28,12 +28,12 @@ static TEST_MUTEX_HANDLE g_test_by_test;
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH 62
 
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
-static void ustream_factory(AZ_USTREAM* ustream)
+static void ustream_factory(az_ulib_ustream* ustream)
 {
-    AZ_USTREAM_DATA_CB* ustream_control_block = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* ustream_control_block = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t)*USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
     (void)memcpy(buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-    az_ustream_init(ustream, ustream_control_block, free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
+    az_ulib_ustream_init(ustream, ustream_control_block, free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
 }
 #define USTREAM_COMPLIANCE_TARGET_FACTORY(ustream)         ustream_factory(ustream)
 

@@ -34,22 +34,22 @@ static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2 =
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3 =
         (const uint8_t* const)"abcdefghijklmnopqrstuvwxyz";
     
-static void create_test_default_multibuffer(AZ_USTREAM* ustream)
+static void create_test_default_multibuffer(az_ulib_ustream* ustream)
 {
     //Set up required structs for first multi
-    AZ_USTREAM_MULTI_DATA_CB* default_multi_data1 = (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    az_ulib_ustream_multi_data_cb* default_multi_data1 = (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
     ASSERT_IS_NOT_NULL(default_multi_data1);
-    memset(default_multi_data1, 0, sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    memset(default_multi_data1, 0, sizeof(az_ulib_ustream_multi_data_cb));
 
     //Set up required structs for second multi
-    AZ_USTREAM_MULTI_DATA_CB* default_multi_data2 = (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    az_ulib_ustream_multi_data_cb* default_multi_data2 = (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
     ASSERT_IS_NOT_NULL(default_multi_data2);
-    memset(default_multi_data2, 0, sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    memset(default_multi_data2, 0, sizeof(az_ulib_ustream_multi_data_cb));
 
     //Set up first ustream
-    AZ_USTREAM_DATA_CB* ustream_control_block1 = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
-    memset(ustream_control_block1, 0, sizeof(AZ_USTREAM_DATA_CB));
-    AZ_ULIB_RESULT result = az_ustream_init(ustream,
+    az_ulib_ustream_data_cb* ustream_control_block1 = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
+    memset(ustream_control_block1, 0, sizeof(az_ulib_ustream_data_cb));
+    az_ulib_result result = az_ulib_ustream_init(ustream,
             ustream_control_block1,
             free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
@@ -57,10 +57,10 @@ static void create_test_default_multibuffer(AZ_USTREAM* ustream)
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     //Set up second ustream
-    AZ_USTREAM default_buffer2;
-    AZ_USTREAM_DATA_CB* ustream_control_block2 = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
-    memset(ustream_control_block2, 0, sizeof(AZ_USTREAM_DATA_CB));
-    result = az_ustream_init(&default_buffer2,
+    az_ulib_ustream default_buffer2;
+    az_ulib_ustream_data_cb* ustream_control_block2 = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
+    memset(ustream_control_block2, 0, sizeof(az_ulib_ustream_data_cb));
+    result = az_ulib_ustream_init(&default_buffer2,
                 ustream_control_block2,
                 free,
                 USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2,
@@ -69,10 +69,10 @@ static void create_test_default_multibuffer(AZ_USTREAM* ustream)
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     //Set up third ustream
-    AZ_USTREAM default_buffer3;
-    AZ_USTREAM_DATA_CB* ustream_control_block3 = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
-    memset(ustream_control_block3, 0, sizeof(AZ_USTREAM_DATA_CB));
-    result = az_ustream_init(&default_buffer3,
+    az_ulib_ustream default_buffer3;
+    az_ulib_ustream_data_cb* ustream_control_block3 = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
+    memset(ustream_control_block3, 0, sizeof(az_ulib_ustream_data_cb));
+    result = az_ulib_ustream_init(&default_buffer3,
                 ustream_control_block3,
                 free,
                 USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3,
@@ -80,13 +80,13 @@ static void create_test_default_multibuffer(AZ_USTREAM* ustream)
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     //Concat buffers together
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ustream_concat(ustream, &default_buffer2, 
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ustream_concat(ustream, &default_buffer2, 
                         default_multi_data1, free));
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ustream_concat(ustream, &default_buffer3,
+    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ustream_concat(ustream, &default_buffer3,
                         default_multi_data2, free));
 
-    (void)az_ustream_dispose(&default_buffer2);
-    (void)az_ustream_dispose(&default_buffer3);
+    (void)az_ulib_ustream_dispose(&default_buffer2);
+    (void)az_ulib_ustream_dispose(&default_buffer3);
 
 }
 
@@ -123,7 +123,7 @@ TEST_SUITE_INITIALIZE(suite_init)
     result = umocktypes_bool_register_types();
     ASSERT_ARE_EQUAL(int, 0, result);
 
-    REGISTER_UMOCK_ALIAS_TYPE(AZ_USTREAM, void*);
+    REGISTER_UMOCK_ALIAS_TYPE(az_ulib_ustream, void*);
 }
 
 TEST_SUITE_CLEANUP(suite_cleanup)
@@ -150,16 +150,16 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
     TEST_MUTEX_RELEASE(g_test_by_test);
 }
 
-/* az_ustream_concat shall return AZ_ULIB_SUCCESS if the ustreams were concatenated succesfully */
-TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
+/* az_ulib_ustream_concat shall return AZ_ULIB_SUCCESS if the ustreams were concatenated succesfully */
+TEST_FUNCTION(az_ulib_ustream_concat_multiple_buffers_succeed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* control_block1 =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block1 =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block1);
-    AZ_USTREAM test_buffer1;
-    AZ_ULIB_RESULT result1 =
-        az_ustream_init(
+    az_ulib_ustream test_buffer1;
+    az_ulib_result result1 =
+        az_ulib_ustream_init(
             &test_buffer1,
             control_block1,
             free,
@@ -168,12 +168,12 @@ TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
-    AZ_USTREAM_DATA_CB* control_block2 =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block2 =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block2);
-    AZ_USTREAM test_buffer2;
-    AZ_ULIB_RESULT result2 =
-        az_ustream_init(
+    az_ulib_ustream test_buffer2;
+    az_ulib_result result2 =
+        az_ulib_ustream_init(
             &test_buffer2,
             control_block2,
             free,
@@ -182,12 +182,12 @@ TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result2);
 
-    AZ_USTREAM_DATA_CB* control_block3 =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block3 =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block3);
-    AZ_USTREAM test_buffer3;
-    AZ_ULIB_RESULT result3 =
-        az_ustream_init(
+    az_ulib_ustream test_buffer3;
+    az_ulib_result result3 =
+        az_ulib_ustream_init(
             &test_buffer3,
             control_block3,
             free,
@@ -196,20 +196,20 @@ TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result3);
 
-    AZ_USTREAM_MULTI_DATA_CB* multi_data1 =
-        (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
-    AZ_USTREAM_MULTI_DATA_CB* multi_data2 =
-        (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    az_ulib_ustream_multi_data_cb* multi_data1 =
+        (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
+    az_ulib_ustream_multi_data_cb* multi_data2 =
+        (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
 
     ///act
-    result1 = az_ustream_concat(&test_buffer1, &test_buffer2, multi_data1, free);
-    result2 = az_ustream_concat(&test_buffer1, &test_buffer3, multi_data2, free);
+    result1 = az_ulib_ustream_concat(&test_buffer1, &test_buffer2, multi_data1, free);
+    result2 = az_ulib_ustream_concat(&test_buffer1, &test_buffer3, multi_data2, free);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result2);
-    az_ustream_dispose(&test_buffer2);
-    az_ustream_dispose(&test_buffer3);
+    az_ulib_ustream_dispose(&test_buffer2);
+    az_ulib_ustream_dispose(&test_buffer3);
     check_buffer(
         &test_buffer1,
         0,
@@ -217,19 +217,19 @@ TEST_FUNCTION(az_ustream_concat_multiple_buffers_succeed)
         (uint8_t)strlen(USTREAM_COMPLIANCE_EXPECTED_CONTENT));
 
     ///cleanup
-    az_ustream_dispose(&test_buffer1);
+    az_ulib_ustream_dispose(&test_buffer1);
 }
 
-/* az_ustream_read shall read from all the concatenated ustreams and return AZ_ULIB_SUCCESS */
-TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
+/* az_ulib_ustream_read shall read from all the concatenated ustreams and return AZ_ULIB_SUCCESS */
+TEST_FUNCTION(az_ulib_ustream_concat_read_from_multiple_buffers_succeed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* control_block1 =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block1 =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block1);
-    AZ_USTREAM test_buffer1;
-    AZ_ULIB_RESULT result1 =
-        az_ustream_init(
+    az_ulib_ustream test_buffer1;
+    az_ulib_result result1 =
+        az_ulib_ustream_init(
             &test_buffer1,
             control_block1,
             free,
@@ -238,12 +238,12 @@ TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
-    AZ_USTREAM_DATA_CB* control_block2 =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block2 =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block2);
-    AZ_USTREAM test_buffer2;
-    AZ_ULIB_RESULT result2 =
-        az_ustream_init(
+    az_ulib_ustream test_buffer2;
+    az_ulib_result result2 =
+        az_ulib_ustream_init(
             &test_buffer2,
             control_block2,
             free,
@@ -252,12 +252,12 @@ TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result2);
 
-    AZ_USTREAM_DATA_CB* control_block3 =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block3 =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block3);
-    AZ_USTREAM test_buffer3;
-    AZ_ULIB_RESULT result3 =
-        az_ustream_init(
+    az_ulib_ustream test_buffer3;
+    az_ulib_result result3 =
+        az_ulib_ustream_init(
             &test_buffer3,
             control_block3,
             free,
@@ -266,13 +266,13 @@ TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result3);
 
-    AZ_USTREAM_MULTI_DATA_CB* multi_data1 =
-        (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
-    AZ_USTREAM_MULTI_DATA_CB* multi_data2 =
-        (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    az_ulib_ustream_multi_data_cb* multi_data1 =
+        (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
+    az_ulib_ustream_multi_data_cb* multi_data2 =
+        (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
 
-    result1 = az_ustream_concat(&test_buffer1, &test_buffer2, multi_data1, free);
-    result2 = az_ustream_concat(&test_buffer1, &test_buffer3, multi_data2, free);
+    result1 = az_ulib_ustream_concat(&test_buffer1, &test_buffer2, multi_data1, free);
+    result2 = az_ulib_ustream_concat(&test_buffer1, &test_buffer3, multi_data2, free);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result2);
 
@@ -280,8 +280,8 @@ TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
     size_t size_result;
 
     ///act
-    AZ_ULIB_RESULT result =
-        az_ustream_read(
+    az_ulib_result result =
+        az_ulib_ustream_read(
             &test_buffer1,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
@@ -292,21 +292,21 @@ TEST_FUNCTION(az_ustream_concat_read_from_multiple_buffers_succeed)
     ASSERT_BUFFER_ARE_EQUAL(uint8_t_ptr, USTREAM_COMPLIANCE_EXPECTED_CONTENT, buf_result, size_result);
 
     ///cleanup
-    az_ustream_dispose(&test_buffer2);
-    az_ustream_dispose(&test_buffer3);
-    az_ustream_dispose(&test_buffer1);
+    az_ulib_ustream_dispose(&test_buffer2);
+    az_ulib_ustream_dispose(&test_buffer3);
+    az_ulib_ustream_dispose(&test_buffer1);
 }
 
-/* az_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
-TEST_FUNCTION(az_ustream_concat_null_instance_failed)
+/* az_ulib_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
+TEST_FUNCTION(az_ulib_ustream_concat_null_instance_failed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* control_block =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block);
-    AZ_USTREAM test_buffer;
-    AZ_ULIB_RESULT result1 =
-        az_ustream_init(
+    az_ulib_ustream test_buffer;
+    az_ulib_result result1 =
+        az_ulib_ustream_init(
             &test_buffer,
             control_block,
             free,
@@ -316,25 +316,25 @@ TEST_FUNCTION(az_ustream_concat_null_instance_failed)
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_concat(NULL, &test_buffer, NULL, free);
+    az_ulib_result result = az_ulib_ustream_concat(NULL, &test_buffer, NULL, free);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(&test_buffer);
+    az_ulib_ustream_dispose(&test_buffer);
 }
 
-/* az_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream to add is NULL */
-TEST_FUNCTION(az_ustream_concat_null_buffer_to_add_failed)
+/* az_ulib_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream to add is NULL */
+TEST_FUNCTION(az_ulib_ustream_concat_null_buffer_to_add_failed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* control_block =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block);
-    AZ_USTREAM default_buffer;
-    AZ_ULIB_RESULT result1 =
-        az_ustream_init(
+    az_ulib_ustream default_buffer;
+    az_ulib_result result1 =
+        az_ulib_ustream_init(
             &default_buffer,
             control_block,
             free,
@@ -343,29 +343,29 @@ TEST_FUNCTION(az_ustream_concat_null_buffer_to_add_failed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
-    AZ_USTREAM_MULTI_DATA_CB multi_data;
+    az_ulib_ustream_multi_data_cb multi_data;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_concat(&default_buffer, NULL, &multi_data, NULL);
+    az_ulib_result result = az_ulib_ustream_concat(&default_buffer, NULL, &multi_data, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(&default_buffer);
+    az_ulib_ustream_dispose(&default_buffer);
 }
 
 
-/* az_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided multi data to add is NULL */
-TEST_FUNCTION(az_ustream_concat_null_multi_data_failed)
+/* az_ulib_ustream_concat shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided multi data to add is NULL */
+TEST_FUNCTION(az_ulib_ustream_concat_null_multi_data_failed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* control_block =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block);
-    AZ_USTREAM default_buffer;
-    AZ_ULIB_RESULT result1 =
-        az_ustream_init(
+    az_ulib_ustream default_buffer;
+    az_ulib_result result1 =
+        az_ulib_ustream_init(
             &default_buffer,
             control_block,
             free,
@@ -374,12 +374,12 @@ TEST_FUNCTION(az_ustream_concat_null_multi_data_failed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result1);
 
-    AZ_USTREAM_DATA_CB* control_block2 =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block2 =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block2);
-    AZ_USTREAM test_buffer2;
-    AZ_ULIB_RESULT result2 =
-        az_ustream_init(
+    az_ulib_ustream test_buffer2;
+    az_ulib_result result2 =
+        az_ulib_ustream_init(
             &test_buffer2,
             control_block2,
             free,
@@ -388,65 +388,65 @@ TEST_FUNCTION(az_ustream_concat_null_multi_data_failed)
             NULL);
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_concat(&default_buffer, &test_buffer2, NULL, NULL);
+    az_ulib_result result = az_ulib_ustream_concat(&default_buffer, &test_buffer2, NULL, NULL);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(&test_buffer2);
-    az_ustream_dispose(&default_buffer);
+    az_ulib_ustream_dispose(&test_buffer2);
+    az_ulib_ustream_dispose(&default_buffer);
 }
 
-/* az_ustream_multi_concat shall return an error if the internal call to az_ustream_get_remaining_size failed
+/* az_ulib_ustream_multi_concat shall return an error if the internal call to az_ulib_ustream_get_remaining_size failed
     when concatenating two ustreams */
-TEST_FUNCTION(az_ustream_concat_new_control_block_failed_on_get_remaining_size_failed)
+TEST_FUNCTION(az_ulib_ustream_concat_new_control_block_failed_on_get_remaining_size_failed)
 {
     ///arrange
-    AZ_USTREAM multibuffer;
-    AZ_USTREAM_DATA_CB* control_block1 = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
-    AZ_ULIB_RESULT result =
-        az_ustream_init(&multibuffer, control_block1, free,
+    az_ulib_ustream multibuffer;
+    az_ulib_ustream_data_cb* control_block1 = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
+    az_ulib_result result =
+        az_ulib_ustream_init(&multibuffer, control_block1, free,
             USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
-    AZ_USTREAM* test_buffer2 = ustream_mock_create();
+    az_ulib_ustream* test_buffer2 = ustream_mock_create();
 
-    AZ_USTREAM_MULTI_DATA_CB* multi_data1 =
-        (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    az_ulib_ustream_multi_data_cb* multi_data1 =
+        (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
 
     set_get_remaining_size_result(AZ_ULIB_SYSTEM_ERROR);
 
     ///act
-    result = az_ustream_concat(&multibuffer, test_buffer2, multi_data1, free);
+    result = az_ulib_ustream_concat(&multibuffer, test_buffer2, multi_data1, free);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    (void)az_ustream_dispose(test_buffer2);
-    (void)az_ustream_dispose(&multibuffer);
+    (void)az_ulib_ustream_dispose(test_buffer2);
+    (void)az_ulib_ustream_dispose(&multibuffer);
 }
 
-/* az_ustream_read shall return partial result if one of the internal buffers failed. */
-TEST_FUNCTION(az_ustream_multi_read_control_block_failed_in_read_with_some_valid_content_succeed)
+/* az_ulib_ustream_read shall return partial result if one of the internal buffers failed. */
+TEST_FUNCTION(az_ulib_ustream_multi_read_control_block_failed_in_read_with_some_valid_content_succeed)
 {
     ///arrange
-    AZ_USTREAM multibuffer;
-    AZ_USTREAM_DATA_CB* control_block1 = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
-    AZ_ULIB_RESULT result =
-        az_ustream_init(&multibuffer, control_block1, free,
+    az_ulib_ustream multibuffer;
+    az_ulib_ustream_data_cb* control_block1 = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
+    az_ulib_result result =
+        az_ulib_ustream_init(&multibuffer, control_block1, free,
                            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
                            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
-    AZ_USTREAM* test_buffer2 = ustream_mock_create();
+    az_ulib_ustream* test_buffer2 = ustream_mock_create();
 
-    AZ_USTREAM_MULTI_DATA_CB* multi_data1 =
-        (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    az_ulib_ustream_multi_data_cb* multi_data1 =
+        (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
 
-    result = az_ustream_concat(&multibuffer, test_buffer2, multi_data1, free);
+    result = az_ulib_ustream_concat(&multibuffer, test_buffer2, multi_data1, free);
     set_read_result(AZ_ULIB_SYSTEM_ERROR);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
@@ -455,7 +455,7 @@ TEST_FUNCTION(az_ustream_multi_read_control_block_failed_in_read_with_some_valid
 
     ///act
     result =
-        az_ustream_read(
+        az_ulib_ustream_read(
             &multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
@@ -466,28 +466,28 @@ TEST_FUNCTION(az_ustream_multi_read_control_block_failed_in_read_with_some_valid
     ASSERT_BUFFER_ARE_EQUAL(uint8_t_ptr, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1, buf_result, size_result);
 
     ///cleanup
-    (void)az_ustream_dispose(&multibuffer);
-    (void)az_ustream_dispose(test_buffer2);
+    (void)az_ulib_ustream_dispose(&multibuffer);
+    (void)az_ulib_ustream_dispose(test_buffer2);
 }
 
-/* az_ustream_read shall return AZ_ULIB_SYSTEM_ERROR if it failed to read the requested bytes */
-TEST_FUNCTION(az_ustream_multi_read_control_block_failed_in_read_failed)
+/* az_ulib_ustream_read shall return AZ_ULIB_SYSTEM_ERROR if it failed to read the requested bytes */
+TEST_FUNCTION(az_ulib_ustream_multi_read_control_block_failed_in_read_failed)
 {
     ///arrange
-    AZ_USTREAM multibuffer;
-    AZ_USTREAM_DATA_CB* control_block1 = (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
-    AZ_ULIB_RESULT result =
-        az_ustream_init(&multibuffer, control_block1, free,
+    az_ulib_ustream multibuffer;
+    az_ulib_ustream_data_cb* control_block1 = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
+    az_ulib_result result =
+        az_ulib_ustream_init(&multibuffer, control_block1, free,
                            USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1,
                            strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1), NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
-    AZ_USTREAM* test_buffer2 = ustream_mock_create();
+    az_ulib_ustream* test_buffer2 = ustream_mock_create();
 
-    AZ_USTREAM_MULTI_DATA_CB* multi_data1 =
-        (AZ_USTREAM_MULTI_DATA_CB*)malloc(sizeof(AZ_USTREAM_MULTI_DATA_CB));
+    az_ulib_ustream_multi_data_cb* multi_data1 =
+        (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
 
-    result = az_ustream_concat(&multibuffer, test_buffer2, multi_data1, free);
+    result = az_ulib_ustream_concat(&multibuffer, test_buffer2, multi_data1, free);
     set_read_result(AZ_ULIB_SYSTEM_ERROR);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
@@ -496,7 +496,7 @@ TEST_FUNCTION(az_ustream_multi_read_control_block_failed_in_read_failed)
     ASSERT_ARE_EQUAL(
         int, 
         AZ_ULIB_SUCCESS, 
-        az_ustream_read(
+        az_ulib_ustream_read(
             &multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
@@ -507,7 +507,7 @@ TEST_FUNCTION(az_ustream_multi_read_control_block_failed_in_read_failed)
 
     ///act
     result =
-        az_ustream_read(
+        az_ulib_ustream_read(
             &multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
@@ -517,20 +517,20 @@ TEST_FUNCTION(az_ustream_multi_read_control_block_failed_in_read_failed)
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    (void)az_ustream_dispose(&multibuffer);
-    (void)az_ustream_dispose(test_buffer2);
+    (void)az_ulib_ustream_dispose(&multibuffer);
+    (void)az_ulib_ustream_dispose(test_buffer2);
 }
 
-/* az_ustream_read shall set the position to an instance's position before reading and return AZ_ULIB_SUCCESS */
-TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
+/* az_ulib_ustream_read shall set the position to an instance's position before reading and return AZ_ULIB_SUCCESS */
+TEST_FUNCTION(az_ulib_ustream_multi_read_clone_and_original_in_parallel_succeed)
 {
     ///arrange
-    AZ_USTREAM multibuffer;
+    az_ulib_ustream multibuffer;
     USTREAM_COMPLIANCE_TARGET_FACTORY(&multibuffer);
 
-    AZ_USTREAM multibuffer_clone;
+    az_ulib_ustream multibuffer_clone;
 
-    az_ustream_clone(&multibuffer_clone, &multibuffer, 0);
+    az_ulib_ustream_clone(&multibuffer_clone, &multibuffer, 0);
 
     uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH];
     size_t size_result;
@@ -538,7 +538,7 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
     ASSERT_ARE_EQUAL(
         int,
         AZ_ULIB_SUCCESS,
-        az_ustream_read(
+        az_ulib_ustream_read(
             &multibuffer,
             buf_result,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
@@ -551,7 +551,7 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
     ASSERT_ARE_EQUAL(
         int,
         AZ_ULIB_SUCCESS,
-        az_ustream_read(
+        az_ulib_ustream_read(
             &multibuffer_clone,
             buf_result,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1),
@@ -561,11 +561,11 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
     memset(buf_result, 0, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS,
-                     az_ustream_reset(&multibuffer));
+                     az_ulib_ustream_reset(&multibuffer));
 
     ///act
-    AZ_ULIB_RESULT result =
-        az_ustream_read(
+    az_ulib_result result =
+        az_ulib_ustream_read(
             &multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
@@ -577,7 +577,7 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
 
     ///assert
     result =
-        az_ustream_read(
+        az_ulib_ustream_read(
             &multibuffer,
             buf_result,
             USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
@@ -585,14 +585,14 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
 
     ASSERT_ARE_EQUAL(int, AZ_ULIB_EOF, result);
 
-    (void)az_ustream_dispose(&multibuffer);
+    (void)az_ulib_ustream_dispose(&multibuffer);
 
     memset(buf_result, 0, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
     ASSERT_ARE_EQUAL(
         int,
         AZ_ULIB_SUCCESS,
-        az_ustream_read(
+        az_ulib_ustream_read(
             &multibuffer_clone,
             buf_result,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2),
@@ -604,7 +604,7 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
     ASSERT_ARE_EQUAL(
         int,
         AZ_ULIB_SUCCESS,
-        az_ustream_read(
+        az_ulib_ustream_read(
             &multibuffer_clone,
             buf_result,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3),
@@ -614,44 +614,44 @@ TEST_FUNCTION(az_ustream_multi_read_clone_and_original_in_parallel_succeed)
     ASSERT_ARE_EQUAL(
         int,
         AZ_ULIB_EOF,
-        az_ustream_read(
+        az_ulib_ustream_read(
             &multibuffer_clone,
             buf_result,
             strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_3),
             &size_result));
 
     ///cleanup
-    (void)az_ustream_dispose(&multibuffer_clone);
+    (void)az_ulib_ustream_dispose(&multibuffer_clone);
 }
 
-/*-------------------az_ustream_split() unit tests----------------------*/
+/*-------------------az_ulib_ustream_split() unit tests----------------------*/
 
-/* az_ustream_split shall return AZ_ULIB_SUCCESS if the split is successful */
-TEST_FUNCTION(az_ustream_split_success)
+/* az_ulib_ustream_split shall return AZ_ULIB_SUCCESS if the split is successful */
+TEST_FUNCTION(az_ulib_ustream_split_success)
 {
     ///arrange
-    AZ_USTREAM* test_ustream = ustream_mock_create();
+    az_ulib_ustream* test_ustream = ustream_mock_create();
 
-    AZ_USTREAM ustream_split;
+    az_ulib_ustream ustream_split;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+    az_ulib_result result = az_ulib_ustream_split(test_ustream, &ustream_split, 5);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
     ///cleanup
-    az_ustream_dispose(test_ustream);
+    az_ulib_ustream_dispose(test_ustream);
 }
 
-/* az_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
-TEST_FUNCTION(az_ustream_split_null_instance_failed)
+/* az_ulib_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
+TEST_FUNCTION(az_ulib_ustream_split_null_instance_failed)
 {
     ///arrange
-    AZ_USTREAM test_buffer;
+    az_ulib_ustream test_buffer;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(NULL, &test_buffer, 4);
+    az_ulib_result result = az_ulib_ustream_split(NULL, &test_buffer, 4);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -659,14 +659,14 @@ TEST_FUNCTION(az_ustream_split_null_instance_failed)
     ///cleanup
 }
 
-/* az_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
-TEST_FUNCTION(az_ustream_split_null_split_instance_failed)
+/* az_ulib_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided ustream is NULL */
+TEST_FUNCTION(az_ulib_ustream_split_null_split_instance_failed)
 {
     ///arrange
-    AZ_USTREAM test_buffer;
+    az_ulib_ustream test_buffer;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(&test_buffer, NULL, 4);
+    az_ulib_result result = az_ulib_ustream_split(&test_buffer, NULL, 4);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -674,16 +674,16 @@ TEST_FUNCTION(az_ustream_split_null_split_instance_failed)
     ///cleanup
 }
 
-/* az_ustream_split shall return AZ_ULIB_NO_SUCH_ELEMENT_ERROR if the provided split position is invalid */
-TEST_FUNCTION(az_ustream_split_invalid_split_position_failed)
+/* az_ulib_ustream_split shall return AZ_ULIB_NO_SUCH_ELEMENT_ERROR if the provided split position is invalid */
+TEST_FUNCTION(az_ulib_ustream_split_invalid_split_position_failed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* control_block =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block);
-    AZ_USTREAM test_ustream;
-    AZ_ULIB_RESULT result =
-        az_ustream_init(
+    az_ulib_ustream test_ustream;
+    az_ulib_result result =
+        az_ulib_ustream_init(
             &test_ustream,
             control_block,
             free,
@@ -692,28 +692,28 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_failed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
-    AZ_USTREAM ustream_split;
+    az_ulib_ustream ustream_split;
 
     ///act
-    result = az_ustream_split(&test_ustream, &ustream_split, -1);
+    result = az_ulib_ustream_split(&test_ustream, &ustream_split, -1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(&test_ustream);
+    az_ulib_ustream_dispose(&test_ustream);
 }
 
-/* az_ustream_split shall return AZ_ULIB_NO_SUCH_ELEMENT_ERROR if the provided split position is invalid */
-TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_failed)
+/* az_ulib_ustream_split shall return AZ_ULIB_NO_SUCH_ELEMENT_ERROR if the provided split position is invalid */
+TEST_FUNCTION(az_ulib_ustream_split_invalid_split_position_with_offset_failed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* control_block =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block);
-    AZ_USTREAM test_ustream;
-    AZ_ULIB_RESULT result =
-        az_ustream_init(
+    az_ulib_ustream test_ustream;
+    az_ulib_result result =
+        az_ulib_ustream_init(
             &test_ustream,
             control_block,
             free,
@@ -722,34 +722,34 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_failed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
-    AZ_USTREAM test_ustream_clone;
+    az_ulib_ustream test_ustream_clone;
 
-    az_ustream_clone(&test_ustream_clone, &test_ustream, 10);
+    az_ulib_ustream_clone(&test_ustream_clone, &test_ustream, 10);
 
-    AZ_USTREAM ustream_split;
+    az_ulib_ustream ustream_split;
 
     ///act
-    result = az_ustream_split(&test_ustream_clone, &ustream_split, 5);
+    result = az_ulib_ustream_split(&test_ustream_clone, &ustream_split, 5);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(&test_ustream);
-    az_ustream_dispose(&test_ustream_clone);
+    az_ulib_ustream_dispose(&test_ustream);
+    az_ulib_ustream_dispose(&test_ustream_clone);
 }
 
-/* az_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided split position is invalid */
-TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_after_failed)
+/* az_ulib_ustream_split shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR if the provided split position is invalid */
+TEST_FUNCTION(az_ulib_ustream_split_invalid_split_position_with_offset_after_failed)
 {
     ///arrange
-    AZ_USTREAM_DATA_CB* control_block =
-        (AZ_USTREAM_DATA_CB*)malloc(sizeof(AZ_USTREAM_DATA_CB));
+    az_ulib_ustream_data_cb* control_block =
+        (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
     ASSERT_IS_NOT_NULL(control_block);
-    AZ_USTREAM test_ustream;
+    az_ulib_ustream test_ustream;
     size_t content_length = strlen((const char *)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1);
-    AZ_ULIB_RESULT result =
-        az_ustream_init(
+    az_ulib_result result =
+        az_ulib_ustream_init(
             &test_ustream,
             control_block,
             free,
@@ -758,165 +758,165 @@ TEST_FUNCTION(az_ustream_split_invalid_split_position_with_offset_after_failed)
             NULL);
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
 
-    AZ_USTREAM test_ustream_clone;
+    az_ulib_ustream test_ustream_clone;
 
-    az_ustream_clone(&test_ustream_clone, &test_ustream, 10);
+    az_ulib_ustream_clone(&test_ustream_clone, &test_ustream, 10);
 
-    AZ_USTREAM ustream_split;
+    az_ulib_ustream ustream_split;
 
     ///act
-    result = az_ustream_split(&test_ustream_clone, &ustream_split, 10 + content_length + 1);
+    result = az_ulib_ustream_split(&test_ustream_clone, &ustream_split, 10 + content_length + 1);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(&test_ustream);
-    az_ustream_dispose(&test_ustream_clone);
+    az_ulib_ustream_dispose(&test_ustream);
+    az_ulib_ustream_dispose(&test_ustream_clone);
 }
 
-/* az_ustream_split shall return the return value of az_ustream_get_position if it fails */
-TEST_FUNCTION(az_ustream_split_get_position_failed)
+/* az_ulib_ustream_split shall return the return value of az_ulib_ustream_get_position if it fails */
+TEST_FUNCTION(az_ulib_ustream_split_get_position_failed)
 {
     ///arrange
-    AZ_USTREAM* test_ustream = ustream_mock_create();
+    az_ulib_ustream* test_ustream = ustream_mock_create();
 
-    AZ_USTREAM ustream_split;
+    az_ulib_ustream ustream_split;
 
     set_get_position_result(AZ_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+    az_ulib_result result = az_ulib_ustream_split(test_ustream, &ustream_split, 5);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(test_ustream);
+    az_ulib_ustream_dispose(test_ustream);
 }
 
-/* az_ustream_split shall return AZ_ILLEGAL_ARGUMENT_ERROR if the input size_pos is equal to the current position */
-TEST_FUNCTION(az_ustream_split_position_same_as_current_failed)
+/* az_ulib_ustream_split shall return AZ_ILLEGAL_ARGUMENT_ERROR if the input size_pos is equal to the current position */
+TEST_FUNCTION(az_ulib_ustream_split_position_same_as_current_failed)
 {
     ///arrange
-    AZ_USTREAM* test_ustream = ustream_mock_create();
+    az_ulib_ustream* test_ustream = ustream_mock_create();
 
-    AZ_USTREAM ustream_split;
+    az_ulib_ustream ustream_split;
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 0);
+    az_ulib_result result = az_ulib_ustream_split(test_ustream, &ustream_split, 0);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(test_ustream);
+    az_ulib_ustream_dispose(test_ustream);
 }
 
-/* az_ustream_split shall return the return value of az_ustream_get_position if it fails */
-TEST_FUNCTION(az_ustream_split_get_remaining_size_failed)
+/* az_ulib_ustream_split shall return the return value of az_ulib_ustream_get_position if it fails */
+TEST_FUNCTION(az_ulib_ustream_split_get_remaining_size_failed)
 {
     ///arrange
-    AZ_USTREAM* test_ustream = ustream_mock_create();
+    az_ulib_ustream* test_ustream = ustream_mock_create();
 
-    AZ_USTREAM ustream_split;
+    az_ulib_ustream ustream_split;
 
     set_get_remaining_size_result(AZ_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+    az_ulib_result result = az_ulib_ustream_split(test_ustream, &ustream_split, 5);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(test_ustream);
+    az_ulib_ustream_dispose(test_ustream);
 }
 
-/* az_ustream_split shall return AZ_ILLEGAL_ARGUMENT_ERROR if the input size_pos is equal to the current position + remaining size */
-TEST_FUNCTION(az_ustream_split_position_end_of_ustream_failed)
+/* az_ulib_ustream_split shall return AZ_ILLEGAL_ARGUMENT_ERROR if the input size_pos is equal to the current position + remaining size */
+TEST_FUNCTION(az_ulib_ustream_split_position_end_of_ustream_failed)
 {
     ///arrange
-    AZ_USTREAM* test_ustream = ustream_mock_create();
+    az_ulib_ustream* test_ustream = ustream_mock_create();
 
-    AZ_USTREAM ustream_split;
+    az_ulib_ustream ustream_split;
 
     size_t remaining_size;
-    az_ustream_get_remaining_size(test_ustream, &remaining_size);
+    az_ulib_ustream_get_remaining_size(test_ustream, &remaining_size);
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, remaining_size);
+    az_ulib_result result = az_ulib_ustream_split(test_ustream, &ustream_split, remaining_size);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(test_ustream);
+    az_ulib_ustream_dispose(test_ustream);
 }
 
-/* az_ustream_split shall return the return value of az_ustream_set_position if it fails */
-TEST_FUNCTION(az_ustream_split_set_position_failed)
+/* az_ulib_ustream_split shall return the return value of az_ulib_ustream_set_position if it fails */
+TEST_FUNCTION(az_ulib_ustream_split_set_position_failed)
 {
     ///arrange
-    AZ_USTREAM* test_ustream = ustream_mock_create();
+    az_ulib_ustream* test_ustream = ustream_mock_create();
 
-    AZ_USTREAM ustream_split;
+    az_ulib_ustream ustream_split;
 
     set_set_position_result(AZ_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+    az_ulib_result result = az_ulib_ustream_split(test_ustream, &ustream_split, 5);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(test_ustream);
+    az_ulib_ustream_dispose(test_ustream);
 }
 
-/* az_ustream_split shall return the return value of az_ustream_clone if it fails */
-TEST_FUNCTION(az_ustream_split_clone_failed)
+/* az_ulib_ustream_split shall return the return value of az_ulib_ustream_clone if it fails */
+TEST_FUNCTION(az_ulib_ustream_split_clone_failed)
 {
     ///arrange
-    AZ_USTREAM* test_ustream = ustream_mock_create();
+    az_ulib_ustream* test_ustream = ustream_mock_create();
 
-    AZ_USTREAM ustream_split;
+    az_ulib_ustream ustream_split;
 
     set_clone_result(AZ_ULIB_SYSTEM_ERROR);
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+    az_ulib_result result = az_ulib_ustream_split(test_ustream, &ustream_split, 5);
 
     ///assert]
     size_t cur_pos;
-    az_ustream_get_position(test_ustream, &cur_pos);
+    az_ulib_ustream_get_position(test_ustream, &cur_pos);
     ASSERT_ARE_EQUAL(int, 0, cur_pos);
 
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(test_ustream);
+    az_ulib_ustream_dispose(test_ustream);
 }
 
-/* az_ustream_split shall return the return value of az_ustream_set_position if it fails */
-TEST_FUNCTION(az_ustream_split_set_position_second_failed)
+/* az_ulib_ustream_split shall return the return value of az_ulib_ustream_set_position if it fails */
+TEST_FUNCTION(az_ulib_ustream_split_set_position_second_failed)
 {
     ///arrange
-    AZ_USTREAM* test_ustream = ustream_mock_create();
+    az_ulib_ustream* test_ustream = ustream_mock_create();
 
-    AZ_USTREAM ustream_split;
+    az_ulib_ustream ustream_split;
 
     set_set_position_result(AZ_ULIB_SYSTEM_ERROR);
     set_delay_return_value(1);
 
     ///act
-    AZ_ULIB_RESULT result = az_ustream_split(test_ustream, &ustream_split, 5);
+    az_ulib_result result = az_ulib_ustream_split(test_ustream, &ustream_split, 5);
 
     ///assert
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SYSTEM_ERROR, result);
 
     ///cleanup
-    az_ustream_dispose(test_ustream);
+    az_ulib_ustream_dispose(test_ustream);
 }
 
 #include "az_ulib_ustream_compliance_ut.h"

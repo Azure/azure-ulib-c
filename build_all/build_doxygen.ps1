@@ -29,7 +29,7 @@ function cleanupMockableLine([string]$mockableFunctionName) {
 function cleanupEnumLine([string]$enumName) {
 
     $enumRegex = 'MU_DEFINE_ENUM\(\s*?(\w*),([\s\w\W]*)\)'
-    $regexReplace = 'typedef enum $1_TAG {$2} $1'
+    $regexReplace = 'typedef enum $1_tag {$2} $1'
     $prettyEnumName = $enumName -replace $enumRegex, $regexReplace
 
     # There is no need to add an explicit ");" to end of string, as this came out as part of MOCKABLE process

@@ -15,15 +15,15 @@
 
 static const char USTREAM_ONE_STRING[] = "Split BeforeSplit After";
 
-static AZ_ULIB_RESULT print_ustream(AZ_USTREAM* ustream)
+static az_ulib_result print_ustream(az_ulib_ustream* ustream)
 {
-    AZ_ULIB_RESULT result;
+    az_ulib_result result;
     size_t returned_size;
     uint8_t user_buf[USER_BUFFER_SIZE] = { 0 };
 
     //Read ustream until receive AZIOT_ULIB_EOF
     (void)printf("\r\n------printing the ustream------\r\n");
-    while((result = az_ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == AZ_ULIB_SUCCESS)
+    while((result = az_ulib_ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size)) == AZ_ULIB_SUCCESS)
     {
         user_buf[returned_size] = '\0';
         (void)printf("%s", user_buf);
@@ -49,32 +49,32 @@ static AZ_ULIB_RESULT print_ustream(AZ_USTREAM* ustream)
  */
 int main(void)
 {
-    AZ_ULIB_RESULT result;
+    az_ulib_result result;
 
-    AZ_USTREAM_DATA_CB *data_cb;
-    if((data_cb = (AZ_USTREAM_DATA_CB *)malloc(sizeof(AZ_USTREAM_DATA_CB))) != NULL)
+    az_ulib_ustream_data_cb *data_cb;
+    if((data_cb = (az_ulib_ustream_data_cb *)malloc(sizeof(az_ulib_ustream_data_cb))) != NULL)
     {
-        AZ_USTREAM ustream_instance;
-        if((result = az_ustream_init(&ustream_instance, data_cb, free, (const uint8_t*)USTREAM_ONE_STRING, 
+        az_ulib_ustream ustream_instance;
+        if((result = az_ulib_ustream_init(&ustream_instance, data_cb, free, (const uint8_t*)USTREAM_ONE_STRING, 
                                                         sizeof(USTREAM_ONE_STRING), NULL)) != AZ_ULIB_SUCCESS)
         {
             printf("Could not initialize ustream_instance\r\n");
         }
         else if((result = print_ustream(&ustream_instance)) != AZ_ULIB_SUCCESS)
         {
-            az_ustream_dispose(&ustream_instance);
+            az_ulib_ustream_dispose(&ustream_instance);
             printf("Could not print the original ustream_instance\r\n");
         }
-        else if((result = az_ustream_reset(&ustream_instance)) != AZ_ULIB_SUCCESS)
+        else if((result = az_ulib_ustream_reset(&ustream_instance)) != AZ_ULIB_SUCCESS)
         {
-            az_ustream_dispose(&ustream_instance);
+            az_ulib_ustream_dispose(&ustream_instance);
             printf("Could not reset ustream_instance\r\n");
         }
         else
         {
-            AZ_USTREAM ustream_instance_split;
+            az_ulib_ustream ustream_instance_split;
 
-            if((result = az_ustream_split(&ustream_instance, &ustream_instance_split, SPLIT_POSITION)) != AZ_ULIB_SUCCESS)
+            if((result = az_ulib_ustream_split(&ustream_instance, &ustream_instance_split, SPLIT_POSITION)) != AZ_ULIB_SUCCESS)
             {
                 printf("Could not split ustream_instance\r\n");
             }
@@ -89,13 +89,13 @@ int main(void)
                     printf("Could not print ustream_instance_split\r\n");
                 }
 
-                if((result = az_ustream_dispose(&ustream_instance_split)) != AZ_ULIB_SUCCESS)
+                if((result = az_ulib_ustream_dispose(&ustream_instance_split)) != AZ_ULIB_SUCCESS)
                 {
                     printf("Could not dispose of ustream_instance_split\r\n");
                 }
             }
 
-            if((result = az_ustream_dispose(&ustream_instance)) != AZ_ULIB_SUCCESS)
+            if((result = az_ulib_ustream_dispose(&ustream_instance)) != AZ_ULIB_SUCCESS)
             {
                 printf("Could not dispose of ustream_instance\r\n");
             }

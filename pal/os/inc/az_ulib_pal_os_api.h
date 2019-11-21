@@ -24,32 +24,32 @@ extern "C" {
 /**
  * @brief   This API initialize and returns a valid lock handle.
  *
- * @param[in,out]   lock    The #AZ_PAL_OS_LOCK* that points to the lock handle.
+ * @param[in,out]   lock    The #az_ulib_pal_os_lock* that points to the lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_init, AZ_PAL_OS_LOCK*, lock);
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_init, az_ulib_pal_os_lock*, lock);
 
 /**
  * @brief   The lock instance is destroyed.
  *
- * @param[in]       lock    The #AZ_PAL_OS_LOCK* that points to a valid lock handle.
+ * @param[in]       lock    The #az_ulib_pal_os_lock* that points to a valid lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_deinit, AZ_PAL_OS_LOCK*, lock);
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_deinit, az_ulib_pal_os_lock*, lock);
 
 /**
  * @brief   Acquires a lock on the given lock handle. Uses platform specific mutex primitives in
  *          its implementation.
  *
- * @param[in]       lock    The #AZ_PAL_OS_LOCK* that points to a valid lock handle.
+ * @param[in]       lock    The #az_ulib_pal_os_lock* that points to a valid lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_acquire, AZ_PAL_OS_LOCK*, lock);
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_acquire, az_ulib_pal_os_lock*, lock);
 
 /**
  * @brief   Releases the lock on the given lock handle. Uses platform specific mutex primitives in
  *          its implementation.
  *
- * @param[in]       lock    The #AZ_PAL_OS_LOCK* that points to a valid lock handle.
+ * @param[in]       lock    The #az_ulib_pal_os_lock* that points to a valid lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_release, AZ_PAL_OS_LOCK*, lock);
+MOCKABLE_FUNCTION(, void, az_pal_os_lock_release, az_ulib_pal_os_lock*, lock);
 
 /**
  * @brief   Sleep for some milliseconds.

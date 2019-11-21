@@ -30,7 +30,7 @@ static TEST_MUTEX_HANDLE g_test_by_test;
 
 
 static const uint8_t* const USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT = (const uint8_t* const)USTREAM_COMPLIANCE_EXPECTED_CONTENT;
-static void ustream_factory(AZ_USTREAM* ustream)
+static void ustream_factory(az_ulib_ustream* ustream)
 {
     /*
         TODO:<Insert your code here which initializes the ustream parameter with your implementation>

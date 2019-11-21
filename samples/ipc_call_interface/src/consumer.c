@@ -13,7 +13,7 @@
  */
 void client_use_math(void) {
   math_handle handle;
-  AZ_ULIB_RESULT result;
+  az_ulib_result result;
   if ((result = math_create(&handle)) != AZ_ULIB_SUCCESS) {
     (void)printf("Client get math interface failed with code %d\r\n", result);
   } else {

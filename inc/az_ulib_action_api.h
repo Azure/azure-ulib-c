@@ -51,7 +51,7 @@ typedef uint16_t az_ulib_action_index;
  */
 typedef void (*az_ulib_action_result_callback)(
     const az_ulib_action_token action_token,
-    AZ_ULIB_RESULT result,
+    az_ulib_result result,
     const void* const model_out);
 
 /**
@@ -62,7 +62,7 @@ typedef void (*az_ulib_action_event)(const void* const model_out);
 /**
  * @brief       Cancellation token prototype.
  */
-typedef AZ_ULIB_RESULT (*az_ulib_action_cancellation_callback)(
+typedef az_ulib_result (*az_ulib_action_cancellation_callback)(
     const az_ulib_action_token action_token);
 
 /**
@@ -73,7 +73,7 @@ typedef AZ_ULIB_RESULT (*az_ulib_action_cancellation_callback)(
  * data in the `model_in` will be used only during the execution of the method and may be released
  * as soon as the method returns.
  *
- * As a standard, the synchronous method shall return #AZ_ULIB_RESULT. If the method needs to return
+ * As a standard, the synchronous method shall return #az_ulib_result. If the method needs to return
  * anything else, the data shall be stored it on the `model_out`.
  *
  * Both `model_in` and `model_out` shall be defined as part of the interface definition.
@@ -86,15 +86,15 @@ typedef AZ_ULIB_RESULT (*az_ulib_action_cancellation_callback)(
  *                          validation on it. The method itself shall implement any needed
  *                          validation.
  *
- * @return The #AZ_ULIB_RESULT with the result of the method call. All possible results shall be
+ * @return The #az_ulib_result with the result of the method call. All possible results shall be
  * defined as part of the interface.
  */
-typedef AZ_ULIB_RESULT (*az_ulib_action_method)(const void* const model_in, const void* model_out);
+typedef az_ulib_result (*az_ulib_action_method)(const void* const model_in, const void* model_out);
 
 /**
  * @brief       IPC asynchronous task signature.
  */
-typedef AZ_ULIB_RESULT (*az_ulib_action_method_async)(
+typedef az_ulib_result (*az_ulib_action_method_async)(
     const void* const model_in,
     az_ulib_action_result_callback callback,
     const az_ulib_action_token action_token,
@@ -103,12 +103,12 @@ typedef AZ_ULIB_RESULT (*az_ulib_action_method_async)(
 /**
  * @brief       IPC get signature.
  */
-typedef AZ_ULIB_RESULT (*az_ulib_action_get)(const void* model_out);
+typedef az_ulib_result (*az_ulib_action_get)(const void* model_out);
 
 /**
  * @brief       IPC set signature.
  */
-typedef AZ_ULIB_RESULT (*az_ulib_action_set)(const void* const model_in);
+typedef az_ulib_result (*az_ulib_action_set)(const void* const model_in);
 
 #ifdef __cplusplus
 }

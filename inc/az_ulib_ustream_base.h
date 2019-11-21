@@ -27,9 +27,9 @@
  *      - <b>Data source</b> - is the place where the data is stored by the implementation of the ustream
  *          interface. The data source is in the provider domain, and it shall be protected, immutable, 
  *          and non volatile. Consumers can read the data from the data source by the calling
- *          the az_ustream_read() API, which will copy a snapshot of the data to the
+ *          the az_ulib_ustream_read() API, which will copy a snapshot of the data to the
  *          provided external memory, called local buffer.
- *      - <b>Local buffer</b> - is the consumer domain buffer, where the az_ustream_read() API 
+ *      - <b>Local buffer</b> - is the consumer domain buffer, where the az_ulib_ustream_read() API 
  *          will copy the required bytes from the data source. The local buffer belongs to the consumer 
  *          of this interface, which means that the consumer shall allocate and free (if necessary) this memory,
  *          and the content of the local buffer can be changed and released.
@@ -48,19 +48,19 @@
  *          |           +-------------+                                  |                    |
  *          |           | [Allocate on stack or heap]                    |                    |
  *          |           | [In this example the stack]                    |                    |
- *          |           | AZ_USTREAM ustream_instance                    |                    |
+ *          |           | az_ulib_ustream ustream_instance               |                    |
  *          |           +-------------+                                  |                    |
  *          |                         |                                  |                    |
  *          |<-get_provider_content                                      |                    |
  *               (&ustream_instance)--+                                  |                    |
  *          +----------------------------malloc(content_size)-------------------------------->|
  *          |<--------------------------------content_ptr-------------------------------------+
- *          +--------------------malloc(sizeof(AZ_USTREAM_DATA_CB))-------------------------->|
+ *          +--------------------malloc(sizeof(az_ulib_ustream_data_cb))--------------------->|
  *          <---------------------------------control_block_ptr-------------------------------+
  *   +------+                         |                                  |                    |
  *   | generate the content and store in the content_ptr                 |                    |
  *   +----->|                         |                                  |                    |
- *          +-----az_ustream_init                                        |                    |
+ *          +-----az_ulib_ustream_init                                   |                    |
  *          |       (ustream_instance,                                   |                    |
  *          |        control_block_ptr, free,                            |                    |
  *          |        content_ptr, content_size, free)------------------->|                    |
@@ -74,13 +74,13 @@
  *
  *
  *  Now that the consumer has it's local ustream intialized with the content, it will print it using the 
- *   iterator az_ustream_read().
+ *   iterator az_ulib_ustream_read().
  *
  * @code
  *          |                         +------------------malloc(1024)------------------------>|
  *          |                         |<-----------------local_buffer-------------------------+
- *  .. while az_ustream_read return AZ_ULIB_SUCCESS ...............................................
- *  :       |                         +--az_ustream_read                 |                    |         :
+ *  .. while az_ulib_ustream_read return AZ_ULIB_SUCCESS ...............................................
+ *  :       |                         +--az_ulib_ustream_read            |                    |         :
  *  :       |                         |  (ustream_instance,              |                    |         :
  *  :       |                         |   local_buffer,                  |                    |         :
  *  :       |                         |   1024,                          |                    |         :
@@ -95,12 +95,12 @@
  *  :       |                     +-->|                                  |                    |         :
  *  .....................................................................................................
  *          |                         +---------------free(local_buffer)--------------------->|
- *          |                         +-az_ustream_dispose               |                    |
+ *          |                         +-az_ulib_ustream_dispose          |                    |
  *          |                         |       (ustream_instance)-------->|                    |
  *          |                         |                            +-----+                    |
  *          |                         |                            | free(control_block_ptr)->|
  *          |                         |                            | free(data_source)------->|
- *          |                         |                            +-----+
+ *          |                         |                            +-----+                    |
  * @endcode
  *
  * <h2>Heterogeneous buffer</h2>
@@ -121,7 +121,7 @@
  *  The ustream solves this problem by creating a single interface that can handle any media,
  *      exposing it as a standard iterator. Whoever wants to expose a type of media as a ustream shall
  *      implement the functions described on the interface, handling all implementation details for
- *      each API. For example, the az_ustream_read() can be a simple copy of the flash to
+ *      each API. For example, the az_ulib_ustream_read() can be a simple copy of the flash to
  *      the RAM for a buffer that handles constants, or be as complex as creating a TCP/IP connection
  *      to bring the data for a buffer that handles data in the cloud.
  *
@@ -140,10 +140,10 @@
  *      multiple consumers. When a consumer receives a ustream and intends to make operations over 
  *      it, this consumer must first make a clone of the ustream, creating its own instance of it, and 
  *      then make the needed operations.
- * <p> Cloning a ustream creates a new set of controls for the ustream that will share the same content of
+ * Cloning a ustream creates a new set of controls for the ustream that will share the same content of
  *      the original ustream. The content itself is a smart pointer with a <tt>ref_count</tt> that
  *      controls the total number of instances.
- * <p> Disposing an instance of the ustream will decrease the <tt>ref_count</tt> of this ustream. If the
+ * Disposing an instance of the ustream will decrease the <tt>ref_count</tt> of this ustream. If the
  *      number of references reaches 0, the ustream will destroy itself by calling the provided release functions.
  *
  *  @warning Not disposing an instance of the ustream will leak memory.
@@ -152,9 +152,9 @@
  *      - @b Factory - when a producer exposes data using a ustream, it must create the ustream
  *          using a factory, so the operation <tt>ustream create</tt> returns the first instance of the
  *          ustream.
- *      - @b Clone - when a consumer needs a copy of the ustream, it can use the az_ustream_clone().
+ *      - @b Clone - when a consumer needs a copy of the ustream, it can use the az_ulib_ustream_clone().
  *
- * <h2>Thread safe</h2>
+ * <h2>Thread Safe</h2>
  *  The ustream <b>IS NOT</b> thread safe for multiple accesses over the same instance. The ownership
  *      of the instance of a ustream shall <b>NOT</b> be shared, especially not by consumers that run on 
  *      different threads. The owner thread shall create a clone of the ustream and pass it to the other 
@@ -162,7 +162,7 @@
  *  The ustream <b>IS</b> thread safe for accesses between instances. It means that any access to
  *      memory shared by multiple instances shall be thread safe.
  *
- * <h2>Data retention</h2>
+ * <h2>Data Retention</h2>
  *  As with any buffer, this ustream shall be used to handle data that was created by the producer as a
  *      result of an operation.
  *
@@ -170,21 +170,21 @@
  *      be changed by the producer or any of the consumers. Changing the content of the data source will
  *      result in a data mismatch.
  *
- *  Consumers can do a partial release of the ustream by calling az_ustream_release().
+ *  Consumers can do a partial release of the ustream by calling az_ulib_ustream_release().
  *      Calling the release does not imply that part of the memory will be immediately released. Once a
  *      ustream can handle multiple instances, a memory can only be free'd if all instances release it.
  *      A ustream implementation can or cannot have the ability to do partial releases. For instance, a
  *      ustream that handles constant data stored in the flash will never release any memory on the
- *      az_ustream_release() API.
+ *      az_ulib_ustream_release() API.
  *
  *  Released data cannot be accessed, even if it is still available in the memory.
  *
  * <h2>Concatenate</h2>
- *  New data can be concatenated at the end of the ustream by calling az_ustream_concat().
+ *  New data can be concatenated at the end of the ustream by calling az_ulib_ustream_concat().
  *      This can include ustream's from other different medias. In this way, the ustream can
  *      be used as a Stream of data.
  *  To protect the immutability of the ustream, concatenating a new ustream to an existing one will
- *      only affect the instance that is calling the az_ustream_concat().
+ *      only affect the instance that is calling the az_ulib_ustream_concat().
  *
  * <i><b>Example</b></i>
  *  A producer created 3 ustreams named A, B, and C. At this point, it handles one instance of each
@@ -197,7 +197,7 @@
  *
  * <h2>Lazy</h2>
  *  The ustream can contain the full content, bring it into memory when required, or even create the content
- *      when it is necessary. The implementation of the az_ustream_read() function can be smart 
+ *      when it is necessary. The implementation of the az_ulib_ustream_read() function can be smart 
  *      enough to use the minimal amount of memory.
  *
  *  The only restriction is if a consumer accesses the same position of the ustream multiple times, it shall
@@ -205,14 +205,14 @@
  *
  * <i><b>Example</b></i>
  *  A random number generator can expose random numbers using the ustream. To do that it shall generate a 
- *      new number when the consumer calls az_ustream_read(). But to preserve the immutability,
- *      the implementation of the az_ustream_read() shall store the number in a recover queue, up
+ *      new number when the consumer calls az_ulib_ustream_read(). But to preserve the immutability,
+ *      the implementation of the az_ulib_ustream_read() shall store the number in a recover queue, up
  *      to the point that the consumer releases this data. Because, if at some point in time, the consumer 
- *      seeks this old position, the az_ustream_read() shall return the same value created in
- *      the first call of az_ustream_read().
+ *      seeks this old position, the az_ulib_ustream_read() shall return the same value created in
+ *      the first call of az_ulib_ustream_read().
  *
  * <h2>Data conversion</h2>
- *  When the data is copied from the data source to the local buffer, the az_ustream_read()
+ *  When the data is copied from the data source to the local buffer, the az_ulib_ustream_read()
  *      may do a data conversion, which means that the content exposed on the local buffer is a function
  *      of the content in the data source. It directly implies that the number of bytes written in the
  *      local buffer may be different than the number of bytes read from the data source.
@@ -220,8 +220,8 @@
  * <i><b>Example</b></i>
  *  A ustream can have the data source in binary format with 36 bytes, but it shall expose the 
  *      content encoded in base64. The base64 creates 4 encoded bytes for each 3 bytes read. So, seeking the 
- *      beginning of the file, the az_ustream_get_remaining_size() shall return 48 (= 36 / 3 * 4),
- *      instead of 36. If the consumer provides a local buffer of 16 bytes, the az_ustream_read() 
+ *      beginning of the file, the az_ulib_ustream_get_remaining_size() shall return 48 (= 36 / 3 * 4),
+ *      instead of 36. If the consumer provides a local buffer of 16 bytes, the az_ulib_ustream_read() 
  *      shall read only 12 bytes from the data source, and encode it in base64 expanding the 12 bytes to 
  *      16 bytes on the local buffer.
  * @code
@@ -259,9 +259,9 @@
  *      offset of <tt>1000</tt>. The new instance contains the same content as the original one, but the 
  *      logical positions are now from <tt>1000</tt> to <tt>1099</tt>.
  *
- *  If the owner of the first instance wants to set the position to position 10, it shall call az_ustream_set_position()
+ *  If the owner of the first instance wants to set the position to position 10, it shall call az_ulib_ustream_set_position()
  *      with the logical position 10. For the cloned instance, to set the position to the same position 10, it shall call 
- *      az_ustream_set_position() with the logical position 1010.
+ *      az_ulib_ustream_set_position() with the logical position 1010.
  *
  * <h2>Sliding window</h2>
  *  One of the target use cases of the ustream is to accelerate and simplify the implementation of 
@@ -286,7 +286,7 @@
  *      - @b Released - Sequence of bytes in the data source that is already acknowledged by the consumer, 
  *          and shall not be accessed anymore.
  *      - @b Pending - Sequence of bytes in the data source that is already read by the consumer, but not 
- *          acknowledged yet. The consumer can seek these bytes with az_ustream_set_position() and read it again. 
+ *          acknowledged yet. The consumer can seek these bytes with az_ulib_ustream_set_position() and read it again. 
  *          This sequence starts at the <tt>First Valid Position</tt> and ends at the last byte before the <tt>Current Position</tt>.
  *      - @b Read - The last read portion of the data source. On the read operation, the <tt>Read</tt> starts
  *          at the <tt>Current Position</tt> up to the <tt>Read Size</tt>. At the end of the read, this segment is 
@@ -306,13 +306,13 @@
  *
  *  The consumer may confirm that a portion of the data is not necessary anymore. For example, after transmitting
  *      multiple TCP packets, the receiver of these packets answers with an ACK for a sequence number. In this case,
- *      the consumer can release this data in the data source by calling the az_ustream_release(), moving 
+ *      the consumer can release this data in the data source by calling the az_ulib_ustream_release(), moving 
  *      the <tt>First Valid Position</tt> to the next one after the released position.
  *
  *  A common scenario is when the consumer needs to read over the data source starting on the first byte after
  *      the last released one. For example, when a timeout happens for a transmitted packet without ACK, the 
  *      sender shall retransmit the data starting from that point. In this case, the consumer can call the API
- *      az_ustream_reset().
+ *      az_ulib_ustream_reset().
  */
 
 #include "az_ulib_config.h"
@@ -334,31 +334,31 @@ extern "C" {
 typedef size_t offset_t;
 
 /**
- * @brief   Forward declaration of AZ_USTREAM. See #AZ_USTREAM_TAG for struct members.
+ * @brief   Forward declaration of az_ulib_ustream. See #az_ulib_ustream_tag for struct members.
  */
-typedef struct AZ_USTREAM_TAG AZ_USTREAM;
+typedef struct az_ulib_ustream_tag az_ulib_ustream;
 
 /**
  * @brief   vTable with the ustream APIs.
  *
  *  Any module that exposes the ustream shall implement the functions on this vTable.
  *
- *  Any code that will use an exposed ustream shall call the APIs using the <tt>az_ustream_...</tt>
+ *  Any code that will use an exposed ustream shall call the APIs using the <tt>az_ulib_ustream_...</tt>
  *      inline functions.
  */
-typedef struct AZ_USTREAM_INTERFACE_TAG
+typedef struct az_ulib_ustream_interface_tag
 {
-    AZ_ULIB_RESULT(*set_position)(AZ_USTREAM* ustream_instance, offset_t position);         /**<concrete <tt>set_position</tt> implementation*/
-    AZ_ULIB_RESULT(*reset)(AZ_USTREAM* ustream_instance);                                   /**<concrete <tt>reset</tt> implementation*/
-    AZ_ULIB_RESULT(*read)(AZ_USTREAM* ustream_instance, uint8_t* const buffer, 
-                                            size_t buffer_length, size_t* const size);      /**<concrete <tt>read</tt> implementation*/
-    AZ_ULIB_RESULT(*get_remaining_size)(AZ_USTREAM* ustream_instance, size_t* const size);  /**<concrete <tt>get_remaining_size</tt> implementation*/
-    AZ_ULIB_RESULT(*get_position)(AZ_USTREAM* ustream_instance, offset_t* const position);  /**<concrete <tt>get_position</tt> implementation*/
-    AZ_ULIB_RESULT(*release)(AZ_USTREAM* ustream_instance, offset_t position);              /**<concrete <tt>release</tt> implementation*/
-    AZ_ULIB_RESULT(*clone)(AZ_USTREAM* ustream_instance_clone, 
-                                            AZ_USTREAM* ustream_instance, offset_t offset); /**<concrete <tt>clone</tt> implementation*/
-    AZ_ULIB_RESULT(*dispose)(AZ_USTREAM* ustream_instance);                                 /**<concrete <tt>dispose</tt> implementation*/
-} AZ_USTREAM_INTERFACE;
+    az_ulib_result(*set_position)(az_ulib_ustream* ustream_instance, offset_t position);         /**<concrete <tt>set_position</tt> implementation*/
+    az_ulib_result(*reset)(az_ulib_ustream* ustream_instance);                                   /**<concrete <tt>reset</tt> implementation*/
+    az_ulib_result(*read)(az_ulib_ustream* ustream_instance, uint8_t* const buffer, 
+                                            size_t buffer_length, size_t* const size);           /**<concrete <tt>read</tt> implementation*/
+    az_ulib_result(*get_remaining_size)(az_ulib_ustream* ustream_instance, size_t* const size);  /**<concrete <tt>get_remaining_size</tt> implementation*/
+    az_ulib_result(*get_position)(az_ulib_ustream* ustream_instance, offset_t* const position);  /**<concrete <tt>get_position</tt> implementation*/
+    az_ulib_result(*release)(az_ulib_ustream* ustream_instance, offset_t position);              /**<concrete <tt>release</tt> implementation*/
+    az_ulib_result(*clone)(az_ulib_ustream* ustream_instance_clone, 
+                                            az_ulib_ustream* ustream_instance, offset_t offset); /**<concrete <tt>clone</tt> implementation*/
+    az_ulib_result(*dispose)(az_ulib_ustream* ustream_instance);                                 /**<concrete <tt>dispose</tt> implementation*/
+} az_ulib_ustream_interface;
 
 /**
  * @brief   Signature of the function to release memory passed to the ustream
@@ -366,7 +366,7 @@ typedef struct AZ_USTREAM_INTERFACE_TAG
  * @param[in]   release_pointer       void pointer to memory that needs to be free'd
  * 
  */
-typedef void (*AZ_RELEASE_CALLBACK)(void* release_pointer);
+typedef void (*az_ulib_release_callback)(void* release_pointer);
 
 /**
  * @brief   Pointer to the data from which to read
@@ -375,7 +375,7 @@ typedef void (*AZ_RELEASE_CALLBACK)(void* release_pointer);
  * The content of the memory to which this points is up to the ustream implementation.
  * 
  */
-typedef void* AZ_USTREAM_DATA;
+typedef void* az_ulib_ustream_data;
 
 /**
  * @brief   Structure for data control block
@@ -386,40 +386,40 @@ typedef void* AZ_USTREAM_DATA;
  *       it directly and only allocate the memory necessary for it to be passed to the ustream.
  * 
  */
-typedef struct AZ_USTREAM_DATA_CB_TAG
+typedef struct az_ulib_ustream_data_cb_tag
 {
-    const AZ_USTREAM_INTERFACE* api;             /**<The #AZ_USTREAM_INTERFACE*
+    const az_ulib_ustream_interface* api;       /**<The #az_ulib_ustream_interface*
                                                             for this ustream instance type */
-    AZ_USTREAM_DATA* ptr;                        /**<The #AZ_USTREAM_DATA* pointing to the data to read. It can 
+    az_ulib_ustream_data* ptr;                  /**<The #az_ulib_ustream_data* pointing to the data to read. It can 
                                                             be anything that a given ustream implementation needs to
                                                             access the data, whether it be a memory address to a buffer,
                                                             another struct with more controls, etc */
     volatile uint32_t ref_count;                /**<The <tt>volatile uint32_t</tt> with the number of references
                                                             taken for this memory */
-    AZ_RELEASE_CALLBACK data_release;           /**<The #AZ_RELEASE_CALLBACK to call to release <tt>ptr</tt> 
+    az_ulib_release_callback data_release;           /**<The #az_ulib_release_callback to call to release <tt>ptr</tt> 
                                                             once the <tt>ref_count</tt> goes to zero */
-    AZ_RELEASE_CALLBACK control_block_release;   /**<The #AZ_RELEASE_CALLBACK to call to release the #AZ_USTREAM_DATA_CB
+    az_ulib_release_callback control_block_release;   /**<The #az_ulib_release_callback to call to release the #az_ulib_ustream_data_cb
                                                             once the <tt>ref_count</tt> goes to zero */
-} AZ_USTREAM_DATA_CB;
+} az_ulib_ustream_data_cb;
 
 /**
  * @brief   Structure for instance control block
  * 
- * For any given ustream that is created, there may be mutliple <tt>AZ_USTREAM</tt>'s
- *      pointing to the same <tt>AZ_USTREAM_DATA_CB</tt>. Each instance control block serves to
- *      manage a given developer's usage of the memory pointed to inside the <tt>AZ_USTREAM_DATA_CB</tt>.
- *      Each time an <tt>AZ_USTREAM</tt> is cloned using az_ustream_clone(), the
- *      <tt>ref_count</tt> inside the <tt>AZ_USTREAM_DATA_CB</tt> is incremented to signal a reference
- *      to the memory has been acquired. Once the instance is done being used, az_ustream_release() 
+ * For any given ustream that is created, there may be mutliple <tt>az_ulib_ustream</tt>'s
+ *      pointing to the same <tt>az_ulib_ustream_data_cb</tt>. Each instance control block serves to
+ *      manage a given developer's usage of the memory pointed to inside the <tt>az_ulib_ustream_data_cb</tt>.
+ *      Each time an <tt>az_ulib_ustream</tt> is cloned using az_ulib_ustream_clone(), the
+ *      <tt>ref_count</tt> inside the <tt>az_ulib_ustream_data_cb</tt> is incremented to signal a reference
+ *      to the memory has been acquired. Once the instance is done being used, az_ulib_ustream_release() 
  *      must be called to decrement <tt>ref_count</tt>.
  * 
  * @note This structure should be viewed and used as internal to the implementation of the ustream. Users should therefore not act on 
  *       it directly and only allocate the memory necessary for it to be passed to the ustream.
  */
-struct AZ_USTREAM_TAG
+struct az_ulib_ustream_tag
 {
     /* Control Block */
-    AZ_USTREAM_DATA_CB* control_block;          /**<The #AZ_USTREAM_DATA_CB* on which this instance operates on. */
+    az_ulib_ustream_data_cb* control_block;     /**<The #az_ulib_ustream_data_cb* on which this instance operates on. */
 
     /* Instance controls */
     offset_t offset_diff;                       /**<The #offset_t used as the logical position for this instance. */
@@ -431,25 +431,25 @@ struct AZ_USTREAM_TAG
 /**
  * @brief   Structure to keep track of concatenated ustreams.
  * 
- * When concatenating a ustream to another ustream, the instances are placed into a <tt>AZ_USTREAM_MULTI_DATA_CB</tt>. The base ustream onto which you wish
+ * When concatenating a ustream to another ustream, the instances are placed into a <tt>az_ulib_ustream_multi_data_cb</tt>. The base ustream onto which you wish
  *      to concatenate will be copied into the <tt>ustream_one</tt> structure and the ustream to concatenate will be cloned into the <tt>ustream_two</tt>
- *      structure. The difference being that the first #AZ_USTREAM*, when returned, will point to the newly populated multi instance and the ownership
+ *      structure. The difference being that the first #az_ulib_ustream*, when returned, will point to the newly populated multi instance and the ownership
  *      of the passed instance will be assumed by the multi instance. The second ustream which was passed will not be changed, only cloned into the
- *      <tt>AZ_USTREAM_MULTI_DATA_CB</tt> structure.
+ *      <tt>az_ulib_ustream_multi_data_cb</tt> structure.
  * 
  * @note This structure should be viewed and used as internal to the implementation of the ustream. Users should therefore not act on 
  *       it directly and only allocate the memory necessary for it to be passed to the ustream.
  * 
  */
-typedef struct AZ_USTREAM_MULTI_DATA_CB_TAG
+typedef struct az_ulib_ustream_multi_data_cb_tag
 {
-    AZ_USTREAM_DATA_CB control_block;           /**<The #AZ_USTREAM_DATA_CB to manage the multi data structure*/
-    AZ_USTREAM ustream_one;                     /**<The #AZ_USTREAM with the first ustream instance*/
-    AZ_USTREAM ustream_two;                     /**<The #AZ_USTREAM with the second ustream instance*/
-    volatile uint32_t ustream_one_ref_count;    /**<The <tt>uint32_t</tt> with the number of references to the first ustream */
-    volatile uint32_t ustream_two_ref_count;    /**<The <tt>uint32_t</tt> with the number of references to the second ustream */
-    AZ_PAL_OS_LOCK lock;                        /**<The #AZ_PAL_OS_LOCK with controls the critical section of the read from the multi ustream */
-} AZ_USTREAM_MULTI_DATA_CB;
+    az_ulib_ustream_data_cb control_block;          /**<The #az_ulib_ustream_data_cb to manage the multi data structure*/
+    az_ulib_ustream ustream_one;                    /**<The #az_ulib_ustream with the first ustream instance*/
+    az_ulib_ustream ustream_two;                    /**<The #az_ulib_ustream with the second ustream instance*/
+    volatile uint32_t ustream_one_ref_count;        /**<The <tt>uint32_t</tt> with the number of references to the first ustream */
+    volatile uint32_t ustream_two_ref_count;        /**<The <tt>uint32_t</tt> with the number of references to the second ustream */
+    az_ulib_pal_os_lock lock;                       /**<The #az_ulib_pal_os_lock with controls the critical section of the read from the multi ustream */
+} az_ulib_ustream_multi_data_cb;
 
 /**
  * @brief   Check if a handle is the same type of the API.
@@ -457,16 +457,16 @@ typedef struct AZ_USTREAM_MULTI_DATA_CB_TAG
  *  It will return true if the handle is valid and it is the same type of the API. It will
  *      return false if the handle is <tt>NULL</tt> or not the correct type.
  */
-#define AZ_USTREAM_IS_NOT_TYPE_OF(handle, type_api)   ((handle == NULL) || (handle->control_block == NULL) || (handle->control_block->api == NULL) || (handle->control_block->api != &type_api))
+#define AZ_ULIB_USTREAM_IS_NOT_TYPE_OF(handle, type_api)   ((handle == NULL) || (handle->control_block == NULL) || (handle->control_block->api == NULL) || (handle->control_block->api != &type_api))
 
 /**
  * @brief   Change the current position of the ustream.
  *
  *  The current position is the one that will be returned in the local buffer by the next
- *      az_ustream_read(). Consumers can call this API to go back or forward, but it cannot exceed
+ *      az_ulib_ustream_read(). Consumers can call this API to go back or forward, but it cannot exceed
  *      the end of the ustream or precede the fist valid position (last released position + 1).
  *
- *  The <tt>az_ustream_set_position</tt> API shall follow these minimum requirements:
+ *  The <tt>az_ulib_ustream_set_position</tt> API shall follow these minimum requirements:
  *      - The <tt>set_position</tt> shall change the current position of the ustream.
  *      - If the provided position is out of the range of the ustream, the <tt>set_position</tt> shall return
  *          #AZ_ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
@@ -476,24 +476,24 @@ typedef struct AZ_USTREAM_MULTI_DATA_CB_TAG
  *      - If the provided interface is not the implemented ustream type, the <tt>set_position</tt> shall return
  *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]   ustream_instance        The {@link AZ_USTREAM}* with the interface of the ustream. It
+ * @param[in]   ustream_instance        The #az_ulib_ustream* with the interface of the ustream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid ustream that is the
  *                                      implemented ustream type.
  * @param[in]   position                The <tt>offset_t</tt> with the new current position in the ustream.
  *
- * @return The {@link AZ_ULIB_RESULT} with the result of the <tt>set_position</tt> operation.
- *          @retval     AZ_ULIB_SUCCESS                If the ustream changed the current position with success.
- *          @retval     AZ_ULIB_BUSY_ERROR             If the resource necessary for the <tt>set_position</tt> operation is busy.
- *          @retval     AZ_ULIB_CANCELLED_ERROR        If the <tt>set_position</tt> operation was cancelled.
- *          @retval     AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZ_ULIB_NO_SUCH_ELEMENT_ERROR  If the position is out of the ustream range.
- *          @retval     AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
+ * @return The #az_ulib_result with the result of the <tt>set_position</tt> operation.
+ *          @retval     #AZ_ULIB_SUCCESS                If the ustream changed the current position with success.
+ *          @retval     #AZ_ULIB_BUSY_ERROR             If the resource necessary for the <tt>set_position</tt> operation is busy.
+ *          @retval     #AZ_ULIB_CANCELLED_ERROR        If the <tt>set_position</tt> operation was cancelled.
+ *          @retval     #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     #AZ_ULIB_NO_SUCH_ELEMENT_ERROR  If the position is out of the ustream range.
+ *          @retval     #AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
  *                                                        <tt>set_position</tt> operation.
- *          @retval     AZ_ULIB_SECURITY_ERROR         If the <tt>set_position</tt> operation was denied for security
+ *          @retval     #AZ_ULIB_SECURITY_ERROR         If the <tt>set_position</tt> operation was denied for security
  *                                                        reasons.
- *          @retval AZ_ULIB_SYSTEM_ERROR               If the <tt>set_position</tt> operation failed on the system level.
+ *          @retval     #AZ_ULIB_SYSTEM_ERROR           If the <tt>set_position</tt> operation failed on the system level.
  */
-static inline AZ_ULIB_RESULT az_ustream_set_position(AZ_USTREAM* ustream_instance, offset_t position)
+static inline az_ulib_result az_ulib_ustream_set_position(az_ulib_ustream* ustream_instance, offset_t position)
 {
     return ustream_instance->control_block->api->set_position(ustream_instance, position);
 }
@@ -502,10 +502,10 @@ static inline AZ_ULIB_RESULT az_ustream_set_position(AZ_USTREAM* ustream_instanc
  * @brief   Changes the current position to the first valid position.
  *
  *  The current position is the one that will be returned in the local buffer by the next
- *      az_ustream_read(). Reset will bring the current position to the first valid one, which
+ *      az_ulib_ustream_read(). Reset will bring the current position to the first valid one, which
  *      is the first byte after the released position.
  *
- *  The <tt>az_ustream_reset</tt> API shall follow the following minimum requirements:
+ *  The <tt>az_ulib_ustream_reset</tt> API shall follow the following minimum requirements:
  *      - The <tt>reset</tt> shall change the current position of the ustream to the first byte after the
  *          released position.
  *      - If all bytes are already released, the ustream <tt>reset</tt> shall return
@@ -514,25 +514,25 @@ static inline AZ_ULIB_RESULT az_ustream_set_position(AZ_USTREAM* ustream_instanc
  *      - If the provided interface is not the implemented ustream type, the ustream <tt>reset</tt> shall return
  *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]   ustream_instance        The {@link AZ_USTREAM}* with the interface of the ustream. It
+ * @param[in]   ustream_instance        The #az_ulib_ustream* with the interface of the ustream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid ustream that is the
  *                                      implemented ustream type.
  *
- * @return The {@link AZ_ULIB_RESULT} with the result of the <tt>reset</tt> operation.
- *          @retval     AZ_ULIB_SUCCESS                If the ustream changed the current position with success.
- *          @retval     AZ_ULIB_BUSY_ERROR             If the resource necessary for the <tt>reset</tt> operation is
+ * @return The #az_ulib_result with the result of the <tt>reset</tt> operation.
+ *          @retval     #AZ_ULIB_SUCCESS                If the ustream changed the current position with success.
+ *          @retval     #AZ_ULIB_BUSY_ERROR             If the resource necessary for the <tt>reset</tt> operation is
  *                                                        busy.
- *          @retval     AZ_ULIB_CANCELLED_ERROR        If the <tt>reset</tt> operation was cancelled.
- *          @retval     AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZ_ULIB_NO_SUCH_ELEMENT_ERROR  If all previous bytes in the ustream were already
+ *          @retval     #AZ_ULIB_CANCELLED_ERROR        If the <tt>reset</tt> operation was cancelled.
+ *          @retval     #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     #AZ_ULIB_NO_SUCH_ELEMENT_ERROR  If all previous bytes in the ustream were already
  *                                                        released.
- *          @retval     AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
+ *          @retval     #AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
  *                                                        <tt>reset</tt> operation.
- *          @retval     AZ_ULIB_SECURITY_ERROR         If the <tt>reset</tt> operation was denied for security
+ *          @retval     #AZ_ULIB_SECURITY_ERROR         If the <tt>reset</tt> operation was denied for security
  *                                                        reasons.
- *          @retval     AZ_ULIB_SYSTEM_ERROR           If the <tt>reset</tt> operation failed on the system level.
+ *          @retval     #AZ_ULIB_SYSTEM_ERROR           If the <tt>reset</tt> operation failed on the system level.
  */
-static inline AZ_ULIB_RESULT az_ustream_reset(AZ_USTREAM* ustream_instance)
+static inline az_ulib_result az_ulib_ustream_reset(az_ulib_ustream* ustream_instance)
 {
     return ustream_instance->control_block->api->reset(ustream_instance);
 }
@@ -540,7 +540,7 @@ static inline AZ_ULIB_RESULT az_ustream_reset(AZ_USTREAM* ustream_instance)
 /**
  * @brief   Gets the next portion of the ustream starting at the current position.
  *
- * The <tt>az_ustream_read</tt> API will copy the contents of the Data source to the local buffer
+ * The <tt>az_ulib_ustream_read</tt> API will copy the contents of the Data source to the local buffer
  *      starting at the current position. The local buffer is the one referenced by the parameter
  *      <tt>buffer</tt>, and with the maximum size <tt>buffer_length</tt>.
  *
@@ -549,7 +549,7 @@ static inline AZ_ULIB_RESULT az_ustream_reset(AZ_USTREAM* ustream_instance)
  *      <tt>uint8_t</tt>, and will <b>NOT</b> put any terminator at the end of the string. The size of 
  *      the content copied in the local buffer will be returned in the parameter <tt>size</tt>.
  *
- *  The <tt>az_ustream_read</tt> API shall follow the following minimum requirements:
+ *  The <tt>az_ulib_ustream_read</tt> API shall follow the following minimum requirements:
  *      - The read shall copy the contents of the <tt>Data Source</tt> to the provided local buffer.
  *      - If the contents of the <tt>Data Source</tt> is bigger than the <tt>buffer_length</tt>, the read shall
  *          limit the copy size up to the buffer_length.
@@ -569,7 +569,7 @@ static inline AZ_ULIB_RESULT az_ustream_reset(AZ_USTREAM* ustream_instance)
  *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR and will not change the local buffer contents or the
  *          current position of the buffer.
  *
- * @param[in]       ustream_instance        The {@link AZ_USTREAM}* with the interface of the ustream. It
+ * @param[in]       ustream_instance        The #az_ulib_ustream* with the interface of the ustream. It
  *                                          cannot be <tt>NULL</tt>, and it shall be a valid ustream that is the
  *                                          implemented ustream type.
  * @param[out]      buffer                  The <tt>uint8_t* const</tt> that points to the local buffer. It cannot be <tt>NULL</tt>.
@@ -578,18 +578,18 @@ static inline AZ_ULIB_RESULT az_ustream_reset(AZ_USTREAM* ustream_instance)
  * @param[out]      size                    The <tt>size_t* const</tt> that points to the place where the read shall store
  *                                          the number of valid <tt>uint8_t</tt> values returned in the local buffer. It cannot be <tt>NULL</tt>.
  *
- * @return The {@link AZ_ULIB_RESULT} with the result of the read operation.
- *          @retval     AZ_ULIB_SUCCESS                If the ustream copied the content of the <tt>Data Source</tt> to the local buffer
+ * @return The #az_ulib_result with the result of the read operation.
+ *          @retval     #AZ_ULIB_SUCCESS                If the ustream copied the content of the <tt>Data Source</tt> to the local buffer
  *                                                        with success.
- *          @retval     AZ_ULIB_BUSY_ERROR             If the resource necessary to read the ustream content is busy.
- *          @retval     AZ_ULIB_CANCELLED_ERROR        If the read of the content was cancelled.
- *          @retval     AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZ_ULIB_EOF                    If there are no more <tt>uint8_t</tt> values in the <tt>Data Source</tt> to read.
- *          @retval     AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the read.
- *          @retval     AZ_ULIB_SECURITY_ERROR         If the read was denied for security reasons.
- *          @retval     AZ_ULIB_SYSTEM_ERROR           If the read operation failed on the system level.
+ *          @retval     #AZ_ULIB_BUSY_ERROR             If the resource necessary to read the ustream content is busy.
+ *          @retval     #AZ_ULIB_CANCELLED_ERROR        If the read of the content was cancelled.
+ *          @retval     #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     #AZ_ULIB_EOF                    If there are no more <tt>uint8_t</tt> values in the <tt>Data Source</tt> to read.
+ *          @retval     #AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the read.
+ *          @retval     #AZ_ULIB_SECURITY_ERROR         If the read was denied for security reasons.
+ *          @retval     #AZ_ULIB_SYSTEM_ERROR           If the read operation failed on the system level.
  */
-static inline AZ_ULIB_RESULT az_ustream_read(AZ_USTREAM* ustream_instance, uint8_t* const buffer, size_t buffer_length, size_t* const size)
+static inline az_ulib_result az_ulib_ustream_read(az_ulib_ustream* ustream_instance, uint8_t* const buffer, size_t buffer_length, size_t* const size)
 {
     return ustream_instance->control_block->api->read(ustream_instance, buffer, buffer_length, size);
 }
@@ -599,7 +599,7 @@ static inline AZ_ULIB_RESULT az_ustream_read(AZ_USTREAM* ustream_instance, uint8
  *
  *  This API returns the number of bytes between the current position and the end of the ustream.
  *
- *  The <tt>az_ustream_get_remaining_size</tt> API shall follow the following minimum requirements:
+ *  The <tt>az_ulib_ustream_get_remaining_size</tt> API shall follow the following minimum requirements:
  *      - The <tt>get_remaining_size</tt> shall return the number of bytes between the current position and the
  *          end of the ustream.
  *      - If the provided interface is <tt>NULL</tt>, the <tt>get_remaining_size</tt> shall return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
@@ -607,25 +607,25 @@ static inline AZ_ULIB_RESULT az_ustream_read(AZ_USTREAM* ustream_instance, uint8
  *          return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided size is <tt>NULL</tt>, the <tt>get_remaining_size</tt> shall return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]   ustream_instance        The {@link AZ_USTREAM}* with the interface of the ustream. It
+ * @param[in]   ustream_instance        The #az_ulib_ustream* with the interface of the ustream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid ustream that is the
  *                                      implemented ustream type.
  * @param[out]  size                    The <tt>size_t* const</tt> to return the remaining number of <tt>uint8_t</tt> values 
  *                                      It cannot be <tt>NULL</tt>.
  *
- * @return The {@link AZ_ULIB_RESULT} with the result of the <tt>get_remaining_size</tt> operation.
- *          @retval     AZ_ULIB_SUCCESS                If it succeeded to get the remaining size of the ustream.
- *          @retval     AZ_ULIB_BUSY_ERROR             If the resource necessary to get the remaining size of
+ * @return The #az_ulib_result with the result of the <tt>get_remaining_size</tt> operation.
+ *          @retval     #AZ_ULIB_SUCCESS                If it succeeded to get the remaining size of the ustream.
+ *          @retval     #AZ_ULIB_BUSY_ERROR             If the resource necessary to get the remaining size of
  *                                                        the ustream is busy.
- *          @retval     AZ_ULIB_CANCELLED_ERROR        If the <tt>get_remaining_size</tt> was cancelled.
- *          @retval     AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
+ *          @retval     #AZ_ULIB_CANCELLED_ERROR        If the <tt>get_remaining_size</tt> was cancelled.
+ *          @retval     #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     #AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
  *                                                        <tt>get_remaining_size</tt> operation.
- *          @retval     AZ_ULIB_SECURITY_ERROR         If the <tt>get_remaining_size</tt> was denied for security reasons.
- *          @retval     AZ_ULIB_SYSTEM_ERROR           If the <tt>get_remaining_size</tt> operation failed on the
+ *          @retval     #AZ_ULIB_SECURITY_ERROR         If the <tt>get_remaining_size</tt> was denied for security reasons.
+ *          @retval     #AZ_ULIB_SYSTEM_ERROR           If the <tt>get_remaining_size</tt> operation failed on the
  *                                                        system level.
  */
-static inline AZ_ULIB_RESULT az_ustream_get_remaining_size(AZ_USTREAM* ustream_instance, size_t* const size)
+static inline az_ulib_result az_ulib_ustream_get_remaining_size(az_ulib_ustream* ustream_instance, size_t* const size)
 {
     return ustream_instance->control_block->api->get_remaining_size(ustream_instance, size);
 }
@@ -635,33 +635,33 @@ static inline AZ_ULIB_RESULT az_ustream_get_remaining_size(AZ_USTREAM* ustream_i
  *
  *  This API returns the logical current position.
  *
- *  The <tt>az_ustream_get_position</tt> API shall follow the following minimum requirements:
+ *  The <tt>az_ulib_ustream_get_position</tt> API shall follow the following minimum requirements:
  *      - The <tt>get_position</tt> shall return the logical current position of the ustream.
  *      - If the provided interface is <tt>NULL</tt>, the <tt>get_position</tt> shall return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided interface is not the implemented ustream type, the <tt>get_position</tt>
  *          shall return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *      - If the provided position is <tt>NULL</tt>, the <tt>get_position</tt> shall return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]   ustream_instance    The {@link AZ_USTREAM}* with the interface of the ustream. It
+ * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream. It
  *                                  cannot be <tt>NULL</tt>, and it shall be a valid ustream that is the
  *                                  implemented ustream type.
  * @param[out]  position            The <tt>offset_t* const</tt> to return the logical current position in the
  *                                  ustream. It cannot be <tt>NULL</tt>.
  *
- * @return The {@link AZ_ULIB_RESULT} with the result of the <tt>get_position</tt> operation.
- *          @retval     AZ_ULIB_SUCCESS                If it provided the position of the ustream.
- *          @retval     AZ_ULIB_BUSY_ERROR             If the resource necessary for getting the
+ * @return The #az_ulib_result with the result of the <tt>get_position</tt> operation.
+ *          @retval     #AZ_ULIB_SUCCESS                If it provided the position of the ustream.
+ *          @retval     #AZ_ULIB_BUSY_ERROR             If the resource necessary for getting the
  *                                                        position is busy.
- *          @retval     AZ_ULIB_CANCELLED_ERROR        If the <tt>get_position</tt> was cancelled.
- *          @retval     AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
+ *          @retval     #AZ_ULIB_CANCELLED_ERROR        If the <tt>get_position</tt> was cancelled.
+ *          @retval     #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     #AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
  *                                                        <tt>get_position</tt> operation.
- *          @retval     AZ_ULIB_SECURITY_ERROR         If the <tt>get_position</tt> was denied for
+ *          @retval     #AZ_ULIB_SECURITY_ERROR         If the <tt>get_position</tt> was denied for
  *                                                        security reasons.
- *          @retval     AZ_ULIB_SYSTEM_ERROR           If the <tt>get_position</tt> operation failed on
+ *          @retval     #AZ_ULIB_SYSTEM_ERROR           If the <tt>get_position</tt> operation failed on
  *                                                        the system level.
  */
-static inline AZ_ULIB_RESULT az_ustream_get_position(AZ_USTREAM* ustream_instance, offset_t* const position)
+static inline az_ulib_result az_ulib_ustream_get_position(az_ulib_ustream* ustream_instance, offset_t* const position)
 {
     return ustream_instance->control_block->api->get_position(ustream_instance, position);
 }
@@ -680,13 +680,13 @@ static inline AZ_ULIB_RESULT az_ustream_get_position(AZ_USTREAM* ustream_instanc
  *
  * @code
  * offset_t pos;
- * if(az_ustream_get_position(my_buffer, &pos) == AZ_ULIB_SUCCESS)
+ * if(az_ulib_ustream_get_position(my_buffer, &pos) == AZ_ULIB_SUCCESS)
  * {
- *     az_ustream_release(my_buffer, pos - 1);
+ *     az_ulib_ustream_release(my_buffer, pos - 1);
  * }
  * @endcode
  *
- *  The <tt>az_ustream_release</tt> API shall follow the following minimum requirements:
+ *  The <tt>az_ulib_ustream_release</tt> API shall follow the following minimum requirements:
  *      - The <tt>release</tt> shall dispose all resources necessary to handle the content of ustream before and 
  *          including the release position.
  *      - If the release position is after the current position or the ustream size, the <tt>release</tt> shall
@@ -697,20 +697,20 @@ static inline AZ_ULIB_RESULT az_ustream_get_position(AZ_USTREAM* ustream_instanc
  *      - If the provided interface is not the implemented ustream type, the <tt>release</tt> shall return
  *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]  ustream_instance     The {@link AZ_USTREAM}* with the interface of the ustream. It
+ * @param[in]  ustream_instance     The #az_ulib_ustream* with the interface of the ustream. It
  *                                  cannot be <tt>NULL</tt>, and it shall be a valid ustream that is the
  *                                  implemented ustream type.
  * @param[in]  position             The <tt>offset_t</tt> with the position in the ustream to release. The
  *                                  ustream will release the <tt>uint8_t</tt> on the position and all <tt>uint8_t</tt>
  *                                  before the position. It shall be bigger than 0.
  *
- * @return The {@link AZ_ULIB_RESULT} with the result of the <tt>release</tt> operation.
- *          @retval     AZ_ULIB_SUCCESS                If the ustream releases the position with success.
- *          @retval     AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
- *          @retval     AZ_ULIB_NO_SUCH_ELEMENT_ERROR  If the position is already released.
- *          @retval     AZ_ULIB_SYSTEM_ERROR           If the <tt>release</tt> operation failed on the system level.
+ * @return The #az_ulib_result with the result of the <tt>release</tt> operation.
+ *          @retval     #AZ_ULIB_SUCCESS                If the ustream releases the position with success.
+ *          @retval     #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+ *          @retval     #AZ_ULIB_NO_SUCH_ELEMENT_ERROR  If the position is already released.
+ *          @retval     #AZ_ULIB_SYSTEM_ERROR           If the <tt>release</tt> operation failed on the system level.
  */
-static inline AZ_ULIB_RESULT az_ustream_release(AZ_USTREAM* ustream_instance, offset_t position)
+static inline az_ulib_result az_ulib_ustream_release(az_ulib_ustream* ustream_instance, offset_t position)
 {
     return ustream_instance->control_block->api->release(ustream_instance, position);
 }
@@ -815,7 +815,7 @@ static inline AZ_ULIB_RESULT az_ustream_release(AZ_USTREAM* ustream_instance, of
  *  @note
  *  If the position is not important to the consumer, making the offset equal to <tt>0</tt> is a safe option.
  *
- *  The <tt>az_ustream_clone</tt> API shall follow the following minimum requirements:
+ *  The <tt>az_ulib_ustream_clone</tt> API shall follow the following minimum requirements:
  *      - The <tt>clone</tt> shall return a ustream with the same content of the original ustream.
  *      - If the provided interface is <tt>NULL</tt>, the <tt>clone</tt> shall return <tt>NULL</tt>.
  *      - If the provided interface is not a type of the implemented ustream, the <tt>clone</tt> shall return <tt>NULL</tt>.
@@ -824,21 +824,19 @@ static inline AZ_ULIB_RESULT az_ustream_release(AZ_USTREAM* ustream_instance, of
  *          shall return <tt>NULL</tt>.
  *      - The cloned ustream shall not interfere with the instance of the original ustream and vice versa.
  *
- * @param[out]  ustream_instance_clone      The {@link AZ_USTREAM}* with the interface of the ustream.
- *                                          It cannot be <tt>NULL</tt>, and it shall be a valid ustream instance type
- *                                          that is casted to an #AZ_USTREAM.
- * @param[in]   ustream_instance            The {@link AZ_USTREAM}* to be cloned.
- *                                          It cannot be <tt>NULL</tt>, and it shall be a valid ustream instance type
- *                                          that is casted to an #AZ_USTREAM.
+ * @param[out]  ustream_instance_clone      The #az_ulib_ustream* with the interface of the ustream.
+ *                                          It cannot be <tt>NULL</tt>.
+ * @param[in]   ustream_instance            The #az_ulib_ustream* to be cloned.
+ *                                          It cannot be <tt>NULL</tt>, and it shall be a valid ustream instance type.
  * @param[out]  offset                      The <tt>offset_t</tt> with the <tt>Logical</tt> position of the first byte in
  *                                          the cloned ustream.
  *
- * @return The {@link AZ_USTREAM}* with the result of the clone operation.
+ * @return The #az_ulib_ustream* with the result of the clone operation.
  *          @retval    not-NULL         If the ustream was cloned with success.
  *          @retval    NULL             If one of the provided parameters is invalid or there is not enough memory to
  *                                      control the new ustream.
  */
-static inline AZ_ULIB_RESULT az_ustream_clone(AZ_USTREAM* ustream_instance_clone, AZ_USTREAM* ustream_instance, offset_t offset)
+static inline az_ulib_result az_ulib_ustream_clone(az_ulib_ustream* ustream_instance_clone, az_ulib_ustream* ustream_instance, offset_t offset)
 {
     return ustream_instance->control_block->api->clone(ustream_instance_clone, ustream_instance, offset);
 }
@@ -850,7 +848,7 @@ static inline AZ_ULIB_RESULT az_ustream_clone(AZ_USTREAM* ustream_instance_clone
  *      If there are no more references to the ustream, the dispose will release all resources
  *      allocated to control the ustream.
  *
- *  The <tt>az_ustream_dispose</tt> API shall follow the following minimum requirements:
+ *  The <tt>az_ulib_ustream_dispose</tt> API shall follow the following minimum requirements:
  *      - The <tt>dispose</tt> shall free all allocated resources for the instance of the ustream.
  *      - If there are no more instances of the ustream, the <tt>dispose</tt> shall release all allocated
  *          resources to control the ustream.
@@ -858,15 +856,15 @@ static inline AZ_ULIB_RESULT az_ustream_clone(AZ_USTREAM* ustream_instance_clone
  *      - If the provided interface is not the type of the implemented ustream, the <tt>dispose</tt> shall return
  *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
  *
- * @param[in]   ustream_instance        The {@link AZ_USTREAM}* with the interface of the ustream. It
+ * @param[in]   ustream_instance        The #az_ulib_ustream* with the interface of the ustream. It
  *                                      cannot be <tt>NULL</tt>, and it shall be a valid ustream that is a type
  *                                      of the implemented ustream.
  *
- * @return The {@link AZ_ULIB_RESULT} with the result of the <tt>dispose</tt> operation.
- *          @retval AZ_ULIB_SUCCESS                    If the instance of the ustream was disposed with success.
- *          @retval AZ_ULIB_ILLEGAL_ARGUMENT_ERROR     If one of the provided parameters is invalid.
+ * @return The #az_ulib_result with the result of the <tt>dispose</tt> operation.
+ *          @retval #AZ_ULIB_SUCCESS                    If the instance of the ustream was disposed with success.
+ *          @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR     If one of the provided parameters is invalid.
  */
-static inline AZ_ULIB_RESULT az_ustream_dispose(AZ_USTREAM* ustream_instance)
+static inline az_ulib_result az_ulib_ustream_dispose(az_ulib_ustream* ustream_instance)
 {
     return ustream_instance->control_block->api->dispose(ustream_instance);
 }

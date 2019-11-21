@@ -25,7 +25,7 @@ extern "C" {
  * Defines the log function that the ulib shall use as its own way to print information in the
  * log system.
  */
-#define AZ_ULIB_CONFIG_LOG(category, format, ...) az_ulog_print(category, format, ##__VA_ARGS__)
+#define AZ_ULIB_CONFIG_LOG(category, format, ...) az_ulib_ulog_print(category, format, ##__VA_ARGS__)
 
 /**
  * @brief   Maximum size of the ulib log.
