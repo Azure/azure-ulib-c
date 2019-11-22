@@ -10,10 +10,10 @@
 
 #include "../az_ulib_action_api.h"
 #include "../az_ulib_descriptor_api.h"
-#include "az_ulib_pal_os_api.h"
 #include "az_ulib_action_api.h"
 #include "az_ulib_base.h"
 #include "az_ulib_config.h"
+#include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
 
@@ -161,6 +161,39 @@ MOCKABLE_FUNCTION(
     modelIn,
     const void*,
     modelOut);
+
+MOCKABLE_FUNCTION(
+    ,
+    az_ulib_result,
+    _az_ulib_ipc_call_async_no_contract,
+    _az_ulib_ipc_interface_handle,
+    interface_handle,
+    az_ulib_action_index,
+    method_index,
+    const void* const,
+    modelIn,
+    const void*,
+    model_out,
+    az_ulib_action_result_callback,
+    result_callback,
+    az_ulib_action_context,
+    action_context);
+MOCKABLE_FUNCTION(
+    ,
+    az_ulib_result,
+    _az_ulib_ipc_call_async,
+    _az_ulib_ipc_interface_handle,
+    interface_handle,
+    az_ulib_action_index,
+    method_index,
+    const void* const,
+    modelIn,
+    const void*,
+    model_out,
+    az_ulib_action_result_callback,
+    result_callback,
+    az_ulib_action_context,
+    action_context);
 
 #ifdef __cplusplus
 }

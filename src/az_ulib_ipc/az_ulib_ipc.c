@@ -4,20 +4,17 @@
 
 #include <stdint.h>
 
-#include "azure_macro_utils/macro_utils.h"
-#include "umock_c/umock_c_prod.h"
-
-#include "az_ulib_pal_os_api.h"
 #include "az_ulib_action_api.h"
 #include "az_ulib_base.h"
+#include "az_ulib_config.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
-#include "internal/az_ulib_ipc.h"
-#include "az_ulib_ucontract.h"
-#include "az_ulib_config.h"
+#include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
+#include "az_ulib_ucontract.h"
 #include "az_ulib_ulog.h"
+#include "internal/az_ulib_ipc.h"
 
 /*
  * IPC is a singleton component, and shall be initialized only once.
@@ -421,6 +418,7 @@ _az_ulib_ipc_call_no_contract(
 
   return result;
 }
+
 #else // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 az_ulib_result
 _az_ulib_ipc_call_no_contract(
@@ -445,4 +443,51 @@ az_ulib_result _az_ulib_ipc_call(
       /*az_ulib_ipc_call_with_null_interface_handle_failed*/
       AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_handle, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
   return _az_ulib_ipc_call_no_contract(interface_handle, method_index, model_in, model_out);
+}
+
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
+az_ulib_result
+_az_ulib_ipc_call_async_no_contract(
+    _az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_action_index method_index,
+    const void* const model_in,
+    const void* model_out,
+    az_ulib_action_result_callback result_callback,
+    az_ulib_action_context action_context) {
+
+  // TODO: Implement the method here.
+
+  return AZ_ULIB_NOT_SUPPORTED_ERROR;
+}
+
+#else // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+az_ulib_result
+_az_ulib_ipc_call_async_no_contract(
+    _az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_action_index method_index,
+    const void* const model_in,
+    const void* model_out,
+    az_ulib_action_result_callback result_callback,
+    az_ulib_action_context action_context) {
+
+  // TODO: Implement the method here.
+
+  return AZ_ULIB_NOT_SUPPORTED_ERROR;
+}
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+
+az_ulib_result _az_ulib_ipc_call_async(
+    _az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_action_index method_index,
+    const void* const model_in,
+    const void* model_out,
+    az_ulib_action_result_callback result_callback,
+    az_ulib_action_context action_context) {
+  AZ_ULIB_UCONTRACT(
+      /*az_ulib_ipc_call_with_ipc_not_initialized_failed*/
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ULIB_NOT_INITIALIZED_ERROR),
+      /*az_ulib_ipc_call_with_null_interface_handle_failed*/
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_handle, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+  return _az_ulib_ipc_call_async_no_contract(
+      interface_handle, method_index, model_in, model_out, result_callback, action_context);
 }
