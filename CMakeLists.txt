@@ -45,8 +45,12 @@ target_include_directories(azure_ulib_c
         ${PROJECT_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY}
         ${PROJECT_SOURCE_DIR}/pal/os/inc
         ${PROJECT_SOURCE_DIR}/pal/os/inc/${ULIB_PAL_OS_DIRECTORY}
-        ${PROJECT_SOURCE_DIR}/deps/umock-c/inc
-        ${PROJECT_SOURCE_DIR}/deps/azure-macro-utils-c/inc
+)
+
+target_link_libraries(azure_ulib_c
+    PUBLIC
+        umock_c
+        azure_macro_utils_c
 )
 
 set_target_properties(azure_ulib_c
