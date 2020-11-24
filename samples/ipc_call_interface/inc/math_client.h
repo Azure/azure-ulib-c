@@ -39,21 +39,21 @@ static inline az_ulib_result math_sum(math_handle handle, int32_t a, int32_t b, 
 /*
  * Inter-component Calling Wrapper for subtraction.
  */
-static inline az_ulib_result math_sub(math_handle handle, int32_t a, int32_t b, int64_t* res) {
-  sub_model_in sub_in;
-  sub_model_out sub_out;
+static inline az_ulib_result math_subtract(math_handle handle, int32_t a, int32_t b, int64_t* res) {
+  subtract_model_in subtract_in;
+  subtract_model_out subtract_out;
 
   // Marshalling
-  sub_in.a = a;
-  sub_in.b = b;
+  subtract_in.a = a;
+  subtract_in.b = b;
 
-  sub_out = 0;
+  subtract_out = 0;
 
   // Call
-  az_ulib_result result = az_ulib_ipc_call(handle, MATH_INTERFACE_SUB_METHOD, &sub_in, &sub_out);
+  az_ulib_result result = az_ulib_ipc_call(handle, MATH_INTERFACE_SUBTRACT_METHOD, &subtract_in, &subtract_out);
 
   // Unmarshalling
-  *res = sub_out;
+  *res = subtract_out;
 
   return result;
 }

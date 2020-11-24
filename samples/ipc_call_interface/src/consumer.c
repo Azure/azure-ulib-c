@@ -27,10 +27,10 @@ void client_use_math(void) {
       (void)printf("math.sum failed with error %d\r\n", result);
     }
 
-    if ((result = math_sub(handle, a, b, &res)) == AZ_ULIB_SUCCESS) {
-      (void)printf("math.sub calculates %d - %d = %" PRId64 "\r\n", a, b, res);
+    if ((result = math_subtract(handle, a, b, &res)) == AZ_ULIB_SUCCESS) {
+      (void)printf("math.subtract calculates %d - %d = %" PRId64 "\r\n", a, b, res);
     } else {
-      (void)printf("math.sub failed with error %d\r\n", result);
+      (void)printf("math.subtract failed with error %d\r\n", result);
     }
 
     math_destroy(handle);

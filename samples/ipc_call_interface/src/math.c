@@ -31,13 +31,13 @@ static az_ulib_result sum_concrete(az_ulib_model_in model_in, az_ulib_model_out 
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result sub_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out) {
+static az_ulib_result subtract_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out) {
   AZ_ULIB_UCONTRACT(
       AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_in, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
       AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_out, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
 
-  sub_model_in* in = (sub_model_in*)model_in;
-  sub_model_out* out = (sub_model_out*)model_out;
+  subtract_model_in* in = (subtract_model_in*)model_in;
+  subtract_model_out* out = (subtract_model_out*)model_out;
 
   *out = (uint64_t)in->a - (uint64_t)in->b;
 
@@ -49,7 +49,7 @@ AZ_ULIB_DESCRIPTOR_CREATE(
     MATH_INTERFACE_NAME,
     MATH_INTERFACE_VERSION,
     AZ_ULIB_DESCRIPTOR_ADD_METHOD(MATH_INTERFACE_SUM_METHOD_NAME, sum_concrete),
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD(MATH_INTERFACE_SUB_METHOD_NAME, sub_concrete));
+    AZ_ULIB_DESCRIPTOR_ADD_METHOD(MATH_INTERFACE_SUBTRACT_METHOD_NAME, subtract_concrete));
 
 az_ulib_result math_publish_interface(void) { return az_ulib_ipc_publish(&MATH_DESCRIPTOR, NULL); }
 
