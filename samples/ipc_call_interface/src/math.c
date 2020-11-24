@@ -5,10 +5,10 @@
 #include "az_ulib_action_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
-#include "math_tlb.h"
-#include "az_ulib_ucontract.h"
 #include "az_ulib_result.h"
+#include "az_ulib_ucontract.h"
 #include "az_ulib_ulog.h"
+#include "math.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -18,7 +18,7 @@
 /*
  * Concrete implementations of the math methods.
  */
-static az_ulib_result sum_concrete(const void* const model_in, const void* model_out) {
+static az_ulib_result sum_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out) {
   AZ_ULIB_UCONTRACT(
       AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_in, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
       AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_out, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
@@ -31,13 +31,13 @@ static az_ulib_result sum_concrete(const void* const model_in, const void* model
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result subtraction_concrete(const void* const model_in, const void* model_out) {
+static az_ulib_result sub_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out) {
   AZ_ULIB_UCONTRACT(
       AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_in, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
       AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_out, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
 
-  subtraction_model_in* in = (subtraction_model_in*)model_in;
-  subtraction_model_out* out = (subtraction_model_out*)model_out;
+  sub_model_in* in = (sub_model_in*)model_in;
+  sub_model_out* out = (sub_model_out*)model_out;
 
   *out = (uint64_t)in->a - (uint64_t)in->b;
 
@@ -49,7 +49,7 @@ AZ_ULIB_DESCRIPTOR_CREATE(
     MATH_INTERFACE_NAME,
     MATH_INTERFACE_VERSION,
     AZ_ULIB_DESCRIPTOR_ADD_METHOD(MATH_INTERFACE_SUM_METHOD_NAME, sum_concrete),
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD(MATH_INTERFACE_SUBTRACTION_METHOD_NAME, subtraction_concrete));
+    AZ_ULIB_DESCRIPTOR_ADD_METHOD(MATH_INTERFACE_SUB_METHOD_NAME, sub_concrete));
 
 az_ulib_result math_publish_interface(void) { return az_ulib_ipc_publish(&MATH_DESCRIPTOR, NULL); }
 

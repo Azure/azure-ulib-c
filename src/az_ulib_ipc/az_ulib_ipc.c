@@ -7,17 +7,17 @@
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
 
-#include "az_ulib_pal_os_api.h"
 #include "az_ulib_action_api.h"
 #include "az_ulib_base.h"
+#include "az_ulib_config.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
-#include "internal/az_ulib_ipc.h"
-#include "az_ulib_ucontract.h"
-#include "az_ulib_config.h"
+#include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
+#include "az_ulib_ucontract.h"
 #include "az_ulib_ulog.h"
+#include "internal/az_ulib_ipc.h"
 
 /*
  * IPC is a singleton component, and shall be initialized only once.
@@ -166,8 +166,7 @@ az_ulib_result _az_ulib_ipc_publish_no_contract(
   return result;
 }
 
-az_ulib_result
-_az_ulib_ipc_publish(
+az_ulib_result _az_ulib_ipc_publish(
     const az_ulib_interface_descriptor* interface_descriptor,
     _az_ulib_ipc_interface_handle* interface_handle) {
   AZ_ULIB_UCONTRACT(
@@ -179,8 +178,7 @@ _az_ulib_ipc_publish(
 }
 
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
-az_ulib_result
-_az_ulib_ipc_unpublish_no_contract(
+az_ulib_result _az_ulib_ipc_unpublish_no_contract(
     const az_ulib_interface_descriptor* interface_descriptor,
     uint32_t wait_option_ms) {
   az_ulib_result result;
@@ -261,8 +259,7 @@ _az_ulib_ipc_unpublish_no_contract(
   return result;
 }
 
-az_ulib_result
-_az_ulib_ipc_unpublish(
+az_ulib_result _az_ulib_ipc_unpublish(
     const az_ulib_interface_descriptor* interface_descriptor,
     uint32_t wait_option_ms) {
   AZ_ULIB_UCONTRACT(
@@ -274,8 +271,7 @@ _az_ulib_ipc_unpublish(
 }
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
-az_ulib_result
-_az_ulib_ipc_try_get_interface_no_contract(
+az_ulib_result _az_ulib_ipc_try_get_interface_no_contract(
     const char* const name,
     az_ulib_version version,
     az_ulib_version_match_criteria match_criteria,
@@ -300,8 +296,7 @@ _az_ulib_ipc_try_get_interface_no_contract(
   return result;
 }
 
-az_ulib_result
-_az_ulib_ipc_try_get_interface(
+az_ulib_result _az_ulib_ipc_try_get_interface(
     const char* const name,
     az_ulib_version version,
     az_ulib_version_match_criteria match_criteria,
@@ -317,8 +312,7 @@ _az_ulib_ipc_try_get_interface(
       name, version, match_criteria, interface_handle);
 }
 
-az_ulib_result
-_az_ulib_ipc_get_interface_no_contract(
+az_ulib_result _az_ulib_ipc_get_interface_no_contract(
     _az_ulib_ipc_interface_handle original_interface_handle,
     _az_ulib_ipc_interface_handle* interface_handle) {
   az_ulib_result result;
@@ -340,8 +334,7 @@ _az_ulib_ipc_get_interface_no_contract(
   return result;
 }
 
-az_ulib_result
-_az_ulib_ipc_get_interface(
+az_ulib_result _az_ulib_ipc_get_interface(
     _az_ulib_ipc_interface_handle original_interface_handle,
     _az_ulib_ipc_interface_handle* interface_handle) {
   AZ_ULIB_UCONTRACT(
@@ -354,8 +347,8 @@ _az_ulib_ipc_get_interface(
   return _az_ulib_ipc_get_interface_no_contract(original_interface_handle, interface_handle);
 }
 
-az_ulib_result
-_az_ulib_ipc_release_interface_no_contract(_az_ulib_ipc_interface_handle interface_handle) {
+az_ulib_result _az_ulib_ipc_release_interface_no_contract(
+    _az_ulib_ipc_interface_handle interface_handle) {
   _az_ulib_ipc_interface* ipc_interface = (_az_ulib_ipc_interface*)interface_handle;
   az_ulib_result result;
 
@@ -375,8 +368,7 @@ _az_ulib_ipc_release_interface_no_contract(_az_ulib_ipc_interface_handle interfa
   return result;
 }
 
-az_ulib_result
-_az_ulib_ipc_release_interface(_az_ulib_ipc_interface_handle interface_handle) {
+az_ulib_result _az_ulib_ipc_release_interface(_az_ulib_ipc_interface_handle interface_handle) {
   AZ_ULIB_UCONTRACT(
       /*az_ulib_ipc_release_interface_with_ipc_not_initialized_failed*/
       AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ULIB_NOT_INITIALIZED_ERROR),
@@ -386,8 +378,7 @@ _az_ulib_ipc_release_interface(_az_ulib_ipc_interface_handle interface_handle) {
 }
 
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
-az_ulib_result
-_az_ulib_ipc_call_no_contract(
+az_ulib_result _az_ulib_ipc_call_no_contract(
     _az_ulib_ipc_interface_handle interface_handle,
     az_ulib_action_index method_index,
     const void* const model_in,
@@ -422,8 +413,7 @@ _az_ulib_ipc_call_no_contract(
   return result;
 }
 #else // AZ_ULIB_CONFIG_IPC_UNPUBLISH
-az_ulib_result
-_az_ulib_ipc_call_no_contract(
+az_ulib_result _az_ulib_ipc_call_no_contract(
     _az_ulib_ipc_interface_handle interface_handle,
     az_ulib_action_index method_index,
     const void* const model_in,

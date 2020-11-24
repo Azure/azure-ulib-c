@@ -2,8 +2,8 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#include "math_tlb.h"
 #include "az_ulib_result.h"
+#include "math_client.h"
 #include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -21,16 +21,16 @@ void client_use_math(void) {
     int32_t b = 20;
     int64_t res = 0;
 
-    if ((result = sum(handle, a, b, &res)) == AZ_ULIB_SUCCESS) {
+    if ((result = math_sum(handle, a, b, &res)) == AZ_ULIB_SUCCESS) {
       (void)printf("math.sum calculates %d + %d = %" PRId64 "\r\n", a, b, res);
     } else {
       (void)printf("math.sum failed with error %d\r\n", result);
     }
 
-    if ((result = subtraction(handle, a, b, &res)) == AZ_ULIB_SUCCESS) {
-      (void)printf("math.subtraction calculates %d - %d = %" PRId64 "\r\n", a, b, res);
+    if ((result = math_sub(handle, a, b, &res)) == AZ_ULIB_SUCCESS) {
+      (void)printf("math.sub calculates %d - %d = %" PRId64 "\r\n", a, b, res);
     } else {
-      (void)printf("math.subtraction failed with error %d\r\n", result);
+      (void)printf("math.sub failed with error %d\r\n", result);
     }
 
     math_destroy(handle);
