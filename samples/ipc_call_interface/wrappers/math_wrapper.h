@@ -2,6 +2,11 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+/********************************************************************
+ * This code was auto-generated from math meta-data and shall not be
+ * modified.
+ ********************************************************************/
+
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
 #include <stdint.h>
@@ -42,11 +47,21 @@ typedef struct subtract_model_in_tag {
 typedef int64_t subtract_model_out;
 
 /*
- * Publish math interface.
+ * math class constructor.
  */
-az_ulib_result math_publish_interface(void);
+az_ulib_result math_create(math_handle handle);
 
 /*
- * Unpublish math interface.
+ * math class destructor.
  */
-az_ulib_result math_unpublish_interface(void);
+void math_destroy(math_handle handle);
+
+/*
+ * Azure Callable Wrapper for math sum.
+ */
+az_ulib_result math_sum(math_handle handle, int32_t a, int32_t b, int64_t* res);
+
+/*
+ * Azure Callable Wrapper for math subtract.
+ */
+az_ulib_result math_subtract(math_handle handle, int32_t a, int32_t b, int64_t* res);
