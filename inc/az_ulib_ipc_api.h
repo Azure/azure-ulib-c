@@ -10,11 +10,11 @@
 
 #include "az_ulib_action_api.h"
 #include "az_ulib_base.h"
-#include "az_ulib_descriptor_api.h"
-#include "internal/az_ulib_ipc.h"
 #include "az_ulib_config.h"
+#include "az_ulib_descriptor_api.h"
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
+#include "internal/az_ulib_ipc.h"
 
 #ifndef __cplusplus
 #include <stdint.h>
@@ -313,8 +313,8 @@ static inline az_ulib_result az_ulib_ipc_release_interface(
 static inline az_ulib_result az_ulib_ipc_call(
     az_ulib_ipc_interface_handle interface_handle,
     az_ulib_action_index method_index,
-    const void* const model_in,
-    const void* model_out) {
+    az_ulib_model_in model_in,
+    az_ulib_model_out model_out) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_call(
       (_az_ulib_ipc_interface_handle)interface_handle, method_index, model_in, model_out);

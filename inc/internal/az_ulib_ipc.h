@@ -10,10 +10,10 @@
 
 #include "../az_ulib_action_api.h"
 #include "../az_ulib_descriptor_api.h"
-#include "az_ulib_pal_os_api.h"
 #include "az_ulib_action_api.h"
 #include "az_ulib_base.h"
 #include "az_ulib_config.h"
+#include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
 
