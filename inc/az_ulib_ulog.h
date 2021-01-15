@@ -4,12 +4,12 @@
 
 /**
  * @file az_ulib_ulog.h
- * 
+ *
  * @brief Small footprint logging functionality
  *
- * Using the az_ulib_ulog_print() api, you can pass enum types to differentiate logging purposes. When
- * the api prints to the console, it uses constant strings which prevents duplicate strings from
- * being saved in the bss.
+ * Using the az_ulib_ulog_print() api, you can pass enum types to differentiate logging purposes.
+ * When the api prints to the console, it uses constant strings which prevents duplicate strings
+ * from being saved in the bss.
  */
 
 #ifndef AZ_ULIB_ULOG_H
@@ -38,8 +38,8 @@ static const char* const AZ_ULIB_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING
  * @brief   enum to select the log type
  */
 typedef enum az_ulib_ulog_type_tag {
-    AZ_ULIB_ULOG_TYPE_ERROR = 0, /**<error log message. */
-    AZ_ULIB_ULOG_TYPE_INFO = 1 /**<info log message. */
+  AZ_ULIB_ULOG_TYPE_ERROR = 0, /**<error log message. */
+  AZ_ULIB_ULOG_TYPE_INFO = 1 /**<info log message. */
 } az_ulib_ulog_type;
 
 /**

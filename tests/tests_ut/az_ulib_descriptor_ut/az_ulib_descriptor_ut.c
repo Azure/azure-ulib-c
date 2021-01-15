@@ -7,11 +7,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "az_ulib_action_api.h"
+#include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
+#include "az_ulib_result.h"
 #include "azure_macro_utils/macro_utils.h"
 #include "testrunnerswitcher.h"
-#include "az_ulib_result.h"
 #include "umock_c/umock_c.h"
 #include "umock_c/umock_c_negative_tests.h"
 #include "umock_c/umocktypes_bool.h"
@@ -52,18 +52,18 @@ static az_ulib_result my_method(const void* const model_in, const void* model_ou
 static az_ulib_result my_method_async(
     const void* const model_in,
     const void* model_out,
-    const az_ulib_action_token action_token,
-    az_ulib_action_cancellation_callback* cancel) {
+    const az_ulib_capability_token capability_token,
+    az_ulib_capability_cancellation_callback* cancel) {
   (void)model_in;
   (void)model_out;
-  (void)action_token;
+  (void)capability_token;
   (void)cancel;
 
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_method_cancel(const az_ulib_action_token action_token) {
-  (void)action_token;
+static az_ulib_result my_method_cancel(const az_ulib_capability_token capability_token) {
+  (void)capability_token;
 
   return AZ_ULIB_SUCCESS;
 }
@@ -105,14 +105,14 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_succeed) {
   /// arrange
 
   /// act
-  static az_ulib_action_descriptor action
+  static az_ulib_capability_descriptor capability
       = AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property);
 
   /// assert
-  ASSERT_ARE_EQUAL(char_ptr, action.name, "my_property");
-  ASSERT_ARE_EQUAL(void_ptr, action.action_ptr_1.action, get_my_property);
-  ASSERT_ARE_EQUAL(void_ptr, action.action_ptr_2.action, set_my_property);
-  ASSERT_ARE_EQUAL(char, action.flags, (uint8_t)AZ_ULIB_ACTION_TYPE_PROPERTY);
+  ASSERT_ARE_EQUAL(char_ptr, capability.name, "my_property");
+  ASSERT_ARE_EQUAL(void_ptr, capability.capability_ptr_1.capability, get_my_property);
+  ASSERT_ARE_EQUAL(void_ptr, capability.capability_ptr_2.capability, set_my_property);
+  ASSERT_ARE_EQUAL(char, capability.flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_PROPERTY);
 
   /// cleanup
 }
@@ -123,13 +123,14 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_METHOD_succeed) {
   /// arrange
 
   /// act
-  static az_ulib_action_descriptor action = AZ_ULIB_DESCRIPTOR_ADD_METHOD("my_method", my_method);
+  static az_ulib_capability_descriptor capability
+      = AZ_ULIB_DESCRIPTOR_ADD_METHOD("my_method", my_method);
 
   /// assert
-  ASSERT_ARE_EQUAL(char_ptr, action.name, "my_method");
-  ASSERT_ARE_EQUAL(void_ptr, action.action_ptr_1.action, my_method);
-  ASSERT_IS_NULL(action.action_ptr_2.action);
-  ASSERT_ARE_EQUAL(char, action.flags, (uint8_t)AZ_ULIB_ACTION_TYPE_METHOD);
+  ASSERT_ARE_EQUAL(char_ptr, capability.name, "my_method");
+  ASSERT_ARE_EQUAL(void_ptr, capability.capability_ptr_1.capability, my_method);
+  ASSERT_IS_NULL(capability.capability_ptr_2.capability);
+  ASSERT_ARE_EQUAL(char, capability.flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_METHOD);
 
   /// cleanup
 }
@@ -140,14 +141,14 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC_succeed) {
   /// arrange
 
   /// act
-  static az_ulib_action_descriptor action
+  static az_ulib_capability_descriptor capability
       = AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC("my_method_async", my_method_async, my_method_cancel);
 
   /// assert
-  ASSERT_ARE_EQUAL(char_ptr, action.name, "my_method_async");
-  ASSERT_ARE_EQUAL(void_ptr, action.action_ptr_1.action, my_method_async);
-  ASSERT_ARE_EQUAL(void_ptr, action.action_ptr_2.action, my_method_cancel);
-  ASSERT_ARE_EQUAL(char, action.flags, (uint8_t)AZ_ULIB_ACTION_TYPE_METHOD_ASYNC);
+  ASSERT_ARE_EQUAL(char_ptr, capability.name, "my_method_async");
+  ASSERT_ARE_EQUAL(void_ptr, capability.capability_ptr_1.capability, my_method_async);
+  ASSERT_ARE_EQUAL(void_ptr, capability.capability_ptr_2.capability, my_method_cancel);
+  ASSERT_ARE_EQUAL(char, capability.flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_METHOD_ASYNC);
 
   /// cleanup
 }
@@ -158,13 +159,13 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_EVENT_succeed) {
   /// arrange
 
   /// act
-  static az_ulib_action_descriptor action = AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event");
+  static az_ulib_capability_descriptor capability = AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event");
 
   /// assert
-  ASSERT_ARE_EQUAL(char_ptr, action.name, "my_event");
-  ASSERT_IS_NULL(action.action_ptr_1.action);
-  ASSERT_IS_NULL(action.action_ptr_2.action);
-  ASSERT_ARE_EQUAL(char, action.flags, (uint8_t)AZ_ULIB_ACTION_TYPE_EVENT);
+  ASSERT_ARE_EQUAL(char_ptr, capability.name, "my_event");
+  ASSERT_IS_NULL(capability.capability_ptr_1.capability);
+  ASSERT_IS_NULL(capability.capability_ptr_2.capability);
+  ASSERT_ARE_EQUAL(char, capability.flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_EVENT);
 
   /// cleanup
 }
@@ -194,35 +195,44 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_CREATE_succeed) {
   ASSERT_ARE_EQUAL(char, MY_INTERFACE.size, 5);
 
   /* AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property) */
-  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.action_list[0].name, "my_property");
-  ASSERT_ARE_EQUAL(void_ptr, MY_INTERFACE.action_list[0].action_ptr_1.action, get_my_property);
-  ASSERT_ARE_EQUAL(void_ptr, MY_INTERFACE.action_list[0].action_ptr_2.action, set_my_property);
-  ASSERT_ARE_EQUAL(char, MY_INTERFACE.action_list[0].flags, (uint8_t)AZ_ULIB_ACTION_TYPE_PROPERTY);
+  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[0].name, "my_property");
+  ASSERT_ARE_EQUAL(
+      void_ptr, MY_INTERFACE.capability_list[0].capability_ptr_1.capability, get_my_property);
+  ASSERT_ARE_EQUAL(
+      void_ptr, MY_INTERFACE.capability_list[0].capability_ptr_2.capability, set_my_property);
+  ASSERT_ARE_EQUAL(
+      char, MY_INTERFACE.capability_list[0].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_PROPERTY);
 
   /* AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event") */
-  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.action_list[1].name, "my_event");
-  ASSERT_IS_NULL(MY_INTERFACE.action_list[1].action_ptr_1.action);
-  ASSERT_IS_NULL(MY_INTERFACE.action_list[1].action_ptr_2.action);
-  ASSERT_ARE_EQUAL(char, MY_INTERFACE.action_list[1].flags, (uint8_t)AZ_ULIB_ACTION_TYPE_EVENT);
+  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[1].name, "my_event");
+  ASSERT_IS_NULL(MY_INTERFACE.capability_list[1].capability_ptr_1.capability);
+  ASSERT_IS_NULL(MY_INTERFACE.capability_list[1].capability_ptr_2.capability);
+  ASSERT_ARE_EQUAL(
+      char, MY_INTERFACE.capability_list[1].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_EVENT);
 
   /* AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event2") */
-  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.action_list[2].name, "my_event2");
-  ASSERT_IS_NULL(MY_INTERFACE.action_list[2].action_ptr_1.action);
-  ASSERT_IS_NULL(MY_INTERFACE.action_list[2].action_ptr_2.action);
-  ASSERT_ARE_EQUAL(char, MY_INTERFACE.action_list[2].flags, (uint8_t)AZ_ULIB_ACTION_TYPE_EVENT);
+  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[2].name, "my_event2");
+  ASSERT_IS_NULL(MY_INTERFACE.capability_list[2].capability_ptr_1.capability);
+  ASSERT_IS_NULL(MY_INTERFACE.capability_list[2].capability_ptr_2.capability);
+  ASSERT_ARE_EQUAL(
+      char, MY_INTERFACE.capability_list[2].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_EVENT);
 
   /* AZ_ULIB_DESCRIPTOR_ADD_METHOD("my_method", my_method) */
-  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.action_list[3].name, "my_method");
-  ASSERT_ARE_EQUAL(void_ptr, MY_INTERFACE.action_list[3].action_ptr_1.action, my_method);
-  ASSERT_IS_NULL(MY_INTERFACE.action_list[3].action_ptr_2.action);
-  ASSERT_ARE_EQUAL(char, MY_INTERFACE.action_list[3].flags, (uint8_t)AZ_ULIB_ACTION_TYPE_METHOD);
+  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[3].name, "my_method");
+  ASSERT_ARE_EQUAL(
+      void_ptr, MY_INTERFACE.capability_list[3].capability_ptr_1.capability, my_method);
+  ASSERT_IS_NULL(MY_INTERFACE.capability_list[3].capability_ptr_2.capability);
+  ASSERT_ARE_EQUAL(
+      char, MY_INTERFACE.capability_list[3].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_METHOD);
 
   /* AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC("my_method_async", my_method_async, my_method_cancel) */
-  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.action_list[4].name, "my_method_async");
-  ASSERT_ARE_EQUAL(void_ptr, MY_INTERFACE.action_list[4].action_ptr_1.action, my_method_async);
-  ASSERT_ARE_EQUAL(void_ptr, MY_INTERFACE.action_list[4].action_ptr_2.action, my_method_cancel);
+  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[4].name, "my_method_async");
   ASSERT_ARE_EQUAL(
-      char, MY_INTERFACE.action_list[4].flags, (uint8_t)AZ_ULIB_ACTION_TYPE_METHOD_ASYNC);
+      void_ptr, MY_INTERFACE.capability_list[4].capability_ptr_1.capability, my_method_async);
+  ASSERT_ARE_EQUAL(
+      void_ptr, MY_INTERFACE.capability_list[4].capability_ptr_2.capability, my_method_cancel);
+  ASSERT_ARE_EQUAL(
+      char, MY_INTERFACE.capability_list[4].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_METHOD_ASYNC);
 
   /// cleanup
 }

@@ -7,14 +7,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "az_ulib_pal_os_api.h"
-#include "az_ulib_action_api.h"
+#include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
-#include "azure_macro_utils/macro_utils.h"
-#include "az_ulib_test_thread.h"
-#include "testrunnerswitcher.h"
+#include "az_ulib_pal_os_api.h"
 #include "az_ulib_result.h"
+#include "az_ulib_test_thread.h"
+#include "azure_macro_utils/macro_utils.h"
+#include "testrunnerswitcher.h"
 #include "umock_c/umock_c.h"
 
 static TEST_MUTEX_HANDLE g_test_by_test;
@@ -42,23 +42,23 @@ static az_ulib_result set_my_property(const void* const model_in) {
 }
 
 typedef struct my_method_model_in_tag {
-  uint8_t action;
+  uint8_t capability;
   uint32_t max_sum;
   const az_ulib_interface_descriptor* descriptor;
   az_ulib_ipc_interface_handle handle;
-  az_ulib_action_index method_index;
+  az_ulib_capability_index method_index;
   az_ulib_result return_result;
 } my_method_model_in;
 
-typedef enum my_method_action_tag {
-    MY_METHOD_ACTION_JUST_RETURN,
-    MY_METHOD_ACTION_SUM,
-    MY_METHOD_ACTION_UNPUBLISH,
-    MY_METHOD_ACTION_RELEASE_INTERFACE,
-    MY_METHOD_ACTION_DEINIT,
-    MY_METHOD_ACTION_CALL_AGAIN,
-    MY_METHOD_ACTION_RETURN_ERROR
-} my_method_action;
+typedef enum my_method_capability_tag {
+  MY_METHOD_CAPABILITY_JUST_RETURN,
+  MY_METHOD_CAPABILITY_SUM,
+  MY_METHOD_CAPABILITY_UNPUBLISH,
+  MY_METHOD_CAPABILITY_RELEASE_INTERFACE,
+  MY_METHOD_CAPABILITY_DEINIT,
+  MY_METHOD_CAPABILITY_CALL_AGAIN,
+  MY_METHOD_CAPABILITY_RETURN_ERROR
+} my_method_capability;
 
 static volatile long g_is_running;
 static volatile long g_lock_thread;
@@ -71,11 +71,11 @@ static az_ulib_result my_method(const void* const model_in, const void* model_ou
   uint64_t sum = 0;
 
   (void)AZ_ULIB_PORT_ATOMIC_INC_W(&g_is_running);
-  switch (in->action) {
-    case MY_METHOD_ACTION_JUST_RETURN:
+  switch (in->capability) {
+    case MY_METHOD_CAPABILITY_JUST_RETURN:
       *result = in->return_result;
       break;
-    case MY_METHOD_ACTION_SUM:
+    case MY_METHOD_CAPABILITY_SUM:
       while (g_lock_thread != 0) {
         az_pal_os_sleep(10);
       };
@@ -87,17 +87,17 @@ static az_ulib_result my_method(const void* const model_in, const void* model_ou
       }
       *result = in->return_result;
       break;
-    case MY_METHOD_ACTION_UNPUBLISH:
+    case MY_METHOD_CAPABILITY_UNPUBLISH:
       *result = az_ulib_ipc_unpublish(in->descriptor, AZ_ULIB_NO_WAIT);
       break;
-    case MY_METHOD_ACTION_RELEASE_INTERFACE:
+    case MY_METHOD_CAPABILITY_RELEASE_INTERFACE:
       *result = az_ulib_ipc_release_interface(in->handle);
       break;
-    case MY_METHOD_ACTION_DEINIT:
+    case MY_METHOD_CAPABILITY_DEINIT:
       *result = az_ulib_ipc_deinit();
       break;
-    case MY_METHOD_ACTION_CALL_AGAIN:
-      in_2.action = 0;
+    case MY_METHOD_CAPABILITY_CALL_AGAIN:
+      in_2.capability = 0;
       in_2.return_result = AZ_ULIB_SUCCESS;
       *result = az_ulib_ipc_call(in->handle, in->method_index, &in_2, model_out);
       break;
@@ -113,18 +113,18 @@ static az_ulib_result my_method(const void* const model_in, const void* model_ou
 static az_ulib_result my_method_async(
     const void* const model_in,
     const void* model_out,
-    const az_ulib_action_token action_token,
-    az_ulib_action_cancellation_callback* cancel) {
+    const az_ulib_capability_token capability_token,
+    az_ulib_capability_cancellation_callback* cancel) {
   (void)model_in;
   (void)model_out;
-  (void)action_token;
+  (void)capability_token;
   (void)cancel;
 
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_method_cancel(const az_ulib_action_token action_token) {
-  (void)action_token;
+static az_ulib_result my_method_cancel(const az_ulib_capability_token capability_token) {
+  (void)capability_token;
 
   return AZ_ULIB_SUCCESS;
 }
@@ -209,7 +209,7 @@ static uint32_t g_thread_max_sum;
 
 static int call_sync_thread(void* arg) {
   my_method_model_in in;
-  in.action = MY_METHOD_ACTION_SUM;
+  in.capability = MY_METHOD_CAPABILITY_SUM;
   in.max_sum = g_thread_max_sum;
   in.return_result = AZ_ULIB_SUCCESS;
 
@@ -298,7 +298,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_method_succeed) {
           &interface_handle));
 
   my_method_model_in in;
-  in.action = MY_METHOD_ACTION_SUM;
+  in.capability = MY_METHOD_CAPABILITY_SUM;
   in.max_sum = 10000;
   in.return_result = AZ_ULIB_SUCCESS;
   az_ulib_result out = AZ_ULIB_PENDING;
@@ -330,7 +330,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed) {
           &interface_handle));
 
   my_method_model_in in;
-  in.action = MY_METHOD_ACTION_UNPUBLISH;
+  in.capability = MY_METHOD_CAPABILITY_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
   az_ulib_result out = AZ_ULIB_PENDING;
 
@@ -361,7 +361,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_release_interface_in_the_call_succeed) {
           &interface_handle));
 
   my_method_model_in in;
-  in.action = MY_METHOD_ACTION_RELEASE_INTERFACE;
+  in.capability = MY_METHOD_CAPABILITY_RELEASE_INTERFACE;
   in.handle = interface_handle;
   az_ulib_result out = AZ_ULIB_PENDING;
 
@@ -392,7 +392,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_deinit_ipc_in_the_call_failed) {
           &interface_handle));
 
   my_method_model_in in;
-  in.action = MY_METHOD_ACTION_DEINIT;
+  in.capability = MY_METHOD_CAPABILITY_DEINIT;
   az_ulib_result out = AZ_ULIB_PENDING;
 
   /// act
@@ -422,7 +422,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_recursive_in_the_call_succeed) {
           &interface_handle));
 
   my_method_model_in in;
-  in.action = MY_METHOD_ACTION_CALL_AGAIN;
+  in.capability = MY_METHOD_CAPABILITY_CALL_AGAIN;
   in.handle = interface_handle;
   in.method_index = MY_INTERFACE_METHOD;
   az_ulib_result out = AZ_ULIB_PENDING;
@@ -454,7 +454,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_unpublish_interface_before_call_succeed) {
           &interface_handle));
 
   my_method_model_in in;
-  in.action = MY_METHOD_ACTION_UNPUBLISH;
+  in.capability = MY_METHOD_CAPABILITY_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
   az_ulib_result out = AZ_ULIB_PENDING;
 
@@ -490,7 +490,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_release_after_unpublish_succeed) {
           &interface_handle));
 
   my_method_model_in in;
-  in.action = MY_METHOD_ACTION_JUST_RETURN;
+  in.capability = MY_METHOD_CAPABILITY_JUST_RETURN;
   in.return_result = AZ_ULIB_SUCCESS;
   az_ulib_result out = AZ_ULIB_PENDING;
 
@@ -621,7 +621,6 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_method_in_multiple_threads_and_unpublish
   (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
       &g_lock_thread, 0); // Lock the method that will run in the thread to do not finish until we
                           // complete the test.
-
 
   /// act
   THREAD_HANDLE thread_handle[SMALL_NUMBER_THREAD];
