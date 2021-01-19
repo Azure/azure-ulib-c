@@ -7,8 +7,8 @@
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
 
-#include "az_ulib_action_api.h"
 #include "az_ulib_base.h"
+#include "az_ulib_capability_api.h"
 #include "az_ulib_config.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
@@ -380,7 +380,7 @@ az_ulib_result _az_ulib_ipc_release_interface(_az_ulib_ipc_interface_handle inte
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
 az_ulib_result _az_ulib_ipc_call_no_contract(
     _az_ulib_ipc_interface_handle interface_handle,
-    az_ulib_action_index method_index,
+    az_ulib_capability_index method_index,
     const void* const model_in,
     const void* model_out) {
   az_ulib_result result;
@@ -399,7 +399,8 @@ az_ulib_result _az_ulib_ipc_call_no_contract(
       result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;
     } else {
       /*az_ulib_ipc_call_calls_the_method_succeed*/
-      result = descriptor->action_list[method_index].action_ptr_1.method(model_in, model_out);
+      result
+          = descriptor->capability_list[method_index].capability_ptr_1.method(model_in, model_out);
     }
     long new_running_count = AZ_ULIB_PORT_ATOMIC_DEC_W(&(ipc_interface->running_count));
     if (new_running_count < ipc_interface->running_count_low_watermark) {
@@ -415,18 +416,18 @@ az_ulib_result _az_ulib_ipc_call_no_contract(
 #else // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 az_ulib_result _az_ulib_ipc_call_no_contract(
     _az_ulib_ipc_interface_handle interface_handle,
-    az_ulib_action_index method_index,
+    az_ulib_capability_index method_index,
     const void* const model_in,
     const void* model_out) {
   return ((_az_ulib_ipc_interface*)interface_handle)
-      ->interface_descriptor->action_list[method_index]
-      .action_ptr_1.method(model_in, model_out);
+      ->interface_descriptor->capability_list[method_index]
+      .capability_ptr_1.method(model_in, model_out);
 }
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
 az_ulib_result _az_ulib_ipc_call(
     _az_ulib_ipc_interface_handle interface_handle,
-    az_ulib_action_index method_index,
+    az_ulib_capability_index method_index,
     const void* const model_in,
     const void* model_out) {
   AZ_ULIB_UCONTRACT(

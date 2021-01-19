@@ -1,20 +1,20 @@
 // Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. 
+// Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
 /**
  * @file az_ulib_ucontract.h
- * 
+ *
  * @brief Public API parameter validation
  */
 
 #ifndef AZ_ULIB_UCONTRACT_H
 #define AZ_ULIB_UCONTRACT_H
 
-#include "azure_macro_utils/macro_utils.h"
 #include "az_ulib_config.h"
 #include "az_ulib_port.h"
 #include "az_ulib_ulog.h"
+#include "azure_macro_utils/macro_utils.h"
 
 #include <stdio.h>
 
@@ -114,7 +114,8 @@ extern "C" {
 #define AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(val, result) \
   do { \
     if (val == NULL) { \
-      AZ_ULIB_CONFIG_LOG(AZ_ULIB_ULOG_TYPE_ERROR, AZ_ULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
+      AZ_ULIB_CONFIG_LOG( \
+          AZ_ULIB_ULOG_TYPE_ERROR, AZ_ULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
       return result; \
     } \
   } while ((void)0, 0)
@@ -128,7 +129,8 @@ extern "C" {
 #define AZ_ULIB_UCONTRACT_REQUIRE_NULL(val, result) \
   do { \
     if (val != NULL) { \
-      AZ_ULIB_CONFIG_LOG(AZ_ULIB_ULOG_TYPE_ERROR, AZ_ULIB_ULOG_REQUIRE_NULL_STRING, MU_TOSTRING(val)); \
+      AZ_ULIB_CONFIG_LOG( \
+          AZ_ULIB_ULOG_TYPE_ERROR, AZ_ULIB_ULOG_REQUIRE_NULL_STRING, MU_TOSTRING(val)); \
       return result; \
     } \
   } while ((void)0, 0)
@@ -199,7 +201,8 @@ extern "C" {
 #define AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT(val) \
   do { \
     if (val == NULL) { \
-      AZ_ULIB_CONFIG_LOG(AZ_ULIB_ULOG_TYPE_ERROR, AZ_ULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
+      AZ_ULIB_CONFIG_LOG( \
+          AZ_ULIB_ULOG_TYPE_ERROR, AZ_ULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
       AZ_ULIB_PORT_THROW_HARD_FAULT; \
     } \
   } while ((void)0, 0)

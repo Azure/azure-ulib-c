@@ -3,8 +3,8 @@
 // See LICENSE file in the project root for full license information.
 
 /** @file az_ulib_pal_os_api.h
-*    @brief      A minimalistic platform agnostic abstraction.
-*/
+ *    @brief      A minimalistic platform agnostic abstraction.
+ */
 
 #ifndef AZ_ULIB_PAL_OS_API_H
 #define AZ_ULIB_PAL_OS_API_H

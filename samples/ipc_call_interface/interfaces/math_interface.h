@@ -3,7 +3,7 @@
 // See LICENSE file in the project root for full license information.
 
 /********************************************************************
- * This code was auto-generated from math meta-data and shall not be 
+ * This code was auto-generated from math meta-data and shall not be
  * modified.
  ********************************************************************/
 
@@ -19,8 +19,8 @@
 
 typedef az_ulib_ipc_interface_handle math_handle;
 
-#define MATH_INTERFACE_SUM_METHOD (az_ulib_action_index)0
-#define MATH_INTERFACE_SUBTRACT_METHOD (az_ulib_action_index)1
+#define MATH_INTERFACE_SUM_METHOD (az_ulib_capability_index)0
+#define MATH_INTERFACE_SUBTRACT_METHOD (az_ulib_capability_index)1
 
 /*
  * Define sum method on math interface.

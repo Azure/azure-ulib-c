@@ -8,8 +8,8 @@
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
 
-#include "az_ulib_action_api.h"
 #include "az_ulib_base.h"
+#include "az_ulib_capability_api.h"
 #include "az_ulib_config.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_port.h"
@@ -73,10 +73,10 @@ static inline az_ulib_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle) {
  * @brief   De-initialize the IPC system.
  *
  * This API will release all resources associated with the IPC, but only if the IPC is completely
- * free, whitch means that deinit the IPC shall be preceded by:
+ * free, which means that deinit the IPC shall be preceded by:
  *
  * 1) Stop all threads that make calls to the published interfaces.
- * 2) Finalize or cancell all asynchronous calls, and ensure that their callbacks were called.
+ * 2) Finalize or cancel all asynchronous calls, and ensure that their callbacks were called.
  * 3) Unsubscribe all events.
  * 4) Unpublish all interfaces.
  *
@@ -297,10 +297,10 @@ static inline az_ulib_result az_ulib_ipc_release_interface(
  * @param[in]   interface_handle  The #az_ulib_ipc_interface_handle with the interface handle. It
  *                                cannot be `NULL`. Call
  *                                az_ulib_ipc_try_get_interface() to get the interface handle.
- * @param[in]   method_index      The #az_ulib_action_index with the method handle.
+ * @param[in]   method_index      The #az_ulib_capability_index with the method handle.
  * @param[in]   model_in          The `const void *const` that points to the memory with the
  *                                input model content.
- * @param[out]  model_out         The `const void *` that points to the memory where the action
+ * @param[out]  model_out         The `const void *` that points to the memory where the capability
  *                                should store the output model content.
  * @return The #az_ulib_result with the result of the call.
  *  @retval #AZ_ULIB_SUCCESS                  If the IPC get success calling the procedure.
@@ -312,7 +312,7 @@ static inline az_ulib_result az_ulib_ipc_release_interface(
  */
 static inline az_ulib_result az_ulib_ipc_call(
     az_ulib_ipc_interface_handle interface_handle,
-    az_ulib_action_index method_index,
+    az_ulib_capability_index method_index,
     az_ulib_model_in model_in,
     az_ulib_model_out model_out) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT

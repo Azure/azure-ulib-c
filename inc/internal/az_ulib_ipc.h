@@ -8,10 +8,10 @@
 #include "azure_macro_utils/macro_utils.h"
 #include "umock_c/umock_c_prod.h"
 
-#include "../az_ulib_action_api.h"
+#include "../az_ulib_capability_api.h"
 #include "../az_ulib_descriptor_api.h"
-#include "az_ulib_action_api.h"
 #include "az_ulib_base.h"
+#include "az_ulib_capability_api.h"
 #include "az_ulib_config.h"
 #include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
@@ -143,7 +143,7 @@ MOCKABLE_FUNCTION(
     _az_ulib_ipc_call_no_contract,
     _az_ulib_ipc_interface_handle,
     interface_handle,
-    az_ulib_action_index,
+    az_ulib_capability_index,
     method_index,
     const void* const,
     modelIn,
@@ -155,7 +155,7 @@ MOCKABLE_FUNCTION(
     _az_ulib_ipc_call,
     _az_ulib_ipc_interface_handle,
     interface_handle,
-    az_ulib_action_index,
+    az_ulib_capability_index,
     method_index,
     const void* const,
     modelIn,

@@ -19,8 +19,8 @@
 
 typedef az_ulib_ipc_interface_handle math_handle;
 
-#define MATH_INTERFACE_SUM_METHOD (az_ulib_action_index)0
-#define MATH_INTERFACE_SUBTRACT_METHOD (az_ulib_action_index)1
+#define MATH_INTERFACE_SUM_METHOD (az_ulib_capability_index)0
+#define MATH_INTERFACE_SUBTRACT_METHOD (az_ulib_capability_index)1
 
 /*
  * Define sum method on math interface.
