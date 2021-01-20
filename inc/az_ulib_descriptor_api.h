@@ -45,8 +45,8 @@ typedef struct az_ulib_capability_descriptor_tag {
   {
     const void* capability;
     const az_ulib_capability_get get;
-    const az_ulib_capability_method method;
-    const az_ulib_capability_method_async method_async;
+    const az_ulib_capability_command command;
+    const az_ulib_capability_command_async command_async;
   } capability_ptr_1;
   const union /**<The secondary function of the capability. */
   {
@@ -112,11 +112,11 @@ typedef struct az_ulib_interface_descriptor_tag {
  *                          until the interface is unpublished at some (potentially) unknown time
  *                          in the future.
  * @param[in]   get         The function pointer to #az_ulib_capability_get with the implementation
- *                          of the get method for the property. The get method shall be valid
+ *                          of the get command for the property. The get command shall be valid
  *                          until the interface is unpublished at some (potentially) unknown time
  *                          in the future.
  * @param[in]   set         The function pointer to #az_ulib_capability_set with the implementation
- *                          of the set method for the property. The set method shall be valid
+ *                          of the set command for the property. The set command shall be valid
  *                          until the interface is unpublished at some (potentially) unknown time
  *                          in the future.
  * @return The #az_ulib_capability_descriptor with the property.
@@ -128,79 +128,79 @@ typedef struct az_ulib_interface_descriptor_tag {
   }
 
 /**
- * @brief   Add a synchronous method to the interface descriptor.
+ * @brief   Add a synchronous command to the interface descriptor.
  *
- * Populate a new *synchronous method* capability descriptor to add to the interface. On the
- * interface context, a synchronous method is a blocking call method, which executes all the needed
- * instructions at once, and return the result at the end of the execution.
+ * Populate a new *synchronous command* capability descriptor to add to the interface. On the
+ * interface context, a synchronous command is a blocking call command, which executes all the
+ * needed instructions at once, and return the result at the end of the execution.
  *
- * @param[in]   name        The `/0` terminated `const char* const` with the method name. It
+ * @param[in]   name        The `/0` terminated `const char* const` with the command name. It
  *                          cannot be `NULL` and shall be allocated in a way that it stays valid
  *                          until the interface is unpublished at some (potentially) unknown time
  *                          in the future.
- * @param[in]   method      The function pointer to #az_ulib_capability_method with the
- *                          implementation of the synchronous method. The method shall be valid
+ * @param[in]   command      The function pointer to #az_ulib_capability_command with the
+ *                          implementation of the synchronous command. The command shall be valid
  *                          until the interface is unpublished at some (potentially) unknown time
  *                          in the future.
- * @return The #az_ulib_capability_descriptor with the method.
+ * @return The #az_ulib_capability_descriptor with the command.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_METHOD(name, method) \
+#define AZ_ULIB_DESCRIPTOR_ADD_COMMAND(name, command) \
   { \
-    (name), { (const void*)(method) }, { (const void*)NULL }, \
-        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_METHOD) \
+    (name), { (const void*)(command) }, { (const void*)NULL }, \
+        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND) \
   }
 
 /**
- * @brief   Add an asynchronous method to the interface descriptor.
+ * @brief   Add an asynchronous command to the interface descriptor.
  *
- * Populate a new *asynchronous method* capability descriptor to add to the interface. On the
- * interface context, an asynchronous method is a call to a method that will start a hardware
+ * Populate a new *asynchronous command* capability descriptor to add to the interface. On the
+ * interface context, an asynchronous command is a call to a command that will start a hardware
  * operation and return before its conclusion. In some point in the future, a hardware interruption
- * (IRQ) will wake the CPU with the result of this operation, at this point, the asynchronous method
- * will conclude the operation firing a callback with the result.
+ * (IRQ) will wake the CPU with the result of this operation, at this point, the asynchronous
+ * command will conclude the operation firing a callback with the result.
  *
  * The hardware operation may be cancellable, so, the API allows the developer to provide a cancel
  * function.
  *
- * @param[in]   name            The `/0` terminated `const char* const` with the method name. It
+ * @param[in]   name            The `/0` terminated `const char* const` with the command name. It
  *                              cannot be `NULL` and shall be allocated in a way that it stays
  *                              valid until the interface is unpublished at some (potentially)
  *                              unknown time in the future.
- * @param[in]   method_async    The function pointer to #az_ulib_capability_method_async with the
- *                              implementation of the asynchronous method. The method shall be
+ * @param[in]   command_async    The function pointer to #az_ulib_capability_command_async with the
+ *                              implementation of the asynchronous command. The command shall be
  *                              valid until the interface is unpublished at some (potentially)
  *                              unknown time in the future.
  * @param[in]   cancel          The function pointer to #az_ulib_capability_cancellation_callback
  *                              with the implementation of the function to cancel the asynchronous
- *                              method. It can be `NULL` if the method does not allow any
+ *                              command. It can be `NULL` if the command does not allow any
  *                              cancellation. If provided, the cancel shall be valid until the
  *                              interface is unpublished at some (potentially) unknown time in the
  *                              future.
- * @return The #az_ulib_capability_descriptor with the method.
+ * @return The #az_ulib_capability_descriptor with the command async.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC(name, method_async, cancel) \
+#define AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC(name, command_async, cancel) \
   { \
-    (name), { (const void*)(method_async) }, { (const void*)(cancel) }, \
-        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_METHOD_ASYNC) \
+    (name), { (const void*)(command_async) }, { (const void*)(cancel) }, \
+        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC) \
   }
 
 /**
- * @brief   Add an event to the interface descriptor.
+ * @brief   Add an telemetry to the interface descriptor.
  *
- * Populate a new *event* capability descriptor to add to the interface. On the interface context, a
- * event is a subscribed base notification, where other components in the system can subscribe to
- * be notified when certain event happened.
+ * Populate a new *telemetry* capability descriptor to add to the interface. On the interface
+ * context, a telemetry is a subscribed base notification, where other components in the system can
+ * subscribe to be notified when certain telemetry happened.
  *
- * @param[in]   name        The `/0` terminated `const char* const` with the event name. It cannot
- *                          be `NULL` and shall be allocated in a way that it stays valid until the
- *                          interface is unpublished at some (potentially) unknown time in the
- *                          future.
- * @return The #az_ulib_capability_descriptor with the method.
+ * @param[in]   name        The `/0` terminated `const char* const` with the telemetry name. It
+ *                          cannot be `NULL` and shall be allocated in a way that it stays valid
+ *                          until the interface is unpublished at some (potentially) unknown time
+ *                          in the future.
+ * @return The #az_ulib_capability_descriptor with the telemetry.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_EVENT(name) \
+#define AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY(name) \
   { \
     (name), { (const void*)(NULL) }, { (const void*)(NULL) }, \
-        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_EVENT) \
+        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_TELEMETRY) \
   }
 
 #ifdef __cplusplus

@@ -19,13 +19,13 @@
 
 typedef az_ulib_ipc_interface_handle math_handle;
 
-#define MATH_INTERFACE_SUM_METHOD (az_ulib_capability_index)0
-#define MATH_INTERFACE_SUBTRACT_METHOD (az_ulib_capability_index)1
+#define MATH_INTERFACE_SUM_COMMAND (az_ulib_capability_index)0
+#define MATH_INTERFACE_SUBTRACT_COMMAND (az_ulib_capability_index)1
 
 /*
- * Define sum method on math interface.
+ * Define sum command on math interface.
  */
-#define MATH_INTERFACE_SUM_METHOD_NAME "sum"
+#define MATH_INTERFACE_SUM_COMMAND_NAME "sum"
 
 typedef struct sum_model_in_tag {
   int32_t a;
@@ -35,9 +35,9 @@ typedef struct sum_model_in_tag {
 typedef int64_t sum_model_out;
 
 /*
- * Define subtraction method on math interface.
+ * Define subtraction command on math interface.
  */
-#define MATH_INTERFACE_SUBTRACT_METHOD_NAME "subtract"
+#define MATH_INTERFACE_SUBTRACT_COMMAND_NAME "subtract"
 
 typedef struct subtract_model_in_tag {
   int32_t a;
