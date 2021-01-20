@@ -204,8 +204,8 @@ az_ulib_result _az_ulib_ipc_unpublish_no_contract(
       (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(&(release_interface->interface_descriptor), NULL);
 
       // If the running_count is `0` is because no other process is inside of any of the functions
-      // methods, and they may be removed from the memory. There will be the case that the other
-      // process is already in the az_ulib_ipc_call, in the direction to call a method in this
+      // commands, and they may be removed from the memory. There will be the case that the other
+      // process is already in the az_ulib_ipc_call, in the direction to call a command in this
       // interface, but the call will just return AZ_ULIB_NO_SUCH_ELEMENT_ERROR from there.
       /*az_ulib_ipc_unpublish_succeed*/
       uint32_t retry_interval;
@@ -228,7 +228,7 @@ az_ulib_result _az_ulib_ipc_unpublish_no_contract(
       // function az_ulib_ipc_unpublish, in many applications, it will not be used at all. So, we
       // decided to open an exception here and use a busy loop on the az_ulib_ipc_unpublish
       // instead of a semaphore.
-      /*az_ulib_ipc_unpublish_with_method_running_with_small_timeout_failed*/
+      /*az_ulib_ipc_unpublish_with_command_running_with_small_timeout_failed*/
       while ((retry_total_time < wait_option_ms)
              && (release_interface->running_count_low_watermark != 0)) {
 
@@ -245,7 +245,7 @@ az_ulib_result _az_ulib_ipc_unpublish_no_contract(
         /*az_ulib_ipc_unpublish_with_valid_interface_instance_succeed*/
         result = AZ_ULIB_SUCCESS;
       } else {
-        /*az_ulib_ipc_unpublish_with_method_running_failed*/
+        /*az_ulib_ipc_unpublish_with_command_running_failed*/
         // If caller doesn't want to wait anymore, recover the interface and return
         // AZ_ULIB_BUSY_ERROR.
         (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
@@ -380,7 +380,7 @@ az_ulib_result _az_ulib_ipc_release_interface(_az_ulib_ipc_interface_handle inte
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
 az_ulib_result _az_ulib_ipc_call_no_contract(
     _az_ulib_ipc_interface_handle interface_handle,
-    az_ulib_capability_index method_index,
+    az_ulib_capability_index command_index,
     const void* const model_in,
     const void* model_out) {
   az_ulib_result result;
@@ -398,9 +398,9 @@ az_ulib_result _az_ulib_ipc_call_no_contract(
       /*az_ulib_ipc_call_unpublished_interface_failed*/
       result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;
     } else {
-      /*az_ulib_ipc_call_calls_the_method_succeed*/
-      result
-          = descriptor->capability_list[method_index].capability_ptr_1.method(model_in, model_out);
+      /*az_ulib_ipc_call_calls_the_command_succeed*/
+      result = descriptor->capability_list[command_index].capability_ptr_1.command(
+          model_in, model_out);
     }
     long new_running_count = AZ_ULIB_PORT_ATOMIC_DEC_W(&(ipc_interface->running_count));
     if (new_running_count < ipc_interface->running_count_low_watermark) {
@@ -416,18 +416,18 @@ az_ulib_result _az_ulib_ipc_call_no_contract(
 #else // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 az_ulib_result _az_ulib_ipc_call_no_contract(
     _az_ulib_ipc_interface_handle interface_handle,
-    az_ulib_capability_index method_index,
+    az_ulib_capability_index command_index,
     const void* const model_in,
     const void* model_out) {
   return ((_az_ulib_ipc_interface*)interface_handle)
-      ->interface_descriptor->capability_list[method_index]
-      .capability_ptr_1.method(model_in, model_out);
+      ->interface_descriptor->capability_list[command_index]
+      .capability_ptr_1.command(model_in, model_out);
 }
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
 az_ulib_result _az_ulib_ipc_call(
     _az_ulib_ipc_interface_handle interface_handle,
-    az_ulib_capability_index method_index,
+    az_ulib_capability_index command_index,
     const void* const model_in,
     const void* model_out) {
   AZ_ULIB_UCONTRACT(
@@ -435,5 +435,5 @@ az_ulib_result _az_ulib_ipc_call(
       AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ULIB_NOT_INITIALIZED_ERROR),
       /*az_ulib_ipc_call_with_null_interface_handle_failed*/
       AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_handle, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
-  return _az_ulib_ipc_call_no_contract(interface_handle, method_index, model_in, model_out);
+  return _az_ulib_ipc_call_no_contract(interface_handle, command_index, model_in, model_out);
 }

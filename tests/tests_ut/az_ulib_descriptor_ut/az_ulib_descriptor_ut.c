@@ -42,14 +42,14 @@ static az_ulib_result set_my_property(const void* const model_in) {
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_method(const void* const model_in, const void* model_out) {
+static az_ulib_result my_command(const void* const model_in, const void* model_out) {
   (void)model_in;
   (void)model_out;
 
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_method_async(
+static az_ulib_result my_command_async(
     const void* const model_in,
     const void* model_out,
     const az_ulib_capability_token capability_token,
@@ -62,7 +62,7 @@ static az_ulib_result my_method_async(
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_method_cancel(const az_ulib_capability_token capability_token) {
+static az_ulib_result my_command_cancel(const az_ulib_capability_token capability_token) {
   (void)capability_token;
 
   return AZ_ULIB_SUCCESS;
@@ -117,61 +117,62 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_succeed) {
   /// cleanup
 }
 
-/* The AZ_ULIB_DESCRIPTOR_ADD_METHOD shall create an descriptor for a method with name and pointer
- * to the method. */
-TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_METHOD_succeed) {
+/* The AZ_ULIB_DESCRIPTOR_ADD_COMMAND shall create an descriptor for a command with name and pointer
+ * to the command. */
+TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_succeed) {
   /// arrange
 
   /// act
   static az_ulib_capability_descriptor capability
-      = AZ_ULIB_DESCRIPTOR_ADD_METHOD("my_method", my_method);
+      = AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command);
 
   /// assert
-  ASSERT_ARE_EQUAL(char_ptr, capability.name, "my_method");
-  ASSERT_ARE_EQUAL(void_ptr, capability.capability_ptr_1.capability, my_method);
+  ASSERT_ARE_EQUAL(char_ptr, capability.name, "my_command");
+  ASSERT_ARE_EQUAL(void_ptr, capability.capability_ptr_1.capability, my_command);
   ASSERT_IS_NULL(capability.capability_ptr_2.capability);
-  ASSERT_ARE_EQUAL(char, capability.flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_METHOD);
+  ASSERT_ARE_EQUAL(char, capability.flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_COMMAND);
 
   /// cleanup
 }
 
-/* The AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC shall create an descriptor for an async method with name
- * and pointer to the method and the cancellation method. */
-TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC_succeed) {
+/* The AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC shall create an descriptor for an async command with
+ * name and pointer to the command and the cancellation command. */
+TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC_succeed) {
+  /// arrange
+
+  /// act
+  static az_ulib_capability_descriptor capability = AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC(
+      "my_command_async", my_command_async, my_command_cancel);
+
+  /// assert
+  ASSERT_ARE_EQUAL(char_ptr, capability.name, "my_command_async");
+  ASSERT_ARE_EQUAL(void_ptr, capability.capability_ptr_1.capability, my_command_async);
+  ASSERT_ARE_EQUAL(void_ptr, capability.capability_ptr_2.capability, my_command_cancel);
+  ASSERT_ARE_EQUAL(char, capability.flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC);
+
+  /// cleanup
+}
+
+/* The AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY shall create an descriptor for a command with name and
+ * pointer to the command. */
+TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY_succeed) {
   /// arrange
 
   /// act
   static az_ulib_capability_descriptor capability
-      = AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC("my_method_async", my_method_async, my_method_cancel);
+      = AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry");
 
   /// assert
-  ASSERT_ARE_EQUAL(char_ptr, capability.name, "my_method_async");
-  ASSERT_ARE_EQUAL(void_ptr, capability.capability_ptr_1.capability, my_method_async);
-  ASSERT_ARE_EQUAL(void_ptr, capability.capability_ptr_2.capability, my_method_cancel);
-  ASSERT_ARE_EQUAL(char, capability.flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_METHOD_ASYNC);
-
-  /// cleanup
-}
-
-/* The AZ_ULIB_DESCRIPTOR_ADD_EVENT shall create an descriptor for a method with name and pointer to
- * the method. */
-TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_EVENT_succeed) {
-  /// arrange
-
-  /// act
-  static az_ulib_capability_descriptor capability = AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event");
-
-  /// assert
-  ASSERT_ARE_EQUAL(char_ptr, capability.name, "my_event");
+  ASSERT_ARE_EQUAL(char_ptr, capability.name, "my_telemetry");
   ASSERT_IS_NULL(capability.capability_ptr_1.capability);
   ASSERT_IS_NULL(capability.capability_ptr_2.capability);
-  ASSERT_ARE_EQUAL(char, capability.flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_EVENT);
+  ASSERT_ARE_EQUAL(char, capability.flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_TELEMETRY);
 
   /// cleanup
 }
 
-/* The AZ_ULIB_DESCRIPTOR_CREATE shall create an descriptor for a method with name and pointer to
- * the method. */
+/* The AZ_ULIB_DESCRIPTOR_CREATE shall create an descriptor for a command with name and pointer to
+ * the command. */
 TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_CREATE_succeed) {
   /// arrange
   az_ulib_version version = 123;
@@ -182,10 +183,11 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_CREATE_succeed) {
       "MY_INTERFACE",
       123,
       AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property),
-      AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event"),
-      AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event2"),
-      AZ_ULIB_DESCRIPTOR_ADD_METHOD("my_method", my_method),
-      AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC("my_method_async", my_method_async, my_method_cancel));
+      AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry"),
+      AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry2"),
+      AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
+      AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC(
+          "my_command_async", my_command_async, my_command_cancel));
 
   /// assert
   /* Interface. */
@@ -203,36 +205,37 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_CREATE_succeed) {
   ASSERT_ARE_EQUAL(
       char, MY_INTERFACE.capability_list[0].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_PROPERTY);
 
-  /* AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event") */
-  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[1].name, "my_event");
+  /* AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry") */
+  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[1].name, "my_telemetry");
   ASSERT_IS_NULL(MY_INTERFACE.capability_list[1].capability_ptr_1.capability);
   ASSERT_IS_NULL(MY_INTERFACE.capability_list[1].capability_ptr_2.capability);
   ASSERT_ARE_EQUAL(
-      char, MY_INTERFACE.capability_list[1].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_EVENT);
+      char, MY_INTERFACE.capability_list[1].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_TELEMETRY);
 
-  /* AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event2") */
-  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[2].name, "my_event2");
+  /* AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry2") */
+  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[2].name, "my_telemetry2");
   ASSERT_IS_NULL(MY_INTERFACE.capability_list[2].capability_ptr_1.capability);
   ASSERT_IS_NULL(MY_INTERFACE.capability_list[2].capability_ptr_2.capability);
   ASSERT_ARE_EQUAL(
-      char, MY_INTERFACE.capability_list[2].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_EVENT);
+      char, MY_INTERFACE.capability_list[2].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_TELEMETRY);
 
-  /* AZ_ULIB_DESCRIPTOR_ADD_METHOD("my_method", my_method) */
-  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[3].name, "my_method");
+  /* AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command) */
+  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[3].name, "my_command");
   ASSERT_ARE_EQUAL(
-      void_ptr, MY_INTERFACE.capability_list[3].capability_ptr_1.capability, my_method);
+      void_ptr, MY_INTERFACE.capability_list[3].capability_ptr_1.capability, my_command);
   ASSERT_IS_NULL(MY_INTERFACE.capability_list[3].capability_ptr_2.capability);
   ASSERT_ARE_EQUAL(
-      char, MY_INTERFACE.capability_list[3].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_METHOD);
+      char, MY_INTERFACE.capability_list[3].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_COMMAND);
 
-  /* AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC("my_method_async", my_method_async, my_method_cancel) */
-  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[4].name, "my_method_async");
+  /* AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel)
+   */
+  ASSERT_ARE_EQUAL(char_ptr, MY_INTERFACE.capability_list[4].name, "my_command_async");
   ASSERT_ARE_EQUAL(
-      void_ptr, MY_INTERFACE.capability_list[4].capability_ptr_1.capability, my_method_async);
+      void_ptr, MY_INTERFACE.capability_list[4].capability_ptr_1.capability, my_command_async);
   ASSERT_ARE_EQUAL(
-      void_ptr, MY_INTERFACE.capability_list[4].capability_ptr_2.capability, my_method_cancel);
+      void_ptr, MY_INTERFACE.capability_list[4].capability_ptr_2.capability, my_command_cancel);
   ASSERT_ARE_EQUAL(
-      char, MY_INTERFACE.capability_list[4].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_METHOD_ASYNC);
+      char, MY_INTERFACE.capability_list[4].flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC);
 
   /// cleanup
 }

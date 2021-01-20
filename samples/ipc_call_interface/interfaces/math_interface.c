@@ -23,7 +23,7 @@
 #include <string.h>
 
 /*
- * Concrete implementations of the math methods.
+ * Concrete implementations of the math commands.
  */
 static az_ulib_result sum_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out) {
   AZ_ULIB_UCONTRACT(
@@ -71,8 +71,8 @@ AZ_ULIB_DESCRIPTOR_CREATE(
     MATH_DESCRIPTOR,
     MATH_INTERFACE_NAME,
     MATH_INTERFACE_VERSION,
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD(MATH_INTERFACE_SUM_METHOD_NAME, sum_concrete),
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD(MATH_INTERFACE_SUBTRACT_METHOD_NAME, subtract_concrete));
+    AZ_ULIB_DESCRIPTOR_ADD_COMMAND(MATH_INTERFACE_SUM_COMMAND_NAME, sum_concrete),
+    AZ_ULIB_DESCRIPTOR_ADD_COMMAND(MATH_INTERFACE_SUBTRACT_COMMAND_NAME, subtract_concrete));
 
 az_ulib_result math_publish_interface(void) { return az_ulib_ipc_publish(&MATH_DESCRIPTOR, NULL); }
 

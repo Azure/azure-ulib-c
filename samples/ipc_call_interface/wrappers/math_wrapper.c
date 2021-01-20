@@ -30,7 +30,7 @@ az_ulib_result math_sum(math_handle handle, int32_t a, int32_t b, int64_t* res) 
   sum_out = 0;
 
   // Call
-  az_ulib_result result = az_ulib_ipc_call(handle, MATH_INTERFACE_SUM_METHOD, &sum_in, &sum_out);
+  az_ulib_result result = az_ulib_ipc_call(handle, MATH_INTERFACE_SUM_COMMAND, &sum_in, &sum_out);
 
   // Unmarshalling
   *res = sum_out;
@@ -50,7 +50,7 @@ az_ulib_result math_subtract(math_handle handle, int32_t a, int32_t b, int64_t* 
 
   // Call
   az_ulib_result result
-      = az_ulib_ipc_call(handle, MATH_INTERFACE_SUBTRACT_METHOD, &subtract_in, &subtract_out);
+      = az_ulib_ipc_call(handle, MATH_INTERFACE_SUBTRACT_COMMAND, &subtract_in, &subtract_out);
 
   // Unmarshalling
   *res = subtract_out;

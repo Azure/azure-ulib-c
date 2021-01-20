@@ -47,46 +47,46 @@ static az_ulib_result set_my_property(const void* const model_in) {
   return AZ_ULIB_SUCCESS;
 }
 
-typedef struct my_method_model_in_tag {
+typedef struct my_command_model_in_tag {
   uint8_t capability;
   const az_ulib_interface_descriptor* descriptor;
   uint32_t wait_policy_ms;
   az_ulib_ipc_interface_handle handle;
-  az_ulib_capability_index method_index;
+  az_ulib_capability_index command_index;
   az_ulib_result return_result;
-} my_method_model_in;
+} my_command_model_in;
 
-typedef enum my_method_capability_tag {
-  MY_METHOD_CAPABILITY_JUST_RETURN,
-  MY_METHOD_CAPABILITY_UNPUBLISH,
-  MY_METHOD_CAPABILITY_RELEASE_INTERFACE,
-  MY_METHOD_CAPABILITY_DEINIT,
-  MY_METHOD_CAPABILITY_CALL_AGAIN,
-  MY_METHOD_CAPABILITY_RETURN_ERROR
-} my_method_capability;
+typedef enum my_command_capability_tag {
+  MY_COMMAND_CAPABILITY_JUST_RETURN,
+  MY_COMMAND_CAPABILITY_UNPUBLISH,
+  MY_COMMAND_CAPABILITY_RELEASE_INTERFACE,
+  MY_COMMAND_CAPABILITY_DEINIT,
+  MY_COMMAND_CAPABILITY_CALL_AGAIN,
+  MY_COMMAND_CAPABILITY_RETURN_ERROR
+} my_command_capability;
 
-static az_ulib_result my_method(const void* const model_in, const void* model_out) {
-  my_method_model_in* in = (my_method_model_in*)model_in;
+static az_ulib_result my_command(const void* const model_in, const void* model_out) {
+  my_command_model_in* in = (my_command_model_in*)model_in;
   az_ulib_result* result = (az_ulib_result*)model_out;
-  my_method_model_in in_2;
+  my_command_model_in in_2;
 
   switch (in->capability) {
-    case MY_METHOD_CAPABILITY_JUST_RETURN:
+    case MY_COMMAND_CAPABILITY_JUST_RETURN:
       *result = in->return_result;
       break;
-    case MY_METHOD_CAPABILITY_UNPUBLISH:
+    case MY_COMMAND_CAPABILITY_UNPUBLISH:
       *result = az_ulib_ipc_unpublish(in->descriptor, in->wait_policy_ms);
       break;
-    case MY_METHOD_CAPABILITY_RELEASE_INTERFACE:
+    case MY_COMMAND_CAPABILITY_RELEASE_INTERFACE:
       *result = az_ulib_ipc_release_interface(in->handle);
       break;
-    case MY_METHOD_CAPABILITY_DEINIT:
+    case MY_COMMAND_CAPABILITY_DEINIT:
       *result = az_ulib_ipc_deinit();
       break;
-    case MY_METHOD_CAPABILITY_CALL_AGAIN:
+    case MY_COMMAND_CAPABILITY_CALL_AGAIN:
       in_2.capability = 0;
       in_2.return_result = AZ_ULIB_SUCCESS;
-      *result = az_ulib_ipc_call(in->handle, in->method_index, &in_2, model_out);
+      *result = az_ulib_ipc_call(in->handle, in->command_index, &in_2, model_out);
       break;
     default:
       *result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;
@@ -96,7 +96,7 @@ static az_ulib_result my_method(const void* const model_in, const void* model_ou
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_method_async(
+static az_ulib_result my_command_async(
     const void* const model_in,
     const void* model_out,
     const az_ulib_capability_token capability_token,
@@ -109,7 +109,7 @@ static az_ulib_result my_method_async(
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_method_cancel(const az_ulib_capability_token capability_token) {
+static az_ulib_result my_command_cancel(const az_ulib_capability_token capability_token) {
   (void)capability_token;
 
   return AZ_ULIB_SUCCESS;
@@ -117,10 +117,10 @@ static az_ulib_result my_method_cancel(const az_ulib_capability_token capability
 
 typedef enum {
   MY_INTERFACE_PROPERTY = 0,
-  MY_INTERFACE_EVENT = 1,
-  MY_INTERFACE_EVENT2 = 2,
-  MY_INTERFACE_METHOD = 3,
-  MY_INTERFACE_METHOD_ASYNC = 4
+  MY_INTERFACE_TELEMETRY = 1,
+  MY_INTERFACE_TELEMETRY2 = 2,
+  MY_INTERFACE_COMMAND = 3,
+  MY_INTERFACE_COMMAND_ASYNC = 4
 } my_interface_index;
 
 AZ_ULIB_DESCRIPTOR_CREATE(
@@ -128,40 +128,40 @@ AZ_ULIB_DESCRIPTOR_CREATE(
     "MY_INTERFACE_1",
     123,
     AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property),
-    AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event"),
-    AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event2"),
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD("my_method", my_method),
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC("my_method_async", my_method_async, my_method_cancel));
+    AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry"),
+    AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry2"),
+    AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
+    AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel));
 
 AZ_ULIB_DESCRIPTOR_CREATE(
     MY_INTERFACE_1_V2,
     "MY_INTERFACE_1",
     2,
     AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property),
-    AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event"),
-    AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event2"),
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD("my_method", my_method),
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC("my_method_async", my_method_async, my_method_cancel));
+    AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry"),
+    AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry2"),
+    AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
+    AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel));
 
 AZ_ULIB_DESCRIPTOR_CREATE(
     MY_INTERFACE_2_V123,
     "MY_INTERFACE_2",
     123,
     AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property),
-    AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event"),
-    AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event2"),
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD("my_method", my_method),
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC("my_method_async", my_method_async, my_method_cancel));
+    AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry"),
+    AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry2"),
+    AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
+    AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel));
 
 AZ_ULIB_DESCRIPTOR_CREATE(
     MY_INTERFACE_3_V123,
     "MY_INTERFACE_3",
     123,
     AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property),
-    AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event"),
-    AZ_ULIB_DESCRIPTOR_ADD_EVENT("my_event2"),
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD("my_method", my_method),
-    AZ_ULIB_DESCRIPTOR_ADD_METHOD_ASYNC("my_method_async", my_method_async, my_method_cancel));
+    AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry"),
+    AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry2"),
+    AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
+    AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel));
 
 static az_ulib_ipc g_ipc;
 
@@ -267,7 +267,7 @@ TEST_SUITE_CLEANUP(suite_cleanup) {
   TEST_MUTEX_DESTROY(g_test_by_test);
 }
 
-TEST_FUNCTION_INITIALIZE(test_method_initialize) {
+TEST_FUNCTION_INITIALIZE(test_command_initialize) {
   if (TEST_MUTEX_ACQUIRE(g_test_by_test)) {
     ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
   }
@@ -278,7 +278,7 @@ TEST_FUNCTION_INITIALIZE(test_method_initialize) {
   umock_c_reset_all_calls();
 }
 
-TEST_FUNCTION_CLEANUP(test_method_cleanup) { TEST_MUTEX_RELEASE(g_test_by_test); }
+TEST_FUNCTION_CLEANUP(test_command_cleanup) { TEST_MUTEX_RELEASE(g_test_by_test); }
 
 /* The az_ulib_ipc_init shall initialize the ipc control block. */
 /* The az_ulib_ipc_init shall initialize the lock mechanism. */
@@ -412,12 +412,12 @@ TEST_FUNCTION(az_ulib_ipc_publish_return_handle_succeed) {
   /// assert
   ASSERT_ARE_EQUAL(int, 0, g_count_lock);
   ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-  my_method_model_in in;
-  in.capability = MY_METHOD_CAPABILITY_JUST_RETURN;
+  my_command_model_in in;
+  in.capability = MY_COMMAND_CAPABILITY_JUST_RETURN;
   in.return_result = AZ_ULIB_SUCCESS;
   az_ulib_result out = AZ_ULIB_PENDING;
   ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_call(interface_handle[0], MY_INTERFACE_METHOD, &in, &out));
+      int, AZ_ULIB_SUCCESS, az_ulib_ipc_call(interface_handle[0], MY_INTERFACE_COMMAND, &in, &out));
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, out);
   az_ulib_ipc_interface_handle interface_handle_copy;
   ASSERT_ARE_EQUAL(
@@ -426,7 +426,7 @@ TEST_FUNCTION(az_ulib_ipc_publish_return_handle_succeed) {
   ASSERT_ARE_EQUAL(
       int,
       AZ_ULIB_SUCCESS,
-      az_ulib_ipc_call(interface_handle_copy, MY_INTERFACE_METHOD, &in, &out));
+      az_ulib_ipc_call(interface_handle_copy, MY_INTERFACE_COMMAND, &in, &out));
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, out);
 
   /// cleanup
@@ -761,14 +761,14 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_unknown_descriptor_failed) {
   az_ulib_ipc_deinit();
 }
 
-/* If one of the method in the interface is running and the wait policy is AZ_ULIB_NO_WAIT, the
+/* If one of the command in the interface is running and the wait policy is AZ_ULIB_NO_WAIT, the
  * az_ulib_ipc_unpublish shall return AZ_ULIB_BUSY_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_failed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_with_command_running_failed) {
   /// arrange
   init_ipc_and_publish_interfaces();
 
-  my_method_model_in in;
-  in.capability = MY_METHOD_CAPABILITY_UNPUBLISH;
+  my_command_model_in in;
+  in.capability = MY_COMMAND_CAPABILITY_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
   in.wait_policy_ms = AZ_ULIB_NO_WAIT;
   az_ulib_result out = AZ_ULIB_PENDING;
@@ -789,8 +789,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_failed) {
   STRICT_EXPECTED_CALL(az_pal_os_lock_release(IGNORED_PTR_ARG));
 
   /// act
-  // call unpublish inside of the method.
-  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
+  // call unpublish inside of the command.
+  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
@@ -803,14 +803,14 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_failed) {
   unpublish_interfaces_and_deinit_ipc();
 }
 
-/* If one of the method in the interface is running and the wait policy is not big enough, the
+/* If one of the command in the interface is running and the wait policy is not big enough, the
  * az_ulib_ipc_unpublish shall return AZ_ULIB_BUSY_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_with_small_timeout_failed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_with_command_running_with_small_timeout_failed) {
   /// arrange
   init_ipc_and_publish_interfaces();
 
-  my_method_model_in in;
-  in.capability = MY_METHOD_CAPABILITY_UNPUBLISH;
+  my_command_model_in in;
+  in.capability = MY_COMMAND_CAPABILITY_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
   in.wait_policy_ms = 10000;
   az_ulib_result out = AZ_ULIB_PENDING;
@@ -834,8 +834,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_method_running_with_small_timeout_faile
   STRICT_EXPECTED_CALL(az_pal_os_lock_release(IGNORED_PTR_ARG));
 
   /// act
-  // call unpublish inside of the method.
-  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
+  // call unpublish inside of the command.
+  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
@@ -885,12 +885,12 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_valid_interface_instance_succeed) {
   az_ulib_ipc_deinit();
 }
 
-/* If one of the method in the interface is running, the wait policy is different than
+/* If one of the command in the interface is running, the wait policy is different than
  * AZ_ULIB_NO_WAIT and the call ends before the timeout, the az_ulib_ipc_unpublish shall return
  * AZ_ULIB_SUCCEESS. */
 // TODO: implement the test when the code is ready.
 
-/* If one of the method in the interface is running, the wait policy is different than
+/* If one of the command in the interface is running, the wait policy is different than
  * AZ_ULIB_NO_WAIT and the call ends after the timeout, the az_ulib_ipc_unpublish shall return
  * AZ_ULIB_BUSY_ERROR. */
 // TODO: implement the test when the code is ready.
@@ -1538,9 +1538,9 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_with_ipc_not_initialized_failed) {
   /// cleanup
 }
 
-/* If one of the method in the interface is running, the az_ulib_ipc_release_interface shall return
+/* If one of the command in the interface is running, the az_ulib_ipc_release_interface shall return
  * AZ_ULIB_SUCCESS. */
-TEST_FUNCTION(az_ulib_ipc_release_interface_with_method_running_failed) {
+TEST_FUNCTION(az_ulib_ipc_release_interface_with_command_running_failed) {
   /// arrange
   init_ipc_and_publish_interfaces();
 
@@ -1554,8 +1554,8 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_with_method_running_failed) {
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle));
 
-  my_method_model_in in;
-  in.capability = MY_METHOD_CAPABILITY_RELEASE_INTERFACE;
+  my_command_model_in in;
+  in.capability = MY_COMMAND_CAPABILITY_RELEASE_INTERFACE;
   in.handle = interface_handle;
   az_ulib_result out = AZ_ULIB_PENDING;
 
@@ -1565,8 +1565,8 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_with_method_running_failed) {
   STRICT_EXPECTED_CALL(az_pal_os_lock_release(IGNORED_PTR_ARG));
 
   /// act
-  // call release inside of the method.
-  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
+  // call release inside of the command.
+  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
@@ -1578,9 +1578,9 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_with_method_running_failed) {
   unpublish_interfaces_and_deinit_ipc();
 }
 
-/* The az_ulib_ipc_call shall call the method published by the interface. */
+/* The az_ulib_ipc_call shall call the command published by the interface. */
 /* The az_ulib_ipc_call shall return AZ_ULIB_SUCCESS. */
-TEST_FUNCTION(az_ulib_ipc_call_calls_the_method_succeed) {
+TEST_FUNCTION(az_ulib_ipc_call_calls_the_command_succeed) {
   /// arrange
   init_ipc_and_publish_interfaces();
 
@@ -1594,15 +1594,15 @@ TEST_FUNCTION(az_ulib_ipc_call_calls_the_method_succeed) {
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle));
 
-  my_method_model_in in;
-  in.capability = MY_METHOD_CAPABILITY_JUST_RETURN;
+  my_command_model_in in;
+  in.capability = MY_COMMAND_CAPABILITY_JUST_RETURN;
   in.return_result = AZ_ULIB_SUCCESS;
   az_ulib_result out = AZ_ULIB_PENDING;
 
   umock_c_reset_all_calls();
 
   /// act
-  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
+  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
@@ -1616,12 +1616,12 @@ TEST_FUNCTION(az_ulib_ipc_call_calls_the_method_succeed) {
 }
 
 /* If the IPC is not initialized, the az_ulib_ipc_call shall return AZ_ULIB_NOT_INITIALIZED_ERROR
- * and do not call the method.
+ * and do not call the command.
  */
 TEST_FUNCTION(az_ulib_ipc_call_with_ipc_not_initialized_failed) {
   /// arrange
-  my_method_model_in in;
-  in.capability = MY_METHOD_CAPABILITY_JUST_RETURN;
+  my_command_model_in in;
+  in.capability = MY_COMMAND_CAPABILITY_JUST_RETURN;
   in.return_result = AZ_ULIB_SUCCESS;
   az_ulib_result out = AZ_ULIB_PENDING;
 
@@ -1629,7 +1629,7 @@ TEST_FUNCTION(az_ulib_ipc_call_with_ipc_not_initialized_failed) {
 
   /// act
   az_ulib_result result
-      = az_ulib_ipc_call((az_ulib_ipc_interface_handle)0x1234, MY_INTERFACE_METHOD, &in, &out);
+      = az_ulib_ipc_call((az_ulib_ipc_interface_handle)0x1234, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_NOT_INITIALIZED_ERROR, result);
@@ -1641,20 +1641,20 @@ TEST_FUNCTION(az_ulib_ipc_call_with_ipc_not_initialized_failed) {
 }
 
 /* If the interface handle is NULL, the az_ulib_ipc_call shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR
- * and do not call the method. */
+ * and do not call the command. */
 TEST_FUNCTION(az_ulib_ipc_call_with_null_interface_handle_failed) {
   /// arrange
   init_ipc_and_publish_interfaces();
 
-  my_method_model_in in;
-  in.capability = MY_METHOD_CAPABILITY_JUST_RETURN;
+  my_command_model_in in;
+  in.capability = MY_COMMAND_CAPABILITY_JUST_RETURN;
   in.return_result = AZ_ULIB_SUCCESS;
   az_ulib_result out = AZ_ULIB_PENDING;
 
   umock_c_reset_all_calls();
 
   /// act
-  az_ulib_result result = az_ulib_ipc_call(NULL, MY_INTERFACE_METHOD, &in, &out);
+  az_ulib_result result = az_ulib_ipc_call(NULL, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
@@ -1667,7 +1667,7 @@ TEST_FUNCTION(az_ulib_ipc_call_with_null_interface_handle_failed) {
 }
 
 /* If the interface was unpublished, the az_ulib_ipc_call shall return AZ_ULIB_NO_SUCH_ELEMENT_ERROR
- * and do not call the method. */
+ * and do not call the command. */
 TEST_FUNCTION(az_ulib_ipc_call_unpublished_interface_failed) {
   /// arrange
   init_ipc_and_publish_interfaces();
@@ -1684,15 +1684,15 @@ TEST_FUNCTION(az_ulib_ipc_call_unpublished_interface_failed) {
   ASSERT_ARE_EQUAL(
       int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
 
-  my_method_model_in in;
-  in.capability = MY_METHOD_CAPABILITY_JUST_RETURN;
+  my_command_model_in in;
+  in.capability = MY_COMMAND_CAPABILITY_JUST_RETURN;
   in.return_result = AZ_ULIB_SUCCESS;
   az_ulib_result out = AZ_ULIB_PENDING;
 
   umock_c_reset_all_calls();
 
   /// act
-  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_METHOD, &in, &out);
+  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
   ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);

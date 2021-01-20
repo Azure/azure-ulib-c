@@ -26,7 +26,7 @@ int main(void) {
     (void)printf("Initialize IPC failed with code %d.\r\n", result);
   } else {
     /*
-     * Publish the math interface. After this point anybody can call the math methods
+     * Publish the math interface. After this point anybody can call the math commands
      * through IPC.
      */
     producer_start();

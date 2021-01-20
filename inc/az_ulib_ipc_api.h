@@ -77,7 +77,7 @@ static inline az_ulib_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle) {
  *
  * 1) Stop all threads that make calls to the published interfaces.
  * 2) Finalize or cancel all asynchronous calls, and ensure that their callbacks were called.
- * 3) Unsubscribe all events.
+ * 3) Unsubscribe all telemetries.
  * 4) Unpublish all interfaces.
  *
  * If the system needs the IPC again, it may call az_ulib_ipc_init() again to reinitialize the IPC.
@@ -297,7 +297,7 @@ static inline az_ulib_result az_ulib_ipc_release_interface(
  * @param[in]   interface_handle  The #az_ulib_ipc_interface_handle with the interface handle. It
  *                                cannot be `NULL`. Call
  *                                az_ulib_ipc_try_get_interface() to get the interface handle.
- * @param[in]   method_index      The #az_ulib_capability_index with the method handle.
+ * @param[in]   command_index      The #az_ulib_capability_index with the command handle.
  * @param[in]   model_in          The `const void *const` that points to the memory with the
  *                                input model content.
  * @param[out]  model_out         The `const void *` that points to the memory where the capability
@@ -305,22 +305,22 @@ static inline az_ulib_result az_ulib_ipc_release_interface(
  * @return The #az_ulib_result with the result of the call.
  *  @retval #AZ_ULIB_SUCCESS                  If the IPC get success calling the procedure.
  *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR   If one of the arguments is invalid.
- *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR    If the target method was disabled.
- *  @retval #AZ_ULIB_CANCELLED_ERROR          If the target method was unpublished.
- *  @retval #AZ_ULIB_BUSY_ERROR               If the target method is cannot be executed at that
+ *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR    If the target command was disabled.
+ *  @retval #AZ_ULIB_CANCELLED_ERROR          If the target command was unpublished.
+ *  @retval #AZ_ULIB_BUSY_ERROR               If the target command cannot be executed at that
  *                                            moment.
  */
 static inline az_ulib_result az_ulib_ipc_call(
     az_ulib_ipc_interface_handle interface_handle,
-    az_ulib_capability_index method_index,
+    az_ulib_capability_index command_index,
     az_ulib_model_in model_in,
     az_ulib_model_out model_out) {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_call(
-      (_az_ulib_ipc_interface_handle)interface_handle, method_index, model_in, model_out);
+      (_az_ulib_ipc_interface_handle)interface_handle, command_index, model_in, model_out);
 #else
   return _az_ulib_ipc_call_no_contract(
-      (_az_ulib_ipc_interface_handle)interface_handle, method_index, model_in, model_out);
+      (_az_ulib_ipc_interface_handle)interface_handle, command_index, model_in, model_out);
 #endif /* AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT */
 }
 

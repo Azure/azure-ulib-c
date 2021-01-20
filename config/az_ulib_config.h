@@ -25,7 +25,8 @@ extern "C" {
  * Defines the log function that the ulib shall use as its own way to print information in the
  * log system.
  */
-#define AZ_ULIB_CONFIG_LOG(category, format, ...) az_ulib_ulog_print(category, format, ##__VA_ARGS__)
+#define AZ_ULIB_CONFIG_LOG(category, format, ...) \
+  az_ulib_ulog_print(category, format, ##__VA_ARGS__)
 
 /**
  * @brief   Maximum size of the ulib log.
@@ -74,12 +75,12 @@ extern "C" {
  *            - Remove the API az_ulib_ipc_unpublish.
  *
  * To allow users to unpublish interfaces in the IPC, it is necessary to add a flag to avoid an
- * interface to be unpublished if at least one of its methods are in execution at that time. So, if
- * the system doesn't need to unpublish interfaces, this controls can be removed, saving memory
- * space and improving the az_ulib_ipc_call performance.
+ * interface to be unpublished if at least one of its capabilities are in execution at that time.
+ * So, if the system doesn't need to unpublish interfaces, this controls can be removed, saving
+ * memory space and improving the az_ulib_ipc_call performance.
  *
  * @note  **To avoid conflicts in the linker, instead of comment this line, define
- *        AZ_ULIB_CONFIG_REMOVE_UNPUBLISH as part of the make file that will build the project. 
+ *        AZ_ULIB_CONFIG_REMOVE_UNPUBLISH as part of the make file that will build the project.
  *        For cmake, use the option -Dremove_ipc_unpublish.**
  */
 #define AZ_ULIB_CONFIG_IPC_UNPUBLISH
