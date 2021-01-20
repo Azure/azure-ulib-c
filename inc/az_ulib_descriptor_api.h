@@ -159,7 +159,7 @@ typedef struct az_ulib_interface_descriptor_tag {
  *                              cannot be `NULL` and shall be allocated in a way that it stays
  *                              valid until the interface is unpublished at some (potentially)
  *                              unknown time in the future.
- * @param[in]   command_async    The function pointer to #az_ulib_capability_command_async with the
+ * @param[in]   command_async   The function pointer to #az_ulib_capability_command_async with the
  *                              implementation of the asynchronous command. The command shall be
  *                              valid until the interface is unpublished at some (potentially)
  *                              unknown time in the future.
@@ -178,7 +178,7 @@ typedef struct az_ulib_interface_descriptor_tag {
   }
 
 /**
- * @brief   Add an telemetry to the interface descriptor.
+ * @brief   Add a telemetry to the interface descriptor.
  *
  * Populate a new [*telemetry* capability](#AZ_ULIB_CAPABILITY_TYPE_TELEMETRY) to add to the
  * interface.

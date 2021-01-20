@@ -307,7 +307,7 @@ static inline az_ulib_result az_ulib_ipc_release_interface(
  *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR   If one of the arguments is invalid.
  *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR    If the target command was disabled.
  *  @retval #AZ_ULIB_CANCELLED_ERROR          If the target command was unpublished.
- *  @retval #AZ_ULIB_BUSY_ERROR               If the target command is cannot be executed at that
+ *  @retval #AZ_ULIB_BUSY_ERROR               If the target command cannot be executed at that
  *                                            moment.
  */
 static inline az_ulib_result az_ulib_ipc_call(

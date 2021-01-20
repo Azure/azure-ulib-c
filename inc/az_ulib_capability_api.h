@@ -30,16 +30,16 @@ typedef enum az_ulib_capability_type_tag {
                                             as occupancy, or an occasional error or information
                                             message. */
   AZ_ULIB_CAPABILITY_TYPE_PROPERTY = 0x01, /**<A Property describes the read-only and read/write
-                                           state of the data in a interface. For example, a device
+                                           state of the data in an interface. For example, a device
                                            serial number may be a read-only property, the desired
                                            temperature on a thermostat may be a read-write
-                                           property; and the name of a room may be a read-write
+                                           property, and the name of a room may be a read-write
                                            property. */
   AZ_ULIB_CAPABILITY_TYPE_COMMAND = 0x02, /**<A Command describes a function or operation that can
-                                          be synchronously performed in a interface. */
+                                          be synchronously performed in an interface. */
   AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC = 0x03 /**<A Command Async describes a function or
                                                 operation that can be asynchronously performed
-                                                in a interface. */
+                                                in an interface. */
 } az_ulib_capability_type;
 
 /**
