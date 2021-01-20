@@ -104,8 +104,8 @@ typedef struct az_ulib_interface_descriptor_tag {
 /**
  * @brief   Add property to the interface descriptor.
  *
- * Populate a new *property* capability descriptor to add to the interface. On the interface
- * context, a `property` is a data exposed by its `get` and `set` function.
+ * Populate a new [*property* capability](#AZ_ULIB_CAPABILITY_TYPE_PROPERTY) to add to the
+ * interface.
  *
  * @param[in]   name        The `/0` terminated `const char* const` with the property name. It
  *                          cannot be `NULL` and shall be allocated in a way that it stays valid
@@ -130,9 +130,8 @@ typedef struct az_ulib_interface_descriptor_tag {
 /**
  * @brief   Add a synchronous command to the interface descriptor.
  *
- * Populate a new *synchronous command* capability descriptor to add to the interface. On the
- * interface context, a synchronous command is a blocking call command, which executes all the
- * needed instructions at once, and return the result at the end of the execution.
+ * Populate a new [*synchronous command* capability](#AZ_ULIB_CAPABILITY_TYPE_COMMAND) to add
+ * to the interface.
  *
  * @param[in]   name        The `/0` terminated `const char* const` with the command name. It
  *                          cannot be `NULL` and shall be allocated in a way that it stays valid
@@ -153,14 +152,8 @@ typedef struct az_ulib_interface_descriptor_tag {
 /**
  * @brief   Add an asynchronous command to the interface descriptor.
  *
- * Populate a new *asynchronous command* capability descriptor to add to the interface. On the
- * interface context, an asynchronous command is a call to a command that will start a hardware
- * operation and return before its conclusion. In some point in the future, a hardware interruption
- * (IRQ) will wake the CPU with the result of this operation, at this point, the asynchronous
- * command will conclude the operation firing a callback with the result.
- *
- * The hardware operation may be cancellable, so, the API allows the developer to provide a cancel
- * function.
+ * Populate a new [*asynchronous command* capability](#AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC) to
+ * add to the interface.
  *
  * @param[in]   name            The `/0` terminated `const char* const` with the command name. It
  *                              cannot be `NULL` and shall be allocated in a way that it stays
@@ -187,9 +180,8 @@ typedef struct az_ulib_interface_descriptor_tag {
 /**
  * @brief   Add an telemetry to the interface descriptor.
  *
- * Populate a new *telemetry* capability descriptor to add to the interface. On the interface
- * context, a telemetry is a subscribed base notification, where other components in the system can
- * subscribe to be notified when certain telemetry happened.
+ * Populate a new [*telemetry* capability](#AZ_ULIB_CAPABILITY_TYPE_TELEMETRY) to add to the
+ * interface.
  *
  * @param[in]   name        The `/0` terminated `const char* const` with the telemetry name. It
  *                          cannot be `NULL` and shall be allocated in a way that it stays valid
