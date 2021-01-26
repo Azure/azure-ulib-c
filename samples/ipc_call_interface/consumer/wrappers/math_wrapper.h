@@ -49,7 +49,7 @@ typedef int64_t subtract_model_out;
 /*
  * math class constructor.
  */
-inline az_ulib_result math_create(math_handle handle) {
+static inline az_ulib_result math_create(math_handle handle) {
   return az_ulib_ipc_try_get_interface(
       MATH_INTERFACE_NAME, MATH_INTERFACE_VERSION, AZ_ULIB_VERSION_EQUALS_TO, handle);
 }
@@ -57,12 +57,12 @@ inline az_ulib_result math_create(math_handle handle) {
 /*
  * math class destructor.
  */
-inline void math_destroy(math_handle handle) { az_ulib_ipc_release_interface(handle); }
+static inline void math_destroy(math_handle handle) { az_ulib_ipc_release_interface(handle); }
 
 /*
  * Azure Callable Wrapper for math sum.
  */
-inline az_ulib_result math_sum(math_handle handle, int32_t a, int32_t b, int64_t* res) {
+static inline az_ulib_result math_sum(math_handle handle, int32_t a, int32_t b, int64_t* res) {
   // Marshalling
   sum_model_in sum_in = { a, b };
 
@@ -73,7 +73,7 @@ inline az_ulib_result math_sum(math_handle handle, int32_t a, int32_t b, int64_t
 /*
  * Azure Callable Wrapper for math subtract.
  */
-inline az_ulib_result math_subtract(math_handle handle, int32_t a, int32_t b, int64_t* res) {
+static inline az_ulib_result math_subtract(math_handle handle, int32_t a, int32_t b, int64_t* res) {
   // Marshalling
   subtract_model_in subtract_in = { a, b };
 
