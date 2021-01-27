@@ -25,13 +25,15 @@
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 
-static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code) {
+static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code)
+{
   ASSERT_FAIL("umock_c reported error :%i", error_code);
 }
 
 static uint32_t my_property = 0;
 
-static az_ulib_result get_my_property(const void* model_out) {
+static az_ulib_result get_my_property(const void* model_out)
+{
   uint32_t* new_val = (uint32_t*)model_out;
 
   *new_val = my_property;
@@ -39,7 +41,8 @@ static az_ulib_result get_my_property(const void* model_out) {
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result set_my_property(const void* const model_in) {
+static az_ulib_result set_my_property(const void* const model_in)
+{
   uint32_t* new_val = (uint32_t*)model_in;
 
   my_property = *new_val;
@@ -47,7 +50,8 @@ static az_ulib_result set_my_property(const void* const model_in) {
   return AZ_ULIB_SUCCESS;
 }
 
-typedef struct my_command_model_in_tag {
+typedef struct my_command_model_in_tag
+{
   uint8_t capability;
   const az_ulib_interface_descriptor* descriptor;
   uint32_t wait_policy_ms;
@@ -56,7 +60,8 @@ typedef struct my_command_model_in_tag {
   az_ulib_result return_result;
 } my_command_model_in;
 
-typedef enum my_command_capability_tag {
+typedef enum my_command_capability_tag
+{
   MY_COMMAND_CAPABILITY_JUST_RETURN,
   MY_COMMAND_CAPABILITY_UNPUBLISH,
   MY_COMMAND_CAPABILITY_RELEASE_INTERFACE,
@@ -65,12 +70,14 @@ typedef enum my_command_capability_tag {
   MY_COMMAND_CAPABILITY_RETURN_ERROR
 } my_command_capability;
 
-static az_ulib_result my_command(const void* const model_in, const void* model_out) {
+static az_ulib_result my_command(const void* const model_in, const void* model_out)
+{
   my_command_model_in* in = (my_command_model_in*)model_in;
   az_ulib_result* result = (az_ulib_result*)model_out;
   my_command_model_in in_2;
 
-  switch (in->capability) {
+  switch (in->capability)
+  {
     case MY_COMMAND_CAPABILITY_JUST_RETURN:
       *result = in->return_result;
       break;
@@ -100,7 +107,8 @@ static az_ulib_result my_command_async(
     const void* const model_in,
     const void* model_out,
     const az_ulib_capability_token capability_token,
-    az_ulib_capability_cancellation_callback* cancel) {
+    az_ulib_capability_cancellation_callback* cancel)
+{
   (void)model_in;
   (void)model_out;
   (void)capability_token;
@@ -109,13 +117,15 @@ static az_ulib_result my_command_async(
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_command_cancel(const az_ulib_capability_token capability_token) {
+static az_ulib_result my_command_cancel(const az_ulib_capability_token capability_token)
+{
   (void)capability_token;
 
   return AZ_ULIB_SUCCESS;
 }
 
-typedef enum {
+typedef enum
+{
   MY_INTERFACE_PROPERTY = 0,
   MY_INTERFACE_TELEMETRY = 1,
   MY_INTERFACE_TELEMETRY2 = 2,
@@ -165,7 +175,8 @@ AZ_ULIB_DESCRIPTOR_CREATE(
 
 static az_ulib_ipc g_ipc;
 
-void init_ipc_and_publish_interfaces(void) {
+void init_ipc_and_publish_interfaces(void)
+{
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_init(&g_ipc));
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_publish(&MY_INTERFACE_1_V123, NULL));
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_publish(&MY_INTERFACE_1_V2, NULL));
@@ -214,7 +225,8 @@ void init_ipc_and_publish_interfaces(void) {
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_release_interface(interface_handle));
 }
 
-void unpublish_interfaces_and_deinit_ipc(void) {
+void unpublish_interfaces_and_deinit_ipc(void)
+{
   ASSERT_ARE_EQUAL(
       int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
   ASSERT_ARE_EQUAL(
@@ -230,14 +242,18 @@ az_ulib_pal_os_lock* g_lock;
 int8_t g_count_lock;
 void my_az_pal_os_lock_init(az_ulib_pal_os_lock* lock) { g_lock = lock; }
 
-void my_az_pal_os_lock_acquire(az_ulib_pal_os_lock* lock) {
-  if (lock == g_lock) {
+void my_az_pal_os_lock_acquire(az_ulib_pal_os_lock* lock)
+{
+  if (lock == g_lock)
+  {
     g_count_lock++;
   }
 }
 
-void my_az_pal_os_lock_release(az_ulib_pal_os_lock* lock) {
-  if (lock == g_lock) {
+void my_az_pal_os_lock_release(az_ulib_pal_os_lock* lock)
+{
+  if (lock == g_lock)
+  {
     g_count_lock--;
   }
 }
@@ -247,7 +263,8 @@ void my_az_pal_os_lock_release(az_ulib_pal_os_lock* lock) {
  */
 BEGIN_TEST_SUITE(az_ulib_ipc_ut)
 
-TEST_SUITE_INITIALIZE(suite_init) {
+TEST_SUITE_INITIALIZE(suite_init)
+{
   g_test_by_test = TEST_MUTEX_CREATE();
   ASSERT_IS_NOT_NULL(g_test_by_test);
 
@@ -261,14 +278,17 @@ TEST_SUITE_INITIALIZE(suite_init) {
   REGISTER_GLOBAL_MOCK_HOOK(az_pal_os_lock_release, my_az_pal_os_lock_release);
 }
 
-TEST_SUITE_CLEANUP(suite_cleanup) {
+TEST_SUITE_CLEANUP(suite_cleanup)
+{
   umock_c_deinit();
 
   TEST_MUTEX_DESTROY(g_test_by_test);
 }
 
-TEST_FUNCTION_INITIALIZE(test_command_initialize) {
-  if (TEST_MUTEX_ACQUIRE(g_test_by_test)) {
+TEST_FUNCTION_INITIALIZE(test_command_initialize)
+{
+  if (TEST_MUTEX_ACQUIRE(g_test_by_test))
+  {
     ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
   }
 
@@ -282,7 +302,8 @@ TEST_FUNCTION_CLEANUP(test_command_cleanup) { TEST_MUTEX_RELEASE(g_test_by_test)
 
 /* The az_ulib_ipc_init shall initialize the ipc control block. */
 /* The az_ulib_ipc_init shall initialize the lock mechanism. */
-TEST_FUNCTION(az_ulib_ipc_init_succeed) {
+TEST_FUNCTION(az_ulib_ipc_init_succeed)
+{
   /// arrange
   STRICT_EXPECTED_CALL(az_pal_os_lock_init(IGNORED_PTR_ARG));
 
@@ -300,7 +321,8 @@ TEST_FUNCTION(az_ulib_ipc_init_succeed) {
 
 /* If the provided handle is NULL, the az_ulib_ipc_init shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
  */
-TEST_FUNCTION(az_ulib_ipc_init_with_null_handle_failed) {
+TEST_FUNCTION(az_ulib_ipc_init_with_null_handle_failed)
+{
   /// arrange
 
   /// act
@@ -317,7 +339,8 @@ TEST_FUNCTION(az_ulib_ipc_init_with_null_handle_failed) {
 
 /* If the az_ulib_ipc_init is called more then once, it shall return
  * AZ_ULIB_ALREADY_INITIALIZED_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_init_double_initialization_failed) {
+TEST_FUNCTION(az_ulib_ipc_init_double_initialization_failed)
+{
   /// arrange
   az_ulib_ipc ipc1;
   az_ulib_ipc ipc2;
@@ -341,7 +364,8 @@ TEST_FUNCTION(az_ulib_ipc_init_double_initialization_failed) {
 
 /* The az_ulib_ipc_publish shall store the descriptor published in the IPC. The az_ulib_ipc_publish
  * shall be thread safe. */
-TEST_FUNCTION(az_ulib_ipc_publish_succeed) {
+TEST_FUNCTION(az_ulib_ipc_publish_succeed)
+{
   /// arrange
   ASSERT_ARE_EQUAL(int, az_ulib_ipc_init(&g_ipc), AZ_ULIB_SUCCESS);
   umock_c_reset_all_calls();
@@ -384,7 +408,8 @@ TEST_FUNCTION(az_ulib_ipc_publish_succeed) {
 }
 
 /* The az_ulib_ipc_publish shall return a valid handle for the published interface. */
-TEST_FUNCTION(az_ulib_ipc_publish_return_handle_succeed) {
+TEST_FUNCTION(az_ulib_ipc_publish_return_handle_succeed)
+{
   /// arrange
   ASSERT_ARE_EQUAL(int, az_ulib_ipc_init(&g_ipc), AZ_ULIB_SUCCESS);
   umock_c_reset_all_calls();
@@ -440,7 +465,8 @@ TEST_FUNCTION(az_ulib_ipc_publish_return_handle_succeed) {
 
 /* If the ipc was not initialized, the az_ulib_ipc_publish shall return
  * AZ_ULIB_NOT_INITIALIZED_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_publish_with_ipc_not_initialized_failed) {
+TEST_FUNCTION(az_ulib_ipc_publish_with_ipc_not_initialized_failed)
+{
   /// arrange
 
   /// act
@@ -456,7 +482,8 @@ TEST_FUNCTION(az_ulib_ipc_publish_with_ipc_not_initialized_failed) {
 
 /* If the provided descriptor is NULL, the az_ulib_ipc_publish shall return
  * AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_publish_with_null_descriptor_failed) {
+TEST_FUNCTION(az_ulib_ipc_publish_with_null_descriptor_failed)
+{
   /// arrange
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_init(&g_ipc));
   umock_c_reset_all_calls();
@@ -475,7 +502,8 @@ TEST_FUNCTION(az_ulib_ipc_publish_with_null_descriptor_failed) {
 
 /* If the provided descriptor already exist, the az_ulib_ipc_publish shall return
  * AZ_ULIB_ELEMENT_DUPLICATE_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_publish_with_descriptor_with_same_name_and_version_failed) {
+TEST_FUNCTION(az_ulib_ipc_publish_with_descriptor_with_same_name_and_version_failed)
+{
   /// arrange
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_init(&g_ipc));
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_publish(&MY_INTERFACE_1_V123, NULL));
@@ -498,13 +526,15 @@ TEST_FUNCTION(az_ulib_ipc_publish_with_descriptor_with_same_name_and_version_fai
 
 /* If there is no more memory to store a new descriptor, the az_ulib_ipc_publish shall return
  * AZ_ULIB_OUT_OF_MEMORY_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_publish_out_of_memory_failed) {
+TEST_FUNCTION(az_ulib_ipc_publish_out_of_memory_failed)
+{
   /// arrange
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_init(&g_ipc));
   az_ulib_interface_descriptor descriptors[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE];
   az_ulib_capability_descriptor capabilities[1]
       = AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", NULL, NULL);
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++) {
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++)
+  {
     descriptors[i].name = "my_interface";
     descriptors[i].version = i + 1;
     descriptors[i].size = 1;
@@ -524,7 +554,8 @@ TEST_FUNCTION(az_ulib_ipc_publish_out_of_memory_failed) {
   ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
 
   /// cleanup
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++) {
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++)
+  {
     az_ulib_ipc_unpublish(&descriptors[i], AZ_ULIB_NO_WAIT);
   }
   az_ulib_ipc_deinit();
@@ -533,7 +564,8 @@ TEST_FUNCTION(az_ulib_ipc_publish_out_of_memory_failed) {
 /* The az_ulib_ipc_unpublish shall remove a descriptor for the IPC. The az_ulib_ipc_unpublish shall
  * be thread safe. */
 /* The az_ulib_ipc_unpublish shall wait as long as the caller wants.*/
-TEST_FUNCTION(az_ulib_ipc_unpublish_succeed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_succeed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
   umock_c_reset_all_calls();
@@ -597,7 +629,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_succeed) {
   az_ulib_ipc_deinit();
 }
 
-TEST_FUNCTION(az_ulib_ipc_unpublish_random_order_succeed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_random_order_succeed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
   umock_c_reset_all_calls();
@@ -664,7 +697,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_random_order_succeed) {
 
 /* The az_ulib_ipc_unpublish shall release the descriptor position to be used by another descriptor.
  */
-TEST_FUNCTION(az_ulib_ipc_unpublish_release_resource_succeed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_release_resource_succeed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
   umock_c_reset_all_calls();
@@ -687,14 +721,16 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_release_resource_succeed) {
   az_ulib_interface_descriptor descriptors[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 2];
   az_ulib_capability_descriptor capabilities[1]
       = AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", NULL, NULL);
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 2; i++) {
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 2; i++)
+  {
     descriptors[i].name = "my_interface";
     descriptors[i].version = i + 1;
     descriptors[i].size = 1;
     descriptors[i].capability_list = capabilities;
     ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_publish(&descriptors[i], NULL));
   }
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 2; i++) {
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 2; i++)
+  {
     az_ulib_ipc_unpublish(&descriptors[i], AZ_ULIB_NO_WAIT);
   }
 
@@ -706,7 +742,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_release_resource_succeed) {
 
 /* If the ipc was not initialized, the az_ulib_ipc_unpublish shall return
  * AZ_ULIB_NOT_INITIALIZED_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_unpublish_with_ipc_not_initialized_failed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_with_ipc_not_initialized_failed)
+{
   /// arrange
 
   /// act
@@ -722,7 +759,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_ipc_not_initialized_failed) {
 
 /* If the provided descriptor is NULL, the az_ulib_ipc_unpublish shall return
  * AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_unpublish_with_null_descriptor_failed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_with_null_descriptor_failed)
+{
   /// arrange
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_init(&g_ipc));
   umock_c_reset_all_calls();
@@ -741,7 +779,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_null_descriptor_failed) {
 
 /* If the provided descriptor was not published, the az_ulib_ipc_unpublish shall return
  * AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_unpublish_with_unknown_descriptor_failed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_with_unknown_descriptor_failed)
+{
   /// arrange
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_init(&g_ipc));
   umock_c_reset_all_calls();
@@ -763,7 +802,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_unknown_descriptor_failed) {
 
 /* If one of the command in the interface is running and the wait policy is AZ_ULIB_NO_WAIT, the
  * az_ulib_ipc_unpublish shall return AZ_ULIB_BUSY_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_unpublish_with_command_running_failed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_with_command_running_failed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
 
@@ -805,7 +845,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_command_running_failed) {
 
 /* If one of the command in the interface is running and the wait policy is not big enough, the
  * az_ulib_ipc_unpublish shall return AZ_ULIB_BUSY_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_unpublish_with_command_running_with_small_timeout_failed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_with_command_running_with_small_timeout_failed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
 
@@ -828,7 +869,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_command_running_with_small_timeout_fail
   umock_c_reset_all_calls();
 
   STRICT_EXPECTED_CALL(az_pal_os_lock_acquire(IGNORED_PTR_ARG));
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 8; i++)
+  {
     STRICT_EXPECTED_CALL(az_pal_os_sleep((in.wait_policy_ms >> 3)));
   }
   STRICT_EXPECTED_CALL(az_pal_os_lock_release(IGNORED_PTR_ARG));
@@ -850,7 +892,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_command_running_with_small_timeout_fail
 
 /* If there are valid instances of the interface, the az_ulib_ipc_unpublish shall return
  * AZ_ULIB_SUCCESS. */
-TEST_FUNCTION(az_ulib_ipc_unpublish_with_valid_interface_instance_succeed) {
+TEST_FUNCTION(az_ulib_ipc_unpublish_with_valid_interface_instance_succeed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
 
@@ -897,7 +940,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_valid_interface_instance_succeed) {
 
 /* The az_ulib_ipc_try_get_interface shall return the handle for the interface. */
 /* The az_ulib_ipc_try_get_interface shall return AZ_ULIB_SUCCESS. */
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_equals_succeed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_equals_succeed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   init_ipc_and_publish_interfaces();
@@ -923,7 +967,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_equals_succeed) {
   unpublish_interfaces_and_deinit_ipc();
 }
 
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_any_succeed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_any_succeed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   init_ipc_and_publish_interfaces();
@@ -946,7 +991,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_any_succeed) {
   unpublish_interfaces_and_deinit_ipc();
 }
 
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_greater_than_succeed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_greater_than_succeed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   az_ulib_ipc_interface_handle greater_interface_handle;
@@ -983,7 +1029,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_greater_than_succeed) {
   unpublish_interfaces_and_deinit_ipc();
 }
 
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_lower_than_succeed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_lower_than_succeed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   az_ulib_ipc_interface_handle lower_interface_handle;
@@ -1020,7 +1067,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_lower_than_succeed) {
   unpublish_interfaces_and_deinit_ipc();
 }
 
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_lower_or_equal_succeed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_lower_or_equal_succeed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   az_ulib_ipc_interface_handle lower_interface_handle;
@@ -1059,14 +1107,16 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_version_lower_or_equal_succeed) {
 
 /* If the IPC reach the maximum number of allowed instances for a single interface, the
  * az_ulib_ipc_try_get_interface shall return AZ_ULIB_BUSY_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_max_interface_instances_failed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_max_interface_instances_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle[AZ_ULIB_CONFIG_MAX_IPC_INSTANCES];
   az_ulib_ipc_interface_handle interface_handle_plus_one;
 
   init_ipc_and_publish_interfaces();
 
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INSTANCES; i++) {
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INSTANCES; i++)
+  {
     ASSERT_ARE_EQUAL(
         int,
         AZ_ULIB_SUCCESS,
@@ -1095,7 +1145,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_max_interface_instances_failed)
   ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
 
   /// cleanup
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INSTANCES; i++) {
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INSTANCES; i++)
+  {
     az_ulib_ipc_release_interface(interface_handle[i]);
   }
   unpublish_interfaces_and_deinit_ipc();
@@ -1103,7 +1154,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_max_interface_instances_failed)
 
 /* If the provided interface name does not exist, the az_ulib_ipc_try_get_interface shall return
  * AZ_ULIB_NO_SUCH_ELEMENT_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_unknown_name_failed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_unknown_name_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   init_ipc_and_publish_interfaces();
@@ -1125,7 +1177,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_unknown_name_failed) {
   unpublish_interfaces_and_deinit_ipc();
 }
 
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_unknown_version_failed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_unknown_version_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   init_ipc_and_publish_interfaces();
@@ -1147,7 +1200,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_unknown_version_failed) {
   unpublish_interfaces_and_deinit_ipc();
 }
 
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_without_version_greater_than_failed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_without_version_greater_than_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   init_ipc_and_publish_interfaces();
@@ -1172,7 +1226,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_without_version_greater_than_failed)
   unpublish_interfaces_and_deinit_ipc();
 }
 
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_without_version_lower_than_failed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_without_version_lower_than_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   init_ipc_and_publish_interfaces();
@@ -1199,7 +1254,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_without_version_lower_than_failed) {
 
 /* If the provided interface name is NULL, the az_ulib_ipc_try_get_interface shall return
  * AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_null_name_failed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_null_name_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   init_ipc_and_publish_interfaces();
@@ -1220,7 +1276,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_null_name_failed) {
 
 /* If the provided handle is NULL, the az_ulib_ipc_try_get_interface shall return
  * AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_null_handle_failed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_null_handle_failed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
   umock_c_reset_all_calls();
@@ -1240,7 +1297,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_null_handle_failed) {
 
 /* If the ipc was not initialized, the az_ulib_ipc_try_get_interface shall return
  * AZ_ULIB_NOT_INITIALIZED_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed) {
+TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
 
@@ -1261,7 +1319,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed) {
 
 /* The az_ulib_ipc_get_interface shall return the handle for the interface. */
 /* The az_ulib_ipc_get_interface shall return AZ_ULIB_SUCCESS. */
-TEST_FUNCTION(az_ulib_ipc_get_interface_succeed) {
+TEST_FUNCTION(az_ulib_ipc_get_interface_succeed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   az_ulib_ipc_interface_handle new_interface_handle;
@@ -1295,14 +1354,16 @@ TEST_FUNCTION(az_ulib_ipc_get_interface_succeed) {
 
 /* If the IPC reach the maximum number of allowed instances for a single interface, the
  * az_ulib_ipc_get_interface shall return AZ_ULIB_BUSY_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_get_interface_with_max_interface_instances_failed) {
+TEST_FUNCTION(az_ulib_ipc_get_interface_with_max_interface_instances_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle[AZ_ULIB_CONFIG_MAX_IPC_INSTANCES];
   az_ulib_ipc_interface_handle interface_handle_plus_one;
 
   init_ipc_and_publish_interfaces();
 
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INSTANCES; i++) {
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INSTANCES; i++)
+  {
     ASSERT_ARE_EQUAL(
         int,
         AZ_ULIB_SUCCESS,
@@ -1328,7 +1389,8 @@ TEST_FUNCTION(az_ulib_ipc_get_interface_with_max_interface_instances_failed) {
   ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
 
   /// cleanup
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INSTANCES; i++) {
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INSTANCES; i++)
+  {
     az_ulib_ipc_release_interface(interface_handle[i]);
   }
   unpublish_interfaces_and_deinit_ipc();
@@ -1336,7 +1398,8 @@ TEST_FUNCTION(az_ulib_ipc_get_interface_with_max_interface_instances_failed) {
 
 /* If the provided interface name does not exist, the az_ulib_ipc_get_interface shall return
  * AZ_ULIB_NO_SUCH_ELEMENT_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_get_interface_with_unpublished_interface_failed) {
+TEST_FUNCTION(az_ulib_ipc_get_interface_with_unpublished_interface_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   az_ulib_ipc_interface_handle new_interface_handle;
@@ -1374,7 +1437,8 @@ TEST_FUNCTION(az_ulib_ipc_get_interface_with_unpublished_interface_failed) {
 
 /* If the provided interface handle is NULL, the az_ulib_ipc_get_interface shall return
  * AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_get_interface_with_null_original_interface_handle_failed) {
+TEST_FUNCTION(az_ulib_ipc_get_interface_with_null_original_interface_handle_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle new_interface_handle;
   init_ipc_and_publish_interfaces();
@@ -1394,7 +1458,8 @@ TEST_FUNCTION(az_ulib_ipc_get_interface_with_null_original_interface_handle_fail
 
 /* If the provided new interface handle is NULL, the az_ulib_ipc_get_interface shall return
  * AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_get_interface_with_null_interface_handle_failed) {
+TEST_FUNCTION(az_ulib_ipc_get_interface_with_null_interface_handle_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   init_ipc_and_publish_interfaces();
@@ -1423,7 +1488,8 @@ TEST_FUNCTION(az_ulib_ipc_get_interface_with_null_interface_handle_failed) {
 
 /* If the ipc was not initialized, the az_ulib_ipc_get_interface shall return
  * AZ_ULIB_NOT_INITIALIZED_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_get_interface_with_ipc_not_initialized_failed) {
+TEST_FUNCTION(az_ulib_ipc_get_interface_with_ipc_not_initialized_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle = (az_ulib_ipc_interface_handle)0x1234;
   az_ulib_ipc_interface_handle new_interface_handle;
@@ -1441,7 +1507,8 @@ TEST_FUNCTION(az_ulib_ipc_get_interface_with_ipc_not_initialized_failed) {
 
 /* The az_ulib_ipc_release_interface shall release the instance of the interface. */
 /* The az_ulib_ipc_release_interface shall return AZ_ULIB_SUCCESS. */
-TEST_FUNCTION(az_ulib_ipc_release_interface_succeed) {
+TEST_FUNCTION(az_ulib_ipc_release_interface_succeed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   init_ipc_and_publish_interfaces();
@@ -1472,7 +1539,8 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_succeed) {
 
 /* If the interface is already released, the az_ulib_ipc_release_interface shall return
  * AZ_ULIB_PRECONDITION_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_release_interface_double_release_failed) {
+TEST_FUNCTION(az_ulib_ipc_release_interface_double_release_failed)
+{
   /// arrange
   az_ulib_ipc_interface_handle interface_handle;
   init_ipc_and_publish_interfaces();
@@ -1504,7 +1572,8 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_double_release_failed) {
 
 /* If the provided handle is NULL, the az_ulib_ipc_release_interface shall return
  * AZ_ULIB_ILLEGAL_ARGUMENT_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_release_interface_with_null_interface_handle_failed) {
+TEST_FUNCTION(az_ulib_ipc_release_interface_with_null_interface_handle_failed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
   umock_c_reset_all_calls();
@@ -1523,7 +1592,8 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_with_null_interface_handle_failed) {
 
 /* If the ipc is not initialized, the az_ulib_ipc_release_interface shall return
  * AZ_ULIB_NOT_INITIALIZED_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_release_interface_with_ipc_not_initialized_failed) {
+TEST_FUNCTION(az_ulib_ipc_release_interface_with_ipc_not_initialized_failed)
+{
   /// arrange
   umock_c_reset_all_calls();
 
@@ -1540,7 +1610,8 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_with_ipc_not_initialized_failed) {
 
 /* If one of the command in the interface is running, the az_ulib_ipc_release_interface shall return
  * AZ_ULIB_SUCCESS. */
-TEST_FUNCTION(az_ulib_ipc_release_interface_with_command_running_failed) {
+TEST_FUNCTION(az_ulib_ipc_release_interface_with_command_running_failed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
 
@@ -1580,7 +1651,8 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_with_command_running_failed) {
 
 /* The az_ulib_ipc_call shall call the command published by the interface. */
 /* The az_ulib_ipc_call shall return AZ_ULIB_SUCCESS. */
-TEST_FUNCTION(az_ulib_ipc_call_calls_the_command_succeed) {
+TEST_FUNCTION(az_ulib_ipc_call_calls_the_command_succeed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
 
@@ -1618,7 +1690,8 @@ TEST_FUNCTION(az_ulib_ipc_call_calls_the_command_succeed) {
 /* If the IPC is not initialized, the az_ulib_ipc_call shall return AZ_ULIB_NOT_INITIALIZED_ERROR
  * and do not call the command.
  */
-TEST_FUNCTION(az_ulib_ipc_call_with_ipc_not_initialized_failed) {
+TEST_FUNCTION(az_ulib_ipc_call_with_ipc_not_initialized_failed)
+{
   /// arrange
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_JUST_RETURN;
@@ -1642,7 +1715,8 @@ TEST_FUNCTION(az_ulib_ipc_call_with_ipc_not_initialized_failed) {
 
 /* If the interface handle is NULL, the az_ulib_ipc_call shall return AZ_ULIB_ILLEGAL_ARGUMENT_ERROR
  * and do not call the command. */
-TEST_FUNCTION(az_ulib_ipc_call_with_null_interface_handle_failed) {
+TEST_FUNCTION(az_ulib_ipc_call_with_null_interface_handle_failed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
 
@@ -1668,7 +1742,8 @@ TEST_FUNCTION(az_ulib_ipc_call_with_null_interface_handle_failed) {
 
 /* If the interface was unpublished, the az_ulib_ipc_call shall return AZ_ULIB_NO_SUCH_ELEMENT_ERROR
  * and do not call the command. */
-TEST_FUNCTION(az_ulib_ipc_call_unpublished_interface_failed) {
+TEST_FUNCTION(az_ulib_ipc_call_unpublished_interface_failed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
 
@@ -1710,7 +1785,8 @@ TEST_FUNCTION(az_ulib_ipc_call_unpublished_interface_failed) {
 
 /* The az_ulib_ipc_deinit shall release all resources associate with ipc. */
 /* The az_ulib_ipc_deinit shall return AZ_ULIB_SUCCESS. */
-TEST_FUNCTION(az_ulib_ipc_deinit_succeed) {
+TEST_FUNCTION(az_ulib_ipc_deinit_succeed)
+{
   /// arrange
   ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_init(&g_ipc));
   umock_c_reset_all_calls();
@@ -1728,7 +1804,8 @@ TEST_FUNCTION(az_ulib_ipc_deinit_succeed) {
 }
 
 /* If there is published interface, the az_ulib_ipc_deinit shall return AZ_ULIB_BUSY_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_deinit_with_published_interface_failed) {
+TEST_FUNCTION(az_ulib_ipc_deinit_with_published_interface_failed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
   umock_c_reset_all_calls();
@@ -1746,7 +1823,8 @@ TEST_FUNCTION(az_ulib_ipc_deinit_with_published_interface_failed) {
 
 /* If there is instances of the interface, the az_ulib_ipc_deinit shall return AZ_ULIB_BUSY_ERROR.
  */
-TEST_FUNCTION(az_ulib_ipc_deinit_with_instace_failed) {
+TEST_FUNCTION(az_ulib_ipc_deinit_with_instace_failed)
+{
   /// arrange
   init_ipc_and_publish_interfaces();
   az_ulib_ipc_interface_handle interface_handle;
@@ -1782,7 +1860,8 @@ TEST_FUNCTION(az_ulib_ipc_deinit_with_instace_failed) {
 
 /* If the IPC was not initialized, the az_ulib_ipc_deinit shall return
  * AZ_ULIB_NOT_INITIALIZED_ERROR. */
-TEST_FUNCTION(az_ulib_ipc_deinit_with_ipc_not_initialized_failed) {
+TEST_FUNCTION(az_ulib_ipc_deinit_with_ipc_not_initialized_failed)
+{
   /// arrange
 
   /// act

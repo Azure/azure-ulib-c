@@ -27,7 +27,8 @@ typedef az_ulib_ipc_interface_handle math_handle;
  */
 #define MATH_INTERFACE_SUM_COMMAND_NAME "sum"
 
-typedef struct sum_model_in_tag {
+typedef struct sum_model_in_tag
+{
   int32_t a;
   int32_t b;
 } sum_model_in;
@@ -39,7 +40,8 @@ typedef int64_t sum_model_out;
  */
 #define MATH_INTERFACE_SUBTRACT_COMMAND_NAME "subtract"
 
-typedef struct subtract_model_in_tag {
+typedef struct subtract_model_in_tag
+{
   int32_t a;
   int32_t b;
 } subtract_model_in;

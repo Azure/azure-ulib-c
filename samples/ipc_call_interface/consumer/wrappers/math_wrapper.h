@@ -27,7 +27,8 @@ typedef az_ulib_ipc_interface_handle math_handle;
  */
 #define MATH_INTERFACE_SUM_COMMAND_NAME "sum"
 
-typedef struct sum_model_in_tag {
+typedef struct sum_model_in_tag
+{
   int32_t a;
   int32_t b;
 } sum_model_in;
@@ -39,7 +40,8 @@ typedef int64_t sum_model_out;
  */
 #define MATH_INTERFACE_SUBTRACT_COMMAND_NAME "subtract"
 
-typedef struct subtract_model_in_tag {
+typedef struct subtract_model_in_tag
+{
   int32_t a;
   int32_t b;
 } subtract_model_in;
@@ -49,7 +51,8 @@ typedef int64_t subtract_model_out;
 /*
  * math class constructor.
  */
-static inline az_ulib_result math_create(math_handle handle) {
+static inline az_ulib_result math_create(math_handle handle)
+{
   return az_ulib_ipc_try_get_interface(
       MATH_INTERFACE_NAME, MATH_INTERFACE_VERSION, AZ_ULIB_VERSION_EQUALS_TO, handle);
 }
@@ -62,7 +65,8 @@ static inline void math_destroy(math_handle handle) { az_ulib_ipc_release_interf
 /*
  * Azure Callable Wrapper for math sum.
  */
-static inline az_ulib_result math_sum(math_handle handle, int32_t a, int32_t b, int64_t* res) {
+static inline az_ulib_result math_sum(math_handle handle, int32_t a, int32_t b, int64_t* res)
+{
   // Marshalling
   sum_model_in sum_in = { a, b };
 
@@ -73,7 +77,8 @@ static inline az_ulib_result math_sum(math_handle handle, int32_t a, int32_t b, 
 /*
  * Azure Callable Wrapper for math subtract.
  */
-static inline az_ulib_result math_subtract(math_handle handle, int32_t a, int32_t b, int64_t* res) {
+static inline az_ulib_result math_subtract(math_handle handle, int32_t a, int32_t b, int64_t* res)
+{
   // Marshalling
   subtract_model_in subtract_in = { a, b };
 

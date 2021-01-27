@@ -8,15 +8,16 @@
 #include <pthread.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-/*
- *  @struct az_ulib_pal_os_lock
- *
- *  @brief  pointer to a platform specific struct for a lock implementation
- */
-typedef pthread_mutex_t az_ulib_pal_os_lock;
+  /*
+   *  @struct az_ulib_pal_os_lock
+   *
+   *  @brief  pointer to a platform specific struct for a lock implementation
+   */
+  typedef pthread_mutex_t az_ulib_pal_os_lock;
 
 #ifdef __cplusplus
 }

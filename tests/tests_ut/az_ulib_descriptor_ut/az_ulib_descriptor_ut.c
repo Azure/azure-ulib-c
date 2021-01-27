@@ -20,13 +20,15 @@
 
 static TEST_MUTEX_HANDLE g_test_by_test;
 
-static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code) {
+static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code)
+{
   ASSERT_FAIL("umock_c reported error :%i", error_code);
 }
 
 static uint32_t my_property = 0;
 
-static az_ulib_result get_my_property(const void* model_out) {
+static az_ulib_result get_my_property(const void* model_out)
+{
   uint32_t* new_val = (uint32_t*)model_out;
 
   *new_val = my_property;
@@ -34,7 +36,8 @@ static az_ulib_result get_my_property(const void* model_out) {
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result set_my_property(const void* const model_in) {
+static az_ulib_result set_my_property(const void* const model_in)
+{
   uint32_t* new_val = (uint32_t*)model_in;
 
   my_property = *new_val;
@@ -42,7 +45,8 @@ static az_ulib_result set_my_property(const void* const model_in) {
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_command(const void* const model_in, const void* model_out) {
+static az_ulib_result my_command(const void* const model_in, const void* model_out)
+{
   (void)model_in;
   (void)model_out;
 
@@ -53,7 +57,8 @@ static az_ulib_result my_command_async(
     const void* const model_in,
     const void* model_out,
     const az_ulib_capability_token capability_token,
-    az_ulib_capability_cancellation_callback* cancel) {
+    az_ulib_capability_cancellation_callback* cancel)
+{
   (void)model_in;
   (void)model_out;
   (void)capability_token;
@@ -62,7 +67,8 @@ static az_ulib_result my_command_async(
   return AZ_ULIB_SUCCESS;
 }
 
-static az_ulib_result my_command_cancel(const az_ulib_capability_token capability_token) {
+static az_ulib_result my_command_cancel(const az_ulib_capability_token capability_token)
+{
   (void)capability_token;
 
   return AZ_ULIB_SUCCESS;
@@ -73,7 +79,8 @@ static az_ulib_result my_command_cancel(const az_ulib_capability_token capabilit
  */
 BEGIN_TEST_SUITE(az_ulib_descriptor_ut)
 
-TEST_SUITE_INITIALIZE(suite_init) {
+TEST_SUITE_INITIALIZE(suite_init)
+{
   g_test_by_test = TEST_MUTEX_CREATE();
   ASSERT_IS_NOT_NULL(g_test_by_test);
 
@@ -83,14 +90,17 @@ TEST_SUITE_INITIALIZE(suite_init) {
   ASSERT_ARE_EQUAL(int, 0, umocktypes_bool_register_types());
 }
 
-TEST_SUITE_CLEANUP(suite_cleanup) {
+TEST_SUITE_CLEANUP(suite_cleanup)
+{
   umock_c_deinit();
 
   TEST_MUTEX_DESTROY(g_test_by_test);
 }
 
-TEST_FUNCTION_INITIALIZE(test_method_initialize) {
-  if (TEST_MUTEX_ACQUIRE(g_test_by_test)) {
+TEST_FUNCTION_INITIALIZE(test_method_initialize)
+{
+  if (TEST_MUTEX_ACQUIRE(g_test_by_test))
+  {
     ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
   }
 
@@ -101,7 +111,8 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup) { TEST_MUTEX_RELEASE(g_test_by_test);
 
 /* The AZ_ULIB_DESCRIPTOR_ADD_PROPERTY shall create an descriptor for a property with name, get, and
  * set pointers. */
-TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_succeed) {
+TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_succeed)
+{
   /// arrange
 
   /// act
@@ -119,7 +130,8 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_succeed) {
 
 /* The AZ_ULIB_DESCRIPTOR_ADD_COMMAND shall create an descriptor for a command with name and pointer
  * to the command. */
-TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_succeed) {
+TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_succeed)
+{
   /// arrange
 
   /// act
@@ -137,7 +149,8 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_succeed) {
 
 /* The AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC shall create an descriptor for an async command with
  * name and pointer to the command and the cancellation command. */
-TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC_succeed) {
+TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC_succeed)
+{
   /// arrange
 
   /// act
@@ -155,7 +168,8 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC_succeed) {
 
 /* The AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY shall create an descriptor for a command with name and
  * pointer to the command. */
-TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY_succeed) {
+TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY_succeed)
+{
   /// arrange
 
   /// act
@@ -173,7 +187,8 @@ TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY_succeed) {
 
 /* The AZ_ULIB_DESCRIPTOR_CREATE shall create an descriptor for a command with name and pointer to
  * the command. */
-TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_CREATE_succeed) {
+TEST_FUNCTION(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_CREATE_succeed)
+{
   /// arrange
   az_ulib_version version = 123;
 

@@ -8,13 +8,14 @@
 #define AZ_ULIB_GCC_LINUX_PORT_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif /* __cplusplus */
 
-// This Linux-specific header offers 3 strategies:
-//   AZURE_ULIB_C_ATOMIC_DONTCARE     -- no atomicity guarantee
-//   AZURE_ULIB_C_USE_STD_ATOMIC      -- C11 atomicity
-//   AZURE_ULIB_C_USE_GNU_C_ATOMIC    -- GNU-specific atomicity
+  // This Linux-specific header offers 3 strategies:
+  //   AZURE_ULIB_C_ATOMIC_DONTCARE     -- no atomicity guarantee
+  //   AZURE_ULIB_C_USE_STD_ATOMIC      -- C11 atomicity
+  //   AZURE_ULIB_C_USE_GNU_C_ATOMIC    -- GNU-specific atomicity
 
 #if defined(__GNUC__)
 #define AZURE_ULIB_C_USE_GNU_C_ATOMIC 1
@@ -25,34 +26,37 @@ extern "C" {
 #undef AZURE_ULIB_C_USE_GNU_C_ATOMIC
 #endif
 
-/*the following macros increment/decrement a ref count in an atomic way, depending on the platform*/
-/*The following mechanisms are considered in this order
-AZURE_ULIB_C_ATOMIC_DONTCARE does not use atomic operations
-- will result in ++/-- used for increment/decrement.
-C11
-- will result in #include <stdatomic.h>
-- will use atomic_fetch_add/sub;
-- about the return value: "Atomically, the value pointed to by object immediately before the
-  effects" gcc
-- will result in no include (for gcc these are intrinsics build in)
-- will use __sync_fetch_and_add/sub
-- about the return value: "... returns the value that had previously been in memory."
-  (https://gcc.gnu.org/onlinedocs/gcc-4.4.3/gcc/Atomic-Builtins.html#Atomic-Builtins)
-*/
+  /*the following macros increment/decrement a ref count in an atomic way, depending on the
+   * platform*/
+  /*The following mechanisms are considered in this order
+  AZURE_ULIB_C_ATOMIC_DONTCARE does not use atomic operations
+  - will result in ++/-- used for increment/decrement.
+  C11
+  - will result in #include <stdatomic.h>
+  - will use atomic_fetch_add/sub;
+  - about the return value: "Atomically, the value pointed to by object immediately before the
+    effects" gcc
+  - will result in no include (for gcc these are intrinsics build in)
+  - will use __sync_fetch_and_add/sub
+  - about the return value: "... returns the value that had previously been in memory."
+    (https://gcc.gnu.org/onlinedocs/gcc-4.4.3/gcc/Atomic-Builtins.html#Atomic-Builtins)
+  */
 
 #if defined(AZURE_ULIB_C_ATOMIC_DONTCARE)
 #define AZ_ULIB_PORT_ATOMIC_INC_W(count) ++(*(count))
 #define AZ_ULIB_PORT_ATOMIC_DEC_W(count) --(*(count))
-static inline uint32_t AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(volatile uint32_t* addr, uint32_t val) {
-  uint32_t prev = *addr;
-  *addr = val;
-  return prev;
-}
-static inline uint32_t AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(volatile void** addr, void* val) {
-  void* prev = *addr;
-  *addr = val;
-  return prev;
-}
+  static inline uint32_t AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(volatile uint32_t* addr, uint32_t val)
+  {
+    uint32_t prev = *addr;
+    *addr = val;
+    return prev;
+  }
+  static inline uint32_t AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(volatile void** addr, void* val)
+  {
+    void* prev = *addr;
+    *addr = val;
+    return prev;
+  }
 
 #elif defined(AZURE_ULIB_C_USE_STD_ATOMIC)
 #ifndef __cplusplus
@@ -60,10 +64,12 @@ static inline uint32_t AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(volatile void** addr, vo
 #else
 #include <atomic>
 #endif /* __cplusplus */
-static inline uint32_t AZ_ULIB_PORT_ATOMIC_INC_W(volatile uint32_t* addr) {
+static inline uint32_t AZ_ULIB_PORT_ATOMIC_INC_W(volatile uint32_t* addr)
+{
   return atomic_fetch_add(addr, 1) + 1;
 }
-static inline uint32_t AZ_ULIB_PORT_ATOMIC_DEC_W(volatile uint32_t* addr) {
+static inline uint32_t AZ_ULIB_PORT_ATOMIC_DEC_W(volatile uint32_t* addr)
+{
   return atomic_fetch_sub(addr, 1) - 1;
 }
 #define AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(target, value) atomic_exchange((target), (value))
