@@ -1,7 +1,7 @@
 #Copyright (c) Microsoft. All rights reserved.
 #Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-cmake_minimum_required(VERSION 3.2.0)
+cmake_minimum_required(VERSION 3.10)
 
 project(azure_ulib_c)
 
@@ -48,7 +48,6 @@ target_include_directories(azure_ulib_c
     PRIVATE
         ${PROJECT_SOURCE_DIR}/deps/umock-c/inc
         ${PROJECT_SOURCE_DIR}/deps/azure-macro-utils-c/inc
-        ${PROJECT_SOURCE_DIR}/deps/azure-core-c/inc
 )
 
 set_target_properties(azure_ulib_c
@@ -81,7 +80,7 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-macro-utils-c EXCLUDE_FROM
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/umock-c EXCLUDE_FROM_ALL)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-ctest EXCLUDE_FROM_ALL)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-c-testrunnerswitcher EXCLUDE_FROM_ALL)
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-core-c EXCLUDE_FROM_ALL)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-core-c)
 
 ulib_set_target_build_properties(azure_ulib_c)
 

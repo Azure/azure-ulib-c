@@ -19,7 +19,7 @@ on the [Github Page](https://azure.github.io/azure-ulib-c) for this repo.
 
 ## Development Machine Requirements
 
-This repo is built using cmake. The minimum requirement is version 3.2. You can download and install the latest cmake version [here](https://cmake.org/).
+This repo is built using cmake. The minimum requirement is version 3.10. You can download and install the latest cmake version [here](https://cmake.org/).
 
 ## Building the Repo
 

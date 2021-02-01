@@ -49,36 +49,21 @@ phases:
     displayName: 'build'  
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
-- phase: gcc44
+- phase: ubuntu
   variables:
-    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/linux-c-ubuntu-gcc4.4:cmakev3.2"
+    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/linux-c-ubuntu:cmake3.19"
   queue: Hosted Ubuntu 1604
-  displayName: 'gcc4.4'
+  displayName: 'ubuntu'
   steps:
   - script: |
-     if [ -f "build_all/linux_c_gcc44.sh" ]
+     if [ -f "build_all/linux_c_ubuntu.sh" ]
      then
-      sudo ./build_all/linux_c_gcc44.sh
+      sudo ./build_all/linux_c_ubuntu.sh
      fi
     displayName: 'build'  
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
     condition: always()
-- phase: gcc46
-  variables:
-    _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/gcc-4.6:cmakev3.2"
-  queue: Hosted Ubuntu 1604
-  displayName: 'gcc-4.6'
-  steps:
-  - script: |
-     if [ -f "build_all/linux_c_gcc44.sh" ]
-     then
-      sudo ./build_all/linux_c_gcc44.sh
-     fi
-    displayName: 'build'  
-  - script: sudo rm -rf $(Agent.BuildDirectory)/*
-    displayName: 'cleanup'
-    condition: always()    
 - phase: linuxoptions
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/vsts-linux-c-ubuntu"
