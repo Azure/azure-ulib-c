@@ -58,7 +58,8 @@ phases:
   - script: |
      if [ -f "build_all/linux_c_ubuntu.sh" ]
      then
-      sudo ./build_all/linux_c_ubuntu.sh
+      sudo chmod -R 755 .
+      sudo -E ./build_all/linux_c_ubuntu.sh
      fi
     displayName: 'build'  
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
