@@ -1,9 +1,18 @@
 #!/bin/bash
 # Copyright (c) Microsoft. All rights reserved.
-# Licensed under the MIT license. See LICENSE file in the project root for full license information.
+# Licensed under the MIT license. 
+# See LICENSE file in the project root for full license information.
 #
 
 set -e
+
+# Print version
+cat /etc/*release | grep VERSION*
+gcc --version
+cmake --version
+
+build_root=$(cd "$(dirname "$0")/.." && pwd)
+cd $build_root
 
 script_dir=$(cd "$(dirname "$0")" && pwd)
 build_root=$(cd "${script_dir}/.." && pwd)
