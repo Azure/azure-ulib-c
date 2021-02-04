@@ -19,14 +19,14 @@ extern "C"
   void set_concurrency_ustream(void);
   void set_delay_return_value(uint32_t delay);
 
-  void set_set_position_result(az_ulib_result result);
-  void set_reset_result(az_ulib_result result);
-  void set_read_result(az_ulib_result result);
-  void set_get_remaining_size_result(az_ulib_result result);
-  void set_get_position_result(az_ulib_result result);
-  void set_release_result(az_ulib_result result);
-  void set_clone_result(az_ulib_result result);
-  void set_dispose_result(az_ulib_result result);
+  void set_set_position_result(az_result result);
+  void set_reset_result(az_result result);
+  void set_read_result(az_result result);
+  void set_get_remaining_size_result(az_result result);
+  void set_get_position_result(az_result result);
+  void set_release_result(az_result result);
+  void set_clone_result(az_result result);
+  void set_dispose_result(az_result result);
 
 #ifdef __cplusplus
 }

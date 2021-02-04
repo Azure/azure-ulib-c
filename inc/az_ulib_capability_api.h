@@ -72,7 +72,7 @@ extern "C"
    */
   typedef void (*az_ulib_capability_result_callback)(
       const az_ulib_capability_token capability_token,
-      az_ulib_result result,
+      az_result result,
       az_ulib_model_out const model_out);
 
   /**
@@ -83,7 +83,7 @@ extern "C"
   /**
    * @brief       Cancellation token prototype.
    */
-  typedef az_ulib_result (*az_ulib_capability_cancellation_callback)(
+  typedef az_result (*az_ulib_capability_cancellation_callback)(
       const az_ulib_capability_token capability_token);
 
   /**
@@ -94,7 +94,7 @@ extern "C"
    * The data in the `model_in` will be used only during the execution of the command and may be
    * released as soon as the command returns.
    *
-   * As a standard, the synchronous command shall return #az_ulib_result. If the command needs to
+   * As a standard, the synchronous command shall return #az_result. If the command needs to
    * return anything else, the data shall be stored it on the `model_out`.
    *
    * Both `model_in` and `model_out` shall be defined as part of the interface definition.
@@ -107,16 +107,16 @@ extern "C"
    *                          validation on it. The command itself shall implement any needed
    *                          validation.
    *
-   * @return The #az_ulib_result with the result of the command call. All possible results shall be
+   * @return The #az_result with the result of the command call. All possible results shall be
    * defined as part of the interface.
    */
-  typedef az_ulib_result (
+  typedef az_result (
       *az_ulib_capability_command)(az_ulib_model_in model_in, az_ulib_model_out model_out);
 
   /**
    * @brief       IPC asynchronous task signature.
    */
-  typedef az_ulib_result (*az_ulib_capability_command_async)(
+  typedef az_result (*az_ulib_capability_command_async)(
       az_ulib_model_in model_in,
       az_ulib_capability_result_callback callback,
       const az_ulib_capability_token capability_token,
@@ -125,12 +125,12 @@ extern "C"
   /**
    * @brief       IPC get signature.
    */
-  typedef az_ulib_result (*az_ulib_capability_get)(az_ulib_model_out model_out);
+  typedef az_result (*az_ulib_capability_get)(az_ulib_model_out model_out);
 
   /**
    * @brief       IPC set signature.
    */
-  typedef az_ulib_result (*az_ulib_capability_set)(az_ulib_model_in model_in);
+  typedef az_result (*az_ulib_capability_set)(az_ulib_model_in model_in);
 
 #ifdef __cplusplus
 }

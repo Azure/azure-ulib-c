@@ -71,7 +71,7 @@
  *         |                         |                           | data_source_size = content_size
  *         |                         |                           +----->|                    |
  *         |<-----------------ustream_instance--------------------------+                    |
- *         +----AZ_ULIB_SUCCESS----->|                                  |                    |
+ *         +---------AZ_OK---------->|                                  |                    |
  * @endcode
  *
  *
@@ -81,7 +81,7 @@
  * @code
  *         |                         +------------------malloc(1024)------------------------>|
  *         |                         |<-----------------local_buffer-------------------------+
- * .. while az_ulib_ustream_read return AZ_ULIB_SUCCESS ..........................................
+ * .. while az_ulib_ustream_read return AZ_OK ....................................................
  * :       |                         +--az_ulib_ustream_read            |                    |    :
  * :       |                         |  (ustream_instance,              |                    |    :
  * :       |                         |   local_buffer,                  |                    |    :
@@ -91,7 +91,7 @@
  * :       |                         |                 | copy the next 1024 bytes from the   |    :
  * :       |                         |                 |  data_source to the local_buffer.   |    :
  * :       |                         |                 +--------------->|                    |    :
- * :       |                         |<---AZ_ULIB_SUCCESS---------------+                    |    :
+ * :       |                         |<-------------AZ_OK---------------+                    |    :
  * :       |                     +---+                                  |                    |    :
  * :       |                     | use the content in the local_buffer  |                    |    :
  * :       |                     +-->|                                  |                    |    :
@@ -361,35 +361,35 @@ extern "C"
   typedef struct az_ulib_ustream_interface_tag
   {
     /** Concrete `set_position` implementation. */
-    az_ulib_result (*set_position)(az_ulib_ustream* ustream_instance, offset_t position);
+    az_result (*set_position)(az_ulib_ustream* ustream_instance, offset_t position);
 
     /** Concrete `reset` implementation. */
-    az_ulib_result (*reset)(az_ulib_ustream* ustream_instance);
+    az_result (*reset)(az_ulib_ustream* ustream_instance);
 
     /** Concrete `read` implementation. */
-    az_ulib_result (*read)(
+    az_result (*read)(
         az_ulib_ustream* ustream_instance,
         uint8_t* const buffer,
         size_t buffer_length,
         size_t* const size);
 
     /** Concrete `get_remaining_size` implementation. */
-    az_ulib_result (*get_remaining_size)(az_ulib_ustream* ustream_instance, size_t* const size);
+    az_result (*get_remaining_size)(az_ulib_ustream* ustream_instance, size_t* const size);
 
     /** Concrete `get_position` implementation. */
-    az_ulib_result (*get_position)(az_ulib_ustream* ustream_instance, offset_t* const position);
+    az_result (*get_position)(az_ulib_ustream* ustream_instance, offset_t* const position);
 
     /** Concrete `release` implementation. */
-    az_ulib_result (*release)(az_ulib_ustream* ustream_instance, offset_t position);
+    az_result (*release)(az_ulib_ustream* ustream_instance, offset_t position);
 
     /** Concrete `clone` implementation. */
-    az_ulib_result (*clone)(
+    az_result (*clone)(
         az_ulib_ustream* ustream_instance_clone,
         az_ulib_ustream* ustream_instance,
         offset_t offset);
 
     /** Concrete `dispose` implementation. */
-    az_ulib_result (*dispose)(az_ulib_ustream* ustream_instance);
+    az_result (*dispose)(az_ulib_ustream* ustream_instance);
 
   } az_ulib_ustream_interface;
 
@@ -540,35 +540,34 @@ extern "C"
    *  The `az_ulib_ustream_set_position` API shall follow these minimum requirements:
    *      - The `set_position` shall change the current position of the ustream.
    *      - If the provided position is out of the range of the ustream, the `set_position` shall
-   *          return #AZ_ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
+   *          return #AZ_ERROR_ITEM_NOT_FOUND, and will not change the current position.
    *      - If the provided position is already released, the `set_position` shall return
-   *          #AZ_ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
-   *      - If the provided interface is `NULL`, the `set_position` shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          #AZ_ERROR_ITEM_NOT_FOUND, and will not change the current position.
+   *      - If the provided interface is `NULL`, the `set_position` shall return #AZ_ERROR_ARG.
    *      - If the provided interface is not the implemented ustream type, the `set_position` shall
-   *          return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          return #AZ_ERROR_ARG.
    *
    * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream. It
    *                                  cannot be `NULL`, and it shall be a valid ustream that is the
    *                                  implemented ustream type.
    * @param[in]   position            The `offset_t` with the new current position in the ustream.
    *
-   * @return The #az_ulib_result with the result of the `set_position` operation.
-   *      @retval #AZ_ULIB_SUCCESS                If the ustream changed the current position with
-   *                                              success.
-   *      @retval #AZ_ULIB_BUSY_ERROR             If the resource necessary for the `set_position`
-   *                                              operation is busy.
-   *      @retval #AZ_ULIB_CANCELLED_ERROR        If the `set_position` operation was cancelled.
-   *      @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
-   *      @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR  If the position is out of the ustream range.
-   *      @retval #AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
-   *                                              `set_position` operation.
-   *      @retval #AZ_ULIB_SECURITY_ERROR         If the `set_position` operation was denied for
-   *                                              security reasons.
-   *      @retval #AZ_ULIB_SYSTEM_ERROR           If the `set_position` operation failed on the
-   *                                              system level.
+   * @return The #az_result with the result of the `set_position` operation.
+   *      @retval #AZ_OK                        If the ustream changed the current position with
+   *                                            success.
+   *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary for the `set_position`
+   *                                            operation is busy.
+   *      @retval #AZ_ERROR_CANCELED            If the `set_position` operation was cancelled.
+   *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
+   *      @retval #AZ_ERROR_ITEM_NOT_FOUND      If the position is out of the ustream range.
+   *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to execute the
+   *                                            `set_position` operation.
+   *      @retval #AZ_ERROR_ULIB_SECURITY       If the `set_position` operation was denied for
+   *                                            security reasons.
+   *      @retval #AZ_ERROR_ULIB_SYSTEM         If the `set_position` operation failed on the
+   *                                            system level.
    */
-  static inline az_ulib_result az_ulib_ustream_set_position(
+  static inline az_result az_ulib_ustream_set_position(
       az_ulib_ustream* ustream_instance,
       offset_t position)
   {
@@ -586,33 +585,31 @@ extern "C"
    *      - The `reset` shall change the current position of the ustream to the first byte after the
    *          released position.
    *      - If all bytes are already released, the ustream `reset` shall return
-   *          #AZ_ULIB_NO_SUCH_ELEMENT_ERROR, and will not change the current position.
-   *      - If the provided interface is `NULL`, the ustream `reset` shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          #AZ_ERROR_ITEM_NOT_FOUND, and will not change the current position.
+   *      - If the provided interface is `NULL`, the ustream `reset` shall return #AZ_ERROR_ARG.
    *      - If the provided interface is not the implemented ustream type, the ustream `reset` shall
-   *          return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          return #AZ_ERROR_ARG.
    *
    * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream. It
    *                                  cannot be `NULL`, and it shall be a valid ustream that is the
    *                                  implemented ustream type.
    *
-   * @return The #az_ulib_result with the result of the `reset` operation.
-   *      @retval #AZ_ULIB_SUCCESS                If the ustream changed the current position with
-   *                                              success.
-   *      @retval #AZ_ULIB_BUSY_ERROR             If the resource necessary for the `reset`
-   *                                              operation is busy.
-   *      @retval #AZ_ULIB_CANCELLED_ERROR        If the `reset` operation was cancelled.
-   *      @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
-   *      @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR  If all previous bytes in the ustream were already
-   *                                              released.
-   *      @retval #AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
-   *                                              `reset` operation.
-   *      @retval #AZ_ULIB_SECURITY_ERROR         If the `reset` operation was denied for security
-   *                                              reasons.
-   *      @retval #AZ_ULIB_SYSTEM_ERROR           If the `reset` operation failed on the system
-   *                                              level.
+   * @return The #az_result with the result of the `reset` operation.
+   *      @retval #AZ_OK                        If the ustream changed the current position with
+   *                                            success.
+   *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary for the `reset`
+   *                                            operation is busy.
+   *      @retval #AZ_ERROR_CANCELED            If the `reset` operation was cancelled.
+   *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
+   *      @retval #AZ_ERROR_ITEM_NOT_FOUND      If all previous bytes in the ustream were already
+   *                                            released.
+   *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to execute the
+   *                                            `reset` operation.
+   *      @retval #AZ_ERROR_ULIB_SECURITY       If the `reset` operation was denied for security
+   *                                            reasons.
+   *      @retval #AZ_ERROR_ULIB_SYSTEM         If the `reset` operation failed on the system level.
    */
-  static inline az_ulib_result az_ulib_ustream_reset(az_ulib_ustream* ustream_instance)
+  static inline az_result az_ulib_ustream_reset(az_ulib_ustream* ustream_instance)
   {
     return ustream_instance->control_block->api->reset(ustream_instance);
   }
@@ -639,17 +636,15 @@ extern "C"
    *          #AZ_ULIB_EOF, size shall be set to 0, and will not change the contents
    *          of the local buffer.
    *      - If the provided buffer_length is zero, the read shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          #AZ_ERROR_ARG.
    *      - If the provided buffer_length is lower than the minimum number of bytes that the ustream
-   *          can copy, the read shall return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
-   *      - If the provided interface is `NULL`, the read shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          can copy, the read shall return #AZ_ERROR_ARG.
+   *      - If the provided interface is `NULL`, the read shall return #AZ_ERROR_ARG.
    *      - If the provided interface is not the implemented ustream type, the read shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
-   *      - If the provided local buffer is `NULL`, the read shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
-   *      - If the provided return size pointer is `NULL`, the read shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR and will not change the local buffer contents or the
+   *          #AZ_ERROR_ARG.
+   *      - If the provided local buffer is `NULL`, the read shall return #AZ_ERROR_ARG.
+   *      - If the provided return size pointer is `NULL`, the read shall return #AZ_ERROR_ARG and
+   *          will not change the local buffer contents or the
    *          current position of the buffer.
    *
    * @param[in]       ustream_instance    The #az_ulib_ustream* with the interface of the ustream.
@@ -663,20 +658,20 @@ extern "C"
    *                                      read shall store the number of valid `uint8_t` values
    *                                      returned in the local buffer. It cannot be `NULL`.
    *
-   * @return The #az_ulib_result with the result of the read operation.
-   *      @retval #AZ_ULIB_SUCCESS                If the ustream copied the content of the `Data
-   *                                              Source` to the local buffer with success.
-   *      @retval #AZ_ULIB_BUSY_ERROR             If the resource necessary to read the ustream
-   *                                              content is busy.
-   *      @retval #AZ_ULIB_CANCELLED_ERROR        If the read of the content was cancelled.
-   *      @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
-   *      @retval #AZ_ULIB_EOF                    If there are no more `uint8_t` values in the `Data
-   *                                              Source` to read.
-   *      @retval #AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the read.
-   *      @retval #AZ_ULIB_SECURITY_ERROR         If the read was denied for security reasons.
-   *      @retval #AZ_ULIB_SYSTEM_ERROR           If the read operation failed on the system level.
+   * @return The #az_result with the result of the read operation.
+   *      @retval #AZ_OK                        If the ustream copied the content of the `Data
+   *                                            Source` to the local buffer with success.
+   *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary to read the ustream
+   *                                            content is busy.
+   *      @retval #AZ_ERROR_CANCELED            If the read of the content was cancelled.
+   *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
+   *      @retval #AZ_ULIB_EOF                  If there are no more `uint8_t` values in the `Data
+   *                                            Source` to read.
+   *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to execute the read.
+   *      @retval #AZ_ERROR_ULIB_SECURITY       If the read was denied for security reasons.
+   *      @retval #AZ_ERROR_ULIB_SYSTEM         If the read operation failed on the system level.
    */
-  static inline az_ulib_result az_ulib_ustream_read(
+  static inline az_result az_ulib_ustream_read(
       az_ulib_ustream* ustream_instance,
       uint8_t* const buffer,
       size_t buffer_length,
@@ -695,11 +690,10 @@ extern "C"
    *      - The `get_remaining_size` shall return the number of bytes between the current position
    *          and the end of the ustream.
    *      - If the provided interface is `NULL`, the `get_remaining_size` shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          #AZ_ERROR_ARG.
    *      - If the provided interface is not the implemented ustream type, the `get_remaining_size`
-   *          shall return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
-   *      - If the provided size is `NULL`, the `get_remaining_size` shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          shall return #AZ_ERROR_ARG.
+   *      - If the provided size is `NULL`, the `get_remaining_size` shall return #AZ_ERROR_ARG.
    *
    * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream. It
    *                                  cannot be `NULL`, and it shall be a valid ustream that is the
@@ -707,21 +701,21 @@ extern "C"
    * @param[out]  size                The `size_t* const` to return the remaining number of
    *                                  `uint8_t` values. It cannot be `NULL`.
    *
-   * @return The #az_ulib_result with the result of the `get_remaining_size` operation.
-   *      @retval #AZ_ULIB_SUCCESS                If it succeeded to get the remaining size of the
-   *                                              ustream.
-   *      @retval #AZ_ULIB_BUSY_ERROR             If the resource necessary to get the remaining
-   *                                              size of the ustream is busy.
-   *      @retval #AZ_ULIB_CANCELLED_ERROR        If the `get_remaining_size` was cancelled.
-   *      @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
-   *      @retval #AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
-   *                                              `get_remaining_size` operation.
-   *      @retval #AZ_ULIB_SECURITY_ERROR         If the `get_remaining_size` was denied for
-   *                                              security reasons.
-   *      @retval #AZ_ULIB_SYSTEM_ERROR           If the `get_remaining_size` operation failed on
-   *                                              the system level.
+   * @return The #az_result with the result of the `get_remaining_size` operation.
+   *      @retval #AZ_OK                        If it succeeded to get the remaining size of the
+   *                                            ustream.
+   *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary to get the remaining
+   *                                            size of the ustream is busy.
+   *      @retval #AZ_ERROR_CANCELED            If the `get_remaining_size` was cancelled.
+   *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
+   *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to execute the
+   *                                            `get_remaining_size` operation.
+   *      @retval #AZ_ERROR_ULIB_SECURITY       If the `get_remaining_size` was denied for
+   *                                            security reasons.
+   *      @retval #AZ_ERROR_ULIB_SYSTEM         If the `get_remaining_size` operation failed on
+   *                                            the system level.
    */
-  static inline az_ulib_result az_ulib_ustream_get_remaining_size(
+  static inline az_result az_ulib_ustream_get_remaining_size(
       az_ulib_ustream* ustream_instance,
       size_t* const size)
   {
@@ -735,12 +729,10 @@ extern "C"
    *
    *  The `az_ulib_ustream_get_position` API shall follow the following minimum requirements:
    *      - The `get_position` shall return the logical current position of the ustream.
-   *      - If the provided interface is `NULL`, the `get_position` shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *      - If the provided interface is `NULL`, the `get_position` shall return #AZ_ERROR_ARG.
    *      - If the provided interface is not the implemented ustream type, the `get_position`
-   *          shall return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
-   *      - If the provided position is `NULL`, the `get_position` shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          shall return #AZ_ERROR_ARG.
+   *      - If the provided position is `NULL`, the `get_position` shall return #AZ_ERROR_ARG.
    *
    * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream. It
    *                                  cannot be `NULL`, and it shall be a valid ustream that is the
@@ -748,20 +740,20 @@ extern "C"
    * @param[out]  position            The `offset_t* const` to return the logical current position
    *                                  in the ustream. It cannot be `NULL`.
    *
-   * @return The #az_ulib_result with the result of the `get_position` operation.
-   *      @retval #AZ_ULIB_SUCCESS                If it provided the position of the ustream.
-   *      @retval #AZ_ULIB_BUSY_ERROR             If the resource necessary for getting the
-   *                                              position is busy.
-   *      @retval #AZ_ULIB_CANCELLED_ERROR        If the `get_position` was cancelled.
-   *      @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
-   *      @retval #AZ_ULIB_OUT_OF_MEMORY_ERROR    If there is not enough memory to execute the
-   *                                              `get_position` operation.
-   *      @retval #AZ_ULIB_SECURITY_ERROR         If the `get_position` was denied for
-   *                                              security reasons.
-   *      @retval #AZ_ULIB_SYSTEM_ERROR           If the `get_position` operation failed on
-   *                                              the system level.
+   * @return The #az_result with the result of the `get_position` operation.
+   *      @retval #AZ_OK                        If it provided the position of the ustream.
+   *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary for getting the
+   *                                            position is busy.
+   *      @retval #AZ_ERROR_CANCELED            If the `get_position` was cancelled.
+   *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
+   *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to execute the
+   *                                            `get_position` operation.
+   *      @retval #AZ_ERROR_ULIB_SECURITY       If the `get_position` was denied for
+   *                                            security reasons.
+   *      @retval #AZ_ERROR_ULIB_SYSTEM         If the `get_position` operation failed on
+   *                                            the system level.
    */
-  static inline az_ulib_result az_ulib_ustream_get_position(
+  static inline az_result az_ulib_ustream_get_position(
       az_ulib_ustream* ustream_instance,
       offset_t* const position)
   {
@@ -783,7 +775,7 @@ extern "C"
    *
    * @code
    * offset_t pos;
-   * if(az_ulib_ustream_get_position(my_buffer, &pos) == AZ_ULIB_SUCCESS)
+   * if(az_ulib_ustream_get_position(my_buffer, &pos) == AZ_OK)
    * {
    *     az_ulib_ustream_release(my_buffer, pos - 1);
    * }
@@ -793,13 +785,12 @@ extern "C"
    *      - The `release` shall dispose all resources necessary to handle the content of ustream
    *          before and including the release position.
    *      - If the release position is after the current position or the ustream size, the `release`
-   *          shall return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, and do not release any resource.
+   *          shall return #AZ_ERROR_ARG, and do not release any resource.
    *      - If the release position is already released, the `release` shall return
-   *          #AZ_ULIB_NO_SUCH_ELEMENT_ERROR, and do not release any resource.
-   *      - If the provided interface is `NULL`, the `release` shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          #AZ_ERROR_ITEM_NOT_FOUND, and do not release any resource.
+   *      - If the provided interface is `NULL`, the `release` shall return #AZ_ERROR_ARG.
    *      - If the provided interface is not the implemented ustream type, the `release` shall
-   *          return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          return #AZ_ERROR_ARG.
    *
    * @param[in]  ustream_instance     The #az_ulib_ustream* with the interface of the ustream. It
    *                                  cannot be `NULL`, and it shall be a valid ustream that is the
@@ -808,14 +799,14 @@ extern "C"
    *                                  The ustream will release the `uint8_t` on the position and all
    *                                  `uint8_t` before the position. It shall be bigger than 0.
    *
-   * @return The #az_ulib_result with the result of the `release` operation.
-   *      @retval #AZ_ULIB_SUCCESS                If the ustream releases the position with success.
-   *      @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
-   *      @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR  If the position is already released.
-   *      @retval #AZ_ULIB_SYSTEM_ERROR           If the `release` operation failed on the system
-   *                                              level.
+   * @return The #az_result with the result of the `release` operation.
+   *      @retval #AZ_OK                        If the ustream releases the position with success.
+   *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
+   *      @retval #AZ_ERROR_ITEM_NOT_FOUND      If the position is already released.
+   *      @retval #AZ_ERROR_ULIB_SYSTEM         If the `release` operation failed on the system
+   *                                            level.
    */
-  static inline az_ulib_result az_ulib_ustream_release(
+  static inline az_result az_ulib_ustream_release(
       az_ulib_ustream* ustream_instance,
       offset_t position)
   {
@@ -947,7 +938,7 @@ extern "C"
    *      @retval NULL            If one of the provided parameters is invalid or there is not
    *                              enough memory to control the new ustream.
    */
-  static inline az_ulib_result az_ulib_ustream_clone(
+  static inline az_result az_ulib_ustream_clone(
       az_ulib_ustream* ustream_instance_clone,
       az_ulib_ustream* ustream_instance,
       offset_t offset)
@@ -967,21 +958,20 @@ extern "C"
    *      - The `dispose` shall free all allocated resources for the instance of the ustream.
    *      - If there are no more instances of the ustream, the `dispose` shall release all allocated
    *          resources to control the ustream.
-   *      - If the provided interface is `NULL`, the `dispose` shall return
-   *          #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *      - If the provided interface is `NULL`, the `dispose` shall return #AZ_ERROR_ARG.
    *      - If the provided interface is not the type of the implemented ustream, the `dispose`
-   *          shall return #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR.
+   *          shall return #AZ_ERROR_ARG.
    *
    * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream. It
    *                                  cannot be `NULL`, and it shall be a valid ustream that is a
    *                                  type of the implemented ustream.
    *
-   * @return The #az_ulib_result with the result of the `dispose` operation.
-   *      @retval #AZ_ULIB_SUCCESS                    If the instance of the ustream was disposed
-   *                                                  with success.
-   *      @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR     If one of the provided parameters is invalid.
+   * @return The #az_result with the result of the `dispose` operation.
+   *      @retval #AZ_OK                        If the instance of the ustream was disposed
+   *                                            with success.
+   *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
    */
-  static inline az_ulib_result az_ulib_ustream_dispose(az_ulib_ustream* ustream_instance)
+  static inline az_result az_ulib_ustream_dispose(az_ulib_ustream* ustream_instance)
   {
     return ustream_instance->control_block->api->dispose(ustream_instance);
   }

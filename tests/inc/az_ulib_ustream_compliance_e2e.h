@@ -92,16 +92,15 @@ TEST_FUNCTION(az_ulib_ustream_e2e_compliance_multi_read_succeed)
       = (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
   ASSERT_IS_NOT_NULL(multi_data1);
 
-  az_ulib_result result
-      = az_ulib_ustream_concat(&multi_ustream, &concat_ustream, multi_data1, free);
-  ASSERT_ARE_EQUAL(int, result, AZ_ULIB_SUCCESS);
+  az_result result = az_ulib_ustream_concat(&multi_ustream, &concat_ustream, multi_data1, free);
+  ASSERT_ARE_EQUAL(int, result, AZ_OK);
 
   az_ulib_ustream_dispose(&concat_ustream);
 
   // Clone the multistream
   az_ulib_ustream multibuffer_clone;
   result = az_ulib_ustream_clone(&multibuffer_clone, &multi_ustream, 0);
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
+  ASSERT_ARE_EQUAL(int, AZ_OK, result);
 
   compliance_thread_one_ustream = &multi_ustream;
   compliance_thread_two_ustream = &multibuffer_clone;

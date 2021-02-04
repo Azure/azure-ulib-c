@@ -58,12 +58,12 @@ typedef _az_ulib_ipc_interface_handle az_ulib_ipc_interface_handle;
  * @param[in]   ipc_handle      The #az_ulib_ipc* that points to a memory position where
  *                              the IPC shall create its control block. It cannot be `NULL`.
  *
- * @return The #az_ulib_result with the result of the initialization.
- *  @retval #AZ_ULIB_SUCCESS                    If the IPC initialize with success.
- *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR     If one of the arguments is invalid.
- *  @retval #AZ_ULIB_ALREADY_INITIALIZED_ERROR  If the IPC is already initialized.
+ * @return The #az_result with the result of the initialization.
+ *  @retval #AZ_OK                              If the IPC initialize with success.
+ *  @retval #AZ_ERROR_ARG                       If one of the arguments is invalid.
+ *  @retval #AZ_ERROR_ULIB_ALREADY_INITIALIZED  If the IPC is already initialized.
  */
-static inline az_ulib_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle)
+static inline az_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle)
 {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_init((_az_ulib_ipc*)ipc_handle);
@@ -91,12 +91,12 @@ static inline az_ulib_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle)
  * @note    Deinit the IPC without follow these steps may result in error, segmentation fault or
  *          memory leak.
  *
- * @return The #az_ulib_result with the result of the de-initialization.
- *  @retval #AZ_ULIB_SUCCESS                    If the IPC de-initialize with success.
- *  @retval #AZ_ULIB_PRECONDITION_ERROR         If the IPC was not initialized.
- *  @retval #AZ_ULIB_BUSY_ERROR                 If the IPC is not completely free.
+ * @return The #az_result with the result of the de-initialization.
+ *  @retval #AZ_OK                              If the IPC de-initialize with success.
+ *  @retval #AZ_ERROR_ULIB_PRECONDITION         If the IPC was not initialized.
+ *  @retval #AZ_ERROR_ULIB_BUSY                 If the IPC is not completely free.
  */
-static inline az_ulib_result az_ulib_ipc_deinit(void)
+static inline az_result az_ulib_ipc_deinit(void)
 {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_deinit();
@@ -115,7 +115,7 @@ static inline az_ulib_result az_ulib_ipc_deinit(void)
  * automatically released when the interface is unpublished.
  *
  * @note    **Try to release the handle returned by this API may result in
- *          #AZ_ULIB_NO_SUCH_ELEMENT_ERROR or a future segmentation fault.**
+ *          #AZ_ERROR_ITEM_NOT_FOUND or a future segmentation fault.**
  *
  * @param[in]   interface_descriptor  The `const` #az_ulib_interface_descriptor* with the
  *                                    descriptor of the interface. It cannot be `NULL` and
@@ -126,13 +126,13 @@ static inline az_ulib_result az_ulib_ipc_deinit(void)
  *                                    `NULL`. If it is `NULL`, this API will not return the
  *                                    interface handle.
  *
- * @return The #az_ulib_result with the result of the interface publish.
- *  @retval #AZ_ULIB_SUCCESS                  If the interface is published with success.
- *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR   If one of the arguments is invalid.
- *  @retval #AZ_ULIB_OUT_OF_MEMORY_ERROR      If there is no more available space to store the new
- *                                            interface.
+ * @return The #az_result with the result of the interface publish.
+ *  @retval #AZ_OK                              If the interface is published with success.
+ *  @retval #AZ_ERROR_ARG                       If one of the arguments is invalid.
+ *  @retval #AZ_ERROR_NOT_ENOUGH_SPACE          If there is no more available space to store the
+ *                                              new interface.
  */
-static inline az_ulib_result az_ulib_ipc_publish(
+static inline az_result az_ulib_ipc_publish(
     const az_ulib_interface_descriptor* interface_descriptor,
     az_ulib_ipc_interface_handle* interface_handle)
 {
@@ -161,15 +161,15 @@ static inline az_ulib_result az_ulib_ipc_publish(
  *                                        - #AZ_ULIB_WAIT_FOREVER (0xFFFFFFFF)
  *                                        - timeout value (0x00000001 through 0xFFFFFFFE)
  *
- * @return The #az_ulib_result with the result of the interface unpublish.
- *  @retval #AZ_ULIB_SUCCESS                  If the interface is unpublished with success.
- *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR   If one of the arguments is invalid.
- *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR    If the provided descriptor didn't match any published
- *                                            interface.
- *  @retval #AZ_ULIB_BUSY_ERROR               If the interface is busy and cannot be unpublished
- *                                            now.
+ * @return The #az_result with the result of the interface unpublish.
+ *  @retval #AZ_OK                              If the interface is unpublished with success.
+ *  @retval #AZ_ERROR_ARG                       If one of the arguments is invalid.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the provided descriptor didn't match any
+ *                                              published interface.
+ *  @retval #AZ_ERROR_ULIB_BUSY                 If the interface is busy and cannot be unpublished
+ *                                              now.
  */
-static inline az_ulib_result az_ulib_ipc_unpublish(
+static inline az_result az_ulib_ipc_unpublish(
     const az_ulib_interface_descriptor* interface_descriptor,
     uint32_t wait_option_ms)
 {
@@ -186,7 +186,7 @@ static inline az_ulib_result az_ulib_ipc_unpublish(
  *
  * This API tries to find an interface that fits the provided name. If there is an interface that
  * fits this criteria, this API will return its handle. If no published procedure fits it, this API
- * will return #AZ_ULIB_NO_SUCH_ELEMENT_ERROR.
+ * will return #AZ_ERROR_ITEM_NOT_FOUND.
  *
  * Get a interface handle will increment the number of references to this interface, which means
  * that the IPC will know how many components is using this interface. When a component does not
@@ -202,17 +202,17 @@ static inline az_ulib_result az_ulib_ipc_unpublish(
  * @param[out]  interface_handle  The #az_ulib_ipc_interface_handle* with the memory to store
  *                                the interface handle. It cannot be `NULL`.
  *
- * @return The #az_ulib_result with the result of the get handle.
- *  @retval #AZ_ULIB_SUCCESS                      If the interface was found and the returned
- *                                                handle can be used.
- *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR       If one of the arguments is invalid.
- *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR        If the provided name didn't match any published
- *                                                interface.
- *  @retval #AZ_ULIB_DISABLED_ERROR               If the required interface was disabled and cannot
- *                                                be used anymore.
- *  @retval #AZ_ULIB_INCOMPATIBLE_VERSION_ERROR   If the required version is not available.
+ * @return The #az_result with the result of the get handle.
+ *  @retval #AZ_OK                              If the interface was found and the returned
+ *                                              handle can be used.
+ *  @retval #AZ_ERROR_ARG                       If one of the arguments is invalid.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the provided name didn't match any published
+ *                                              interface.
+ *  @retval #AZ_ERROR_ULIB_DISABLED             If the required interface was disabled and cannot
+ *                                              be used anymore.
+ *  @retval #AZ_ERROR_ULIB_INCOMPATIBLE_VERSION If the required version is not available.
  */
-static inline az_ulib_result az_ulib_ipc_try_get_interface(
+static inline az_result az_ulib_ipc_try_get_interface(
     const char* const name,
     az_ulib_version version,
     az_ulib_version_match_criteria match_criteria,
@@ -231,7 +231,7 @@ static inline az_ulib_result az_ulib_ipc_try_get_interface(
  * @brief   Get an interface handle by an existent interface handle.
  *
  * This API will return an interface handle based on a provided interface handle. If the provided
- * interface handle was disabled, this API will return #AZ_ULIB_DISABLED_ERROR.
+ * interface handle was disabled, this API will return #AZ_ERROR_ULIB_DISABLED.
  *
  * Get a interface handle will increment the number of references to this interface, which means
  * that the IPC will know how many components is using this interface. When a component does not
@@ -244,14 +244,14 @@ static inline az_ulib_result az_ulib_ipc_try_get_interface(
  * @param[out]  interface_handle          The #az_ulib_ipc_interface_handle* with the memory to
  *                                        store the interface handle. It cannot be `NULL`.
  *
- * @return The #az_ulib_result with the result of the get handle.
- *  @retval #AZ_ULIB_SUCCESS                  If the interface was found and the returned handle
- *                                            can be used.
- *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR   If one of the arguments is invalid.
- *  @retval #AZ_ULIB_DISABLED_ERROR           If the required interface was disabled and cannot be
- *                                            used anymore.
+ * @return The #az_result with the result of the get handle.
+ *  @retval #AZ_OK                              If the interface was found and the returned handle
+ *                                              can be used.
+ *  @retval #AZ_ERROR_ARG                       If one of the arguments is invalid.
+ *  @retval #AZ_ERROR_ULIB_DISABLED             If the required interface was disabled and cannot be
+ *                                              used anymore.
  */
-static inline az_ulib_result az_ulib_ipc_get_interface(
+static inline az_result az_ulib_ipc_get_interface(
     az_ulib_ipc_interface_handle original_interface_handle,
     az_ulib_ipc_interface_handle* interface_handle)
 {
@@ -276,21 +276,20 @@ static inline az_ulib_result az_ulib_ipc_get_interface(
  *
  * The interface shall be released in two situations:
  *  * When it is not necessary anymore.
- *  * When any other IPC API returns #AZ_ULIB_NO_SUCH_ELEMENT_ERROR.
+ *  * When any other IPC API returns #AZ_ERROR_ITEM_NOT_FOUND.
  *
  * @note    **Do not release an interface in one of this cases will leak memory.**
  *
  * @param[in]   interface_handle    The #az_ulib_ipc_interface_handle with the interface
  *                                  handle to release. It cannot be `NULL`.
  *
- * @return The #az_ulib_result with the result of the release.
- *  @retval #AZ_ULIB_SUCCESS                  If the interface is released with success.
- *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR   If one of the arguments is invalid.
- *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR    If the provided descriptor didn't match any published
- *                                            interface.
+ * @return The #az_result with the result of the release.
+ *  @retval #AZ_OK                              If the interface is released with success.
+ *  @retval #AZ_ERROR_ARG                       If one of the arguments is invalid.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the provided descriptor didn't match any
+ *                                              published interface.
  */
-static inline az_ulib_result az_ulib_ipc_release_interface(
-    az_ulib_ipc_interface_handle interface_handle)
+static inline az_result az_ulib_ipc_release_interface(az_ulib_ipc_interface_handle interface_handle)
 {
 #ifdef AZ_ULIB_CONFIG_IPC_VALIDATE_CONTRACT
   return _az_ulib_ipc_release_interface((_az_ulib_ipc_interface_handle)interface_handle);
@@ -311,15 +310,15 @@ static inline az_ulib_result az_ulib_ipc_release_interface(
  *                                input model content.
  * @param[out]  model_out         The `const void *` that points to the memory where the capability
  *                                should store the output model content.
- * @return The #az_ulib_result with the result of the call.
- *  @retval #AZ_ULIB_SUCCESS                  If the IPC get success calling the procedure.
- *  @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR   If one of the arguments is invalid.
- *  @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR    If the target command was disabled.
- *  @retval #AZ_ULIB_CANCELLED_ERROR          If the target command was unpublished.
- *  @retval #AZ_ULIB_BUSY_ERROR               If the target command cannot be executed at that
- *                                            moment.
+ * @return The #az_result with the result of the call.
+ *  @retval #AZ_OK                              If the IPC get success calling the procedure.
+ *  @retval #AZ_ERROR_ARG                       If one of the arguments is invalid.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the target command was disabled.
+ *  @retval #AZ_ERROR_CANCELED                  If the target command was unpublished.
+ *  @retval #AZ_ERROR_ULIB_BUSY                 If the target command cannot be executed at that
+ *                                              moment.
  */
-static inline az_ulib_result az_ulib_ipc_call(
+static inline az_result az_ulib_ipc_call(
     az_ulib_ipc_interface_handle interface_handle,
     az_ulib_capability_index command_index,
     az_ulib_model_in model_in,

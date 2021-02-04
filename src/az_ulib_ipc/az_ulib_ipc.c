@@ -63,22 +63,22 @@ static _az_ulib_ipc_interface* get_first_free()
   return result;
 }
 
-static az_ulib_result get_instance(_az_ulib_ipc_interface* ipc_interface)
+static az_result get_instance(_az_ulib_ipc_interface* ipc_interface)
 {
-  az_ulib_result result;
+  az_result result;
   if (ipc_interface->ref_count >= AZ_ULIB_CONFIG_MAX_IPC_INSTANCES)
   {
-    result = AZ_ULIB_BUSY_ERROR;
+    result = AZ_ERROR_ULIB_BUSY;
   }
   else
   {
-    result = AZ_ULIB_SUCCESS;
+    result = AZ_OK;
     (void)AZ_ULIB_PORT_ATOMIC_INC_W(&(ipc_interface->ref_count));
   }
   return result;
 }
 
-az_ulib_result _az_ulib_ipc_init_no_contract(_az_ulib_ipc* handle)
+az_result _az_ulib_ipc_init_no_contract(_az_ulib_ipc* handle)
 {
   /*az_ulib_ipc_init_succeed*/
   ipc = handle;
@@ -95,24 +95,24 @@ az_ulib_result _az_ulib_ipc_init_no_contract(_az_ulib_ipc* handle)
     ipc->interface_list[i].interface_descriptor = NULL;
   }
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-az_ulib_result _az_ulib_ipc_init(_az_ulib_ipc* handle)
+az_result _az_ulib_ipc_init(_az_ulib_ipc* handle)
 {
   AZ_ULIB_UCONTRACT(
       /*az_ulib_ipc_init_double_initialization_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NULL(ipc, AZ_ULIB_ALREADY_INITIALIZED_ERROR),
+      AZ_ULIB_UCONTRACT_REQUIRE_NULL(ipc, AZ_ERROR_ULIB_ALREADY_INITIALIZED),
       /*az_ulib_ipc_init_with_null_handle_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(handle, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(handle, AZ_ERROR_ARG));
   return _az_ulib_ipc_init_no_contract(handle);
 }
 
-az_ulib_result _az_ulib_ipc_deinit_no_contract(void)
+az_result _az_ulib_ipc_deinit_no_contract(void)
 {
-  az_ulib_result result;
+  az_result result;
 
-  result = AZ_ULIB_SUCCESS;
+  result = AZ_OK;
   for (size_t i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++)
   {
     if ((ipc->interface_list[i].interface_descriptor != NULL)
@@ -124,12 +124,12 @@ az_ulib_result _az_ulib_ipc_deinit_no_contract(void)
     {
       /*az_ulib_ipc_deinit_with_published_interface_failed*/
       /*az_ulib_ipc_deinit_with_instace_failed*/
-      result = AZ_ULIB_BUSY_ERROR;
+      result = AZ_ERROR_ULIB_BUSY;
       break;
     }
   }
 
-  if (result == AZ_ULIB_SUCCESS)
+  if (result == AZ_OK)
   {
     /*az_ulib_ipc_deinit_succeed*/
     az_pal_os_lock_deinit(&(ipc->lock));
@@ -139,19 +139,19 @@ az_ulib_result _az_ulib_ipc_deinit_no_contract(void)
   return result;
 }
 
-az_ulib_result _az_ulib_ipc_deinit(void)
+az_result _az_ulib_ipc_deinit(void)
 {
   AZ_ULIB_UCONTRACT(
       /*az_ulib_ipc_deinit_with_ipc_not_initialized_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ULIB_NOT_INITIALIZED_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ERROR_ULIB_NOT_INITIALIZED));
   return _az_ulib_ipc_deinit_no_contract();
 }
 
-az_ulib_result _az_ulib_ipc_publish_no_contract(
+az_result _az_ulib_ipc_publish_no_contract(
     const az_ulib_interface_descriptor* interface_descriptor,
     _az_ulib_ipc_interface_handle* interface_handle)
 {
-  az_ulib_result result;
+  az_result result;
   _az_ulib_ipc_interface* new_interface;
 
   az_pal_os_lock_acquire(&(ipc->lock));
@@ -161,12 +161,12 @@ az_ulib_result _az_ulib_ipc_publish_no_contract(
         != NULL)
     {
       /*az_ulib_ipc_publish_with__descriptor_with_same_name_and_version_failed*/
-      result = AZ_ULIB_ELEMENT_DUPLICATE_ERROR;
+      result = AZ_ERROR_ULIB_ELEMENT_DUPLICATE;
     }
     else if ((new_interface = get_first_free()) == NULL)
     {
       /*az_ulib_ipc_publish_out_of_memory_failed*/
-      result = AZ_ULIB_OUT_OF_MEMORY_ERROR;
+      result = AZ_ERROR_NOT_ENOUGH_SPACE;
     }
     else
     {
@@ -183,7 +183,7 @@ az_ulib_result _az_ulib_ipc_publish_no_contract(
         /*az_ulib_ipc_publish_return_handle_succeed*/
         *interface_handle = new_interface;
       }
-      result = AZ_ULIB_SUCCESS;
+      result = AZ_OK;
     }
   }
   az_pal_os_lock_release(&(ipc->lock));
@@ -191,24 +191,24 @@ az_ulib_result _az_ulib_ipc_publish_no_contract(
   return result;
 }
 
-az_ulib_result _az_ulib_ipc_publish(
+az_result _az_ulib_ipc_publish(
     const az_ulib_interface_descriptor* interface_descriptor,
     _az_ulib_ipc_interface_handle* interface_handle)
 {
   AZ_ULIB_UCONTRACT(
       /*az_ulib_ipc_publish_with_non_initialized_ipc_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ULIB_NOT_INITIALIZED_ERROR),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ERROR_ULIB_NOT_INITIALIZED),
       /*az_ulib_ipc_publish_with_null_descriptor_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_descriptor, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_descriptor, AZ_ERROR_ARG));
   return _az_ulib_ipc_publish_no_contract(interface_descriptor, interface_handle);
 }
 
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
-az_ulib_result _az_ulib_ipc_unpublish_no_contract(
+az_result _az_ulib_ipc_unpublish_no_contract(
     const az_ulib_interface_descriptor* interface_descriptor,
     uint32_t wait_option_ms)
 {
-  az_ulib_result result;
+  az_result result;
   _az_ulib_ipc_interface* release_interface;
 
   az_pal_os_lock_acquire(&(ipc->lock));
@@ -218,7 +218,7 @@ az_ulib_result _az_ulib_ipc_unpublish_no_contract(
         == NULL)
     {
       /*az_ulib_ipc_unpublish_with_unknown_descriptor_failed*/
-      result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;
+      result = AZ_ERROR_ITEM_NOT_FOUND;
     }
     else
     {
@@ -230,13 +230,13 @@ az_ulib_result _az_ulib_ipc_unpublish_no_contract(
           = (const az_ulib_interface_descriptor*)release_interface->interface_descriptor;
 
       // Block access to this interface. After this point, any new call to az_ulib_ipc_call that
-      // didn't get the interface pointer yet will return AZ_ULIB_NO_SUCH_ELEMENT_ERROR.
+      // didn't get the interface pointer yet will return AZ_ERROR_ITEM_NOT_FOUND.
       (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(&(release_interface->interface_descriptor), NULL);
 
       // If the running_count is `0` is because no other process is inside of any of the functions
       // commands, and they may be removed from the memory. There will be the case that the other
       // process is already in the az_ulib_ipc_call, in the direction to call a command in this
-      // interface, but the call will just return AZ_ULIB_NO_SUCH_ELEMENT_ERROR from there.
+      // interface, but the call will just return AZ_ERROR_ITEM_NOT_FOUND from there.
       /*az_ulib_ipc_unpublish_succeed*/
       uint32_t retry_interval;
       if (wait_option_ms == AZ_ULIB_WAIT_FOREVER)
@@ -280,16 +280,16 @@ az_ulib_result _az_ulib_ipc_unpublish_no_contract(
         /*az_ulib_ipc_unpublish_random_order_succeed*/
         /*az_ulib_ipc_unpublish_release_resource_succeed*/
         /*az_ulib_ipc_unpublish_with_valid_interface_instance_succeed*/
-        result = AZ_ULIB_SUCCESS;
+        result = AZ_OK;
       }
       else
       {
         /*az_ulib_ipc_unpublish_with_command_running_failed*/
         // If caller doesn't want to wait anymore, recover the interface and return
-        // AZ_ULIB_BUSY_ERROR.
+        // AZ_ERROR_ULIB_BUSY.
         (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
             &(release_interface->interface_descriptor), recover_interface_descriptor);
-        result = AZ_ULIB_BUSY_ERROR;
+        result = AZ_ERROR_ULIB_BUSY;
       }
     }
   }
@@ -298,26 +298,26 @@ az_ulib_result _az_ulib_ipc_unpublish_no_contract(
   return result;
 }
 
-az_ulib_result _az_ulib_ipc_unpublish(
+az_result _az_ulib_ipc_unpublish(
     const az_ulib_interface_descriptor* interface_descriptor,
     uint32_t wait_option_ms)
 {
   AZ_ULIB_UCONTRACT(
       /*az_ulib_ipc_unpublish_with_non_initialized_ipc_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ULIB_NOT_INITIALIZED_ERROR),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ERROR_ULIB_NOT_INITIALIZED),
       /*az_ulib_ipc_unpublish_with_null_descriptor_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_descriptor, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_descriptor, AZ_ERROR_ARG));
   return _az_ulib_ipc_unpublish_no_contract(interface_descriptor, wait_option_ms);
 }
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
-az_ulib_result _az_ulib_ipc_try_get_interface_no_contract(
+az_result _az_ulib_ipc_try_get_interface_no_contract(
     const char* const name,
     az_ulib_version version,
     az_ulib_version_match_criteria match_criteria,
     _az_ulib_ipc_interface_handle* interface_handle)
 {
-  az_ulib_result result;
+  az_result result;
   _az_ulib_ipc_interface* ipc_interface;
 
   az_pal_os_lock_acquire(&(ipc->lock));
@@ -326,10 +326,10 @@ az_ulib_result _az_ulib_ipc_try_get_interface_no_contract(
     {
       /*az_ulib_ipc_try_get_interface_with_unknown_name_failed*/
       /*az_ulib_ipc_try_get_interface_with_unknown_version_failed*/
-      result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;
+      result = AZ_ERROR_ITEM_NOT_FOUND;
       /*az_ulib_ipc_try_get_interface_with_max_interface_instances_failed*/
     }
-    else if ((result = get_instance(ipc_interface)) == AZ_ULIB_SUCCESS)
+    else if ((result = get_instance(ipc_interface)) == AZ_OK)
     {
       /*az_ulib_ipc_try_get_interface_succeed*/
       *interface_handle = ipc_interface;
@@ -340,7 +340,7 @@ az_ulib_result _az_ulib_ipc_try_get_interface_no_contract(
   return result;
 }
 
-az_ulib_result _az_ulib_ipc_try_get_interface(
+az_result _az_ulib_ipc_try_get_interface(
     const char* const name,
     az_ulib_version version,
     az_ulib_version_match_criteria match_criteria,
@@ -348,20 +348,20 @@ az_ulib_result _az_ulib_ipc_try_get_interface(
 {
   AZ_ULIB_UCONTRACT(
       /*az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ULIB_NOT_INITIALIZED_ERROR),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ERROR_ULIB_NOT_INITIALIZED),
       /*az_ulib_ipc_try_get_interface_with_null_name_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(name, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(name, AZ_ERROR_ARG),
       /*az_ulib_ipc_try_get_interface_with_null_handle_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_handle, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_handle, AZ_ERROR_ARG));
   return _az_ulib_ipc_try_get_interface_no_contract(
       name, version, match_criteria, interface_handle);
 }
 
-az_ulib_result _az_ulib_ipc_get_interface_no_contract(
+az_result _az_ulib_ipc_get_interface_no_contract(
     _az_ulib_ipc_interface_handle original_interface_handle,
     _az_ulib_ipc_interface_handle* interface_handle)
 {
-  az_ulib_result result;
+  az_result result;
 
   az_pal_os_lock_acquire(&(ipc->lock));
   {
@@ -369,10 +369,10 @@ az_ulib_result _az_ulib_ipc_get_interface_no_contract(
     if (ipc_interface->interface_descriptor == NULL)
     {
       /*az_ulib_ipc_get_interface_with_unpublished_interface_failed*/
-      result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;
+      result = AZ_ERROR_ITEM_NOT_FOUND;
       /*az_ulib_ipc_get_interface_with_max_interface_instances_failed*/
     }
-    else if ((result = get_instance(ipc_interface)) == AZ_ULIB_SUCCESS)
+    else if ((result = get_instance(ipc_interface)) == AZ_OK)
     {
       /*az_ulib_ipc_get_interface_succeed*/
       *interface_handle = ipc_interface;
@@ -383,37 +383,36 @@ az_ulib_result _az_ulib_ipc_get_interface_no_contract(
   return result;
 }
 
-az_ulib_result _az_ulib_ipc_get_interface(
+az_result _az_ulib_ipc_get_interface(
     _az_ulib_ipc_interface_handle original_interface_handle,
     _az_ulib_ipc_interface_handle* interface_handle)
 {
   AZ_ULIB_UCONTRACT(
       /*az_ulib_ipc_get_interface_with_ipc_not_initialized_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ULIB_NOT_INITIALIZED_ERROR),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ERROR_ULIB_NOT_INITIALIZED),
       /*az_ulib_ipc_get_interface_with_null_original_interface_handle_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(original_interface_handle, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(original_interface_handle, AZ_ERROR_ARG),
       /*az_ulib_ipc_get_interface_with_null_interface_handle_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_handle, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_handle, AZ_ERROR_ARG));
   return _az_ulib_ipc_get_interface_no_contract(original_interface_handle, interface_handle);
 }
 
-az_ulib_result _az_ulib_ipc_release_interface_no_contract(
-    _az_ulib_ipc_interface_handle interface_handle)
+az_result _az_ulib_ipc_release_interface_no_contract(_az_ulib_ipc_interface_handle interface_handle)
 {
   _az_ulib_ipc_interface* ipc_interface = (_az_ulib_ipc_interface*)interface_handle;
-  az_ulib_result result;
+  az_result result;
 
   az_pal_os_lock_acquire(&(ipc->lock));
   {
     if (ipc_interface->ref_count == 0)
     {
       /*az_ulib_ipc_release_interface_double_release_failed*/
-      result = AZ_ULIB_PRECONDITION_ERROR;
+      result = AZ_ERROR_ULIB_PRECONDITION;
     }
     else
     {
       /*az_ulib_ipc_release_interface_succeed*/
-      result = AZ_ULIB_SUCCESS;
+      result = AZ_OK;
       ipc_interface->ref_count--;
     }
   }
@@ -422,24 +421,24 @@ az_ulib_result _az_ulib_ipc_release_interface_no_contract(
   return result;
 }
 
-az_ulib_result _az_ulib_ipc_release_interface(_az_ulib_ipc_interface_handle interface_handle)
+az_result _az_ulib_ipc_release_interface(_az_ulib_ipc_interface_handle interface_handle)
 {
   AZ_ULIB_UCONTRACT(
       /*az_ulib_ipc_release_interface_with_ipc_not_initialized_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ULIB_NOT_INITIALIZED_ERROR),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ERROR_ULIB_NOT_INITIALIZED),
       /*az_ulib_ipc_release_interface_with_null_interface_handle_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_handle, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_handle, AZ_ERROR_ARG));
   return _az_ulib_ipc_release_interface_no_contract(interface_handle);
 }
 
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
-az_ulib_result _az_ulib_ipc_call_no_contract(
+az_result _az_ulib_ipc_call_no_contract(
     _az_ulib_ipc_interface_handle interface_handle,
     az_ulib_capability_index command_index,
     const void* const model_in,
     const void* model_out)
 {
-  az_ulib_result result;
+  az_result result;
   _az_ulib_ipc_interface* ipc_interface = (_az_ulib_ipc_interface*)interface_handle;
 
   // The double test on the interface_descriptor is part of the interlock between az_ulib_ipc_call
@@ -454,7 +453,7 @@ az_ulib_result _az_ulib_ipc_call_no_contract(
     if (descriptor == NULL)
     {
       /*az_ulib_ipc_call_unpublished_interface_failed*/
-      result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;
+      result = AZ_ERROR_ITEM_NOT_FOUND;
     }
     else
     {
@@ -471,13 +470,13 @@ az_ulib_result _az_ulib_ipc_call_no_contract(
   }
   else
   {
-    result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;
+    result = AZ_ERROR_ITEM_NOT_FOUND;
   }
 
   return result;
 }
 #else // AZ_ULIB_CONFIG_IPC_UNPUBLISH
-az_ulib_result _az_ulib_ipc_call_no_contract(
+az_result _az_ulib_ipc_call_no_contract(
     _az_ulib_ipc_interface_handle interface_handle,
     az_ulib_capability_index command_index,
     const void* const model_in,
@@ -489,7 +488,7 @@ az_ulib_result _az_ulib_ipc_call_no_contract(
 }
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
-az_ulib_result _az_ulib_ipc_call(
+az_result _az_ulib_ipc_call(
     _az_ulib_ipc_interface_handle interface_handle,
     az_ulib_capability_index command_index,
     const void* const model_in,
@@ -497,8 +496,8 @@ az_ulib_result _az_ulib_ipc_call(
 {
   AZ_ULIB_UCONTRACT(
       /*az_ulib_ipc_call_with_ipc_not_initialized_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ULIB_NOT_INITIALIZED_ERROR),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ipc, AZ_ERROR_ULIB_NOT_INITIALIZED),
       /*az_ulib_ipc_call_with_null_interface_handle_failed*/
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_handle, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(interface_handle, AZ_ERROR_ARG));
   return _az_ulib_ipc_call_no_contract(interface_handle, command_index, model_in, model_out);
 }
