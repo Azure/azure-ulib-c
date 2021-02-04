@@ -19,7 +19,8 @@
 #include <stdio.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif /* __cplusplus */
 
 /// @cond INTERNAL
@@ -35,8 +36,9 @@ extern "C" {
  *  Each public function shall have one AZ_ULIB_UCONTRACT() macro with the listed
  *  requirements inside.
  */
-#define AZ_ULIB_UCONTRACT(...) \
-  do { \
+#define AZ_ULIB_UCONTRACT(...)                   \
+  do                                             \
+  {                                              \
     MU_FOR_EACH_1(EVALUATE_REQUIRE, __VA_ARGS__) \
   } while ((void)0, 0)
 
@@ -60,11 +62,13 @@ extern "C" {
  * @param   msg         message to log if expression is false
  */
 #define AZ_ULIB_UCONTRACT_REQUIRE(expression, result, msg) \
-  do { \
-    if (!(expression)) { \
-      AZ_ULIB_CONFIG_LOG(AZ_ULIB_ULOG_TYPE_ERROR, msg); \
-      return result; \
-    } \
+  do                                                       \
+  {                                                        \
+    if (!(expression))                                     \
+    {                                                      \
+      AZ_ULIB_CONFIG_LOG(AZ_ULIB_ULOG_TYPE_ERROR, msg);    \
+      return result;                                       \
+    }                                                      \
   } while ((void)0, 0)
 
 /**
@@ -75,15 +79,17 @@ extern "C" {
  * @param   result      returned result if values are not equal
  */
 #define AZ_ULIB_UCONTRACT_REQUIRE_EQUALS(val, expected, result) \
-  do { \
-    if (val != expected) { \
-      AZ_ULIB_CONFIG_LOG( \
-          AZ_ULIB_ULOG_TYPE_ERROR, \
-          AZ_ULIB_ULOG_REQUIRE_EQUALS_STRING, \
-          MU_TOSTRING(val), \
-          MU_TOSTRING(expected)); \
-      return result; \
-    } \
+  do                                                            \
+  {                                                             \
+    if (val != expected)                                        \
+    {                                                           \
+      AZ_ULIB_CONFIG_LOG(                                       \
+          AZ_ULIB_ULOG_TYPE_ERROR,                              \
+          AZ_ULIB_ULOG_REQUIRE_EQUALS_STRING,                   \
+          MU_TOSTRING(val),                                     \
+          MU_TOSTRING(expected));                               \
+      return result;                                            \
+    }                                                           \
   } while ((void)0, 0)
 
 /**
@@ -94,15 +100,17 @@ extern "C" {
  * @param   result      returned result if values are equal.
  */
 #define AZ_ULIB_UCONTRACT_REQUIRE_NOT_EQUALS(val, expected, result) \
-  do { \
-    if (val == expected) { \
-      AZ_ULIB_CONFIG_LOG( \
-          AZ_ULIB_ULOG_TYPE_ERROR, \
-          AZ_ULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, \
-          MU_TOSTRING(val), \
-          MU_TOSTRING(expected)); \
-      return result; \
-    } \
+  do                                                                \
+  {                                                                 \
+    if (val == expected)                                            \
+    {                                                               \
+      AZ_ULIB_CONFIG_LOG(                                           \
+          AZ_ULIB_ULOG_TYPE_ERROR,                                  \
+          AZ_ULIB_ULOG_REQUIRE_NOT_EQUALS_STRING,                   \
+          MU_TOSTRING(val),                                         \
+          MU_TOSTRING(expected));                                   \
+      return result;                                                \
+    }                                                               \
   } while ((void)0, 0)
 
 /**
@@ -111,13 +119,15 @@ extern "C" {
  * @param   val         value to check
  * @param   result      returned result if value is `NULL`
  */
-#define AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(val, result) \
-  do { \
-    if (val == NULL) { \
-      AZ_ULIB_CONFIG_LOG( \
+#define AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(val, result)                                     \
+  do                                                                                        \
+  {                                                                                         \
+    if (val == NULL)                                                                        \
+    {                                                                                       \
+      AZ_ULIB_CONFIG_LOG(                                                                   \
           AZ_ULIB_ULOG_TYPE_ERROR, AZ_ULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
-      return result; \
-    } \
+      return result;                                                                        \
+    }                                                                                       \
   } while ((void)0, 0)
 
 /**
@@ -126,13 +136,15 @@ extern "C" {
  * @param   val         value to check
  * @param   result      returned result if value is not `NULL`
  */
-#define AZ_ULIB_UCONTRACT_REQUIRE_NULL(val, result) \
-  do { \
-    if (val != NULL) { \
-      AZ_ULIB_CONFIG_LOG( \
+#define AZ_ULIB_UCONTRACT_REQUIRE_NULL(val, result)                                     \
+  do                                                                                    \
+  {                                                                                     \
+    if (val != NULL)                                                                    \
+    {                                                                                   \
+      AZ_ULIB_CONFIG_LOG(                                                               \
           AZ_ULIB_ULOG_TYPE_ERROR, AZ_ULIB_ULOG_REQUIRE_NULL_STRING, MU_TOSTRING(val)); \
-      return result; \
-    } \
+      return result;                                                                    \
+    }                                                                                   \
   } while ((void)0, 0)
 
 /**
@@ -144,11 +156,13 @@ extern "C" {
  * @param   msg         message to log if expression is false
  */
 #define AZ_ULIB_UCONTRACT_REQUIRE_HARD_FAULT(expression, msg) \
-  do { \
-    if (!(expression)) { \
-      AZ_ULIB_CONFIG_LOG(AZ_ULIB_ULOG_TYPE_ERROR, msg); \
-      AZ_ULIB_PORT_THROW_HARD_FAULT; \
-    } \
+  do                                                          \
+  {                                                           \
+    if (!(expression))                                        \
+    {                                                         \
+      AZ_ULIB_CONFIG_LOG(AZ_ULIB_ULOG_TYPE_ERROR, msg);       \
+      AZ_ULIB_PORT_THROW_HARD_FAULT;                          \
+    }                                                         \
   } while ((void)0, 0)
 
 /**
@@ -160,15 +174,17 @@ extern "C" {
  * @param   expected    value expected
  */
 #define AZ_ULIB_UCONTRACT_REQUIRE_EQUALS_HARD_FAULT(val, expected) \
-  do { \
-    if (val != expected) { \
-      AZ_ULIB_CONFIG_LOG( \
-          AZ_ULIB_ULOG_TYPE_ERROR, \
-          AZ_ULIB_ULOG_REQUIRE_EQUALS_STRING, \
-          MU_TOSTRING(val), \
-          MU_TOSTRING(expected)); \
-      AZ_ULIB_PORT_THROW_HARD_FAULT; \
-    } \
+  do                                                               \
+  {                                                                \
+    if (val != expected)                                           \
+    {                                                              \
+      AZ_ULIB_CONFIG_LOG(                                          \
+          AZ_ULIB_ULOG_TYPE_ERROR,                                 \
+          AZ_ULIB_ULOG_REQUIRE_EQUALS_STRING,                      \
+          MU_TOSTRING(val),                                        \
+          MU_TOSTRING(expected));                                  \
+      AZ_ULIB_PORT_THROW_HARD_FAULT;                               \
+    }                                                              \
   } while ((void)0, 0)
 
 /**
@@ -180,15 +196,17 @@ extern "C" {
  * @param   expected    value not expected
  */
 #define AZ_ULIB_UCONTRACT_REQUIRE_NOT_EQUALS_HARD_FAULT(val, expected) \
-  do { \
-    if (val == expected) { \
-      AZ_ULIB_CONFIG_LOG( \
-          AZ_ULIB_ULOG_TYPE_ERROR, \
-          AZ_ULIB_ULOG_REQUIRE_NOT_EQUALS_STRING, \
-          MU_TOSTRING(val), \
-          MU_TOSTRING(expected)); \
-      AZ_ULIB_PORT_THROW_HARD_FAULT; \
-    } \
+  do                                                                   \
+  {                                                                    \
+    if (val == expected)                                               \
+    {                                                                  \
+      AZ_ULIB_CONFIG_LOG(                                              \
+          AZ_ULIB_ULOG_TYPE_ERROR,                                     \
+          AZ_ULIB_ULOG_REQUIRE_NOT_EQUALS_STRING,                      \
+          MU_TOSTRING(val),                                            \
+          MU_TOSTRING(expected));                                      \
+      AZ_ULIB_PORT_THROW_HARD_FAULT;                                   \
+    }                                                                  \
   } while ((void)0, 0)
 
 /**
@@ -198,13 +216,15 @@ extern "C" {
  *
  * @param   val         value to check
  */
-#define AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT(val) \
-  do { \
-    if (val == NULL) { \
-      AZ_ULIB_CONFIG_LOG( \
+#define AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL_HARD_FAULT(val)                                  \
+  do                                                                                        \
+  {                                                                                         \
+    if (val == NULL)                                                                        \
+    {                                                                                       \
+      AZ_ULIB_CONFIG_LOG(                                                                   \
           AZ_ULIB_ULOG_TYPE_ERROR, AZ_ULIB_ULOG_REQUIRE_NOT_NULL_STRING, MU_TOSTRING(val)); \
-      AZ_ULIB_PORT_THROW_HARD_FAULT; \
-    } \
+      AZ_ULIB_PORT_THROW_HARD_FAULT;                                                        \
+    }                                                                                       \
   } while ((void)0, 0)
 
 #ifdef __cplusplus

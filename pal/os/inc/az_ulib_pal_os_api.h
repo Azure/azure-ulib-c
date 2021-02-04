@@ -18,7 +18,8 @@
 #include <stdint.h>
 #else
 #include <cstdint>
-extern "C" {
+extern "C"
+{
 #endif /* __cplusplus */
 
 /**

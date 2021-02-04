@@ -18,7 +18,8 @@
 #else
 #include <cstddef>
 #include <cstdint>
-extern "C" {
+extern "C"
+{
 #endif /* __cplusplus */
 
 /**
@@ -39,7 +40,8 @@ extern "C" {
  * matter the type of the capability, it shall be fully described by this structure, which means
  * that this structure is a superset of the fields of all types of capabilities.
  */
-typedef struct az_ulib_capability_descriptor_tag {
+typedef struct az_ulib_capability_descriptor_tag
+{
   const char* name; /**<The `\0` terminated `const char *` with the capability name.*/
   const union /**<The primary function of the capability. */
   {
@@ -63,7 +65,8 @@ typedef struct az_ulib_capability_descriptor_tag {
  * This structure contains the full information about a collection of capability that represents the
  * interface.
  */
-typedef struct az_ulib_interface_descriptor_tag {
+typedef struct az_ulib_interface_descriptor_tag
+{
   const char* name; /**<The `\0` terminated `const char*` with the interface name. */
   az_ulib_version version; /**<The #az_ulib_version with the interface version. */
   uint8_t size; /**<The `uint8_t` with the number of capabilities in the interface. */
@@ -92,13 +95,13 @@ typedef struct az_ulib_interface_descriptor_tag {
  * @param[in]   ...             The list of #az_ulib_capability_descriptor with the capabilities in
  *                              the interface.
  */
-#define AZ_ULIB_DESCRIPTOR_CREATE(interface_var, interface_name, version, ...) \
+#define AZ_ULIB_DESCRIPTOR_CREATE(interface_var, interface_name, version, ...)        \
   static const az_ulib_capability_descriptor MU_C2(interface_var, _CAPABILITY_LIST)[] \
-      = { MU_FOR_EACH_1(MU_DEFINE_ENUMERATION_CONSTANT, __VA_ARGS__) }; \
-  static const az_ulib_interface_descriptor MU_C1(interface_var) \
-      = { (interface_name), \
-          (version), \
-          (uint8_t)(MU_COUNT_ARG(__VA_ARGS__) / 4), \
+      = { MU_FOR_EACH_1(MU_DEFINE_ENUMERATION_CONSTANT, __VA_ARGS__) };               \
+  static const az_ulib_interface_descriptor MU_C1(interface_var)                      \
+      = { (interface_name),                                                           \
+          (version),                                                                  \
+          (uint8_t)(MU_COUNT_ARG(__VA_ARGS__) / 4),                                   \
           (az_ulib_capability_descriptor*)MU_C2(interface_var, _CAPABILITY_LIST) };
 
 /**
@@ -121,10 +124,10 @@ typedef struct az_ulib_interface_descriptor_tag {
  *                          in the future.
  * @return The #az_ulib_capability_descriptor with the property.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(name, get, set) \
-  { \
+#define AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(name, get, set)     \
+  {                                                         \
     (name), { (const void*)(get) }, { (const void*)(set) }, \
-        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_PROPERTY) \
+        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_PROPERTY)         \
   }
 
 /**
@@ -143,10 +146,10 @@ typedef struct az_ulib_interface_descriptor_tag {
  *                          in the future.
  * @return The #az_ulib_capability_descriptor with the command.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_COMMAND(name, command) \
-  { \
+#define AZ_ULIB_DESCRIPTOR_ADD_COMMAND(name, command)          \
+  {                                                            \
     (name), { (const void*)(command) }, { (const void*)NULL }, \
-        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND) \
+        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND)             \
   }
 
 /**
@@ -172,9 +175,9 @@ typedef struct az_ulib_interface_descriptor_tag {
  * @return The #az_ulib_capability_descriptor with the command async.
  */
 #define AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC(name, command_async, cancel) \
-  { \
-    (name), { (const void*)(command_async) }, { (const void*)(cancel) }, \
-        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC) \
+  {                                                                       \
+    (name), { (const void*)(command_async) }, { (const void*)(cancel) },  \
+        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC)                  \
   }
 
 /**
@@ -189,10 +192,10 @@ typedef struct az_ulib_interface_descriptor_tag {
  *                          in the future.
  * @return The #az_ulib_capability_descriptor with the telemetry.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY(name) \
-  { \
+#define AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY(name)                \
+  {                                                           \
     (name), { (const void*)(NULL) }, { (const void*)(NULL) }, \
-        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_TELEMETRY) \
+        (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_TELEMETRY)          \
   }
 
 #ifdef __cplusplus

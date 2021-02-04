@@ -21,12 +21,14 @@
 #include <stdint.h>
 #else
 #include <cstdint>
-extern "C" {
+extern "C"
+{
 #endif
 
 typedef void* _az_ulib_ipc_interface_handle;
 
-typedef struct _az_ulib_ipc_interface_tag {
+typedef struct _az_ulib_ipc_interface_tag
+{
   volatile const az_ulib_interface_descriptor* interface_descriptor;
   volatile long ref_count;
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
@@ -35,7 +37,8 @@ typedef struct _az_ulib_ipc_interface_tag {
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 } _az_ulib_ipc_interface;
 
-typedef struct _az_ulib_ipc_tag {
+typedef struct _az_ulib_ipc_tag
+{
   az_ulib_pal_os_lock lock;
   _az_ulib_ipc_interface interface_list[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE];
 } _az_ulib_ipc;

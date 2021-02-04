@@ -13,7 +13,8 @@
 
 #ifndef __cplusplus
 #else
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
@@ -24,7 +25,8 @@ extern "C" {
 /**
  * @brief   Enumeration of ulib results.
  */
-typedef enum az_ulib_result_tag {
+typedef enum az_ulib_result_tag
+{
 
   // SUCCESS RESULTS
   AZ_ULIB_SUCCESS = 0, /**<Successful return */

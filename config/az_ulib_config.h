@@ -6,7 +6,8 @@
 #define AZ_ULIB_CONFIG_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif /* __cplusplus */
 
 /**

@@ -16,7 +16,8 @@
 #include <stdint.h>
 #else
 #include <cstdint>
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
@@ -36,7 +37,8 @@ extern "C" {
  */
 typedef uint32_t az_ulib_version;
 
-typedef enum az_ulib_version_match_criteria_tag {
+typedef enum az_ulib_version_match_criteria_tag
+{
   AZ_ULIB_VERSION_ANY = 0b00000111, /**<Accept any version */
   AZ_ULIB_VERSION_GREATER_THAN = 0b00000100, /**<Accept version greater than the provided one */
   AZ_ULIB_VERSION_EQUALS_TO = 0b00000010, /**<Accept version equals to the provided one */
@@ -46,7 +48,8 @@ typedef enum az_ulib_version_match_criteria_tag {
 static inline bool az_ulib_version_match(
     az_ulib_version current_version,
     az_ulib_version required_version,
-    az_ulib_version_match_criteria match_criteria) {
+    az_ulib_version_match_criteria match_criteria)
+{
   return (
       (AZ_ULIB_FLAGS_IS_SET(match_criteria, AZ_ULIB_VERSION_EQUALS_TO)
        && (current_version == required_version))

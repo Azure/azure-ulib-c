@@ -13,7 +13,8 @@ static az_ulib_ipc ipc_handle;
 /*
  * OS code.
  */
-int main(void) {
+int main(void)
+{
   az_ulib_result result;
 
   (void)printf("Start ipc_call_interface sample.\r\n\r\n");
@@ -22,9 +23,12 @@ int main(void) {
    * Create the IPC. It shall be called at the very beginning of the application.
    * The IPC will prepare itself to receive interfaces.
    */
-  if ((result = az_ulib_ipc_init(&ipc_handle)) != AZ_ULIB_SUCCESS) {
+  if ((result = az_ulib_ipc_init(&ipc_handle)) != AZ_ULIB_SUCCESS)
+  {
     (void)printf("Initialize IPC failed with code %d.\r\n", result);
-  } else {
+  }
+  else
+  {
     /*
      * Publish the math interface. After this point anybody can call the math commands
      * through IPC.
