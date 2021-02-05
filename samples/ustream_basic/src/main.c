@@ -16,26 +16,26 @@
 
 static const char USTREAM_ONE_STRING[] = "Hello ";
 
-static az_ulib_result print_buffer(az_ulib_ustream* ustream)
+static az_result print_buffer(az_ulib_ustream* ustream)
 {
-  az_ulib_result result;
+  az_result result;
   size_t returned_size;
   uint8_t user_buf[USER_BUFFER_SIZE] = { 0 };
 
   // Read ustream until receive AZIOT_ULIB_EOF
   (void)printf("\r\n------printing the ustream------\r\n");
   while ((result = az_ulib_ustream_read(ustream, user_buf, USER_BUFFER_SIZE - 1, &returned_size))
-         == AZ_ULIB_SUCCESS)
+         == AZ_OK)
   {
     user_buf[returned_size] = '\0';
     (void)printf("%s", user_buf);
   }
   (void)printf("-----------end of ustream------------\r\n\r\n");
 
-  // Change return to AZ_ULIB_SUCCESS if last returned value was AZ_ULIB_EOF
+  // Change return to AZ_OK if last returned value was AZ_ULIB_EOF
   if (result == AZ_ULIB_EOF)
   {
-    result = AZ_ULIB_SUCCESS;
+    result = AZ_OK;
   }
   return result;
 }
@@ -64,7 +64,7 @@ static az_ulib_result print_buffer(az_ulib_ustream* ustream)
 
 int main(void)
 {
-  az_ulib_result result;
+  az_result result;
   size_t ustream_two_string_len;
   char* ustream_two_string;
 
@@ -91,13 +91,11 @@ int main(void)
              (const uint8_t*)USTREAM_ONE_STRING,
              sizeof(USTREAM_ONE_STRING) - 1,
              NULL))
-        != AZ_ULIB_SUCCESS)
+        != AZ_OK)
     {
       printf("Couldn't initialize ustream_one\r\n");
     }
-    else if (
-        (result = az_ulib_ustream_get_remaining_size(&ustream_one, &ustream_size))
-        != AZ_ULIB_SUCCESS)
+    else if ((result = az_ulib_ustream_get_remaining_size(&ustream_one, &ustream_size)) != AZ_OK)
     {
       printf("Couldn't get ustream_one remaining size\r\n");
     }
@@ -117,13 +115,11 @@ int main(void)
                (const uint8_t*)ustream_two_string,
                ustream_two_string_len,
                free))
-          != AZ_ULIB_SUCCESS)
+          != AZ_OK)
       {
         printf("Couldn't initialize ustream_two\r\n");
       }
-      else if (
-          (result = az_ulib_ustream_get_remaining_size(&ustream_two, &ustream_size))
-          != AZ_ULIB_SUCCESS)
+      else if ((result = az_ulib_ustream_get_remaining_size(&ustream_two, &ustream_size)) != AZ_OK)
       {
         printf("Couldn't get ustream_two remaining size\r\n");
       }
@@ -135,19 +131,18 @@ int main(void)
             = (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
         // Concat the second az_ulib_ustream to the first az_ulib_ustream
         if ((result = az_ulib_ustream_concat(&ustream_one, &ustream_two, multi_data, free))
-            != AZ_ULIB_SUCCESS)
+            != AZ_OK)
         {
           printf("Couldn't concat ustream_two to ustream_one\r\n");
         }
         // Dispose of our instance of the second ustream (now the concatenated has the only
         // instance)
-        else if ((result = az_ulib_ustream_dispose(&ustream_two)) != AZ_ULIB_SUCCESS)
+        else if ((result = az_ulib_ustream_dispose(&ustream_two)) != AZ_OK)
         {
           printf("Couldn't dispose ustream_two\r\n");
         }
         else if (
-            (result = az_ulib_ustream_get_remaining_size(&ustream_one, &ustream_size))
-            != AZ_ULIB_SUCCESS)
+            (result = az_ulib_ustream_get_remaining_size(&ustream_one, &ustream_size)) != AZ_OK)
         {
           printf("Couldn't get concatenated ustream remaining size\r\n");
         }
@@ -157,13 +152,13 @@ int main(void)
           (void)printf("Size of ustream_one after concat: %zu\r\n", ustream_size);
 
           // Print the az_ulib_ustream contents
-          if ((result = print_buffer(&ustream_one)) != AZ_ULIB_SUCCESS)
+          if ((result = print_buffer(&ustream_one)) != AZ_OK)
           {
             printf("Couldn't print concatenated ustream\r\n");
           }
           // Dispose of the az_ulib_ustream (original ustream_one and original ustream_two)
           // At this point the memory malloc'd for ustream_two will be free'd
-          else if ((result = az_ulib_ustream_dispose(&ustream_one)) != AZ_ULIB_SUCCESS)
+          else if ((result = az_ulib_ustream_dispose(&ustream_one)) != AZ_OK)
           {
             printf("Couldn't dispose ustream_one\r\n");
           }

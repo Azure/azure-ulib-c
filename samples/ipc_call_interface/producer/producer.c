@@ -9,8 +9,8 @@
 void producer_start(void)
 {
   (void)printf("Start producer...\r\n");
-  az_ulib_result result;
-  if ((result = math_publish_interface()) != AZ_ULIB_SUCCESS)
+  az_result result;
+  if ((result = math_publish_interface()) != AZ_OK)
   {
     (void)printf("Producer publish math interface failed with error %d\r\n", result);
   }

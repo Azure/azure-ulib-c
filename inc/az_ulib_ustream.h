@@ -71,15 +71,15 @@ extern "C"
    *                                          default, developers may use the stdlib `free` to
    *                                          release malloc'd memory.
    *
-   * @return The #az_ulib_result with result of the initialization.
-   *      @retval #AZ_ULIB_SUCCESS                      If the #az_ulib_ustream* is successfully
-   *                                                    initialized.
-   *      @retval #AZ_ULIB_ILLEGAL_ARGUMENT_EXCEPTION   If one of the provided parameters is
-   *                                                    invalid.
+   * @return The #az_result with result of the initialization.
+   *      @retval #AZ_OK                        If the #az_ulib_ustream* is successfully
+   *                                            initialized.
+   *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is
+   *                                            invalid.
    */
   MOCKABLE_FUNCTION(
       ,
-      az_ulib_result,
+      az_result,
       az_ulib_ustream_init,
       az_ulib_ustream*,
       ustream_instance,
@@ -122,14 +122,14 @@ extern "C"
    *                                         called once the number of references to the control
    *                                         block reaches zero. It may be `NULL` if no future
    *                                         cleanup is needed.
-   * @return The #az_ulib_result with the result of the `concat` operation.
-   *     @retval #AZ_ULIB_SUCCESS                If the az_ulib_ustream is concatenated with
-   *                                             success.
-   *     @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
+   * @return The #az_result with the result of the `concat` operation.
+   *     @retval #AZ_OK                         If the az_ulib_ustream is concatenated with
+   *                                            success.
+   *     @retval #AZ_ERROR_ARG                  If one of the provided parameters is invalid.
    */
   MOCKABLE_FUNCTION(
       ,
-      az_ulib_result,
+      az_result,
       az_ulib_ustream_concat,
       az_ulib_ustream*,
       ustream_instance,
@@ -164,15 +164,15 @@ extern "C"
    *                                         position + remaining size. In other words, resulting
    *                                         ustreams of size 0 are not allowed.
    *
-   * @return The #az_ulib_result with the result of the `concat` operation.
-   *     @retval #AZ_ULIB_SUCCESS                If the az_ulib_ustream is split with success.
-   *     @retval #AZ_ULIB_ILLEGAL_ARGUMENT_ERROR If one of the provided parameters is invalid.
-   *     @retval #AZ_ULIB_NO_SUCH_ELEMENT_ERROR  If the input `split_pos` is outside the allowed
-   *                                             range.
+   * @return The #az_result with the result of the `concat` operation.
+   *     @retval #AZ_OK                         If the az_ulib_ustream is split with success.
+   *     @retval #AZ_ERROR_ARG                  If one of the provided parameters is invalid.
+   *     @retval #AZ_ERROR_ITEM_NOT_FOUND       If the input `split_pos` is outside the allowed
+   *                                            range.
    */
   MOCKABLE_FUNCTION(
       ,
-      az_ulib_result,
+      az_result,
       az_ulib_ustream_split,
       az_ulib_ustream*,
       ustream_instance,

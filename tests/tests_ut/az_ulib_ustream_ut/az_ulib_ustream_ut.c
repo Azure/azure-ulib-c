@@ -117,7 +117,7 @@ TEST_FUNCTION(az_ulib_ustream_init_const_succeed)
   az_ulib_ustream ustream_instance;
 
   /// act
-  az_ulib_result result = az_ulib_ustream_init(
+  az_result result = az_ulib_ustream_init(
       &ustream_instance,
       control_block,
       free,
@@ -127,7 +127,7 @@ TEST_FUNCTION(az_ulib_ustream_init_const_succeed)
 
   /// assert
   ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
+  ASSERT_ARE_EQUAL(int, AZ_OK, result);
 
   /// cleanup
   (void)az_ulib_ustream_dispose(&ustream_instance);
@@ -146,7 +146,7 @@ TEST_FUNCTION(az_ulib_ustream_init_succeed)
   az_ulib_ustream ustream_instance;
 
   /// act
-  az_ulib_result result = az_ulib_ustream_init(
+  az_result result = az_ulib_ustream_init(
       &ustream_instance,
       control_block,
       free,
@@ -156,7 +156,7 @@ TEST_FUNCTION(az_ulib_ustream_init_succeed)
 
   /// assert
   ASSERT_ARE_EQUAL(char_ptr, umock_c_get_expected_calls(), umock_c_get_actual_calls());
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
+  ASSERT_ARE_EQUAL(int, AZ_OK, result);
 
   /// cleanup
   (void)az_ulib_ustream_dispose(&ustream_instance);
@@ -170,7 +170,7 @@ TEST_FUNCTION(az_ulib_ustream_init_null_buffer_failed)
   az_ulib_ustream_data_cb control_block;
 
   /// act
-  az_ulib_result result = az_ulib_ustream_init(
+  az_result result = az_ulib_ustream_init(
       &ustream_instance,
       &control_block,
       NULL,
@@ -179,7 +179,7 @@ TEST_FUNCTION(az_ulib_ustream_init_null_buffer_failed)
       NULL);
 
   /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
 
   /// cleanup
 }
@@ -192,11 +192,11 @@ TEST_FUNCTION(az_ulib_ustream_init_zero_length_failed)
   az_ulib_ustream_data_cb control_block;
 
   /// act
-  az_ulib_result result = az_ulib_ustream_init(
+  az_result result = az_ulib_ustream_init(
       &ustream_instance, &control_block, NULL, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, NULL);
 
   /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
 
   /// cleanup
 }
@@ -208,7 +208,7 @@ TEST_FUNCTION(az_ulib_ustream_init_NULL_ustream_instance_failed)
   az_ulib_ustream_data_cb control_block;
 
   /// act
-  az_ulib_result result = az_ulib_ustream_init(
+  az_result result = az_ulib_ustream_init(
       NULL,
       &control_block,
       NULL,
@@ -217,7 +217,7 @@ TEST_FUNCTION(az_ulib_ustream_init_NULL_ustream_instance_failed)
       NULL);
 
   /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
 
   /// cleanup
 }
@@ -229,7 +229,7 @@ TEST_FUNCTION(az_ulib_ustream_init_NULL_control_block_failed)
   az_ulib_ustream ustream_instance;
 
   /// act
-  az_ulib_result result = az_ulib_ustream_init(
+  az_result result = az_ulib_ustream_init(
       &ustream_instance,
       NULL,
       NULL,
@@ -238,7 +238,7 @@ TEST_FUNCTION(az_ulib_ustream_init_NULL_control_block_failed)
       NULL);
 
   /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR, result);
+  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
 
   /// cleanup
 }

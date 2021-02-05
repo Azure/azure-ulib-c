@@ -26,22 +26,22 @@ static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code)
 
 static uint32_t my_property = 0;
 
-static az_ulib_result get_my_property(const void* model_out)
+static az_result get_my_property(const void* model_out)
 {
   uint32_t* new_val = (uint32_t*)model_out;
 
   *new_val = my_property;
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result set_my_property(const void* const model_in)
+static az_result set_my_property(const void* const model_in)
 {
   uint32_t* new_val = (uint32_t*)model_in;
 
   my_property = *new_val;
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
 typedef struct my_command_model_in_tag
@@ -51,7 +51,7 @@ typedef struct my_command_model_in_tag
   const az_ulib_interface_descriptor* descriptor;
   az_ulib_ipc_interface_handle handle;
   az_ulib_capability_index command_index;
-  az_ulib_result return_result;
+  az_result return_result;
 } my_command_model_in;
 
 typedef enum my_command_capability_tag
@@ -69,10 +69,10 @@ static volatile long g_is_running;
 static volatile long g_lock_thread;
 static volatile long g_sum_sleep;
 
-static az_ulib_result my_command(const void* const model_in, const void* model_out)
+static az_result my_command(const void* const model_in, const void* model_out)
 {
   my_command_model_in* in = (my_command_model_in*)model_in;
-  az_ulib_result* result = (az_ulib_result*)model_out;
+  az_result* result = (az_result*)model_out;
   my_command_model_in in_2;
   uint64_t sum = 0;
 
@@ -108,19 +108,19 @@ static az_ulib_result my_command(const void* const model_in, const void* model_o
       break;
     case MY_COMMAND_CAPABILITY_CALL_AGAIN:
       in_2.capability = 0;
-      in_2.return_result = AZ_ULIB_SUCCESS;
+      in_2.return_result = AZ_OK;
       *result = az_ulib_ipc_call(in->handle, in->command_index, &in_2, model_out);
       break;
     default:
-      *result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;
+      *result = AZ_ERROR_ITEM_NOT_FOUND;
       break;
   }
   (void)AZ_ULIB_PORT_ATOMIC_DEC_W(&g_is_running);
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result my_command_async(
+static az_result my_command_async(
     const void* const model_in,
     const void* model_out,
     const az_ulib_capability_token capability_token,
@@ -131,14 +131,14 @@ static az_ulib_result my_command_async(
   (void)capability_token;
   (void)cancel;
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result my_command_cancel(const az_ulib_capability_token capability_token)
+static az_result my_command_cancel(const az_ulib_capability_token capability_token)
 {
   (void)capability_token;
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
 typedef enum
@@ -196,25 +196,21 @@ void init_ipc_and_publish_interfaces(bool shall_initialize)
 {
   if (shall_initialize)
   {
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_init(&g_ipc));
+    ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_init(&g_ipc));
   }
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_publish(&MY_INTERFACE_1_V123, NULL));
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_publish(&MY_INTERFACE_1_V2, NULL));
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_publish(&MY_INTERFACE_2_V123, NULL));
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_publish(&MY_INTERFACE_3_V123, NULL));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_publish(&MY_INTERFACE_1_V123, NULL));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_publish(&MY_INTERFACE_1_V2, NULL));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_publish(&MY_INTERFACE_2_V123, NULL));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_publish(&MY_INTERFACE_3_V123, NULL));
 }
 
 void unpublish_interfaces_and_deinit_ipc(void)
 {
-  ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
-  ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, AZ_ULIB_NO_WAIT));
-  ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, AZ_ULIB_NO_WAIT));
-  ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, AZ_ULIB_NO_WAIT));
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_deinit());
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_deinit());
 }
 
 #define NUMBER_CALLS_IN_THREAD 1000
@@ -228,16 +224,15 @@ static int call_sync_thread(void* arg)
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_SUM;
   in.max_sum = g_thread_max_sum;
-  in.return_result = AZ_ULIB_SUCCESS;
+  in.return_result = AZ_OK;
 
   az_ulib_ipc_interface_handle local_handle;
 
-  az_ulib_result result
-      = az_ulib_ipc_get_interface((az_ulib_ipc_interface_handle)arg, &local_handle);
+  az_result result = az_ulib_ipc_get_interface((az_ulib_ipc_interface_handle)arg, &local_handle);
 
-  if (result != AZ_ULIB_SUCCESS)
+  if (result != AZ_OK)
   {
-    if (result != AZ_ULIB_NO_SUCH_ELEMENT_ERROR)
+    if (result != AZ_ERROR_ITEM_NOT_FOUND)
     {
       (void)printf("get interface returned: %d\r\n", result);
     }
@@ -246,20 +241,20 @@ static int call_sync_thread(void* arg)
   {
     for (int i = 0; i < NUMBER_CALLS_IN_THREAD; i++)
     {
-      az_ulib_result out = AZ_ULIB_PENDING;
-      az_ulib_result local_result
+      az_result out = AZ_ULIB_PENDING;
+      az_result local_result
           = az_ulib_ipc_call((az_ulib_ipc_interface_handle)arg, MY_INTERFACE_COMMAND, &in, &out);
-      if (result == AZ_ULIB_SUCCESS)
+      if (result == AZ_OK)
       {
-        if (local_result != AZ_ULIB_SUCCESS)
+        if (local_result != AZ_OK)
         {
           result = local_result;
-          if (result != AZ_ULIB_NO_SUCH_ELEMENT_ERROR)
+          if (result != AZ_ERROR_ITEM_NOT_FOUND)
           {
             (void)printf("ipc call returned: %d\r\n", result);
           }
         }
-        else if (out != AZ_ULIB_SUCCESS)
+        else if (out != AZ_OK)
         {
           result = local_result;
           (void)printf("command returned: %d\r\n", result);
@@ -267,11 +262,11 @@ static int call_sync_thread(void* arg)
       }
     }
 
-    az_ulib_result release_result;
-    if ((release_result = az_ulib_ipc_release_interface(local_handle)) != AZ_ULIB_SUCCESS)
+    az_result release_result;
+    if ((release_result = az_ulib_ipc_release_interface(local_handle)) != AZ_OK)
     {
       (void)printf("release interface returned: %d\r\n", release_result);
-      if (result == AZ_ULIB_SUCCESS)
+      if (result == AZ_OK)
       {
         result = release_result;
       }
@@ -324,7 +319,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_succeed)
   az_ulib_ipc_interface_handle interface_handle;
   ASSERT_ARE_EQUAL(
       int,
-      AZ_ULIB_SUCCESS,
+      AZ_OK,
       az_ulib_ipc_try_get_interface(
           MY_INTERFACE_1_V123.name,
           MY_INTERFACE_1_V123.version,
@@ -334,15 +329,15 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_succeed)
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_SUM;
   in.max_sum = 10000;
-  in.return_result = AZ_ULIB_SUCCESS;
-  az_ulib_result out = AZ_ULIB_PENDING;
+  in.return_result = AZ_OK;
+  az_result out = AZ_ULIB_PENDING;
 
   /// act
-  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
+  az_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, out);
+  ASSERT_ARE_EQUAL(int, AZ_OK, result);
+  ASSERT_ARE_EQUAL(int, AZ_OK, out);
 
   /// cleanup
   az_ulib_ipc_release_interface(interface_handle);
@@ -357,7 +352,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed)
   az_ulib_ipc_interface_handle interface_handle;
   ASSERT_ARE_EQUAL(
       int,
-      AZ_ULIB_SUCCESS,
+      AZ_OK,
       az_ulib_ipc_try_get_interface(
           MY_INTERFACE_1_V123.name,
           MY_INTERFACE_1_V123.version,
@@ -367,14 +362,14 @@ TEST_FUNCTION(az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed)
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
-  az_ulib_result out = AZ_ULIB_PENDING;
+  az_result out = AZ_ULIB_PENDING;
 
   /// act
-  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
+  az_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_BUSY_ERROR, out);
+  ASSERT_ARE_EQUAL(int, AZ_OK, result);
+  ASSERT_ARE_EQUAL(int, AZ_ERROR_ULIB_BUSY, out);
 
   /// cleanup
   az_ulib_ipc_release_interface(interface_handle);
@@ -389,7 +384,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_release_interface_in_the_call_succeed)
   az_ulib_ipc_interface_handle interface_handle;
   ASSERT_ARE_EQUAL(
       int,
-      AZ_ULIB_SUCCESS,
+      AZ_OK,
       az_ulib_ipc_try_get_interface(
           MY_INTERFACE_1_V123.name,
           MY_INTERFACE_1_V123.version,
@@ -399,14 +394,14 @@ TEST_FUNCTION(az_ulib_ipc_e2e_release_interface_in_the_call_succeed)
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_RELEASE_INTERFACE;
   in.handle = interface_handle;
-  az_ulib_result out = AZ_ULIB_PENDING;
+  az_result out = AZ_ULIB_PENDING;
 
   /// act
-  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
+  az_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, out);
+  ASSERT_ARE_EQUAL(int, AZ_OK, result);
+  ASSERT_ARE_EQUAL(int, AZ_OK, out);
 
   /// cleanup
   az_ulib_ipc_release_interface(interface_handle);
@@ -421,7 +416,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_deinit_ipc_in_the_call_failed)
   az_ulib_ipc_interface_handle interface_handle;
   ASSERT_ARE_EQUAL(
       int,
-      AZ_ULIB_SUCCESS,
+      AZ_OK,
       az_ulib_ipc_try_get_interface(
           MY_INTERFACE_1_V123.name,
           MY_INTERFACE_1_V123.version,
@@ -430,14 +425,14 @@ TEST_FUNCTION(az_ulib_ipc_e2e_deinit_ipc_in_the_call_failed)
 
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_DEINIT;
-  az_ulib_result out = AZ_ULIB_PENDING;
+  az_result out = AZ_ULIB_PENDING;
 
   /// act
-  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
+  az_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_BUSY_ERROR, out);
+  ASSERT_ARE_EQUAL(int, AZ_OK, result);
+  ASSERT_ARE_EQUAL(int, AZ_ERROR_ULIB_BUSY, out);
 
   /// cleanup
   az_ulib_ipc_release_interface(interface_handle);
@@ -452,7 +447,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_recursive_in_the_call_succeed)
   az_ulib_ipc_interface_handle interface_handle;
   ASSERT_ARE_EQUAL(
       int,
-      AZ_ULIB_SUCCESS,
+      AZ_OK,
       az_ulib_ipc_try_get_interface(
           MY_INTERFACE_1_V123.name,
           MY_INTERFACE_1_V123.version,
@@ -463,14 +458,14 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_recursive_in_the_call_succeed)
   in.capability = MY_COMMAND_CAPABILITY_CALL_AGAIN;
   in.handle = interface_handle;
   in.command_index = MY_INTERFACE_COMMAND;
-  az_ulib_result out = AZ_ULIB_PENDING;
+  az_result out = AZ_ULIB_PENDING;
 
   /// act
-  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
+  az_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, out);
+  ASSERT_ARE_EQUAL(int, AZ_OK, result);
+  ASSERT_ARE_EQUAL(int, AZ_OK, out);
 
   /// cleanup
   az_ulib_ipc_release_interface(interface_handle);
@@ -485,7 +480,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_unpublish_interface_before_call_succeed)
   az_ulib_ipc_interface_handle interface_handle;
   ASSERT_ARE_EQUAL(
       int,
-      AZ_ULIB_SUCCESS,
+      AZ_OK,
       az_ulib_ipc_try_get_interface(
           MY_INTERFACE_1_V123.name,
           MY_INTERFACE_1_V123.version,
@@ -495,15 +490,14 @@ TEST_FUNCTION(az_ulib_ipc_e2e_unpublish_interface_before_call_succeed)
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_UNPUBLISH;
   in.descriptor = &MY_INTERFACE_1_V123;
-  az_ulib_result out = AZ_ULIB_PENDING;
+  az_result out = AZ_ULIB_PENDING;
 
   /// act
-  ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
-  az_ulib_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
+  az_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out);
 
   /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, result);
+  ASSERT_ARE_EQUAL(int, AZ_ERROR_ITEM_NOT_FOUND, result);
   ASSERT_ARE_EQUAL(int, AZ_ULIB_PENDING, out);
 
   /// cleanup
@@ -522,7 +516,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_release_after_unpublish_succeed)
   az_ulib_ipc_interface_handle interface_handle;
   ASSERT_ARE_EQUAL(
       int,
-      AZ_ULIB_SUCCESS,
+      AZ_OK,
       az_ulib_ipc_try_get_interface(
           MY_INTERFACE_1_V123.name,
           MY_INTERFACE_1_V123.version,
@@ -531,19 +525,17 @@ TEST_FUNCTION(az_ulib_ipc_e2e_release_after_unpublish_succeed)
 
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_JUST_RETURN;
-  in.return_result = AZ_ULIB_SUCCESS;
-  az_ulib_result out = AZ_ULIB_PENDING;
+  in.return_result = AZ_OK;
+  az_result out = AZ_ULIB_PENDING;
 
   /// act
-  ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out));
-  ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
-  az_ulib_result result = az_ulib_ipc_release_interface(interface_handle);
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_call(interface_handle, MY_INTERFACE_COMMAND, &in, &out));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
+  az_result result = az_ulib_ipc_release_interface(interface_handle);
 
   /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, result);
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, out);
+  ASSERT_ARE_EQUAL(int, AZ_OK, result);
+  ASSERT_ARE_EQUAL(int, AZ_OK, out);
 
   /// cleanup
   az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, AZ_ULIB_NO_WAIT);
@@ -561,7 +553,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_succeed)
   az_ulib_ipc_interface_handle interface_handle;
   ASSERT_ARE_EQUAL(
       int,
-      AZ_ULIB_SUCCESS,
+      AZ_OK,
       az_ulib_ipc_try_get_interface(
           MY_INTERFACE_1_V123.name,
           MY_INTERFACE_1_V123.version,
@@ -581,7 +573,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_succeed)
   {
     int res;
     test_thread_join(thread_handle[i], &res);
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, res);
+    ASSERT_ARE_EQUAL(int, AZ_OK, res);
   }
 
   /// cleanup
@@ -597,7 +589,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_ti
   az_ulib_ipc_interface_handle interface_handle;
   ASSERT_ARE_EQUAL(
       int,
-      AZ_ULIB_SUCCESS,
+      AZ_OK,
       az_ulib_ipc_try_get_interface(
           MY_INTERFACE_1_V123.name,
           MY_INTERFACE_1_V123.version,
@@ -621,7 +613,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_ti
   };
 
   // Try to unpublish the interface during the time that one of its command is running.
-  az_ulib_result result = az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, 3);
+  az_result result = az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, 3);
 
   // As soon as the unpublish failed, release the command to end its execution.
   (void)AZ_ULIB_PORT_ATOMIC_DEC_W(&g_lock_thread);
@@ -630,19 +622,15 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_ti
   /// assert
   int res;
   test_thread_join(thread_handle, &res);
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, res);
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_BUSY_ERROR, result);
+  ASSERT_ARE_EQUAL(int, AZ_OK, res);
+  ASSERT_ARE_EQUAL(int, AZ_ERROR_ULIB_BUSY, result);
 
   /// cleanup
-  ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
-  ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, AZ_ULIB_NO_WAIT));
-  ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, AZ_ULIB_NO_WAIT));
-  ASSERT_ARE_EQUAL(
-      int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, AZ_ULIB_NO_WAIT));
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_deinit());
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_deinit());
 }
 
 TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_and_unpublish_succeed)
@@ -655,7 +643,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_and_unpublis
   az_ulib_ipc_interface_handle interface_handle;
   ASSERT_ARE_EQUAL(
       int,
-      AZ_ULIB_SUCCESS,
+      AZ_OK,
       az_ulib_ipc_try_get_interface(
           MY_INTERFACE_1_V123.name,
           MY_INTERFACE_1_V123.version,
@@ -675,10 +663,10 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_and_unpublis
     az_pal_os_sleep(100);
     (void)test_thread_create(&thread_handle[count_thread], &call_sync_thread, interface_handle);
   }
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, 10000));
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, 10000));
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, 10000));
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, 10000));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, 10000));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, 10000));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, 10000));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, 10000));
   az_ulib_ipc_release_interface(interface_handle);
 
   /// assert
@@ -686,11 +674,11 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_and_unpublis
   {
     int res;
     test_thread_join(thread_handle[i], &res);
-    ASSERT_ARE_EQUAL(int, AZ_ULIB_NO_SUCH_ELEMENT_ERROR, res);
+    ASSERT_ARE_EQUAL(int, AZ_ERROR_ITEM_NOT_FOUND, res);
   }
 
   /// cleanup
-  ASSERT_ARE_EQUAL(int, AZ_ULIB_SUCCESS, az_ulib_ipc_deinit());
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_deinit());
 }
 
 END_TEST_SUITE(az_ulib_ipc_e2e)

@@ -51,9 +51,9 @@ typedef int64_t subtract_model_out;
 /*
  * Publish math interface.
  */
-az_ulib_result math_publish_interface(void);
+az_result math_publish_interface(void);
 
 /*
  * Unpublish math interface.
  */
-az_ulib_result math_unpublish_interface(void);
+az_result math_unpublish_interface(void);

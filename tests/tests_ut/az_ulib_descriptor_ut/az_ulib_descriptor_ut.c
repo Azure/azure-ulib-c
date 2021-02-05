@@ -27,33 +27,33 @@ static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code)
 
 static uint32_t my_property = 0;
 
-static az_ulib_result get_my_property(const void* model_out)
+static az_result get_my_property(const void* model_out)
 {
   uint32_t* new_val = (uint32_t*)model_out;
 
   *new_val = my_property;
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result set_my_property(const void* const model_in)
+static az_result set_my_property(const void* const model_in)
 {
   uint32_t* new_val = (uint32_t*)model_in;
 
   my_property = *new_val;
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result my_command(const void* const model_in, const void* model_out)
+static az_result my_command(const void* const model_in, const void* model_out)
 {
   (void)model_in;
   (void)model_out;
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result my_command_async(
+static az_result my_command_async(
     const void* const model_in,
     const void* model_out,
     const az_ulib_capability_token capability_token,
@@ -64,14 +64,14 @@ static az_ulib_result my_command_async(
   (void)capability_token;
   (void)cancel;
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result my_command_cancel(const az_ulib_capability_token capability_token)
+static az_result my_command_cancel(const az_ulib_capability_token capability_token)
 {
   (void)capability_token;
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
 /**

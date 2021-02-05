@@ -11,6 +11,8 @@
 #ifndef AZ_ULIB_RESULT_H
 #define AZ_ULIB_RESULT_H
 
+#include "azure/core/az_result.h"
+
 #ifndef __cplusplus
 #else
 extern "C"
@@ -25,33 +27,44 @@ extern "C"
 /**
  * @brief   Enumeration of ulib results.
  */
-typedef enum az_ulib_result_tag
+enum az_result_ulib
 {
 
-  // SUCCESS RESULTS
-  AZ_ULIB_SUCCESS = 0, /**<Successful return */
-  AZ_ULIB_EOF = 1, /**<End of file (no more data to read) */
-  AZ_ULIB_PENDING = 2, /**<Intermediate state waiting for the end of the job */
+  // === uLib: Success result ===
+  /** End of file (no more data to read). */
+  AZ_ULIB_EOF = _az_RESULT_MAKE_SUCCESS(_az_FACILITY_ULIB, 1),
 
-  // ERROR RESULTS
-  AZ_ULIB_OUT_OF_MEMORY_ERROR = (AZ_ULIB_ERROR_FLAG | 0), /**<Out of memory error */
-  AZ_ULIB_NO_SUCH_ELEMENT_ERROR = (AZ_ULIB_ERROR_FLAG | 1), /**<No such element error */
-  AZ_ULIB_ILLEGAL_ARGUMENT_ERROR = (AZ_ULIB_ERROR_FLAG | 2), /**<Illegal argument error */
-  AZ_ULIB_SECURITY_ERROR = (AZ_ULIB_ERROR_FLAG | 3), /**<Security error */
-  AZ_ULIB_SYSTEM_ERROR = (AZ_ULIB_ERROR_FLAG | 4), /**<System error (unrecoverable!) */
-  AZ_ULIB_CANCELLED_ERROR = (AZ_ULIB_ERROR_FLAG | 5), /**<Cancelled error */
-  AZ_ULIB_BUSY_ERROR = (AZ_ULIB_ERROR_FLAG | 6), /**<Busy error */
-  AZ_ULIB_PRECONDITION_ERROR
-  = (AZ_ULIB_ERROR_FLAG | 7), /**<Precondition for executing the command was not met */
-  AZ_ULIB_ELEMENT_DUPLICATE_ERROR = (AZ_ULIB_ERROR_FLAG | 8), /**<New element already exists */
-  AZ_ULIB_DISABLED_ERROR = (AZ_ULIB_ERROR_FLAG | 9), /**<Disabled error */
-  AZ_ULIB_INCOMPATIBLE_VERSION_ERROR
-  = (AZ_ULIB_ERROR_FLAG | 10), /**<Required version is not available error */
-  AZ_ULIB_NOT_INITIALIZED_ERROR
-  = (AZ_ULIB_ERROR_FLAG | 11), /**<Use a component that was not properly initialized */
-  AZ_ULIB_ALREADY_INITIALIZED_ERROR
-  = (AZ_ULIB_ERROR_FLAG | 12) /**<A singleton component is already initialized */
-} az_ulib_result;
+  /** Intermediate state waiting for the end of the job. */
+  AZ_ULIB_PENDING = _az_RESULT_MAKE_SUCCESS(_az_FACILITY_ULIB, 2),
+
+  // === uLib: Error result ===
+  /** Security error. */
+  AZ_ERROR_ULIB_SECURITY = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 1),
+
+  /** System error (unrecoverable!). */
+  AZ_ERROR_ULIB_SYSTEM = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 2),
+
+  /** Busy error. */
+  AZ_ERROR_ULIB_BUSY = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 3),
+
+  /** Precondition for executing the command was not met. */
+  AZ_ERROR_ULIB_PRECONDITION = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 4),
+
+  /** New element already exists. */
+  AZ_ERROR_ULIB_ELEMENT_DUPLICATE = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 5),
+
+  /** Disabled error. */
+  AZ_ERROR_ULIB_DISABLED = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 6),
+
+  /** Required version is not available error. */
+  AZ_ERROR_ULIB_INCOMPATIBLE_VERSION = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 7),
+
+  /** Use a component that was not properly initialized. */
+  AZ_ERROR_ULIB_NOT_INITIALIZED = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 8),
+
+  /** A singleton component is already initialized. */
+  AZ_ERROR_ULIB_ALREADY_INITIALIZED = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 9),
+};
 
 #ifdef __cplusplus
 }

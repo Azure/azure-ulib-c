@@ -25,11 +25,11 @@
 /*
  * Concrete implementations of the math commands.
  */
-static az_ulib_result sum_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
+static az_result sum_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
 {
   AZ_ULIB_UCONTRACT(
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_in, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_out, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_in, AZ_ERROR_ARG),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_out, AZ_ERROR_ARG));
 
   /*
    * ==================
@@ -44,14 +44,14 @@ static az_ulib_result sum_concrete(az_ulib_model_in model_in, az_ulib_model_out 
    * ==================
    */
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result subtract_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
+static az_result subtract_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
 {
   AZ_ULIB_UCONTRACT(
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_in, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_out, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_in, AZ_ERROR_ARG),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_out, AZ_ERROR_ARG));
 
   /*
    * ==================
@@ -66,7 +66,7 @@ static az_ulib_result subtract_concrete(az_ulib_model_in model_in, az_ulib_model
    * ==================
    */
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
 AZ_ULIB_DESCRIPTOR_CREATE(
@@ -76,13 +76,13 @@ AZ_ULIB_DESCRIPTOR_CREATE(
     AZ_ULIB_DESCRIPTOR_ADD_COMMAND(MATH_INTERFACE_SUM_COMMAND_NAME, sum_concrete),
     AZ_ULIB_DESCRIPTOR_ADD_COMMAND(MATH_INTERFACE_SUBTRACT_COMMAND_NAME, subtract_concrete));
 
-az_ulib_result math_publish_interface(void) { return az_ulib_ipc_publish(&MATH_DESCRIPTOR, NULL); }
+az_result math_publish_interface(void) { return az_ulib_ipc_publish(&MATH_DESCRIPTOR, NULL); }
 
-az_ulib_result math_unpublish_interface(void)
+az_result math_unpublish_interface(void)
 {
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
   return az_ulib_ipc_unpublish(&MATH_DESCRIPTOR, AZ_ULIB_NO_WAIT);
 #else
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 }

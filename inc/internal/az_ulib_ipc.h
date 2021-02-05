@@ -43,15 +43,15 @@ typedef struct _az_ulib_ipc_tag
   _az_ulib_ipc_interface interface_list[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE];
 } _az_ulib_ipc;
 
-MOCKABLE_FUNCTION(, az_ulib_result, _az_ulib_ipc_init_no_contract, _az_ulib_ipc*, ipc_handle);
-MOCKABLE_FUNCTION(, az_ulib_result, _az_ulib_ipc_init, _az_ulib_ipc*, ipc_handle);
+MOCKABLE_FUNCTION(, az_result, _az_ulib_ipc_init_no_contract, _az_ulib_ipc*, ipc_handle);
+MOCKABLE_FUNCTION(, az_result, _az_ulib_ipc_init, _az_ulib_ipc*, ipc_handle);
 
-MOCKABLE_FUNCTION(, az_ulib_result, _az_ulib_ipc_deinit_no_contract);
-MOCKABLE_FUNCTION(, az_ulib_result, _az_ulib_ipc_deinit);
+MOCKABLE_FUNCTION(, az_result, _az_ulib_ipc_deinit_no_contract);
+MOCKABLE_FUNCTION(, az_result, _az_ulib_ipc_deinit);
 
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_publish_no_contract,
     const az_ulib_interface_descriptor*,
     interface_descriptor,
@@ -59,7 +59,7 @@ MOCKABLE_FUNCTION(
     interface_handle);
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_publish,
     const az_ulib_interface_descriptor*,
     interface_descriptor,
@@ -69,7 +69,7 @@ MOCKABLE_FUNCTION(
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_unpublish_no_contract,
     const az_ulib_interface_descriptor*,
     interface_descriptor,
@@ -77,7 +77,7 @@ MOCKABLE_FUNCTION(
     wait_option_ms);
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_unpublish,
     const az_ulib_interface_descriptor*,
     interface_descriptor,
@@ -87,7 +87,7 @@ MOCKABLE_FUNCTION(
 
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_try_get_interface_no_contract,
     const char* const,
     name,
@@ -99,7 +99,7 @@ MOCKABLE_FUNCTION(
     interface_handle);
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_try_get_interface,
     const char* const,
     name,
@@ -112,7 +112,7 @@ MOCKABLE_FUNCTION(
 
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_get_interface_no_contract,
     _az_ulib_ipc_interface_handle,
     original_interface_handle,
@@ -120,7 +120,7 @@ MOCKABLE_FUNCTION(
     interface_handle);
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_get_interface,
     _az_ulib_ipc_interface_handle,
     original_interface_handle,
@@ -129,20 +129,20 @@ MOCKABLE_FUNCTION(
 
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_release_interface_no_contract,
     _az_ulib_ipc_interface_handle,
     interface_handle);
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_release_interface,
     _az_ulib_ipc_interface_handle,
     interface_handle);
 
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_call_no_contract,
     _az_ulib_ipc_interface_handle,
     interface_handle,
@@ -154,7 +154,7 @@ MOCKABLE_FUNCTION(
     modelOut);
 MOCKABLE_FUNCTION(
     ,
-    az_ulib_result,
+    az_result,
     _az_ulib_ipc_call,
     _az_ulib_ipc_interface_handle,
     interface_handle,

@@ -13,8 +13,8 @@ static math_handle _handle;
 void consumer_start(void)
 {
   (void)printf("Start consumer...\r\n");
-  az_ulib_result result;
-  if ((result = math_create(&_handle)) != AZ_ULIB_SUCCESS)
+  az_result result;
+  if ((result = math_create(&_handle)) != AZ_OK)
   {
     (void)printf("Client get math interface failed with code %d\r\n", result);
   }
@@ -24,7 +24,7 @@ void consumer_start(void)
     int32_t b = 20;
     int64_t res = 0;
 
-    if ((result = math_sum(_handle, a, b, &res)) == AZ_ULIB_SUCCESS)
+    if ((result = math_sum(_handle, a, b, &res)) == AZ_OK)
     {
       (void)printf("math.sum calculates %d + %d = %" PRId64 "\r\n", a, b, res);
     }
@@ -33,7 +33,7 @@ void consumer_start(void)
       (void)printf("math.sum failed with error %d\r\n", result);
     }
 
-    if ((result = math_subtract(_handle, a, b, &res)) == AZ_ULIB_SUCCESS)
+    if ((result = math_subtract(_handle, a, b, &res)) == AZ_OK)
     {
       (void)printf("math.subtract calculates %d - %d = %" PRId64 "\r\n", a, b, res);
     }

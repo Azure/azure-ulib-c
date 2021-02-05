@@ -13,25 +13,21 @@
 #include "az_ulib_ulog.h"
 #include "az_ulib_ustream.h"
 
-static az_ulib_result concrete_set_position(az_ulib_ustream* ustream_instance, offset_t position);
-static az_ulib_result concrete_reset(az_ulib_ustream* ustream_instance);
-static az_ulib_result concrete_read(
+static az_result concrete_set_position(az_ulib_ustream* ustream_instance, offset_t position);
+static az_result concrete_reset(az_ulib_ustream* ustream_instance);
+static az_result concrete_read(
     az_ulib_ustream* ustream_instance,
     uint8_t* const buffer,
     size_t buffer_length,
     size_t* const size);
-static az_ulib_result concrete_get_remaining_size(
-    az_ulib_ustream* ustream_instance,
-    size_t* const size);
-static az_ulib_result concrete_get_position(
-    az_ulib_ustream* ustream_instance,
-    offset_t* const position);
-static az_ulib_result concrete_release(az_ulib_ustream* ustream_instance, offset_t position);
-static az_ulib_result concrete_clone(
+static az_result concrete_get_remaining_size(az_ulib_ustream* ustream_instance, size_t* const size);
+static az_result concrete_get_position(az_ulib_ustream* ustream_instance, offset_t* const position);
+static az_result concrete_release(az_ulib_ustream* ustream_instance, offset_t position);
+static az_result concrete_clone(
     az_ulib_ustream* ustream_instance_clone,
     az_ulib_ustream* ustream_instance,
     offset_t offset);
-static az_ulib_result concrete_dispose(az_ulib_ustream* ustream_instance);
+static az_result concrete_dispose(az_ulib_ustream* ustream_instance);
 static const az_ulib_ustream_interface api
     = { concrete_set_position, concrete_reset,   concrete_read,  concrete_get_remaining_size,
         concrete_get_position, concrete_release, concrete_clone, concrete_dispose };
@@ -48,15 +44,15 @@ static void destroy_instance(az_ulib_ustream* ustream_instance)
   }
 }
 
-static az_ulib_result concrete_set_position(az_ulib_ustream* ustream_instance, offset_t position)
+static az_result concrete_set_position(az_ulib_ustream* ustream_instance, offset_t position)
 {
   /*[az_ulib_ustream_set_position_compliance_null_buffer_failed]*/
   /*[az_ulib_ustream_set_position_compliance_non_type_of_buffer_api_failed]*/
   AZ_ULIB_UCONTRACT(AZ_ULIB_UCONTRACT_REQUIRE(
       !AZ_ULIB_USTREAM_IS_NOT_TYPE_OF(ustream_instance, api),
-      AZ_ULIB_ILLEGAL_ARGUMENT_ERROR,
+      AZ_ERROR_ARG,
       AZ_ULIB_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
-  az_ulib_result result;
+  az_result result;
 
   offset_t inner_position = position - ustream_instance->offset_diff;
 
@@ -66,7 +62,7 @@ static az_ulib_result concrete_set_position(az_ulib_ustream* ustream_instance, o
   if ((inner_position > (offset_t)(ustream_instance->length))
       || (inner_position < ustream_instance->inner_first_valid_position))
   {
-    result = AZ_ULIB_NO_SUCH_ELEMENT_ERROR;
+    result = AZ_ERROR_ITEM_NOT_FOUND;
   }
   else
   {
@@ -83,28 +79,28 @@ static az_ulib_result concrete_set_position(az_ulib_ustream* ustream_instance, o
     /*[az_ulib_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed]*/
     /*[az_ulib_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_byte_reverse_order_succeed]*/
     ustream_instance->inner_current_position = inner_position;
-    result = AZ_ULIB_SUCCESS;
+    result = AZ_OK;
   }
   return result;
 }
 
-static az_ulib_result concrete_reset(az_ulib_ustream* ustream_instance)
+static az_result concrete_reset(az_ulib_ustream* ustream_instance)
 {
   /*[az_ulib_ustream_reset_compliance_null_buffer_failed]*/
   /*[az_ulib_ustream_reset_compliance_non_type_of_buffer_api_failed]*/
   AZ_ULIB_UCONTRACT(AZ_ULIB_UCONTRACT_REQUIRE(
       !AZ_ULIB_USTREAM_IS_NOT_TYPE_OF(ustream_instance, api),
-      AZ_ULIB_ILLEGAL_ARGUMENT_ERROR,
+      AZ_ERROR_ARG,
       AZ_ULIB_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
 
   /*[az_ulib_ustream_reset_compliance_back_to_beginning_succeed]*/
   /*[az_ulib_ustream_reset_compliance_back_position_succeed]*/
   /*[az_ulib_ustream_reset_compliance_cloned_buffer_succeed]*/
   ustream_instance->inner_current_position = ustream_instance->inner_first_valid_position;
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result concrete_read(
+static az_result concrete_read(
     az_ulib_ustream* ustream_instance,
     uint8_t* const buffer,
     size_t buffer_length,
@@ -118,13 +114,13 @@ static az_ulib_result concrete_read(
   AZ_ULIB_UCONTRACT(
       AZ_ULIB_UCONTRACT_REQUIRE(
           !AZ_ULIB_USTREAM_IS_NOT_TYPE_OF(ustream_instance, api),
-          AZ_ULIB_ILLEGAL_ARGUMENT_ERROR,
+          AZ_ERROR_ARG,
           AZ_ULIB_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(buffer, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_EQUALS(buffer_length, 0, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(size, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(buffer, AZ_ERROR_ARG),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_EQUALS(buffer_length, 0, AZ_ERROR_ARG),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(size, AZ_ERROR_ARG));
 
-  az_ulib_result result;
+  az_result result;
 
   az_ulib_ustream_multi_data_cb* multi_data
       = (az_ulib_ustream_multi_data_cb*)ustream_instance->control_block->ptr;
@@ -141,9 +137,8 @@ static az_ulib_result concrete_read(
   /*[az_ulib_ustream_read_compliance_get_from_cloned_buffer_succeed]*/
   /*[az_ulib_ustream_read_compliance_cloned_buffer_right_boundary_condition_succeed]*/
   *size = 0;
-  az_ulib_result intermediate_result = AZ_ULIB_SUCCESS;
-  while ((intermediate_result == AZ_ULIB_SUCCESS) && (*size < buffer_length)
-         && (current_ustream != NULL))
+  az_result intermediate_result = AZ_OK;
+  while ((intermediate_result == AZ_OK) && (*size < buffer_length) && (current_ustream != NULL))
   {
     size_t copied_size;
     size_t remain_size = buffer_length - *size;
@@ -158,7 +153,7 @@ static az_ulib_result concrete_read(
 
     switch (intermediate_result)
     {
-      case AZ_ULIB_SUCCESS:
+      case AZ_OK:
         *size += copied_size;
       case AZ_ULIB_EOF:
         if (*size < buffer_length)
@@ -166,7 +161,7 @@ static az_ulib_result concrete_read(
           if (current_ustream == &multi_data->ustream_one)
           {
             current_ustream = &multi_data->ustream_two;
-            intermediate_result = AZ_ULIB_SUCCESS;
+            intermediate_result = AZ_OK;
           }
           else
           {
@@ -184,7 +179,7 @@ static az_ulib_result concrete_read(
   {
     /*[az_ulib_ustream_concat_read_from_multiple_buffers_succeed]*/
     ustream_instance->inner_current_position += *size;
-    result = AZ_ULIB_SUCCESS;
+    result = AZ_OK;
   }
   else
   {
@@ -195,9 +190,7 @@ static az_ulib_result concrete_read(
   return result;
 }
 
-static az_ulib_result concrete_get_remaining_size(
-    az_ulib_ustream* ustream_instance,
-    size_t* const size)
+static az_result concrete_get_remaining_size(az_ulib_ustream* ustream_instance, size_t* const size)
 {
   /*[az_ulib_ustream_get_remaining_size_compliance_null_buffer_failed]*/
   /*[az_ulib_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed]*/
@@ -205,21 +198,19 @@ static az_ulib_result concrete_get_remaining_size(
   AZ_ULIB_UCONTRACT(
       AZ_ULIB_UCONTRACT_REQUIRE(
           !AZ_ULIB_USTREAM_IS_NOT_TYPE_OF(ustream_instance, api),
-          AZ_ULIB_ILLEGAL_ARGUMENT_ERROR,
+          AZ_ERROR_ARG,
           AZ_ULIB_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(size, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(size, AZ_ERROR_ARG));
 
   /*[az_ulib_ustream_get_remaining_size_compliance_new_buffer_succeed]*/
   /*[az_ulib_ustream_get_remaining_size_compliance_new_buffer_with_non_zero_current_position_succeed]*/
   /*[az_ulib_ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
   *size = ustream_instance->length - ustream_instance->inner_current_position;
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result concrete_get_position(
-    az_ulib_ustream* ustream_instance,
-    offset_t* const position)
+static az_result concrete_get_position(az_ulib_ustream* ustream_instance, offset_t* const position)
 {
   /*[az_ulib_ustream_get_current_position_compliance_null_buffer_failed]*/
   /*[az_ulib_ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed]*/
@@ -227,27 +218,27 @@ static az_ulib_result concrete_get_position(
   AZ_ULIB_UCONTRACT(
       AZ_ULIB_UCONTRACT_REQUIRE(
           !AZ_ULIB_USTREAM_IS_NOT_TYPE_OF(ustream_instance, api),
-          AZ_ULIB_ILLEGAL_ARGUMENT_ERROR,
+          AZ_ERROR_ARG,
           AZ_ULIB_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(position, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(position, AZ_ERROR_ARG));
 
   /*[az_ulib_ustream_get_current_position_compliance_new_buffer_succeed]*/
   /*[az_ulib_ustream_get_current_position_compliance_new_buffer_with_non_zero_current_position_succeed]*/
   /*[az_ulib_ustream_get_current_position_compliance_cloned_buffer_with_non_zero_current_position_succeed]*/
   *position = ustream_instance->inner_current_position + ustream_instance->offset_diff;
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result concrete_release(az_ulib_ustream* ustream_instance, offset_t position)
+static az_result concrete_release(az_ulib_ustream* ustream_instance, offset_t position)
 {
   /*[az_ulib_ustream_release_compliance_null_buffer_failed]*/
   /*[az_ulib_ustream_release_compliance_non_type_of_buffer_api_failed]*/
   AZ_ULIB_UCONTRACT(AZ_ULIB_UCONTRACT_REQUIRE(
       !AZ_ULIB_USTREAM_IS_NOT_TYPE_OF(ustream_instance, api),
-      AZ_ULIB_ILLEGAL_ARGUMENT_ERROR,
+      AZ_ERROR_ARG,
       AZ_ULIB_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
-  az_ulib_result result;
+  az_result result;
 
   offset_t inner_position = position - ustream_instance->offset_diff;
 
@@ -256,7 +247,7 @@ static az_ulib_result concrete_release(az_ulib_ustream* ustream_instance, offset
   if ((inner_position >= ustream_instance->inner_current_position)
       || (inner_position < ustream_instance->inner_first_valid_position))
   {
-    result = AZ_ULIB_ILLEGAL_ARGUMENT_ERROR;
+    result = AZ_ERROR_ARG;
   }
   else
   {
@@ -267,13 +258,13 @@ static az_ulib_result concrete_release(az_ulib_ustream* ustream_instance, offset
     /*[az_ulib_ustream_release_compliance_cloned_buffer_release_all_succeed]*/
     /*[az_ulib_ustream_release_compliance_cloned_buffer_run_full_buffer_byte_by_byte_succeed]*/
     ustream_instance->inner_first_valid_position = inner_position + (offset_t)1;
-    result = AZ_ULIB_SUCCESS;
+    result = AZ_OK;
   }
 
   return result;
 }
 
-static az_ulib_result concrete_clone(
+static az_result concrete_clone(
     az_ulib_ustream* ustream_instance_clone,
     az_ulib_ustream* ustream_instance,
     offset_t offset)
@@ -285,12 +276,12 @@ static az_ulib_result concrete_clone(
   AZ_ULIB_UCONTRACT(
       AZ_ULIB_UCONTRACT_REQUIRE(
           !AZ_ULIB_USTREAM_IS_NOT_TYPE_OF(ustream_instance, api),
-          AZ_ULIB_ILLEGAL_ARGUMENT_ERROR,
+          AZ_ERROR_ARG,
           AZ_ULIB_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING),
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance_clone, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance_clone, AZ_ERROR_ARG),
       AZ_ULIB_UCONTRACT_REQUIRE(
           (offset <= (UINT32_MAX - ustream_instance->length)),
-          AZ_ULIB_ILLEGAL_ARGUMENT_ERROR,
+          AZ_ERROR_ARG,
           "offset exceeds max size"));
 
   /*[az_ulib_ustream_clone_compliance_new_buffer_cloned_with_zero_offset_succeed]*/
@@ -313,16 +304,16 @@ static az_ulib_result concrete_clone(
   AZ_ULIB_PORT_ATOMIC_INC_W(&(multi_data->ustream_one_ref_count));
   AZ_ULIB_PORT_ATOMIC_INC_W(&(multi_data->ustream_two_ref_count));
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
-static az_ulib_result concrete_dispose(az_ulib_ustream* ustream_instance)
+static az_result concrete_dispose(az_ulib_ustream* ustream_instance)
 {
   /*[az_ulib_ustream_dispose_compliance_null_buffer_failed]*/
   /*[az_ulib_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed]*/
   AZ_ULIB_UCONTRACT(AZ_ULIB_UCONTRACT_REQUIRE(
       !AZ_ULIB_USTREAM_IS_NOT_TYPE_OF(ustream_instance, api),
-      AZ_ULIB_ILLEGAL_ARGUMENT_ERROR,
+      AZ_ERROR_ARG,
       AZ_ULIB_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING));
 
   /*[az_ulib_ustream_dispose_compliance_cloned_instance_disposed_first_succeed]*/
@@ -349,7 +340,7 @@ static az_ulib_result concrete_dispose(az_ulib_ustream* ustream_instance)
     destroy_instance(ustream_instance);
   }
 
-  return AZ_ULIB_SUCCESS;
+  return AZ_OK;
 }
 
 static void ustream_multi_init(
@@ -383,7 +374,7 @@ static void ustream_multi_init(
   ustream_instance->control_block = control_block;
 }
 
-az_ulib_result az_ulib_ustream_concat(
+az_result az_ulib_ustream_concat(
     az_ulib_ustream* ustream_instance,
     az_ulib_ustream* ustream_to_concat,
     az_ulib_ustream_multi_data_cb* multi_data,
@@ -393,22 +384,22 @@ az_ulib_result az_ulib_ustream_concat(
   /*[az_ulib_ustream_concat_null_instance_failed]*/
   /*[az_ulib_ustream_concat_null_multi_data_failed]*/
   AZ_ULIB_UCONTRACT(
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ustream_to_concat, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(multi_data, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance, AZ_ERROR_ARG),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ustream_to_concat, AZ_ERROR_ARG),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(multi_data, AZ_ERROR_ARG));
 
-  az_ulib_result result;
+  az_result result;
 
   /*[ustream_multi_init_succeed]*/
   ustream_multi_init(ustream_instance, &multi_data->control_block, multi_data, multi_data_release);
   /*[az_ulib_ustream_concat_multiple_buffers_succeed]*/
   if ((result = az_ulib_ustream_clone(
            &multi_data->ustream_two, ustream_to_concat, ustream_instance->length))
-      == AZ_ULIB_SUCCESS)
+      == AZ_OK)
   {
     size_t remaining_size;
     if ((result = az_ulib_ustream_get_remaining_size(&(multi_data->ustream_two), &remaining_size))
-        == AZ_ULIB_SUCCESS)
+        == AZ_OK)
     {
       ustream_instance->length += remaining_size;
       AZ_ULIB_PORT_ATOMIC_INC_W(&(multi_data->ustream_two_ref_count));
@@ -423,7 +414,7 @@ az_ulib_result az_ulib_ustream_concat(
   return result;
 }
 
-az_ulib_result az_ulib_ustream_split(
+az_result az_ulib_ustream_split(
     az_ulib_ustream* ustream_instance,
     az_ulib_ustream* ustream_instance_split,
     offset_t split_pos)
@@ -431,48 +422,46 @@ az_ulib_result az_ulib_ustream_split(
   /*[az_ulib_ustream_split_null_instance_failed]*/
   /*[az_ulib_ustream_split_null_split_instance_failed]*/
   AZ_ULIB_UCONTRACT(
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR),
-      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance_split, AZ_ULIB_ILLEGAL_ARGUMENT_ERROR));
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance, AZ_ERROR_ARG),
+      AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(ustream_instance_split, AZ_ERROR_ARG));
 
-  az_ulib_result result;
+  az_result result;
 
   offset_t old_position;
   /*[az_ulib_ustream_split_get_position_failed]*/
-  if ((result = az_ulib_ustream_get_position(ustream_instance, &old_position)) == AZ_ULIB_SUCCESS)
+  if ((result = az_ulib_ustream_get_position(ustream_instance, &old_position)) == AZ_OK)
   {
     /*[az_ulib_ustream_split_position_same_as_current_failed]*/
     if (split_pos == old_position)
     {
-      result = AZ_ULIB_ILLEGAL_ARGUMENT_ERROR;
+      result = AZ_ERROR_ARG;
     }
     else
     {
       size_t ustream_remaining_size;
       /*[az_ulib_ustream_split_get_remaining_size_failed]*/
       if ((result = az_ulib_ustream_get_remaining_size(ustream_instance, &ustream_remaining_size))
-          == AZ_ULIB_SUCCESS)
+          == AZ_OK)
       {
         /*[az_ulib_ustream_split_position_end_of_ustream_failed]*/
         if (old_position + ustream_remaining_size == split_pos)
         {
-          result = AZ_ULIB_ILLEGAL_ARGUMENT_ERROR;
+          result = AZ_ERROR_ARG;
         }
         else
         {
           /*[az_ulib_ustream_split_invalid_split_position_with_offset_failed]*/
           /*[az_ulib_ustream_split_invalid_split_position_with_offset_after_failed]*/
           /*[az_ulib_ustream_split_set_position_failed]*/
-          if ((result = az_ulib_ustream_set_position(ustream_instance, split_pos))
-              == AZ_ULIB_SUCCESS)
+          if ((result = az_ulib_ustream_set_position(ustream_instance, split_pos)) == AZ_OK)
           {
             /*[az_ulib_ustream_split_clone_failed]*/
             if ((result
                  = az_ulib_ustream_clone(ustream_instance_split, ustream_instance, split_pos))
-                == AZ_ULIB_SUCCESS)
+                == AZ_OK)
             {
               /*[az_ulib_ustream_split_set_position_second_failed]*/
-              if ((result = az_ulib_ustream_set_position(ustream_instance, old_position))
-                  == AZ_ULIB_SUCCESS)
+              if ((result = az_ulib_ustream_set_position(ustream_instance, old_position)) == AZ_OK)
               {
                 /*[az_ulib_ustream_split_success]*/
                 ustream_instance->length = split_pos - ustream_instance->inner_first_valid_position;
