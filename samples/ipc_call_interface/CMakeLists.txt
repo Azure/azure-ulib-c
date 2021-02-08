@@ -7,8 +7,8 @@ cmake_minimum_required(VERSION 3.10)
 add_executable(ipc_call_interface
   ${CMAKE_CURRENT_LIST_DIR}/main.c
   ${CMAKE_CURRENT_LIST_DIR}/consumer/consumer.c
-  ${CMAKE_CURRENT_LIST_DIR}/producer/producer.c
-  ${CMAKE_CURRENT_LIST_DIR}/producer/interfaces/math_interface.c
+  ${CMAKE_CURRENT_LIST_DIR}/producer/math_1_producer_1.c
+  ${CMAKE_CURRENT_LIST_DIR}/producer/interfaces/math_1_interface.c
 )
 
 #Add include directories for this target and anyone linking against it

@@ -5,7 +5,7 @@
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
 #include "consumer.h"
-#include "producer.h"
+#include "math_1_producer_1.h"
 #include <stdio.h>
 
 static az_ulib_ipc ipc_handle;
@@ -33,23 +33,23 @@ int main(void)
      * Publish the math interface. After this point anybody can call the math commands
      * through IPC.
      */
-    producer_start();
+    math_1_producer_1_create();
 
     /*
      * Consumer will use the math interface.
      */
-    consumer_start();
+    consumer_create();
 
     /*
      * Consumer will stop to use the math interface.
      */
-    consumer_end();
+    consumer_destroy();
 
     /*
      * Unpublish math interface. After this point, any call to math will return
      * AZ_ERROR_ITEM_NOT_FOUND.
      */
-    producer_end();
+    math_1_producer_1_destroy();
   }
 
   return 0;

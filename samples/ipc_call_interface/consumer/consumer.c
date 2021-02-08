@@ -3,20 +3,20 @@
 // See LICENSE file in the project root for full license information.
 
 #include "az_ulib_result.h"
-#include "wrappers/math_wrapper.h"
+#include "wrappers/math_1_wrapper.h"
 #include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 
-static math_handle _handle;
+static az_ulib_ipc_interface_handle _math_1;
 
-void consumer_start(void)
+void consumer_create(void)
 {
-  (void)printf("Start consumer...\r\n");
+  (void)printf("Create consumer...\r\n");
   az_result result;
-  if ((result = math_create(&_handle)) != AZ_OK)
+  if ((result = math_1_create(&_math_1)) != AZ_OK)
   {
-    (void)printf("Client get math interface failed with code %d\r\n", result);
+    (void)printf("Client get math.1 interface failed with code %d\r\n", result);
   }
   else
   {
@@ -24,28 +24,28 @@ void consumer_start(void)
     int32_t b = 20;
     int64_t res = 0;
 
-    if ((result = math_sum(_handle, a, b, &res)) == AZ_OK)
+    if ((result = math_1_sum(_math_1, a, b, &res)) == AZ_OK)
     {
-      (void)printf("math.sum calculates %d + %d = %" PRId64 "\r\n", a, b, res);
+      (void)printf("math.1.sum calculates %d + %d = %" PRId64 "\r\n", a, b, res);
     }
     else
     {
-      (void)printf("math.sum failed with error %d\r\n", result);
+      (void)printf("math.1.sum failed with error %d\r\n", result);
     }
 
-    if ((result = math_subtract(_handle, a, b, &res)) == AZ_OK)
+    if ((result = math_1_subtract(_math_1, a, b, &res)) == AZ_OK)
     {
-      (void)printf("math.subtract calculates %d - %d = %" PRId64 "\r\n", a, b, res);
+      (void)printf("math.1.subtract calculates %d - %d = %" PRId64 "\r\n", a, b, res);
     }
     else
     {
-      (void)printf("math.subtract failed with error %d\r\n", result);
+      (void)printf("math.1.subtract failed with error %d\r\n", result);
     }
   }
 }
 
-void consumer_end(void)
+void consumer_destroy(void)
 {
-  (void)printf("End consumer\r\n");
-  math_destroy(_handle);
+  (void)printf("Destroy consumer\r\n");
+  math_1_destroy(_math_1);
 }
