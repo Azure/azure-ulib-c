@@ -66,6 +66,90 @@ enum az_result_ulib
   AZ_ERROR_ULIB_ALREADY_INITIALIZED = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 9),
 };
 
+/**
+ * @brief   Try catch variable.
+ *
+ * Variable that contains the result for the try catch structure, you can use it in the catch to
+ * split between results.
+ *
+ * <i><b>Example</b></i>
+ *
+ * @code
+ * AZ_ULIB_CATCH(...)
+ * {
+ *   if (AZ_ULIB_TRY_RESULT == AZ_ERROR_ITEM_NOT_FOUND)
+ *     (void)printf("display.1 was uninstalled.\r\n");
+ *   else
+ *     (void)printf(
+ *         "my consumer uses display.1.cls failed with error %d.\r\n", AZ_ULIB_TRY_RESULT);
+ * }
+ * @endcode
+ */
+#define AZ_ULIB_TRY_RESULT _az_try_catch_result
+
+/**
+ * @brief   Try command in a try catch structure.
+ *
+ * Implementation of try catch structure for C99.
+ *
+ * <i><b>Example</b></i>
+ *
+ * @code
+ * AZ_ULIB_TRY
+ * {
+ *   (void)printf("Before throw.\r\n");
+ *   AZ_THROW(AZ_ERROR_ITEM_NOT_FOUND);
+ *   (void)printf("After throw. It will not be printed.\r\n");
+ * }
+ * AZ_ULIB_CATCH(...)
+ * {
+ *   (void)printf("In the catch.\r\n");
+ * }
+ * @endcode
+ *
+ * @note    **Do not use `break` or `continue` inside of the Try session.**
+ */
+#define AZ_ULIB_TRY                     \
+  az_result AZ_ULIB_TRY_RESULT = AZ_OK; \
+  for (int _az_i = 0; _az_i < 1; _az_i++)
+
+/**
+ * @brief   Catch command in a try catch structure.
+ */
+#define AZ_ULIB_CATCH(x) if ((AZ_ULIB_TRY_RESULT & _az_ERROR_FLAG) == _az_ERROR_FLAG)
+
+/**
+ * @brief   Throw an error in a try catch structure.
+ */
+#define AZ_ULIB_THROW(error)    \
+  if (true)                     \
+  {                             \
+    AZ_ULIB_TRY_RESULT = error; \
+    break;                      \
+  }
+
+/**
+ * @brief   Throw an error if the condition is false in a try catch structure.
+ */
+#define AZ_ULIB_THROW_IF_ERROR(condition, error) \
+  if (!(condition))                              \
+  {                                              \
+    AZ_ULIB_TRY_RESULT = error;                  \
+    break;                                       \
+  }
+
+/**
+ * @brief   Throw an error if the command failed in a try catch structure.
+ *
+ * Call the `command` and evaluate the az_result returned from it. If command return any error,
+ * mostly something different than #AZ_OK, this macro will throw the error.
+ */
+#define AZ_ULIB_THROW_IF_AZ_ERROR(command)                                 \
+  if (((AZ_ULIB_TRY_RESULT = command) & _az_ERROR_FLAG) == _az_ERROR_FLAG) \
+  {                                                                        \
+    break;                                                                 \
+  }
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus
