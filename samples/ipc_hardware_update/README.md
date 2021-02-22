@@ -8,7 +8,7 @@ This sample is composed by 3 different actors:
 2. **Producers**: The emulators that will expose the display interface. Those are the codes in the `producers` directory.
 3. **OS**: This is the glue between producer and consumer, it create an instance of the IPC, install and uninstall the producers and consumers. To test the IPC, the OS calls  `my_consumer_do_display()` in the consumer that will try to use the display interface cleaning the screen and print a couple of messages.  
 
-To demo the update, this sample contains 2 producers, *Contoso* and *Fabrikan*. Both expose the same interface display version 1.
+To demo a modular update, this sample contains 2 producers, *Contoso* and *Fabrikan*. Both expose the same interface display version 1.
 
 At the beginning, the OS install Contoso's emulator that publish the display v1 interface by calling `contoso_display_20x4_1_create()`. From that point, the interface display v1 is available in the IPC and any other component can start to use it.
 
