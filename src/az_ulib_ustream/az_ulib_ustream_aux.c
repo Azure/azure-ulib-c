@@ -374,7 +374,7 @@ static void ustream_multi_init(
   ustream_instance->control_block = control_block;
 }
 
-az_result az_ulib_ustream_concat(
+AZ_NODISCARD az_result az_ulib_ustream_concat(
     az_ulib_ustream* ustream_instance,
     az_ulib_ustream* ustream_to_concat,
     az_ulib_ustream_multi_data_cb* multi_data,
@@ -414,7 +414,7 @@ az_result az_ulib_ustream_concat(
   return result;
 }
 
-az_result az_ulib_ustream_split(
+AZ_NODISCARD az_result az_ulib_ustream_split(
     az_ulib_ustream* ustream_instance,
     az_ulib_ustream* ustream_instance_split,
     offset_t split_pos)

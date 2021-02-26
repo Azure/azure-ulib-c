@@ -301,7 +301,7 @@ static az_result concrete_dispose(az_ulib_ustream* ustream_instance)
   return AZ_OK;
 }
 
-az_result az_ulib_ustream_init(
+AZ_NODISCARD az_result az_ulib_ustream_init(
     az_ulib_ustream* ustream_instance,
     az_ulib_ustream_data_cb* ustream_control_block,
     az_ulib_release_callback control_block_release,
