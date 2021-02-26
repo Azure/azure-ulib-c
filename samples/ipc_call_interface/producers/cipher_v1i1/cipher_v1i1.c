@@ -4,6 +4,7 @@
 
 #include "az_ulib_result.h"
 #include "interfaces/cipher_v1i1_interface.h"
+#include <stdint.h>
 #include <stdio.h>
 
 #define NUMBER_OF_KEYS 1
@@ -41,7 +42,9 @@ static inline uint32_t next_key_pos(uint32_t cur)
 {
   uint32_t next = cur + 1;
   if (next == KEY_SIZE)
+  {
     next = 0;
+  }
   return next;
 }
 
@@ -245,7 +248,8 @@ az_result cipher_v1i1_decrypt(
     uint32_t context = src[0] - '0';
     AZ_ULIB_THROW_IF_ERROR((context < NUMBER_OF_KEYS), AZ_ERROR_NOT_SUPPORTED);
     AZ_ULIB_THROW_IF_ERROR((context >= 0), AZ_ERROR_ARG);
-    AZ_ULIB_THROW_IF_ERROR((decoded_len(&src[1], src_size) <= dst_buffer_size), AZ_ERROR_NOT_ENOUGH_SPACE);
+    AZ_ULIB_THROW_IF_ERROR(
+        (decoded_len(&src[1], src_size) <= dst_buffer_size), AZ_ERROR_NOT_ENOUGH_SPACE);
 
     size_t numberOfEncodedChars;
     size_t indexOfFirstEncodedChar;

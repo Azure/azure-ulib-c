@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-static const char* hello = "Hello word! This is a test to display a message.";
+static const char* hello = "Hello world! This is a test to display a message.";
 static const char* bunny_1 = "(\\(\\";
 static const char* bunny_2 = "( -.-)";
 static const char* bunny_3 = "o_(\")(\")";
@@ -73,10 +73,14 @@ void my_consumer_do_display(void)
         AZ_ULIB_CATCH(...)
         {
           if (AZ_ULIB_TRY_RESULT == AZ_ERROR_ITEM_NOT_FOUND)
+          {
             (void)printf("display.1 was uninstalled.\r\n");
+          }
           else
+          {
             (void)printf(
                 "my consumer uses display.1.cls failed with error %d.\r\n", AZ_ULIB_TRY_RESULT);
+          }
           (void)printf("Release the handle.\r\n");
           display_1_destroy(_display_1);
           _display_1 = NULL;
@@ -95,10 +99,14 @@ void my_consumer_do_display(void)
         AZ_ULIB_CATCH(...)
         {
           if (AZ_ULIB_TRY_RESULT == AZ_ERROR_ITEM_NOT_FOUND)
+          {
             (void)printf("display.1 was uninstalled.\r\n");
+          }
           else
+          {
             (void)printf(
                 "my consumer uses display.1.cls failed with error %d.\r\n", AZ_ULIB_TRY_RESULT);
+          }
           (void)printf("Release the handle.\r\n");
           display_1_destroy(_display_1);
           _display_1 = NULL;

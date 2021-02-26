@@ -4,6 +4,7 @@
 
 #include "az_ulib_result.h"
 #include "interfaces/cipher_v2i1_interface.h"
+#include <stdint.h>
 #include <stdio.h>
 
 #define NUMBER_OF_KEYS 2
@@ -42,7 +43,9 @@ static inline uint32_t next_key_pos(uint32_t cur)
 {
   uint32_t next = cur + 1;
   if (next == KEY_SIZE)
+  {
     next = 0;
+  }
   return next;
 }
 

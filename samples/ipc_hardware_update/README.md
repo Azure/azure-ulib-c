@@ -18,21 +18,21 @@ The OS now install my_consumer by calling `my_consumer_create()`. My_consumer wi
 My consumer try use display.1 interface...
 My consumer got display.1 interface with success.
         +Contoso emulator----+
-        |Hello word! This is |
+        |Hello world! This is|
         |      (\(\          |
         |     ( -.-)         |
         |     o_(")(")       |
         +--------------------+
 My consumer try use display.1 interface...
         +Contoso emulator----+
-        |Hello word! This is |
+        |Hello world! This is|
         |      /)/)          |
         |     ( -.-)         |
         |     o_(")(")       |
         +--------------------+
 My consumer try use display.1 interface...
         +Contoso emulator----+
-        |Hello word! This is |
+        |Hello world! This is|
         |      (\(\          |
         |     ( -.-)         |
         |     o_(")(")       |
@@ -55,21 +55,21 @@ Once Fabrikan's emulator is installed, the `my_consumer_do_display()` shall resu
 My consumer try use display.1 interface...
 My consumer got display.1 interface with success.
         +Fabrikan display emulator-----------------------+
-        |Hello word! This is a test to display a message.|
+        |Hello world! This is a test to display a message|
         |      (\(\                                      |
         |     ( -.-)                                     |
         |     o_(")(")                                   |
         +------------------------------------------------+
 My consumer try use display.1 interface...
         +Fabrikan display emulator-----------------------+
-        |Hello word! This is a test to display a message.|
+        |Hello world! This is a test to display a message|
         |      /)/)                                      |
         |     ( -.-)                                     |
         |     o_(")(")                                   |
         +------------------------------------------------+
 My consumer try use display.1 interface...
         +Fabrikan display emulator-----------------------+
-        |Hello word! This is a test to display a message.|
+        |Hello world! This is a test to display a message|
         |      (\(\                                      |
         |     ( -.-)                                     |
         |     o_(")(")                                   |
@@ -85,21 +85,21 @@ Release the handle.
 My consumer try use display.1 interface...
 My consumer got display.1 interface with success.
         +Contoso emulator----+
-        |Hello word! This is |
+        |Hello world! This is|
         |      (\(\          |
         |     ( -.-)         |
         |     o_(")(")       |
         +--------------------+
 My consumer try use display.1 interface...
         +Contoso emulator----+
-        |Hello word! This is |
+        |Hello world! This is|
         |      /)/)          |
         |     ( -.-)         |
         |     o_(")(")       |
         +--------------------+
 My consumer try use display.1 interface...
         +Contoso emulator----+
-        |Hello word! This is |
+        |Hello world! This is|
         |      (\(\          |
         |     ( -.-)         |
         |     o_(")(")       |
