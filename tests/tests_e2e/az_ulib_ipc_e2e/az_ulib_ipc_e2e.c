@@ -340,7 +340,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_succeed)
   ASSERT_ARE_EQUAL(int, AZ_OK, out);
 
   /// cleanup
-  az_ulib_ipc_release_interface(interface_handle);
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_release_interface(interface_handle));
   unpublish_interfaces_and_deinit_ipc();
 }
 
@@ -372,7 +372,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed)
   ASSERT_ARE_EQUAL(int, AZ_ERROR_ULIB_BUSY, out);
 
   /// cleanup
-  az_ulib_ipc_release_interface(interface_handle);
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_release_interface(interface_handle));
   unpublish_interfaces_and_deinit_ipc();
 }
 
@@ -404,7 +404,6 @@ TEST_FUNCTION(az_ulib_ipc_e2e_release_interface_in_the_call_succeed)
   ASSERT_ARE_EQUAL(int, AZ_OK, out);
 
   /// cleanup
-  az_ulib_ipc_release_interface(interface_handle);
   unpublish_interfaces_and_deinit_ipc();
 }
 
@@ -435,7 +434,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_deinit_ipc_in_the_call_failed)
   ASSERT_ARE_EQUAL(int, AZ_ERROR_ULIB_BUSY, out);
 
   /// cleanup
-  az_ulib_ipc_release_interface(interface_handle);
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_release_interface(interface_handle));
   unpublish_interfaces_and_deinit_ipc();
 }
 
@@ -468,7 +467,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_recursive_in_the_call_succeed)
   ASSERT_ARE_EQUAL(int, AZ_OK, out);
 
   /// cleanup
-  az_ulib_ipc_release_interface(interface_handle);
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_release_interface(interface_handle));
   unpublish_interfaces_and_deinit_ipc();
 }
 
@@ -501,11 +500,11 @@ TEST_FUNCTION(az_ulib_ipc_e2e_unpublish_interface_before_call_succeed)
   ASSERT_ARE_EQUAL(int, AZ_ULIB_PENDING, out);
 
   /// cleanup
-  az_ulib_ipc_release_interface(interface_handle);
-  az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, AZ_ULIB_NO_WAIT);
-  az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, AZ_ULIB_NO_WAIT);
-  az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, AZ_ULIB_NO_WAIT);
-  az_ulib_ipc_deinit();
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_release_interface(interface_handle));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_deinit());
 }
 
 TEST_FUNCTION(az_ulib_ipc_e2e_release_after_unpublish_succeed)
@@ -538,10 +537,10 @@ TEST_FUNCTION(az_ulib_ipc_e2e_release_after_unpublish_succeed)
   ASSERT_ARE_EQUAL(int, AZ_OK, out);
 
   /// cleanup
-  az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, AZ_ULIB_NO_WAIT);
-  az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, AZ_ULIB_NO_WAIT);
-  az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, AZ_ULIB_NO_WAIT);
-  az_ulib_ipc_deinit();
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, AZ_ULIB_NO_WAIT));
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_deinit());
 }
 
 TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_succeed)
@@ -566,7 +565,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_succeed)
   {
     (void)test_thread_create(&thread_handle[i], &call_sync_thread, interface_handle);
   }
-  az_ulib_ipc_release_interface(interface_handle);
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_release_interface(interface_handle));
 
   /// assert
   for (int i = 0; i < MAX_THREAD; i++)
@@ -617,7 +616,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_ti
 
   // As soon as the unpublish failed, release the command to end its execution.
   (void)AZ_ULIB_PORT_ATOMIC_DEC_W(&g_lock_thread);
-  az_ulib_ipc_release_interface(interface_handle);
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_release_interface(interface_handle));
 
   /// assert
   int res;
@@ -667,7 +666,7 @@ TEST_FUNCTION(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_and_unpublis
   ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, 10000));
   ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_1_V2, 10000));
   ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_unpublish(&MY_INTERFACE_3_V123, 10000));
-  az_ulib_ipc_release_interface(interface_handle);
+  ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_release_interface(interface_handle));
 
   /// assert
   for (int i = 0; i < SMALL_NUMBER_THREAD; i++)
