@@ -10,7 +10,6 @@ if(${run_ulib_unit_tests})
     add_subdirectory(tests_ut/az_ulib_descriptor_ut)
     add_subdirectory(tests_ut/az_ulib_ipc_ut)
     add_subdirectory(tests_ut/az_ulib_ustream_ut)
-    add_subdirectory(tests_ut/az_ulib_ucontract_ut)
     add_subdirectory(tests_ut/az_ulib_ustream_aux_ut)
 endif()
 
