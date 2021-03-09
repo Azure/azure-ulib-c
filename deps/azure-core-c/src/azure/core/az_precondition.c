@@ -21,7 +21,7 @@ void az_precondition_failed_set_callback(az_precondition_failed_fn az_preconditi
   _az_precondition_failed_callback = az_precondition_failed_callback;
 }
 
-az_precondition_failed_fn az_precondition_failed_get_callback()
+az_precondition_failed_fn az_precondition_failed_get_callback(void)
 {
   return _az_precondition_failed_callback;
 }
