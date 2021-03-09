@@ -13,7 +13,6 @@
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
-#include "az_ulib_ucontract.h"
 #include "az_ulib_ulog.h"
 #include "display_1_interface.h"
 #include "fabrikan_display_48x4_bsp.h"
@@ -46,8 +45,6 @@ static az_result cls_concrete(az_ulib_model_in model_in, az_ulib_model_out model
 
 static az_result print_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
 {
-  AZ_ULIB_UCONTRACT(AZ_ULIB_UCONTRACT_REQUIRE_NOT_NULL(model_in, AZ_ERROR_ARG));
-
   /*
    * ==================
    * The user code starts here.

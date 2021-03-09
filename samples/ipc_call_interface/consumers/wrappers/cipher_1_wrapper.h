@@ -36,7 +36,8 @@ extern "C"
    */
   static inline void cipher_1_destroy(az_ulib_ipc_interface_handle handle)
   {
-    az_ulib_ipc_release_interface(handle);
+    az_result result = az_ulib_ipc_release_interface(handle);
+    (void)result;
   }
 
   /*

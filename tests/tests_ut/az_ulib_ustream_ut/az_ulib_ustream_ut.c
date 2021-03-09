@@ -15,7 +15,9 @@
 #endif
 
 #include "az_ulib_ctest_aux.h"
+#include "az_ulib_test_precondition.h"
 #include "az_ulib_ustream_mock_buffer.h"
+#include "azure/core/az_precondition.h"
 #include "azure_macro_utils/macro_utils.h"
 #include "testrunnerswitcher.h"
 #include "umock_c/umock_c.h"
@@ -44,8 +46,16 @@ static void ustream_factory(az_ulib_ustream* ustream)
   uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t) * USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
   (void)memcpy(
       buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-  az_ulib_ustream_init(
-      ustream, ustream_control_block, free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
+  ASSERT_ARE_EQUAL(
+      int,
+      AZ_OK,
+      az_ulib_ustream_init(
+          ustream,
+          ustream_control_block,
+          free,
+          buf,
+          USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
+          free));
 }
 #define USTREAM_COMPLIANCE_TARGET_FACTORY(ustream) ustream_factory(ustream)
 
@@ -56,6 +66,10 @@ static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code)
 {
   ASSERT_FAIL("umock_c reported error :%i", error_code);
 }
+
+#ifndef AZ_NO_PRECONDITION_CHECKING
+AZ_ULIB_ENABLE_PRECONDITION_CHECK_TESTS()
+#endif // AZ_NO_PRECONDITION_CHECKING
 
 /**
  * Beginning of the UT for ustream.c on ownership model.
@@ -68,6 +82,10 @@ TEST_SUITE_INITIALIZE(suite_init)
 
   g_test_by_test = TEST_MUTEX_CREATE();
   ASSERT_IS_NOT_NULL(g_test_by_test);
+
+#ifndef AZ_NO_PRECONDITION_CHECKING
+  AZ_ULIB_SETUP_PRECONDITION_CHECK_TESTS();
+#endif // AZ_NO_PRECONDITION_CHECKING
 
   result = umock_c_init(on_umock_c_error);
   ASSERT_ARE_EQUAL(int, 0, result);
@@ -106,6 +124,81 @@ TEST_FUNCTION_CLEANUP(test_method_cleanup)
 
   TEST_MUTEX_RELEASE(g_test_by_test);
 }
+
+#ifndef AZ_NO_PRECONDITION_CHECKING
+/* az_ulib_ustream_init shall fail with precondition if the provided constant buffer is NULL. */
+TEST_FUNCTION(az_ulib_ustream_init_null_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  az_ulib_ustream_data_cb control_block;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ustream_init(
+      &ustream_instance,
+      &control_block,
+      NULL,
+      NULL,
+      USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
+      NULL));
+
+  /// cleanup
+}
+
+/* az_ulib_ustream_init shall fail with precondition if the provided buffer length is zero. */
+TEST_FUNCTION(az_ulib_ustream_init_zero_length_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  az_ulib_ustream_data_cb control_block;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ustream_init(
+      &ustream_instance, &control_block, NULL, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, NULL));
+
+  /// cleanup
+}
+
+/* az_ulib_ustream_init shall fail with precondition if the provided buffer length is zero. */
+TEST_FUNCTION(az_ulib_ustream_init_NULL_ustream_instance_failed)
+{
+  /// arrange
+  az_ulib_ustream_data_cb control_block;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ustream_init(
+      NULL,
+      &control_block,
+      NULL,
+      USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
+      USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
+      NULL));
+
+  /// cleanup
+}
+
+/* az_ulib_ustream_init shall fail with precondition if the provided buffer length is zero. */
+TEST_FUNCTION(az_ulib_ustream_init_NULL_control_block_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ustream_init(
+      &ustream_instance,
+      NULL,
+      NULL,
+      USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
+      USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
+      NULL));
+
+  /// cleanup
+}
+#endif // AZ_NO_PRECONDITION_CHECKING
 
 /* az_ulib_ustream_init shall create an instance of the ustream and initialize the instance. */
 TEST_FUNCTION(az_ulib_ustream_init_const_succeed)
@@ -160,87 +253,6 @@ TEST_FUNCTION(az_ulib_ustream_init_succeed)
 
   /// cleanup
   (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* az_ulib_ustream_init shall return NULL if the provided constant buffer is NULL */
-TEST_FUNCTION(az_ulib_ustream_init_null_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  az_ulib_ustream_data_cb control_block;
-
-  /// act
-  az_result result = az_ulib_ustream_init(
-      &ustream_instance,
-      &control_block,
-      NULL,
-      NULL,
-      USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
-      NULL);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-}
-
-/* az_ulib_ustream_init shall return NULL if the provided buffer length is zero */
-TEST_FUNCTION(az_ulib_ustream_init_zero_length_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  az_ulib_ustream_data_cb control_block;
-
-  /// act
-  az_result result = az_ulib_ustream_init(
-      &ustream_instance, &control_block, NULL, USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, NULL);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-}
-
-/* az_ulib_ustream_init shall return NULL if the provided buffer length is zero */
-TEST_FUNCTION(az_ulib_ustream_init_NULL_ustream_instance_failed)
-{
-  /// arrange
-  az_ulib_ustream_data_cb control_block;
-
-  /// act
-  az_result result = az_ulib_ustream_init(
-      NULL,
-      &control_block,
-      NULL,
-      USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
-      USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
-      NULL);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-}
-
-/* az_ulib_ustream_init shall return NULL if the provided buffer length is zero */
-TEST_FUNCTION(az_ulib_ustream_init_NULL_control_block_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-
-  /// act
-  az_result result = az_ulib_ustream_init(
-      &ustream_instance,
-      NULL,
-      NULL,
-      USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
-      USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
-      NULL);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
 }
 
 #include "az_ulib_ustream_compliance_ut.h"

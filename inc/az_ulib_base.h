@@ -16,9 +16,9 @@
 #include <stdint.h>
 #else
 #include <cstdint>
-extern "C"
-{
 #endif
+
+#include "azure/core/_az_cfg_prefix.h"
 
 /**
  * @brief   Does not wait if the resource is not available and returns the proper error code.
@@ -59,8 +59,6 @@ static inline bool az_ulib_version_match(
           && (current_version < required_version)));
 }
 
-#ifdef __cplusplus
-}
-#endif //__cplusplus
+#include "azure/core/_az_cfg_suffix.h"
 
 #endif // AZ_ULIB_BASE_H

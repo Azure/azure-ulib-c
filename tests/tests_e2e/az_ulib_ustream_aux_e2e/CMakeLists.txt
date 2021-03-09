@@ -3,9 +3,9 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-add_executable(ustream_aux_e2e
+add_executable(az_ulib_ustream_aux_e2e
     ${CMAKE_CURRENT_LIST_DIR}/main.c
     ${CMAKE_CURRENT_LIST_DIR}/az_ulib_ustream_aux_e2e.c
 )
 
-ulib_populate_test_target(ustream_aux_e2e)
+ulib_populate_test_target(az_ulib_ustream_aux_e2e)

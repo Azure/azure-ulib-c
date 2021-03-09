@@ -334,13 +334,16 @@ TEST_FUNCTION(az_ulib_ustream_split_split_and_concat_succeed)
   az_ulib_ustream_data_cb* data_cb
       = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
   az_ulib_ustream ustream_instance;
-  az_ulib_ustream_init(
-      &ustream_instance,
-      data_cb,
-      free,
-      USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3,
-      strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3),
-      NULL);
+  ASSERT_ARE_EQUAL(
+      int,
+      AZ_OK,
+      az_ulib_ustream_init(
+          &ustream_instance,
+          data_cb,
+          free,
+          USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3,
+          strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2_3),
+          NULL));
 
   uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
   size_t split_location = strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_2);

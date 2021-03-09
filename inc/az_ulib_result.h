@@ -13,16 +13,7 @@
 
 #include "azure/core/az_result.h"
 
-#ifndef __cplusplus
-#else
-extern "C"
-{
-#endif
-
-/**
- * @brief   Error bit for error values.
- */
-#define AZ_ULIB_ERROR_FLAG 0X80
+#include "azure/core/_az_cfg_prefix.h"
 
 /**
  * @brief   Enumeration of ulib results.
@@ -150,8 +141,6 @@ enum az_result_ulib
     break;                                                                 \
   }
 
-#ifdef __cplusplus
-}
-#endif //__cplusplus
+#include "azure/core/_az_cfg_suffix.h"
 
 #endif // AZ_ULIB_RESULT_H

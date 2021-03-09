@@ -9,9 +9,6 @@
 #ifndef AZ_ULIB_PAL_OS_API_H
 #define AZ_ULIB_PAL_OS_API_H
 
-#include "azure_macro_utils/macro_utils.h"
-#include "umock_c/umock_c_prod.h"
-
 #include "az_ulib_pal_os.h"
 
 #ifndef __cplusplus
@@ -27,14 +24,14 @@ extern "C"
  *
  * @param[in,out]   lock    The #az_ulib_pal_os_lock* that points to the lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_init, az_ulib_pal_os_lock*, lock);
+void az_pal_os_lock_init(az_ulib_pal_os_lock* lock);
 
 /**
  * @brief   The lock instance is destroyed.
  *
  * @param[in]       lock    The #az_ulib_pal_os_lock* that points to a valid lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_deinit, az_ulib_pal_os_lock*, lock);
+void az_pal_os_lock_deinit(az_ulib_pal_os_lock* lock);
 
 /**
  * @brief   Acquires a lock on the given lock handle. Uses platform specific mutex primitives in
@@ -42,7 +39,7 @@ MOCKABLE_FUNCTION(, void, az_pal_os_lock_deinit, az_ulib_pal_os_lock*, lock);
  *
  * @param[in]       lock    The #az_ulib_pal_os_lock* that points to a valid lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_acquire, az_ulib_pal_os_lock*, lock);
+void az_pal_os_lock_acquire(az_ulib_pal_os_lock* lock);
 
 /**
  * @brief   Releases the lock on the given lock handle. Uses platform specific mutex primitives in
@@ -50,14 +47,14 @@ MOCKABLE_FUNCTION(, void, az_pal_os_lock_acquire, az_ulib_pal_os_lock*, lock);
  *
  * @param[in]       lock    The #az_ulib_pal_os_lock* that points to a valid lock handle.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_lock_release, az_ulib_pal_os_lock*, lock);
+void az_pal_os_lock_release(az_ulib_pal_os_lock* lock);
 
 /**
  * @brief   Sleep for some milliseconds.
  *
  * @param[in]       sleep_time_ms    The `uint32_t` with the number of milliseconds to sleep.
  */
-MOCKABLE_FUNCTION(, void, az_pal_os_sleep, uint32_t, sleep_time_ms);
+void az_pal_os_sleep(uint32_t sleep_time_ms);
 
 #ifdef __cplusplus
 }

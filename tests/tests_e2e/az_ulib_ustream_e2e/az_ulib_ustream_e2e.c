@@ -38,8 +38,16 @@ static void ustream_factory(az_ulib_ustream* ustream)
   uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t) * USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
   (void)memcpy(
       buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-  az_ulib_ustream_init(
-      ustream, ustream_control_block, free, buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
+  ASSERT_ARE_EQUAL(
+      int,
+      AZ_OK,
+      az_ulib_ustream_init(
+          ustream,
+          ustream_control_block,
+          free,
+          buf,
+          USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
+          free));
 }
 #define USTREAM_COMPLIANCE_TARGET_FACTORY(ustream) ustream_factory(ustream)
 

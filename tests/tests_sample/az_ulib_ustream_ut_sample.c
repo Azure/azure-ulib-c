@@ -15,7 +15,9 @@
 #endif
 
 #include "az_ulib_ctest_aux.h"
+#include "az_ulib_test_precondition.h"
 #include "az_ulib_ustream_mock_buffer.h"
+#include "azure/core/az_precondition.h"
 #include "azure_macro_utils/macro_utils.h"
 #include "testrunnerswitcher.h"
 #include "umock_c/umock_c.h"
@@ -54,6 +56,10 @@ static void on_umock_c_error(UMOCK_C_ERROR_CODE error_code)
   ASSERT_FAIL("umock_c reported error :%i", error_code);
 }
 
+#ifndef AZ_NO_PRECONDITION_CHECKING
+AZ_ULIB_ENABLE_PRECONDITION_CHECK_TESTS()
+#endif // AZ_NO_PRECONDITION_CHECKING
+
 /**
  * Beginning of the UT for your ustream implementation.
  * Feel free to change the name of the test in BEGIN_TEST_SUITE
@@ -68,6 +74,10 @@ TEST_SUITE_INITIALIZE(suite_init)
 
   g_test_by_test = TEST_MUTEX_CREATE();
   ASSERT_IS_NOT_NULL(g_test_by_test);
+
+#ifndef AZ_NO_PRECONDITION_CHECKING
+  AZ_ULIB_SETUP_PRECONDITION_CHECK_TESTS();
+#endif // AZ_NO_PRECONDITION_CHECKING
 
   result = umock_c_init(on_umock_c_error);
   ASSERT_ARE_EQUAL(int, 0, result);

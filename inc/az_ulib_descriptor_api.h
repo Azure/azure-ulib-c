@@ -18,9 +18,9 @@
 #else
 #include <cstddef>
 #include <cstdint>
-extern "C"
-{
 #endif /* __cplusplus */
+
+#include "azure/core/_az_cfg_prefix.h"
 
 /**
  * @file    az_ulib_descriptor_api.h
@@ -198,8 +198,6 @@ typedef struct az_ulib_interface_descriptor_tag
         (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_TELEMETRY)          \
   }
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+#include "azure/core/_az_cfg_suffix.h"
 
 #endif /* AZ_ULIB_DESCRIPTOR_H */

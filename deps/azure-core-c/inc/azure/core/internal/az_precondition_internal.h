@@ -41,7 +41,7 @@
 
 #include <azure/core/_az_cfg_prefix.h>
 
-az_precondition_failed_fn az_precondition_failed_get_callback();
+az_precondition_failed_fn az_precondition_failed_get_callback(void);
 
 // __analysis_assume() tells MSVC's code analysis tool about the assumptions we have, so it doesn't
 // emit warnings for the statements that we put into _az_PRECONDITION().
