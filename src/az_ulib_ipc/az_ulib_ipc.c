@@ -12,7 +12,6 @@
 #include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
-#include "az_ulib_ucontract.h"
 #include "az_ulib_ulog.h"
 
 #include <azure/core/internal/az_precondition_internal.h>
@@ -148,17 +147,16 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
             interface_descriptor->name, interface_descriptor->version, AZ_ULIB_VERSION_EQUALS_TO)
         != NULL)
     {
-      /*az_ulib_ipc_publish_with__descriptor_with_same_name_and_version_failed*/
+      // IPC shall not accept interfaces with same name and version because it cannot decided each
+      // one to retrieve when someone uses az_ulib_ipc_try_get_interface().
       result = AZ_ERROR_ULIB_ELEMENT_DUPLICATE;
     }
     else if ((new_interface = get_first_free()) == NULL)
     {
-      /*az_ulib_ipc_publish_out_of_memory_failed*/
       result = AZ_ERROR_NOT_ENOUGH_SPACE;
     }
     else
     {
-      /*az_ulib_ipc_publish_succeed*/
       (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
           &(new_interface->interface_descriptor), interface_descriptor);
       new_interface->ref_count = 0;
@@ -168,7 +166,6 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
       if (interface_handle != NULL)
       {
-        /*az_ulib_ipc_publish_return_handle_succeed*/
         *interface_handle = new_interface;
       }
       result = AZ_OK;
@@ -196,7 +193,6 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
              interface_descriptor->name, interface_descriptor->version, AZ_ULIB_VERSION_EQUALS_TO))
         == NULL)
     {
-      /*az_ulib_ipc_unpublish_with_unknown_descriptor_failed*/
       result = AZ_ERROR_ITEM_NOT_FOUND;
     }
     else
@@ -216,7 +212,6 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
       // commands, and they may be removed from the memory. There will be the case that the other
       // process is already in the az_ulib_ipc_call, in the direction to call a command in this
       // interface, but the call will just return AZ_ERROR_ITEM_NOT_FOUND from there.
-      /*az_ulib_ipc_unpublish_succeed*/
       uint32_t retry_interval;
       if (wait_option_ms == AZ_ULIB_WAIT_FOREVER)
       {
@@ -241,7 +236,6 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
       // function az_ulib_ipc_unpublish, in many applications, it will not be used at all. So, we
       // decided to open an exception here and use a busy loop on the az_ulib_ipc_unpublish
       // instead of a semaphore.
-      /*az_ulib_ipc_unpublish_with_command_running_with_small_timeout_failed*/
       while ((retry_total_time < wait_option_ms)
              && (release_interface->running_count_low_watermark != 0))
       {
@@ -256,14 +250,10 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
 
       if (release_interface->running_count_low_watermark == 0)
       {
-        /*az_ulib_ipc_unpublish_random_order_succeed*/
-        /*az_ulib_ipc_unpublish_release_resource_succeed*/
-        /*az_ulib_ipc_unpublish_with_valid_interface_instance_succeed*/
         result = AZ_OK;
       }
       else
       {
-        /*az_ulib_ipc_unpublish_with_command_running_failed*/
         // If caller doesn't want to wait anymore, recover the interface and return
         // AZ_ERROR_ULIB_BUSY.
         (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
@@ -295,14 +285,10 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
   {
     if ((ipc_interface = get_interface(name, version, match_criteria)) == NULL)
     {
-      /*az_ulib_ipc_try_get_interface_with_unknown_name_failed*/
-      /*az_ulib_ipc_try_get_interface_with_unknown_version_failed*/
       result = AZ_ERROR_ITEM_NOT_FOUND;
-      /*az_ulib_ipc_try_get_interface_with_max_interface_instances_failed*/
     }
     else if ((result = get_instance(ipc_interface)) == AZ_OK)
     {
-      /*az_ulib_ipc_try_get_interface_succeed*/
       *interface_handle = ipc_interface;
     }
   }
@@ -326,13 +312,10 @@ AZ_NODISCARD az_result az_ulib_ipc_get_interface(
     _az_ulib_ipc_interface* ipc_interface = original_interface_handle;
     if (ipc_interface->interface_descriptor == NULL)
     {
-      /*az_ulib_ipc_get_interface_with_unpublished_interface_failed*/
       result = AZ_ERROR_ITEM_NOT_FOUND;
-      /*az_ulib_ipc_get_interface_with_max_interface_instances_failed*/
     }
     else if ((result = get_instance(ipc_interface)) == AZ_OK)
     {
-      /*az_ulib_ipc_get_interface_succeed*/
       *interface_handle = ipc_interface;
     }
   }
@@ -353,12 +336,10 @@ AZ_NODISCARD az_result az_ulib_ipc_release_interface(az_ulib_ipc_interface_handl
   {
     if (ipc_interface->ref_count == 0)
     {
-      /*az_ulib_ipc_release_interface_double_release_failed*/
       result = AZ_ERROR_ULIB_PRECONDITION;
     }
     else
     {
-      /*az_ulib_ipc_release_interface_succeed*/
       result = AZ_OK;
       ipc_interface->ref_count--;
     }
@@ -392,12 +373,10 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
 
     if (descriptor == NULL)
     {
-      /*az_ulib_ipc_call_unpublished_interface_failed*/
       result = AZ_ERROR_ITEM_NOT_FOUND;
     }
     else
     {
-      /*az_ulib_ipc_call_calls_the_command_succeed*/
       result = descriptor->capability_list[command_index].capability_ptr_1.command(
           model_in, model_out);
     }

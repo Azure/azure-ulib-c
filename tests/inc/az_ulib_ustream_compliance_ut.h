@@ -6,6 +6,7 @@
 #define AZ_ULIB_USTREAM_COMPLIANCE_UT_H
 
 #include "az_ulib_ctest_aux.h"
+#include "az_ulib_test_precondition.h"
 #include "az_ulib_ustream_mock_buffer.h"
 
 /* check for test artifacts. */
@@ -32,6 +33,384 @@
 /*
  * Start compliance tests:
  */
+
+#ifndef AZ_NO_PRECONDITION_CHECKING
+/* If the provided handle is NULL, the dispose shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_dispose_compliance_null_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED((&ustream_instance)->control_block->api->dispose(NULL));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is not the implemented buffer type, the dispose shall fail with
+ * precondition. */
+TEST_FUNCTION(az_ulib_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)->control_block->api->dispose(ustream_mock_create()));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided source handle is NULL, the clone shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_clone_compliance_null_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+  az_ulib_ustream ustream_instance_clone;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)->control_block->api->clone(&ustream_instance_clone, NULL, 0));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided destination handle is NULL, the clone shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_clone_compliance_null_buffer_clone_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)->control_block->api->clone(NULL, &ustream_instance, 0));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is not the implemented buffer type, the clone shall fail with
+ * precondition. */
+TEST_FUNCTION(az_ulib_ustream_clone_compliance_buffer_is_not_type_of_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+  az_ulib_ustream ustream_instance_clone;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)
+          ->control_block->api->clone(&ustream_instance_clone, ustream_mock_create(), 0));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is NULL, the get_remaining_size shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_get_remaining_size_compliance_null_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+  size_t size;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)->control_block->api->get_remaining_size(NULL, &size));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+TEST_FUNCTION(az_ulib_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+  size_t size;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)->control_block->api->get_remaining_size(ustream_mock_create(), &size));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is not the implemented buffer type, the get_remaining_size shall fail with
+ * precondition. */
+TEST_FUNCTION(az_ulib_ustream_get_remaining_size_compliance_null_size_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ustream_get_remaining_size(&ustream_instance, NULL));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided instance is NULL, the get_position shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_get_current_position_compliance_null_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+  offset_t position;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)->control_block->api->get_position(NULL, &position));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided instance is not the implemented buffer type, the get_position shall fail with
+ * precondition. */
+TEST_FUNCTION(az_ulib_ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+  offset_t position;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)->control_block->api->get_position(ustream_mock_create(), &position));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided position is NULL, the get_position shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_get_current_position_compliance_null_position_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ustream_get_position(&ustream_instance, NULL));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is NULL, the read shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_read_compliance_null_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+  uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
+  size_t size_result;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)
+          ->control_block->api->read(
+              NULL, buf_result, USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, &size_result));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is not the implemented buffer type, the read shall fail with precondition.
+ */
+TEST_FUNCTION(az_ulib_ustream_read_compliance_non_type_of_buffer_api_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+  uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
+  size_t size_result;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED((&ustream_instance)
+                                          ->control_block->api->read(
+                                              ustream_mock_create(),
+                                              buf_result,
+                                              USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH,
+                                              &size_result));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided buffer_length is zero, the read shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_read_compliance_buffer_with_zero_size_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+  uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
+  size_t size_result;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      az_ulib_ustream_read(&ustream_instance, buf_result, 0, &size_result));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is NULL, the read shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_read_compliance_null_return_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+  size_t size_result;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ustream_read(
+      &ustream_instance, NULL, USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, &size_result));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided return size pointer is NULL, the read shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_read_compliance_null_return_size_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+  uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ustream_read(
+      &ustream_instance, buf_result, USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, NULL));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is NULL, the set_position shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_set_position_compliance_null_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)->control_block->api->set_position(NULL, 1));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is not the implemented buffer type, the set_position shall fail with
+ * precondition. */
+TEST_FUNCTION(az_ulib_ustream_set_position_compliance_non_type_of_buffer_api_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)->control_block->api->set_position(ustream_mock_create(), 1));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is NULL, the release shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_release_compliance_null_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED((&ustream_instance)->control_block->api->release(NULL, 0));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is not the implemented buffer type, the release shall fail with
+ * precondition. */
+TEST_FUNCTION(az_ulib_ustream_release_compliance_non_type_of_buffer_api_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)->control_block->api->release(ustream_mock_create(), 0));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is NULL, the reset shall fail with precondition. */
+TEST_FUNCTION(az_ulib_ustream_reset_compliance_null_buffer_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED((&ustream_instance)->control_block->api->reset(NULL));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+/* If the provided handle is not the implemented buffer type, the reset shall fail with
+ * precondition. */
+TEST_FUNCTION(az_ulib_ustream_reset_compliance_non_type_of_buffer_api_failed)
+{
+  /// arrange
+  az_ulib_ustream ustream_instance;
+  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      (&ustream_instance)->control_block->api->reset(ustream_mock_create()));
+
+  /// cleanup
+  (void)az_ulib_ustream_dispose(&ustream_instance);
+}
+
+#endif // AZ_NO_PRECONDITION_CHECKING
 
 /* The dispose shall free all allocated resources for the instance of the buffer. */
 TEST_FUNCTION(az_ulib_ustream_dispose_compliance_cloned_instance_disposed_first_succeed)
@@ -95,41 +474,6 @@ TEST_FUNCTION(az_ulib_ustream_dispose_compliance_single_instance_succeed)
   ASSERT_ARE_EQUAL(int, AZ_OK, result);
 
   /// cleanup
-}
-
-/* If the provided handle is NULL, the dispose shall return AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_dispose_compliance_null_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-
-  /// act
-  az_result result = (&ustream_instance)->control_block->api->dispose(NULL);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided handle is not the implemented buffer type, the dispose shall return
- * AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-
-  /// act
-  az_result result = (&ustream_instance)->control_block->api->dispose(ustream_mock_create());
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
 }
 
 /* The clone shall return a buffer with the same content of the original buffer. */
@@ -530,62 +874,6 @@ TEST_FUNCTION(
   (void)az_ulib_ustream_dispose(&ustream_instance_clone2);
 }
 
-/* If the provided handle is NULL, the clone shall return NULL. */
-TEST_FUNCTION(az_ulib_ustream_clone_compliance_null_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-  az_ulib_ustream ustream_instance_clone;
-
-  /// act
-  az_result result
-      = (&ustream_instance)->control_block->api->clone(&ustream_instance_clone, NULL, 0);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided handle is NULL, the clone shall return NULL. */
-TEST_FUNCTION(az_ulib_ustream_clone_compliance_null_buffer_clone_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-
-  /// act
-  az_result result = (&ustream_instance)->control_block->api->clone(NULL, &ustream_instance, 0);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided handle is not the implemented buffer type, the clone shall return NULL. */
-TEST_FUNCTION(az_ulib_ustream_clone_compliance_buffer_is_not_type_of_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-  az_ulib_ustream ustream_instance_clone;
-
-  /// act
-  az_result result
-      = (&ustream_instance)
-            ->control_block->api->clone(&ustream_instance_clone, ustream_mock_create(), 0);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
 /* If the offset plus the buffer length bypass UINT32_MAX, the clone shall return NULL. */
 TEST_FUNCTION(az_ulib_ustream_clone_compliance_offset_exceed_size_failed)
 {
@@ -688,63 +976,6 @@ TEST_FUNCTION(
   (void)az_ulib_ustream_dispose(&ustream_instance);
 }
 
-/* If the provided handle is NULL, the get_remaining_size shall return
- * AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_get_remaining_size_compliance_null_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-  size_t size;
-
-  /// act
-  az_result result = (&ustream_instance)->control_block->api->get_remaining_size(NULL, &size);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided handle is not the implemented buffer type, the get_remaining_size shall return
- * AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_get_remaining_size_compliance_buffer_is_not_type_of_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-  size_t size;
-
-  /// act
-  az_result result
-      = (&ustream_instance)->control_block->api->get_remaining_size(ustream_mock_create(), &size);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided size is NULL, the get_remaining_size shall return AZ_ERROR_ARG.
- */
-TEST_FUNCTION(az_ulib_ustream_get_remaining_size_compliance_null_size_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-
-  /// act
-  az_result result = az_ulib_ustream_get_remaining_size(&ustream_instance, NULL);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
 /* The get_position shall return the logical current position of the buffer. */
 TEST_FUNCTION(az_ulib_ustream_get_current_position_compliance_new_buffer_succeed)
 {
@@ -823,63 +1054,6 @@ TEST_FUNCTION(
 
   /// cleanup
   (void)az_ulib_ustream_dispose(&ustream_instance_clone);
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided instance is NULL, the get_position shall return AZ_ERROR_ARG.
- */
-TEST_FUNCTION(az_ulib_ustream_get_current_position_compliance_null_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-  offset_t position;
-
-  /// act
-  az_result result = (&ustream_instance)->control_block->api->get_position(NULL, &position);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided instance is not the implemented buffer type, the get_position shall return
- * AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_get_current_position_compliance_buffer_is_not_type_of_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-  offset_t position;
-
-  /// act
-  az_result result
-      = (&ustream_instance)->control_block->api->get_position(ustream_mock_create(), &position);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided position is NULL, the get_position shall return AZ_ERROR_ARG.
- */
-TEST_FUNCTION(az_ulib_ustream_get_current_position_compliance_null_position_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-
-  /// act
-  az_result result = az_ulib_ustream_get_position(&ustream_instance, NULL);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
   (void)az_ulib_ustream_dispose(&ustream_instance);
 }
 
@@ -1170,135 +1344,6 @@ TEST_FUNCTION(az_ulib_ustream_read_compliance_single_byte_succeed)
   check_buffer(
       &ustream_instance,
       1,
-      USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
-      USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided buffer_length is zero, the read shall return AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_read_compliance_buffer_with_zero_size_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-  uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
-  size_t size_result;
-
-  /// act
-  az_result result = az_ulib_ustream_read(&ustream_instance, buf_result, 0, &size_result);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-  check_buffer(
-      &ustream_instance,
-      0,
-      USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
-      USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided handle is NULL, the read shall return AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_read_compliance_null_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-  uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
-  size_t size_result;
-
-  /// act
-  az_result result = (&ustream_instance)
-                         ->control_block->api->read(
-                             NULL, buf_result, USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, &size_result);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-  check_buffer(
-      &ustream_instance,
-      0,
-      USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
-      USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided handle is not the implemented buffer type, the read shall return
- * AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_read_compliance_non_type_of_buffer_api_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-  uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
-  size_t size_result;
-
-  /// act
-  az_result result = (&ustream_instance)
-                         ->control_block->api->read(
-                             ustream_mock_create(),
-                             buf_result,
-                             USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH,
-                             &size_result);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-  check_buffer(
-      &ustream_instance,
-      0,
-      USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
-      USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided buffer is NULL, the read shall return AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_read_compliance_null_return_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-  size_t size_result;
-
-  /// act
-  az_result result = az_ulib_ustream_read(
-      &ustream_instance, NULL, USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, &size_result);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-  check_buffer(
-      &ustream_instance,
-      0,
-      USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
-      USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided return size pointer is NULL, the read shall return
- * AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_read_compliance_null_return_size_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-  uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
-
-  /// act
-  az_result result = az_ulib_ustream_read(
-      &ustream_instance, buf_result, USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH, NULL);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-  check_buffer(
-      &ustream_instance,
-      0,
       USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
       USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
 
@@ -1779,42 +1824,6 @@ TEST_FUNCTION(
   (void)az_ulib_ustream_dispose(&ustream_instance);
 }
 
-/* If the provided handle is NULL, the set_position shall return AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_set_position_compliance_null_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-
-  /// act
-  az_result result = (&ustream_instance)->control_block->api->set_position(NULL, 1);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided handle is not the implemented buffer type, the set_position shall return
- * AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_set_position_compliance_non_type_of_buffer_api_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-
-  /// act
-  az_result result
-      = (&ustream_instance)->control_block->api->set_position(ustream_mock_create(), 1);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
 /* The release shall do nothing for &ustream_instance. */
 TEST_FUNCTION(az_ulib_ustream_release_compliance_succeed)
 {
@@ -2092,41 +2101,6 @@ TEST_FUNCTION(az_ulib_ustream_release_compliance_release_position_already_releas
   (void)az_ulib_ustream_dispose(&ustream_instance);
 }
 
-/* If the provided handle is NULL, the release shall return AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_release_compliance_null_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-
-  /// act
-  az_result result1 = (&ustream_instance)->control_block->api->release(NULL, 0);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result1);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided handle is not the implemented buffer type, the release shall return
- * AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_release_compliance_non_type_of_buffer_api_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-
-  /// act
-  az_result result1 = (&ustream_instance)->control_block->api->release(ustream_mock_create(), 0);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result1);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
 /* The reset shall change the current position of the buffer. */
 TEST_FUNCTION(az_ulib_ustream_reset_compliance_back_to_beginning_succeed)
 {
@@ -2225,41 +2199,6 @@ TEST_FUNCTION(az_ulib_ustream_reset_compliance_cloned_buffer_succeed)
   /// cleanup
   (void)az_ulib_ustream_dispose(&ustream_instance);
   (void)az_ulib_ustream_dispose(&ustream_instance_clone);
-}
-
-/* If the provided handle is NULL, the reset shall return AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_reset_compliance_null_buffer_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-
-  /// act
-  az_result result = (&ustream_instance)->control_block->api->reset(NULL);
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
-}
-
-/* If the provided handle is not the implemented buffer type, the reset shall return
- * AZ_ERROR_ARG. */
-TEST_FUNCTION(az_ulib_ustream_reset_compliance_non_type_of_buffer_api_failed)
-{
-  /// arrange
-  az_ulib_ustream ustream_instance;
-  USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
-
-  /// act
-  az_result result = (&ustream_instance)->control_block->api->reset(ustream_mock_create());
-
-  /// assert
-  ASSERT_ARE_EQUAL(int, AZ_ERROR_ARG, result);
-
-  /// cleanup
-  (void)az_ulib_ustream_dispose(&ustream_instance);
 }
 
 #endif /* AZ_ULIB_USTREAM_COMPLIANCE_UT_H */

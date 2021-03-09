@@ -525,9 +525,9 @@ typedef struct az_ulib_ustream_multi_data_cb_tag
  *  It will return true if the handle is valid and it is the same type of the API. It will
  *      return false if the handle is `NULL` or not the correct type.
  */
-#define AZ_ULIB_USTREAM_IS_NOT_TYPE_OF(handle, type_api)                                       \
-  ((handle == NULL) || (handle->control_block == NULL) || (handle->control_block->api == NULL) \
-   || (handle->control_block->api != &type_api))
+#define AZ_ULIB_USTREAM_IS_TYPE_OF(handle, type_api)                                             \
+  (!((handle == NULL) || (handle->control_block == NULL) || (handle->control_block->api == NULL) \
+     || (handle->control_block->api != &type_api)))
 
 /**
  * @brief   Change the current position of the ustream.
@@ -543,14 +543,15 @@ typedef struct az_ulib_ustream_multi_data_cb_tag
  *          return #AZ_ERROR_ITEM_NOT_FOUND, and will not change the current position.
  *      - If the provided position is already released, the `set_position` shall return
  *          #AZ_ERROR_ITEM_NOT_FOUND, and will not change the current position.
- *      - If the provided interface is `NULL`, the `set_position` shall return #AZ_ERROR_ARG.
- *      - If the provided interface is not the implemented ustream type, the `set_position` shall
- *          return #AZ_ERROR_ARG.
+ *      - If the provided interface is `NULL`, the `set_position` shall fail with precondition.
+ *      - If the provided interface is not the implemented ustream type, the `set_position` fail
+ *          with precondition.
  *
- * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream. It
- *                                  cannot be `NULL`, and it shall be a valid ustream that is the
- *                                  implemented ustream type.
+ * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream.
  * @param[in]   position            The `offset_t` with the new current position in the ustream.
+ *
+ * @pre     \p ustream_instance shall not be `NULL`.
+ * @pre     \p ustream_instance shall be a valid ustream that is the implemented ustream type.
  *
  * @return The #az_result with the result of the `set_position` operation.
  *      @retval #AZ_OK                        If the ustream changed the current position with
@@ -558,7 +559,6 @@ typedef struct az_ulib_ustream_multi_data_cb_tag
  *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary for the `set_position`
  *                                            operation is busy.
  *      @retval #AZ_ERROR_CANCELED            If the `set_position` operation was cancelled.
- *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
  *      @retval #AZ_ERROR_ITEM_NOT_FOUND      If the position is out of the ustream range.
  *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to execute the
  *                                            `set_position` operation.
@@ -585,13 +585,14 @@ az_ulib_ustream_set_position(az_ulib_ustream* ustream_instance, offset_t positio
  *          released position.
  *      - If all bytes are already released, the ustream `reset` shall return
  *          #AZ_ERROR_ITEM_NOT_FOUND, and will not change the current position.
- *      - If the provided interface is `NULL`, the ustream `reset` shall return #AZ_ERROR_ARG.
+ *      - If the provided interface is `NULL`, the ustream `reset` shall fail with pre-condition.
  *      - If the provided interface is not the implemented ustream type, the ustream `reset` shall
- *          return #AZ_ERROR_ARG.
+ *          fail with pre-condition.
  *
- * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream. It
- *                                  cannot be `NULL`, and it shall be a valid ustream that is the
- *                                  implemented ustream type.
+ * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream.
+ *
+ * @pre     \p ustream_instance shall not be `NULL`.
+ * @pre     \p ustream_instance shall be a valid ustream that is the implemented ustream type.
  *
  * @return The #az_result with the result of the `reset` operation.
  *      @retval #AZ_OK                        If the ustream changed the current position with
@@ -599,7 +600,6 @@ az_ulib_ustream_set_position(az_ulib_ustream* ustream_instance, offset_t positio
  *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary for the `reset`
  *                                            operation is busy.
  *      @retval #AZ_ERROR_CANCELED            If the `reset` operation was cancelled.
- *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
  *      @retval #AZ_ERROR_ITEM_NOT_FOUND      If all previous bytes in the ustream were already
  *                                            released.
  *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to execute the
@@ -634,28 +634,27 @@ AZ_INLINE az_result az_ulib_ustream_reset(az_ulib_ustream* ustream_instance)
  *      - If there is no more content to return, the read shall return
  *          #AZ_ULIB_EOF, size shall be set to 0, and will not change the contents
  *          of the local buffer.
- *      - If the provided buffer_length is zero, the read shall return
- *          #AZ_ERROR_ARG.
+ *      - If the provided buffer_length is zero, the read shall fail with precondition.
  *      - If the provided buffer_length is lower than the minimum number of bytes that the ustream
- *          can copy, the read shall return #AZ_ERROR_ARG.
- *      - If the provided interface is `NULL`, the read shall return #AZ_ERROR_ARG.
- *      - If the provided interface is not the implemented ustream type, the read shall return
- *          #AZ_ERROR_ARG.
- *      - If the provided local buffer is `NULL`, the read shall return #AZ_ERROR_ARG.
- *      - If the provided return size pointer is `NULL`, the read shall return #AZ_ERROR_ARG and
- *          will not change the local buffer contents or the
- *          current position of the buffer.
+ *          can copy, the read shall fail with pre-condition.
+ *      - If the provided interface is `NULL`, the read shall fail with precondition.
+ *      - If the provided interface is not the implemented ustream type, the read shall fail with
+ *          pre-condition.
+ *      - If the provided local buffer is `NULL`, the read shall fail with precondition.
+ *      - If the provided return size pointer is `NULL`, the read shall fail with precondition.
  *
  * @param[in]       ustream_instance    The #az_ulib_ustream* with the interface of the ustream.
- *                                      It cannot be `NULL`, and it shall be a valid ustream that
- *                                      is the implemented ustream type.
- * @param[out]      buffer              The `uint8_t* const` that points to the local buffer. It
- *                                      cannot be `NULL`.
- * @param[in]       buffer_length       The `size_t` with the size of the local buffer. It shall
- *                                      be bigger than 0.
+ * @param[out]      buffer              The `uint8_t* const` that points to the local buffer.
+ * @param[in]       buffer_length       The `size_t` with the size of the local buffer.
  * @param[out]      size                The `size_t* const` that points to the place where the
  *                                      read shall store the number of valid `uint8_t` values
- *                                      returned in the local buffer. It cannot be `NULL`.
+ *                                      returned in the local buffer.
+ *
+ * @pre     \p ustream_instance shall not be `NULL`.
+ * @pre     \p ustream_instance shall be a valid ustream that is the implemented ustream type.
+ * @pre     \p buffer shall not be `NULL`.
+ * @pre     \p buffer_length shall not be bigger than 0.
+ * @pre     \p size shall not be `NULL`.
  *
  * @return The #az_result with the result of the read operation.
  *      @retval #AZ_OK                        If the ustream copied the content of the `Data
@@ -663,7 +662,6 @@ AZ_INLINE az_result az_ulib_ustream_reset(az_ulib_ustream* ustream_instance)
  *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary to read the ustream
  *                                            content is busy.
  *      @retval #AZ_ERROR_CANCELED            If the read of the content was cancelled.
- *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
  *      @retval #AZ_ULIB_EOF                  If there are no more `uint8_t` values in the `Data
  *                                            Source` to read.
  *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to execute the read.
@@ -687,17 +685,19 @@ AZ_INLINE az_result az_ulib_ustream_read(
  *  The `az_ulib_ustream_get_remaining_size` API shall follow the following minimum requirements:
  *      - The `get_remaining_size` shall return the number of bytes between the current position
  *          and the end of the ustream.
- *      - If the provided interface is `NULL`, the `get_remaining_size` shall return
- *          #AZ_ERROR_ARG.
+ *      - If the provided interface is `NULL`, the `get_remaining_size` shall fail with
+ *          precondition.
  *      - If the provided interface is not the implemented ustream type, the `get_remaining_size`
- *          shall return #AZ_ERROR_ARG.
- *      - If the provided size is `NULL`, the `get_remaining_size` shall return #AZ_ERROR_ARG.
+ *          shall fail with precondition.
+ *      - If the provided size is `NULL`, the `get_remaining_size` shall fail with precondition.
  *
- * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream. It
- *                                  cannot be `NULL`, and it shall be a valid ustream that is the
- *                                  implemented ustream type.
+ * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream.
  * @param[out]  size                The `size_t* const` to return the remaining number of
- *                                  `uint8_t` values. It cannot be `NULL`.
+ *                                  `uint8_t` values.
+ *
+ * @pre     \p ustream_instance shall not be `NULL`.
+ * @pre     \p ustream_instance shall be a valid ustream that is the implemented ustream type.
+ * @pre     \p size shall not be `NULL`.
  *
  * @return The #az_result with the result of the `get_remaining_size` operation.
  *      @retval #AZ_OK                        If it succeeded to get the remaining size of the
@@ -705,7 +705,6 @@ AZ_INLINE az_result az_ulib_ustream_read(
  *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary to get the remaining
  *                                            size of the ustream is busy.
  *      @retval #AZ_ERROR_CANCELED            If the `get_remaining_size` was cancelled.
- *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
  *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to execute the
  *                                            `get_remaining_size` operation.
  *      @retval #AZ_ERROR_ULIB_SECURITY       If the `get_remaining_size` was denied for
@@ -726,23 +725,24 @@ az_ulib_ustream_get_remaining_size(az_ulib_ustream* ustream_instance, size_t* co
  *
  *  The `az_ulib_ustream_get_position` API shall follow the following minimum requirements:
  *      - The `get_position` shall return the logical current position of the ustream.
- *      - If the provided interface is `NULL`, the `get_position` shall return #AZ_ERROR_ARG.
+ *      - If the provided interface is `NULL`, the `get_position` shall fail with precondition.
  *      - If the provided interface is not the implemented ustream type, the `get_position`
- *          shall return #AZ_ERROR_ARG.
- *      - If the provided position is `NULL`, the `get_position` shall return #AZ_ERROR_ARG.
+ *          shall fail with precondition.
+ *      - If the provided position is `NULL`, the `get_position` shall fail with precondition.
  *
- * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream. It
- *                                  cannot be `NULL`, and it shall be a valid ustream that is the
- *                                  implemented ustream type.
+ * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream.
  * @param[out]  position            The `offset_t* const` to return the logical current position
- *                                  in the ustream. It cannot be `NULL`.
+ *                                  in the ustream.
+ *
+ * @pre     \p ustream_instance shall not be `NULL`.
+ * @pre     \p ustream_instance shall be a valid ustream that is the implemented ustream type.
+ * @pre     \p position shall not be `NULL`.
  *
  * @return The #az_result with the result of the `get_position` operation.
  *      @retval #AZ_OK                        If it provided the position of the ustream.
  *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary for getting the
  *                                            position is busy.
  *      @retval #AZ_ERROR_CANCELED            If the `get_position` was cancelled.
- *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
  *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to execute the
  *                                            `get_position` operation.
  *      @retval #AZ_ERROR_ULIB_SECURITY       If the `get_position` was denied for
@@ -781,26 +781,27 @@ az_ulib_ustream_get_position(az_ulib_ustream* ustream_instance, offset_t* const 
  *      - The `release` shall dispose all resources necessary to handle the content of ustream
  *          before and including the release position.
  *      - If the release position is after the current position or the ustream size, the `release`
- *          shall return #AZ_ERROR_ARG, and do not release any resource.
+ *          shall return #AZ_ERROR_ARG.
  *      - If the release position is already released, the `release` shall return
  *          #AZ_ERROR_ITEM_NOT_FOUND, and do not release any resource.
- *      - If the provided interface is `NULL`, the `release` shall return #AZ_ERROR_ARG.
+ *      - If the provided interface is `NULL`, the `release` shall fail with precondition.
  *      - If the provided interface is not the implemented ustream type, the `release` shall
- *          return #AZ_ERROR_ARG.
+ *          fail with precondition.
  *
- * @param[in]  ustream_instance     The #az_ulib_ustream* with the interface of the ustream. It
- *                                  cannot be `NULL`, and it shall be a valid ustream that is the
- *                                  implemented ustream type.
+ * @param[in]  ustream_instance     The #az_ulib_ustream* with the interface of the ustream.
  * @param[in]  position             The `offset_t` with the position in the ustream to release.
  *                                  The ustream will release the `uint8_t` on the position and all
  *                                  `uint8_t` before the position. It shall be bigger than 0.
  *
+ * @pre     \p ustream_instance shall not be `NULL`.
+ * @pre     \p ustream_instance shall be a valid ustream that is the implemented ustream type.
+ *
  * @return The #az_result with the result of the `release` operation.
  *      @retval #AZ_OK                        If the ustream releases the position with success.
- *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
  *      @retval #AZ_ERROR_ITEM_NOT_FOUND      If the position is already released.
  *      @retval #AZ_ERROR_ULIB_SYSTEM         If the `release` operation failed on the system
  *                                            level.
+ *      @retbal #AZ_ERROR_ARG                 If the position is out of range.
  */
 AZ_INLINE az_result az_ulib_ustream_release(az_ulib_ustream* ustream_instance, offset_t position)
 {
@@ -920,17 +921,17 @@ AZ_INLINE az_result az_ulib_ustream_release(az_ulib_ustream* ustream_instance, o
  *          vice versa.
  *
  * @param[out]  ustream_instance_clone  The #az_ulib_ustream* with the interface of the ustream.
- *                                      It cannot be `NULL`.
  * @param[in]   ustream_instance        The #az_ulib_ustream* to be cloned.
- *                                      It cannot be `NULL`, and it shall be a valid ustream
- *                                      instance type.
  * @param[out]  offset                  The `offset_t` with the `Logical` position of the first
  *                                      byte in the cloned ustream.
  *
- * @return The #az_ulib_ustream* with the result of the clone operation.
- *      @retval not-NULL        If the ustream was cloned with success.
- *      @retval NULL            If one of the provided parameters is invalid or there is not
- *                              enough memory to control the new ustream.
+ * @pre     \p ustream_instance shall not be `NULL`.
+ * @pre     \p ustream_instance shall be a valid ustream that is the implemented ustream type.
+ * @pre     \p ustream_instance_clone shall not be `NULL`.
+ *
+ * @return The #az_result with the result of the clone operation.
+ *      @retval #AZ_OK          If the ustream was cloned with success.
+ *      @retval #AZ_ERROR_ARG   If the offset make buffer size bigger than UINT32_MAX.
  */
 AZ_INLINE az_result az_ulib_ustream_clone(
     az_ulib_ustream* ustream_instance_clone,
@@ -952,18 +953,18 @@ AZ_INLINE az_result az_ulib_ustream_clone(
  *      - The `dispose` shall free all allocated resources for the instance of the ustream.
  *      - If there are no more instances of the ustream, the `dispose` shall release all allocated
  *          resources to control the ustream.
- *      - If the provided interface is `NULL`, the `dispose` shall return #AZ_ERROR_ARG.
+ *      - If the provided interface is `NULL`, the `dispose` shall fail with precondition.
  *      - If the provided interface is not the type of the implemented ustream, the `dispose`
- *          shall return #AZ_ERROR_ARG.
+ *          shall fail with precondition.
  *
- * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream. It
- *                                  cannot be `NULL`, and it shall be a valid ustream that is a
- *                                  type of the implemented ustream.
+ * @param[in]   ustream_instance    The #az_ulib_ustream* with the interface of the ustream.
+ *
+ * @pre     \p ustream_instance shall not be `NULL`.
+ * @pre     \p ustream_instance shall be a valid ustream that is the implemented ustream type.
  *
  * @return The #az_result with the result of the `dispose` operation.
  *      @retval #AZ_OK                        If the instance of the ustream was disposed
  *                                            with success.
- *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is invalid.
  */
 AZ_INLINE az_result az_ulib_ustream_dispose(az_ulib_ustream* ustream_instance)
 {

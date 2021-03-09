@@ -318,6 +318,7 @@ TEST_FUNCTION_CLEANUP(test_command_cleanup) { TEST_MUTEX_RELEASE(g_test_by_test)
 
 #ifndef AZ_NO_PRECONDITION_CHECKING
 
+/* If the provided handle is NULL, the az_ulib_ipc_init shall fail with precondition. */
 TEST_FUNCTION(az_ulib_ipc_init_with_null_handle_failed)
 {
   /// arrange
@@ -329,6 +330,7 @@ TEST_FUNCTION(az_ulib_ipc_init_with_null_handle_failed)
   /// cleanup
 }
 
+/* If the az_ulib_ipc_init is called more then once, it shall fail with precondition. */
 TEST_FUNCTION(az_ulib_ipc_init_double_initialization_failed)
 {
   /// arrange
@@ -344,6 +346,7 @@ TEST_FUNCTION(az_ulib_ipc_init_double_initialization_failed)
   ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_deinit());
 }
 
+/* If the IPC was not initialized, the az_ulib_ipc_deinit shall fail with precondition. */
 TEST_FUNCTION(az_ulib_ipc_deinit_with_ipc_not_initialized_failed)
 {
   /// arrange
@@ -355,6 +358,7 @@ TEST_FUNCTION(az_ulib_ipc_deinit_with_ipc_not_initialized_failed)
   /// cleanup
 }
 
+/* If the ipc was not initialized, the az_ulib_ipc_publish shall fail with precondition. */
 TEST_FUNCTION(az_ulib_ipc_publish_with_ipc_not_initialized_failed)
 {
   /// arrange
@@ -366,6 +370,7 @@ TEST_FUNCTION(az_ulib_ipc_publish_with_ipc_not_initialized_failed)
   /// cleanup
 }
 
+/* If the provided descriptor is NULL, the az_ulib_ipc_publish shall fail with precondition. */
 TEST_FUNCTION(az_ulib_ipc_publish_with_null_descriptor_failed)
 {
   /// arrange
@@ -379,6 +384,7 @@ TEST_FUNCTION(az_ulib_ipc_publish_with_null_descriptor_failed)
   ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_deinit());
 }
 
+/* If the ipc was not initialized, the az_ulib_ipc_unpublish shall fail with precondition. */
 TEST_FUNCTION(az_ulib_ipc_unpublish_with_ipc_not_initialized_failed)
 {
   /// arrange
@@ -390,6 +396,7 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_ipc_not_initialized_failed)
   /// cleanup
 }
 
+/* If the provided descriptor is NULL, the az_ulib_ipc_unpublish shall fail with precondition. */
 TEST_FUNCTION(az_ulib_ipc_unpublish_with_null_descriptor_failed)
 {
   /// arrange
@@ -403,6 +410,8 @@ TEST_FUNCTION(az_ulib_ipc_unpublish_with_null_descriptor_failed)
   ASSERT_ARE_EQUAL(int, AZ_OK, az_ulib_ipc_deinit());
 }
 
+/* If the provided interface name is NULL, the az_ulib_ipc_try_get_interface shall fail with
+ * precondition. */
 TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_null_name_failed)
 {
   /// arrange
@@ -418,6 +427,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_null_name_failed)
   unpublish_interfaces_and_deinit_ipc();
 }
 
+/* If the provided handle is NULL, the az_ulib_ipc_try_get_interface shall fail with precondition.
+ */
 TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_null_handle_failed)
 {
   /// arrange
@@ -432,6 +443,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_null_handle_failed)
   unpublish_interfaces_and_deinit_ipc();
 }
 
+/* If the ipc was not initialized, the az_ulib_ipc_try_get_interface shall fail with precondition.
+ */
 TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed)
 {
   /// arrange
@@ -448,6 +461,8 @@ TEST_FUNCTION(az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed)
   /// cleanup
 }
 
+/* If the provided interface handle is NULL, the az_ulib_ipc_get_interface shall fail with
+ * precondition. */
 TEST_FUNCTION(az_ulib_ipc_get_interface_with_null_original_interface_handle_failed)
 {
   /// arrange
@@ -462,6 +477,8 @@ TEST_FUNCTION(az_ulib_ipc_get_interface_with_null_original_interface_handle_fail
   unpublish_interfaces_and_deinit_ipc();
 }
 
+/* If the provided new interface handle is NULL, the az_ulib_ipc_get_interface shall fail with
+ * precondition. */
 TEST_FUNCTION(az_ulib_ipc_get_interface_with_null_interface_handle_failed)
 {
   /// arrange
@@ -485,6 +502,7 @@ TEST_FUNCTION(az_ulib_ipc_get_interface_with_null_interface_handle_failed)
   unpublish_interfaces_and_deinit_ipc();
 }
 
+/* If the ipc was not initialized, the az_ulib_ipc_get_interface shall fail with precondition. */
 TEST_FUNCTION(az_ulib_ipc_get_interface_with_ipc_not_initialized_failed)
 {
   /// arrange
@@ -499,6 +517,8 @@ TEST_FUNCTION(az_ulib_ipc_get_interface_with_ipc_not_initialized_failed)
   /// cleanup
 }
 
+/* If the provided handle is NULL, the az_ulib_ipc_release_interface shall fail with precondition.
+ */
 TEST_FUNCTION(az_ulib_ipc_release_interface_with_null_interface_handle_failed)
 {
   /// arrange
@@ -512,6 +532,7 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_with_null_interface_handle_failed)
   unpublish_interfaces_and_deinit_ipc();
 }
 
+/* If the ipc is not initialized, the az_ulib_ipc_release_interface shall fail with precondition. */
 TEST_FUNCTION(az_ulib_ipc_release_interface_with_ipc_not_initialized_failed)
 {
   /// arrange
@@ -524,6 +545,7 @@ TEST_FUNCTION(az_ulib_ipc_release_interface_with_ipc_not_initialized_failed)
   /// cleanup
 }
 
+/* If the IPC is not initialized, the az_ulib_ipc_call shall fail with precondition. */
 TEST_FUNCTION(az_ulib_ipc_call_with_ipc_not_initialized_failed)
 {
   /// arrange
@@ -540,6 +562,7 @@ TEST_FUNCTION(az_ulib_ipc_call_with_ipc_not_initialized_failed)
   /// cleanup
 }
 
+/* If the interface handle is NULL, the az_ulib_ipc_call shall fail with precondition. */
 TEST_FUNCTION(az_ulib_ipc_call_with_null_interface_handle_failed)
 {
   /// arrange

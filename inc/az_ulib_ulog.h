@@ -33,9 +33,6 @@ extern const char* const AZ_ULIB_ULOG_REQUIRE_TYPE_OF_USTREAM_STRING;
 extern const char* const AZ_ULIB_ULOG_OUT_OF_MEMORY_STRING;
 extern const char* const AZ_ULIB_ULOG_REPORT_EXCEPTION_STRING;
 
-static const char* const AZ_ULIB_ULOG_USTREAM_ILLEGAL_ARGUMENT_ERROR_STRING
-    = "Passed ustream is not the correct type\r\n";
-
 /**
  * @brief   enum to select the log type
  */
