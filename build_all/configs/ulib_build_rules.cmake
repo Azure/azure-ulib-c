@@ -7,7 +7,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Build with -fPIC always
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
-option(run_valgrind "set run_valgrind to ON if tests are to be run under valgrind/helgrind/drd. Default is OFF" OFF)
+option(RUN_VALGRIND "set RUN_VALGRIND to ON if tests are to be run under valgrind/helgrind/drd. Default is OFF" OFF)
 option(compileOption_C "passes a string to the command line of the C compiler" OFF)
 option(compileOption_CXX "passes a string to the command line of the C++ compiler" OFF)
 
@@ -39,11 +39,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     add_definitions(-DMACOSX)
     set(ULIB_PAL_DIRECTORY "GCC/IOS")
     set(ULIB_PAL_OS_DIRECTORY "linux")
-endif()
-
-#Provide stdint and stbool headers if necessary
-if((NOT HAVE_STDINT_H) OR (NOT HAVE_STDBOOL_H))
-    include_directories(${UMOCK_C_INC_FOLDER}/umock_c/aux_inc)
 endif()
 
 # System-specific compiler flags

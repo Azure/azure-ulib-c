@@ -2,11 +2,18 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#include "testrunnerswitcher.h"
+#include <stdio.h>
+
+#include "az_ulib_ipc_ut.h"
 
 int main(void)
 {
-  size_t failed_test_count = 0;
-  RUN_TEST_SUITE(az_ulib_ipc_ut, failed_test_count);
-  return failed_test_count;
+  int result = 0;
+
+  (void)printf("[==========]\r\n[ STARTING ] Running az_ulib_ipc_ut.\r\n");
+  result += az_ulib_ipc_ut();
+  (void)printf("[==========]\r\n[ STARTING ] Running az_ulib_descriptor_ut.\r\n");
+  result += az_ulib_descriptor_ut();
+
+  return result;
 }

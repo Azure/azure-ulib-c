@@ -2,11 +2,18 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#include "testrunnerswitcher.h"
+#include <stdio.h>
+
+#include "my_ustream_test.h"
 
 int main(void)
 {
-  size_t failed_test_count = 0;
-  RUN_TEST_SUITE(ustream_ut_sample, failed_test_count);
-  return failed_test_count;
+  int result = 0;
+
+  (void)printf("[==========]\r\n[ STARTING ] Running my_ustream_ut.\r\n");
+  result += my_ustream_ut();
+  (void)printf("[==========]\r\n[ STARTING ] Running my_ustream_e2e.\r\n");
+  result += my_ustream_e2e();
+
+  return result;
 }

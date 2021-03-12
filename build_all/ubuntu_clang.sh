@@ -14,7 +14,7 @@ build_folder=$build_root"/cmake/azure_ulib_c"
 rm -r -f $build_folder
 mkdir -p $build_folder
 pushd $build_folder
-cmake ../.. -Drun_ulib_unit_tests:BOOL=ON -Drun_ulib_e2e_tests:BOOL=ON -Drun_valgrind:BOOL=ON -Dvalidate_documentation:BOOL=ON
+cmake ../.. -DUNIT_TESTING:BOOL=ON -DRUN_VALGRIND:BOOL=ON -DVALIDATE_DOCUMENTATION:BOOL=ON
 cmake --build . -- --jobs=$(nproc)
 ctest -C "debug" -V
 

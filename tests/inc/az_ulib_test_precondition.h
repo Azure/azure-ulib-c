@@ -12,7 +12,7 @@
 #include <assert.h>
 #include <stdint.h>
 
-#include "testrunnerswitcher.h"
+#include "cmocka.h"
 
 // This block defines the resources needed to verify precondition checking.
 // Macro ENABLE_PRECONDITION_CHECK_TESTS() (no semi-colon at end) shall be invoked in the unit test
@@ -47,18 +47,18 @@
 // function parameters not being used. Explicitly storing the function result as a bool and using
 // (void) to cast it away so that we don't get a warning related to unused variables, particularly
 // in release configurations.
-#define AZ_ULIB_ASSERT_PRECONDITION_CHECKED(fn)        \
-  do                                                   \
-  {                                                    \
-    precondition_test_count = 0;                       \
-    (void)setjmp(g_precond_test_jmp_buf);              \
-    if (precondition_test_count == 0)                  \
-    {                                                  \
-      bool const result = (fn);                        \
-      assert(result);                                  \
-      (void)result;                                    \
-    }                                                  \
-    ASSERT_ARE_EQUAL(int, 1, precondition_test_count); \
+#define AZ_ULIB_ASSERT_PRECONDITION_CHECKED(fn)   \
+  do                                              \
+  {                                               \
+    precondition_test_count = 0;                  \
+    (void)setjmp(g_precond_test_jmp_buf);         \
+    if (precondition_test_count == 0)             \
+    {                                             \
+      bool const result = (fn);                   \
+      assert(result);                             \
+      (void)result;                               \
+    }                                             \
+    assert_int_equal(precondition_test_count, 1); \
   } while (0)
 
 #endif // _az_TEST_PRECONDITION_H

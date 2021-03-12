@@ -37,7 +37,7 @@ mkdir %build-root%\cmake\%CMAKE_DIR%
 rem no error checking
 pushd %build-root%\cmake\%CMAKE_DIR%
 
-cmake %build-root% -Drun_ulib_unit_tests:BOOL=ON -Drun_ulib_e2e_tests:BOOL=ON
+cmake %build-root% -DUNIT_TESTING:BOOL=ON
 if not !ERRORLEVEL!==0 exit /b !ERRORLEVEL!
 
 cmake --build . --config %build-config%

@@ -4,9 +4,19 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-add_executable(az_ulib_ipc_ut
-    ${CMAKE_CURRENT_LIST_DIR}/main.c
-    ${CMAKE_CURRENT_LIST_DIR}/az_ulib_ipc_ut.c
-)
+project(az_ulib_ipc_ut)
 
-ulib_populate_test_target(az_ulib_ipc_ut)
+include(AddCMockaTest)
+
+add_cmocka_test(az_ulib_ipc_ut SOURCES
+                main.c
+                az_ulib_descriptor_ut.c
+                az_ulib_ipc_ut.c
+                COMPILE_OPTIONS ${DEFAULT_C_COMPILE_FLAGS} ${NO_CLOBBERED_WARNING}
+                LINK_LIBRARIES ${CMOCKA_LIBRARIES} azure_ulib_c ${PAL}
+                LINK_OPTIONS ${WRAP_FUNCTIONS}  
+                # include cmoka headers and private folder headers
+                INCLUDE_DIRECTORIES ${CMOCKA_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/inc/ ${CMAKE_SOURCE_DIR}/tests/inc/
+                )
+
+add_cmocka_test_environment(az_ulib_ipc_ut)
