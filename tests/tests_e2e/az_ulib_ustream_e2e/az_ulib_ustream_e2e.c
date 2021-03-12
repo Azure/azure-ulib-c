@@ -2,27 +2,20 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#ifdef __cplusplus
-#include <cstddef>
-#include <cstdint>
-#include <cstdlib>
-#include <cstring>
-#else
+#include <setjmp.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#endif
-
-#include "az_ulib_ctest_aux.h"
-#include "az_ulib_ustream_mock_buffer.h"
-#include "azure_macro_utils/macro_utils.h"
-#include "testrunnerswitcher.h"
-
-static TEST_MUTEX_HANDLE g_test_by_test;
 
 #include "az_ulib_ustream.h"
 #include "az_ulib_ustream_base.h"
+
+#include "az_ulib_ctest_aux.h"
+#include "az_ulib_ustream_mock_buffer.h"
+
+#include "cmocka.h"
 
 /* define constants for the compliance test */
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT \
@@ -38,16 +31,15 @@ static void ustream_factory(az_ulib_ustream* ustream)
   uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t) * USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
   (void)memcpy(
       buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-  ASSERT_ARE_EQUAL(
-      int,
-      AZ_OK,
+  assert_int_equal(
       az_ulib_ustream_init(
           ustream,
           ustream_control_block,
           free,
           buf,
           USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
-          free));
+          free),
+      AZ_OK);
 }
 #define USTREAM_COMPLIANCE_TARGET_FACTORY(ustream) ustream_factory(ustream)
 
@@ -55,29 +47,15 @@ static void ustream_factory(az_ulib_ustream* ustream)
 #define TEST_CONST_MAX_BUFFER_SIZE (TEST_CONST_BUFFER_LENGTH - 1)
 
 /**
- * Beginning of the UT for ustream.c on ownership model.
+ * Beginning of the e2e for ustream.c on ownership model.
  */
-BEGIN_TEST_SUITE(ustream_e2e)
-
-TEST_SUITE_INITIALIZE(suite_init)
-{
-  g_test_by_test = TEST_MUTEX_CREATE();
-  ASSERT_IS_NOT_NULL(g_test_by_test);
-}
-
-TEST_SUITE_CLEANUP(suite_cleanup) { TEST_MUTEX_DESTROY(g_test_by_test); }
-
-TEST_FUNCTION_INITIALIZE(test_method_initialize)
-{
-  if (TEST_MUTEX_ACQUIRE(g_test_by_test))
-  {
-    ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
-  }
-}
-
-TEST_FUNCTION_CLEANUP(test_method_cleanup) { TEST_MUTEX_RELEASE(g_test_by_test); }
 
 // Run e2e compliance tests for ustream
 #include "az_ulib_ustream_compliance_e2e.h"
 
-END_TEST_SUITE(ustream_e2e)
+int az_ulib_ustream_e2e()
+{
+  const struct CMUnitTest tests[] = { AZ_ULIB_USTREAM_COMPLIANCE_E2E_LIST };
+
+  return cmocka_run_group_tests_name("az_ulib_ustream_e2e", tests, NULL, NULL);
+}

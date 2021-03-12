@@ -2,28 +2,21 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#ifdef __cplusplus
-#include <cstddef>
-#include <cstdint>
-#include <cstdlib>
-#include <cstring>
-#else
+#include <setjmp.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#endif
-
-#include "az_ulib_ctest_aux.h"
-#include "az_ulib_ustream_mock_buffer.h"
-#include "azure_macro_utils/macro_utils.h"
-#include "testrunnerswitcher.h"
-
-static TEST_MUTEX_HANDLE g_test_by_test;
 
 #include "az_ulib_ustream.h"
 #include "az_ulib_ustream_base.h"
 /*TODO:<insert your header file here for testing>*/
+
+#include "az_ulib_ctest_aux.h"
+#include "az_ulib_ustream_mock_buffer.h"
+
+#include "cmocka.h"
 
 /* define constants for the compliance test */
 #define USTREAM_COMPLIANCE_EXPECTED_CONTENT /*TODO:<insert your test content here (must be at \
@@ -45,32 +38,46 @@ static void ustream_factory(az_ulib_ustream* ustream)
 #define TEST_CONST_MAX_BUFFER_SIZE (TEST_CONST_BUFFER_LENGTH - 1)
 
 /**
- * Beginning of the UT for your ustream implementation.
- * Feel free to change the name of the test in BEGIN_TEST_SUITE
- *  and END_TEST_SUITE. Just be sure to change the passed parameter
- *  in the main.c as well.
+ * Beginning of the E2E for your ustream implementation.
+ * TODO:<Add your own set of tests here.>
  */
-BEGIN_TEST_SUITE(ustream_e2e)
-
-TEST_SUITE_INITIALIZE(suite_init)
+static void my_ustream_e2e_test1_succeed(void** state)
 {
-  g_test_by_test = TEST_MUTEX_CREATE();
-  ASSERT_IS_NOT_NULL(g_test_by_test);
+  /// arrange
+
+  /// act
+
+  /// assert
+
+  /// cleanup
 }
 
-TEST_SUITE_CLEANUP(suite_cleanup) { TEST_MUTEX_DESTROY(g_test_by_test); }
-
-TEST_FUNCTION_INITIALIZE(test_method_initialize)
+static void my_ustream_e2e_test2_succeed(void** state)
 {
-  if (TEST_MUTEX_ACQUIRE(g_test_by_test))
-  {
-    ASSERT_FAIL("our mutex is ABANDONED. Failure in test framework");
-  }
+  /// arrange
+
+  /// act
+
+  /// assert
+
+  /// cleanup
 }
 
-TEST_FUNCTION_CLEANUP(test_method_cleanup) { TEST_MUTEX_RELEASE(g_test_by_test); }
-
-// This include will add the tests to validate your ustream implementation.
+/**
+ * This include, together with #AZ_ULIB_USTREAM_COMPLIANCE_E2E_LIST, will add the tests to validate
+ * your ustream implementation.
+ */
 #include "az_ulib_ustream_compliance_e2e.h"
 
-END_TEST_SUITE(ustream_e2e)
+/**
+ * This is the function that will run all tests, feel free to change the function name. Just be sure
+ * to change the call in the main.c as well.
+ */
+int my_ustream_e2e()
+{
+  const struct CMUnitTest tests[] = { cmocka_unit_test(my_ustream_e2e_test1_succeed),
+                                      cmocka_unit_test(my_ustream_e2e_test2_succeed),
+                                      AZ_ULIB_USTREAM_COMPLIANCE_E2E_LIST };
+
+  return cmocka_run_group_tests_name("my_ustream_e2e", tests, NULL, NULL);
+}

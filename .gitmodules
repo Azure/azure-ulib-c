@@ -10,3 +10,6 @@
 [submodule "deps/azure-macro-utils-c"]
 	path = deps/azure-macro-utils-c
 	url = https://github.com/Azure/azure-macro-utils-c.git
+[submodule "deps/cmocka"]
+	path = deps/cmocka
+	url = https://gitlab.com/cmocka/cmocka

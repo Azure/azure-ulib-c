@@ -26,14 +26,13 @@ extern "C"
  */
 #define DISPLAY_1_INTERFACE_NAME "display"
 #define DISPLAY_1_INTERFACE_VERSION 1
+#define DISPLAY_1_CAPABILITY_SIZE 3
 
-#define DISPLAY_1_INTERFACE_CLS_COMMAND (az_ulib_capability_index)0
-#define DISPLAY_1_INTERFACE_PRINT_COMMAND (az_ulib_capability_index)1
-#define DISPLAY_1_INTERFACE_INVALIDATE_COMMAND (az_ulib_capability_index)2
 
 /*
  * Define cls (clear screen) command on display interface.
  */
+#define DISPLAY_1_INTERFACE_CLS_COMMAND (az_ulib_capability_index)0
 #define DISPLAY_1_INTERFACE_CLS_COMMAND_NAME "cls"
   typedef void display_1_cls_model_in;
   typedef void display_1_cls_model_out;
@@ -41,8 +40,8 @@ extern "C"
 /*
  * Define print command on display interface.
  */
+#define DISPLAY_1_INTERFACE_PRINT_COMMAND (az_ulib_capability_index)1
 #define DISPLAY_1_INTERFACE_PRINT_COMMAND_NAME "print"
-
   typedef struct display_1_print_model_in_tag
   {
     uint32_t x;
@@ -50,12 +49,12 @@ extern "C"
     const char* buffer;
     uint32_t size;
   } display_1_print_model_in;
-
   typedef void display_1_print_model_out;
 
 /*
  * Define invalidate (refresh display) command on display interface.
  */
+#define DISPLAY_1_INTERFACE_INVALIDATE_COMMAND (az_ulib_capability_index)2
 #define DISPLAY_1_INTERFACE_INVALIDATE_COMMAND_NAME "invalidate"
   typedef void display_1_invalidate_model_in;
   typedef void display_1_invalidate_model_out;

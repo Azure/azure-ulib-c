@@ -82,7 +82,7 @@ extern "C"
  *
  * @note  **To avoid conflicts in the linker, instead of comment this line, define
  *        AZ_ULIB_CONFIG_REMOVE_UNPUBLISH as part of the make file that will build the project.
- *        For cmake, use the option -Dremove_ipc_unpublish.**
+ *        For cmake, use the option -DREMOVE_IPC_UNPUBLISH.**
  */
 #define AZ_ULIB_CONFIG_IPC_UNPUBLISH
 #endif /*AZ_ULIB_CONFIG_REMOVE_UNPUBLISH*/

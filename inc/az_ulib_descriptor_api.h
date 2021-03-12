@@ -5,9 +5,6 @@
 #ifndef AZ_ULIB_DESCRIPTOR_H
 #define AZ_ULIB_DESCRIPTOR_H
 
-#include "azure_macro_utils/macro_utils.h"
-#include "umock_c/umock_c_prod.h"
-
 #include "az_ulib_base.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_result.h"
@@ -73,36 +70,6 @@ typedef struct az_ulib_interface_descriptor_tag
   az_ulib_capability_descriptor* capability_list; /**<The list of #az_ulib_capability_descriptor
                                                   with the capabilities in this interface. */
 } az_ulib_interface_descriptor;
-
-/**
- * @brief   Create a new Interface descriptor.
- *
- * This API creates a new description for a interface, it will create the
- * #az_ulib_interface_descriptor with the provided interface name and version, adding all the
- * capabilities.
- *
- * The descriptor will be stored in the Text area (Flash) that will be pointed by the provided
- * interface_var. In this way, no other components on the system needs to copy any of the data on
- * the descriptor.
- *
- * @param[in]   interface_var   The #az_ulib_interface_descriptor that will point to the created
- *                              descriptor.
- * @param[in]   interface_name  The `/0` terminated `const char* const` with the interface name.
- *                              It cannot be `NULL` and shall be allocated in a way that it stays
- *                              valid until the interface is unpublished at some (potentially)
- *                              unknown time in the future.
- * @param[in]   version         The #az_ulib_version with the interface version.
- * @param[in]   ...             The list of #az_ulib_capability_descriptor with the capabilities in
- *                              the interface.
- */
-#define AZ_ULIB_DESCRIPTOR_CREATE(interface_var, interface_name, version, ...)        \
-  static const az_ulib_capability_descriptor MU_C2(interface_var, _CAPABILITY_LIST)[] \
-      = { MU_FOR_EACH_1(MU_DEFINE_ENUMERATION_CONSTANT, __VA_ARGS__) };               \
-  static const az_ulib_interface_descriptor MU_C1(interface_var)                      \
-      = { (interface_name),                                                           \
-          (version),                                                                  \
-          (uint8_t)(MU_COUNT_ARG(__VA_ARGS__) / 4),                                   \
-          (az_ulib_capability_descriptor*)MU_C2(interface_var, _CAPABILITY_LIST) };
 
 /**
  * @brief   Add property to the interface descriptor.
