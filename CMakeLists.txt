@@ -6,10 +6,10 @@ cmake_minimum_required(VERSION 3.10)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake-modules")
 
 #Specify user options
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 option(UNIT_TESTING "Build unit test projects" OFF)
-option(PRECONDITIONS "Build SDK with preconditions enabled" ON)
-option(LOGGING "Build SDK with logging support" ON)
+option(PRECONDITIONS "Build uLib with preconditions enabled" ON)
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
+option(LOGGING "Build uLib with logging support" ON)
 option(SKIP_SAMPLES "Skip building samples (default is OFF)[if possible, they are always built]" OFF)
 option(USE_INSTALLED_DEPENDENCIES "Use installed packages instead of building dependencies from submodules" OFF)
 option(VALIDATE_DOCUMENTATION "set to enable the -Wdocumentation flag on clang to validate documentation.
