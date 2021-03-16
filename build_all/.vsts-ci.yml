@@ -26,11 +26,28 @@ phases:
 - phase: windowsx86
   queue:
     name: 'aziotbld-win03'
+  variables:
+    vcpkgTriplet: 'x86-windows-static'
+    vcpkgPath: '%TEMP%\azuLibTestInfra\vcpkg'
   steps:
   - script: |
-     if exist build_all\windows_c.cmd (
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
-      call build_all\windows_c.cmd)
+      echo VCPACK dir: $(vcpkgPath)
+      if not exist $(vcpkgPath)\ (
+        git clone https://github.com/Microsoft/vcpkg.git $(vcpkgPath)
+        cd $(vcpkgPath)
+        git checkout tags/2020.06
+        call .\bootstrap-vcpkg.bat)
+    displayName: 'install VCPKG'
+  - script: |
+      cd $(vcpkgPath)
+      .\vcpkg.exe install --triplet $(vcpkgTriplet) cmocka
+    displayName: 'get cmocka'
+  - script: |
+      if exist build_all\windows_c.cmd (
+        call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
+        set VCPKG_DEFAULT_TRIPLET=$(vcpkgTriplet)
+        set VCPKG_ROOT=$(vcpkgPath)
+        call build_all\windows_c.cmd)
     displayName: 'build'
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
     displayName: 'cleanup'
@@ -42,26 +59,50 @@ phases:
   displayName: raspberrypi
   steps:
   - script: |
-     if [ -f "build_all/raspberrypi_c.sh" ]
-     then
-      sudo ./build_all/raspberrypi_c.sh
-     fi 
+      if [ -f "build_all/raspberrypi_c.sh" ]
+      then
+        sudo ./build_all/raspberrypi_c.sh
+      fi 
     displayName: 'build'  
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
 - phase: ubuntu
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/linux-c-ubuntu:cmake3.19"
+    vcpkgTriplet: 'x64-linux'
+    vcpkgPath: '/tmp/azuLibTestInfra/vcpkg'
   queue: Hosted Ubuntu 1604
   displayName: 'ubuntu'
   steps:
   - script: |
-     if [ -f "build_all/linux_c_ubuntu.sh" ]
-     then
-      sudo chmod -R 755 .
-      sudo -E ./build_all/linux_c_ubuntu.sh
-     fi
-    displayName: 'build'  
+      echo VCPACK dir: $(vcpkgPath)
+      if [ ! -d "$(vcpkgPath)/" ]
+      then
+        sudo apt-get install -y curl unzip tar
+        sudo apt-get install software-properties-common -y
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        sudo apt-get update -y
+        sudo apt-get install gcc-7 g++-7 -y
+        git clone https://github.com/Microsoft/vcpkg.git $(vcpkgPath)
+        cd $(vcpkgPath)
+        git checkout tags/2020.06
+        ./bootstrap-vcpkg.sh
+      fi
+    displayName: 'install VCPKG'
+  - script: |
+      cd $(vcpkgPath)
+      ./vcpkg install --triplet $(vcpkgTriplet) cmocka
+    displayName: 'get cmocka'
+  - script: |
+      if [ -f "build_all/linux_c_ubuntu.sh" ]
+      then
+        sudo chmod -R 755 .
+        sudo -E ./build_all/linux_c_ubuntu.sh
+      fi
+    displayName: 'build'
+    env:
+      VCPKG_DEFAULT_TRIPLET: $(vcpkgTriplet)
+      VCPKG_ROOT: $(vcpkgPath)
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
     condition: always()
@@ -72,10 +113,10 @@ phases:
   displayName: 'linux-options'
   steps:
   - script: | 
-     if [ -f "build_all/linux_c_option_test.sh" ]
-     then 
-      sudo ./build_all/linux_c_option_test.sh
-     fi
+      if [ -f "build_all/linux_c_option_test.sh" ]
+      then 
+        sudo ./build_all/linux_c_option_test.sh
+      fi
     displayName: 'build'
     condition: always()
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
@@ -96,9 +137,9 @@ phases:
     name: 'aziotbld-win03'
   steps:
   - script: |
-     if exist build_all\windows_c_build_as_dynamic.cmd (
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
-      call build_all\windows_c_build_as_dynamic.cmd)
+      if exist build_all\windows_c_build_as_dynamic.cmd (
+        call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
+        call build_all\windows_c_build_as_dynamic.cmd)
     displayName: 'build'
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
     displayName: 'cleanup'
@@ -106,34 +147,74 @@ phases:
 - phase: clang
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/ubuntu-clang"
+    vcpkgTriplet: 'x64-linux'
+    vcpkgPath: '/tmp/azuLibTestInfra/vcpkg'
   queue: aziotbld-lin01
   displayName: 'clang'
   steps:
   - script: |
-     if [ -f "build_all/ubuntu_clang.sh" ]
-     then
-      export OPENSSL_ia32cap=0x00000000
-      sudo chmod -R 755 .
-      sudo -E ./build_all/ubuntu_clang.sh
-     fi
+      echo VCPACK dir: $(vcpkgPath)
+      if [ ! -d "$(vcpkgPath)/" ]
+      then
+        sudo apt-get install -y curl unzip tar
+        git clone https://github.com/Microsoft/vcpkg.git $(vcpkgPath)
+        cd $(vcpkgPath)
+        git checkout tags/2020.06
+        ./bootstrap-vcpkg.sh
+      fi
+    displayName: 'install VCPKG'
+  - script: |
+      cd $(vcpkgPath)
+      ./vcpkg install --triplet $(vcpkgTriplet) cmocka
+    displayName: 'get cmocka'
+  - script: |
+      if [ -f "build_all/ubuntu_clang.sh" ]
+      then
+        export OPENSSL_ia32cap=0x00000000
+        sudo chmod -R 755 .
+        sudo -E ./build_all/ubuntu_clang.sh
+      fi
     displayName: 'build'
+    env:
+      VCPKG_DEFAULT_TRIPLET: $(vcpkgTriplet)
+      VCPKG_ROOT: $(vcpkgPath)
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
     condition: always()    
 - phase: debian
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/c-debian"
+    vcpkgTriplet: 'x64-linux'
+    vcpkgPath: '/tmp/azuLibTestInfra/vcpkg'
   queue: c-df
   displayName: 'debian'
   steps:
   - script: |
-     if [ -f "build_all/debian_c.sh" ]
-     then
-      sudo chmod 755 build_all/debian_c.sh
-      sudo -E ./debian_c.sh
-      sudo build_all/debian_c.sh
-     fi
+      echo VCPACK dir: $(vcpkgPath)
+      if [ ! -d "$(vcpkgPath)/" ]
+      then
+        sudo apt-get install -y curl unzip tar
+        git clone https://github.com/Microsoft/vcpkg.git $(vcpkgPath)
+        cd $(vcpkgPath)
+        git checkout tags/2020.06
+        ./bootstrap-vcpkg.sh
+      fi
+    displayName: 'install VCPKG'
+  - script: |
+      cd $(vcpkgPath)
+      ./vcpkg install --triplet $(vcpkgTriplet) cmocka
+    displayName: 'get cmocka'
+  - script: |
+      if [ -f "build_all/debian_c.sh" ]
+      then
+        sudo chmod 755 build_all/debian_c.sh
+        sudo -E ./debian_c.sh
+        sudo build_all/debian_c.sh
+      fi
     displayName: 'build'
+    env:
+      VCPKG_DEFAULT_TRIPLET: $(vcpkgTriplet)
+      VCPKG_ROOT: $(vcpkgPath)
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
     condition: always()    
@@ -141,11 +222,28 @@ phases:
   queue:
     name: 'aziotbld-win03'
   displayName: 'windowsx64'
+  variables:
+    vcpkgTriplet: 'x64-windows-static'
+    vcpkgPath: '%TEMP%\azuLibTestInfraX64\vcpkg'
   steps:
   - script: |
-     if exist build_all\windows_c.cmd (
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
-      call build_all\windows_c.cmd --platform x64)
+      echo VCPACK dir: $(vcpkgPath)
+      if not exist $(vcpkgPath)\ (
+        git clone https://github.com/Microsoft/vcpkg.git $(vcpkgPath)
+        cd $(vcpkgPath)
+        git checkout tags/2020.06
+        call .\bootstrap-vcpkg.bat)
+    displayName: 'install VCPKG'
+  - script: |
+      cd $(vcpkgPath)
+      .\vcpkg.exe install --triplet $(vcpkgTriplet) cmocka
+    displayName: 'get cmocka'
+  - script: |
+      if exist build_all\windows_c.cmd (
+        call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
+        set VCPKG_DEFAULT_TRIPLET=$(vcpkgTriplet)
+        set VCPKG_ROOT=$(vcpkgPath)
+        call build_all\windows_c.cmd --platform x64)
     displayName: 'build'
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
     displayName: 'cleanup'
