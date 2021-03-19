@@ -26,6 +26,7 @@ extern "C"
  */
 #define CIPHER_1_INTERFACE_NAME "cipher"
 #define CIPHER_1_INTERFACE_VERSION 1
+#define CIPHER_1_CAPABILITY_SIZE 2
 
 /*
  * Define encrypt command on cipher interface.

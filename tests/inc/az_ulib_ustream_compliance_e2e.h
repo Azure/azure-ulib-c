@@ -9,6 +9,8 @@
 #include "az_ulib_test_thread.h"
 #include "az_ulib_ustream_mock_buffer.h"
 
+#include "cmocka.h"
+
 /* check for test artifacts. */
 #ifndef USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH
 #error "USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH not defined"
@@ -44,14 +46,13 @@ static int compliance_thread_one_func(void* arg)
   offset_t cur_pos;
   az_ulib_ustream_read(compliance_thread_one_ustream, buf_result, TEST_SIZE, &size_result);
   az_ulib_ustream_get_position(compliance_thread_one_ustream, &cur_pos);
-  ASSERT_ARE_EQUAL(int, TEST_SIZE, cur_pos);
-  ASSERT_ARE_EQUAL(
-      int,
-      0,
+  assert_int_equal(cur_pos, TEST_SIZE);
+  assert_int_equal(
       strncmp(
           (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
           (const char*)buf_result,
-          TEST_SIZE));
+          TEST_SIZE),
+      0);
 
   return 0;
 }
@@ -65,14 +66,13 @@ static int compliance_thread_two_func(void* arg)
   az_ulib_ustream_set_position(compliance_thread_two_ustream, TEST_POSITION);
   az_ulib_ustream_read(compliance_thread_two_ustream, buf_result, TEST_SIZE, &size_result);
   az_ulib_ustream_get_position(compliance_thread_two_ustream, &cur_pos);
-  ASSERT_ARE_EQUAL(int, TEST_POSITION + TEST_SIZE, cur_pos);
-  ASSERT_ARE_EQUAL(
-      int,
-      0,
+  assert_int_equal(cur_pos, TEST_POSITION + TEST_SIZE);
+  assert_int_equal(
       strncmp(
           (const char*)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + TEST_POSITION),
           (const char*)buf_result,
-          TEST_SIZE));
+          TEST_SIZE),
+      0);
 
   return 0;
 }
@@ -80,7 +80,7 @@ static int compliance_thread_two_func(void* arg)
 /*
  * Start compliance tests:
  */
-TEST_FUNCTION(az_ulib_ustream_e2e_compliance_multi_read_succeed)
+static void az_ulib_ustream_e2e_compliance_multi_read_succeed(void** state)
 {
   /// arrange
   az_ulib_ustream multi_ustream;
@@ -90,17 +90,17 @@ TEST_FUNCTION(az_ulib_ustream_e2e_compliance_multi_read_succeed)
 
   az_ulib_ustream_multi_data_cb* multi_data1
       = (az_ulib_ustream_multi_data_cb*)malloc(sizeof(az_ulib_ustream_multi_data_cb));
-  ASSERT_IS_NOT_NULL(multi_data1);
+  assert_non_null(multi_data1);
 
   az_result result = az_ulib_ustream_concat(&multi_ustream, &concat_ustream, multi_data1, free);
-  ASSERT_ARE_EQUAL(int, result, AZ_OK);
+  assert_int_equal(AZ_OK, result);
 
   az_ulib_ustream_dispose(&concat_ustream);
 
   // Clone the multistream
   az_ulib_ustream multibuffer_clone;
   result = az_ulib_ustream_clone(&multibuffer_clone, &multi_ustream, 0);
-  ASSERT_ARE_EQUAL(int, AZ_OK, result);
+  assert_int_equal(result, AZ_OK);
 
   compliance_thread_one_ustream = &multi_ustream;
   compliance_thread_two_ustream = &multibuffer_clone;
@@ -122,7 +122,7 @@ TEST_FUNCTION(az_ulib_ustream_e2e_compliance_multi_read_succeed)
   (void)az_ulib_ustream_dispose(&multibuffer_clone);
 }
 
-TEST_FUNCTION(az_ulib_ustream_e2e_compliance_read_and_reset_succeed)
+static void az_ulib_ustream_e2e_compliance_read_and_reset_succeed(void** state)
 {
   /// arrange
   az_ulib_ustream ustream;
@@ -134,41 +134,42 @@ TEST_FUNCTION(az_ulib_ustream_e2e_compliance_read_and_reset_succeed)
   size_t returned_size;
   az_ulib_ustream_read(
       &ustream, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
-  ASSERT_ARE_EQUAL(int, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, returned_size);
-  ASSERT_ARE_EQUAL(
-      int,
-      0,
+  assert_int_equal(returned_size, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+  assert_int_equal(
       strncmp(
           (const char*)buf_result,
           (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
-          USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH));
+          USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH),
+      0);
 
   az_ulib_ustream_reset(&ustream);
 
   az_ulib_ustream_read(
       &ustream, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
-  ASSERT_ARE_EQUAL(
-      int,
-      0,
+  assert_int_equal(
       strncmp(
           (const char*)buf_result,
           (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
-          USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH));
+          USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH),
+      0);
 
   az_ulib_ustream_reset(&ustream);
 
   az_ulib_ustream_read(
       &ustream, buf_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &returned_size);
-  ASSERT_ARE_EQUAL(
-      int,
-      0,
+  assert_int_equal(
       strncmp(
           (const char*)buf_result,
           (const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
-          USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH));
+          USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH),
+      0);
 
   /// cleanup
   (void)az_ulib_ustream_dispose(&ustream);
 }
+
+#define AZ_ULIB_USTREAM_COMPLIANCE_E2E_LIST                            \
+  cmocka_unit_test(az_ulib_ustream_e2e_compliance_multi_read_succeed), \
+      cmocka_unit_test(az_ulib_ustream_e2e_compliance_read_and_reset_succeed),
 
 #endif /* AZ_ULIB_USTREAM_COMPLIANCE_E2E_H */

@@ -79,15 +79,17 @@ static az_result invalidate_concrete(az_ulib_model_in model_in, az_ulib_model_ou
   return AZ_OK;
 }
 
-AZ_ULIB_DESCRIPTOR_CREATE(
-    DISPLAY_1_DESCRIPTOR,
-    DISPLAY_1_INTERFACE_NAME,
-    DISPLAY_1_INTERFACE_VERSION,
-    AZ_ULIB_DESCRIPTOR_ADD_COMMAND(DISPLAY_1_INTERFACE_CLS_COMMAND_NAME, cls_concrete),
-    AZ_ULIB_DESCRIPTOR_ADD_COMMAND(DISPLAY_1_INTERFACE_PRINT_COMMAND_NAME, print_concrete),
-    AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
-        DISPLAY_1_INTERFACE_INVALIDATE_COMMAND_NAME,
-        invalidate_concrete));
+static const az_ulib_capability_descriptor DISPLAY_1_CAPABILITIES[DISPLAY_1_CAPABILITY_SIZE] = {
+  AZ_ULIB_DESCRIPTOR_ADD_COMMAND(DISPLAY_1_INTERFACE_CLS_COMMAND_NAME, cls_concrete),
+  AZ_ULIB_DESCRIPTOR_ADD_COMMAND(DISPLAY_1_INTERFACE_PRINT_COMMAND_NAME, print_concrete),
+  AZ_ULIB_DESCRIPTOR_ADD_COMMAND(DISPLAY_1_INTERFACE_INVALIDATE_COMMAND_NAME, invalidate_concrete)
+};
+
+static const az_ulib_interface_descriptor DISPLAY_1_DESCRIPTOR
+    = { DISPLAY_1_INTERFACE_NAME,
+        DISPLAY_1_INTERFACE_VERSION,
+        DISPLAY_1_CAPABILITY_SIZE,
+        (az_ulib_capability_descriptor*)DISPLAY_1_CAPABILITIES };
 
 az_result publish_contoso_display_20x4_1_interface(void)
 {

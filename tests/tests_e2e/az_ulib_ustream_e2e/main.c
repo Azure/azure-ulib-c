@@ -2,11 +2,18 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#include "testrunnerswitcher.h"
+#include <stdio.h>
+
+#include "az_ulib_ustream_e2e.h"
 
 int main(void)
 {
-  size_t failed_test_count = 0;
-  RUN_TEST_SUITE(ustream_e2e, failed_test_count);
-  return failed_test_count;
+  int result = 0;
+
+  (void)printf("[==========]\r\n[ STARTING ] Running az_ulib_ustream_e2e.\r\n");
+  result += az_ulib_ustream_e2e();
+  (void)printf("[==========]\r\n[ STARTING ] Running az_ulib_ustream_aux_e2e.\r\n");
+  result += az_ulib_ustream_aux_e2e();
+
+  return result;
 }
