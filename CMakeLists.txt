@@ -93,7 +93,7 @@ ulib_set_target_build_properties(azure_ulib_c)
 if (UNIT_TESTING)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps)
 
-    set(TEST_DIRECTORY ${PROJECT_SOURCE_DIR}/tests)
+    set(TEST_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/tests)
 
     add_subdirectory(tests)
 endif()

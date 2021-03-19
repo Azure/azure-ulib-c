@@ -75,7 +75,7 @@ The uLib can be conveniently consumed either via CMake or other non-CMake method
 
 2. Clone our Azure uLib repository, optionally using the desired version tag.
 
-        git clone https://github.com/Azure/azure-ulib-c
+        git clone https://github.com/Azure/azure-ulib-c --recursive
 
 
 3. Ensure the uLib builds correctly.
