@@ -28,7 +28,10 @@ extern "C"
   static inline az_result display_1_create(az_ulib_ipc_interface_handle handle)
   {
     return az_ulib_ipc_try_get_interface(
-        DISPLAY_1_INTERFACE_NAME, DISPLAY_1_INTERFACE_VERSION, AZ_ULIB_VERSION_EQUALS_TO, handle);
+        AZ_SPAN_FROM_STR(DISPLAY_1_INTERFACE_NAME),
+        DISPLAY_1_INTERFACE_VERSION,
+        AZ_ULIB_VERSION_EQUALS_TO,
+        handle);
   }
 
   /*

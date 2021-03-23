@@ -5,6 +5,7 @@
 #ifndef AZ_ULIB_IPC_H
 #define AZ_ULIB_IPC_H
 
+#include "az_core.h"
 #include "az_ulib_base.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_config.h"
@@ -146,7 +147,7 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
  * @brief   Unpublish an interface from the IPC.
  *
  * @note    You may remove this API defining a global key `AZ_ULIB_CONFIG_REMOVE_UNPUBLISH` on your
- * compilation enviroment. See more at #AZ_ULIB_CONFIG_IPC_UNPUBLISH.
+ * compilation environment. See more at #AZ_ULIB_CONFIG_IPC_UNPUBLISH.
  *
  * @param[in]   interface_descriptor  The `const` #az_ulib_interface_descriptor * with the
  *                                    descriptor of the interface. It cannot be `NULL`.
@@ -185,8 +186,7 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *
  * @note    **Do not release an interface will cause memory leak.**
  *
- * @param[in]   name              The `const char* const` with the interface name. It shall be a
- *                                valid `/0` terminated string.
+ * @param[in]   name              The `az_span` with the interface name.
  * @param[in]   version           The #az_ulib_version with the desired version.
  * @param[in]   match_criteria    The #az_ulib_version_match_criteria with the match criteria for
  *                                the interface version.
@@ -206,7 +206,7 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *                                              number of instances.
  */
 AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
-    const char* const name,
+    az_span name,
     az_ulib_version version,
     az_ulib_version_match_criteria match_criteria,
     az_ulib_ipc_interface_handle* interface_handle);

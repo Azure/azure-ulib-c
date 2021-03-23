@@ -9,6 +9,7 @@
  *
  ********************************************************************/
 
+#include "az_core.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
@@ -75,11 +76,11 @@ static const az_ulib_capability_descriptor CIPHER_1_CAPABILITIES[CIPHER_1_CAPABI
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND(CIPHER_1_INTERFACE_DECRYPT_COMMAND_NAME, cipher_1_decrypt_concrete)
 };
 
-static const az_ulib_interface_descriptor CIPHER_1_DESCRIPTOR
-    = { CIPHER_1_INTERFACE_NAME,
-        CIPHER_1_INTERFACE_VERSION,
-        CIPHER_1_CAPABILITY_SIZE,
-        (az_ulib_capability_descriptor*)CIPHER_1_CAPABILITIES };
+static const az_ulib_interface_descriptor CIPHER_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
+    CIPHER_1_INTERFACE_NAME,
+    CIPHER_1_INTERFACE_VERSION,
+    CIPHER_1_CAPABILITY_SIZE,
+    (az_ulib_capability_descriptor*)CIPHER_1_CAPABILITIES);
 
 az_result publish_cipher_v1i1_interface(void)
 {

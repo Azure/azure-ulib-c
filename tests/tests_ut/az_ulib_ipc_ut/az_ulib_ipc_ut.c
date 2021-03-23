@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "az_core.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
@@ -161,11 +162,11 @@ static const az_ulib_capability_descriptor MY_INTERFACE_1_V123_CAPABILITIES[5] =
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel)
 };
-static const az_ulib_interface_descriptor MY_INTERFACE_1_V123
-    = { "MY_INTERFACE_1",
-        123,
-        5,
-        (az_ulib_capability_descriptor*)MY_INTERFACE_1_V123_CAPABILITIES };
+static const az_ulib_interface_descriptor MY_INTERFACE_1_V123 = AZ_ULIB_DESCRIPTOR_CREATE(
+    "MY_INTERFACE_1",
+    123,
+    5,
+    (az_ulib_capability_descriptor*)MY_INTERFACE_1_V123_CAPABILITIES);
 
 static const az_ulib_capability_descriptor MY_INTERFACE_1_V2_CAPABILITIES[5] = {
   AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property),
@@ -174,8 +175,11 @@ static const az_ulib_capability_descriptor MY_INTERFACE_1_V2_CAPABILITIES[5] = {
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel)
 };
-static const az_ulib_interface_descriptor MY_INTERFACE_1_V2
-    = { "MY_INTERFACE_1", 2, 5, (az_ulib_capability_descriptor*)MY_INTERFACE_1_V2_CAPABILITIES };
+static const az_ulib_interface_descriptor MY_INTERFACE_1_V2 = AZ_ULIB_DESCRIPTOR_CREATE(
+    "MY_INTERFACE_1",
+    2,
+    5,
+    (az_ulib_capability_descriptor*)MY_INTERFACE_1_V2_CAPABILITIES);
 
 static const az_ulib_capability_descriptor MY_INTERFACE_2_V123_CAPABILITIES[5] = {
   AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property),
@@ -184,11 +188,11 @@ static const az_ulib_capability_descriptor MY_INTERFACE_2_V123_CAPABILITIES[5] =
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel)
 };
-static const az_ulib_interface_descriptor MY_INTERFACE_2_V123
-    = { "MY_INTERFACE_2",
-        123,
-        5,
-        (az_ulib_capability_descriptor*)MY_INTERFACE_2_V123_CAPABILITIES };
+static const az_ulib_interface_descriptor MY_INTERFACE_2_V123 = AZ_ULIB_DESCRIPTOR_CREATE(
+    "MY_INTERFACE_2",
+    123,
+    5,
+    (az_ulib_capability_descriptor*)MY_INTERFACE_2_V123_CAPABILITIES);
 
 static const az_ulib_capability_descriptor MY_INTERFACE_3_V123_CAPABILITIES[5] = {
   AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property),
@@ -197,11 +201,63 @@ static const az_ulib_capability_descriptor MY_INTERFACE_3_V123_CAPABILITIES[5] =
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel)
 };
-static const az_ulib_interface_descriptor MY_INTERFACE_3_V123
-    = { "MY_INTERFACE_3",
-        123,
-        5,
-        (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES };
+static const az_ulib_interface_descriptor MY_INTERFACE_3_V123 = AZ_ULIB_DESCRIPTOR_CREATE(
+    "MY_INTERFACE_3",
+    123,
+    5,
+    (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES);
+
+static const az_ulib_interface_descriptor MY_DESCRIPTOR_LIST[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE]
+    = { AZ_ULIB_DESCRIPTOR_CREATE(
+            "MY_INTERFACE",
+            1000,
+            5,
+            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            "MY_INTERFACE",
+            1001,
+            5,
+            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            "MY_INTERFACE",
+            1002,
+            5,
+            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            "MY_INTERFACE",
+            1003,
+            5,
+            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            "MY_INTERFACE",
+            1004,
+            5,
+            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            "MY_INTERFACE",
+            1005,
+            5,
+            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            "MY_INTERFACE",
+            1006,
+            5,
+            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            "MY_INTERFACE",
+            1007,
+            5,
+            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            "MY_INTERFACE",
+            1008,
+            5,
+            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            "MY_INTERFACE",
+            1009,
+            5,
+            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES) };
 
 static az_ulib_ipc g_ipc;
 
@@ -393,7 +449,7 @@ static void az_ulib_ipc_try_get_interface_with_null_name_failed(void** state)
   /// act
   /// assert
   AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_try_get_interface(
-      NULL, MY_INTERFACE_1_V123.version, AZ_ULIB_VERSION_EQUALS_TO, &interface_handle));
+      AZ_SPAN_EMPTY, MY_INTERFACE_1_V123.version, AZ_ULIB_VERSION_EQUALS_TO, &interface_handle));
 
   /// cleanup
   unpublish_interfaces_and_deinit_ipc();
@@ -687,16 +743,9 @@ static void az_ulib_ipc_publish_out_of_memory_failed(void** state)
   /// arrange
   (void)state;
   assert_int_equal(az_ulib_ipc_init(&g_ipc), AZ_OK);
-  az_ulib_interface_descriptor descriptors[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE];
-  az_ulib_capability_descriptor capabilities[1]
-      = AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", NULL, NULL);
   for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++)
   {
-    descriptors[i].name = "my_interface";
-    descriptors[i].version = i + 1;
-    descriptors[i].size = 1;
-    descriptors[i].capability_list = capabilities;
-    assert_int_equal(az_ulib_ipc_publish(&descriptors[i], NULL), AZ_OK);
+    assert_int_equal(az_ulib_ipc_publish(&MY_DESCRIPTOR_LIST[i], NULL), AZ_OK);
   }
   g_count_acquire = 0;
 
@@ -711,7 +760,7 @@ static void az_ulib_ipc_publish_out_of_memory_failed(void** state)
   /// cleanup
   for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++)
   {
-    assert_int_equal(az_ulib_ipc_unpublish(&descriptors[i], AZ_ULIB_NO_WAIT), AZ_OK);
+    assert_int_equal(az_ulib_ipc_unpublish(&MY_DESCRIPTOR_LIST[i], AZ_ULIB_NO_WAIT), AZ_OK);
   }
   assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
 }
@@ -835,20 +884,13 @@ static void az_ulib_ipc_unpublish_release_resource_succeed(void** state)
   assert_int_equal(g_lock_diff, 0);
   assert_int_equal(g_count_acquire, 2);
 
-  az_ulib_interface_descriptor descriptors[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 2];
-  az_ulib_capability_descriptor capabilities[1]
-      = AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", NULL, NULL);
   for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 2; i++)
   {
-    descriptors[i].name = "my_interface";
-    descriptors[i].version = i + 1;
-    descriptors[i].size = 1;
-    descriptors[i].capability_list = capabilities;
-    assert_int_equal(az_ulib_ipc_publish(&descriptors[i], NULL), AZ_OK);
+    assert_int_equal(az_ulib_ipc_publish(&MY_DESCRIPTOR_LIST[i], NULL), AZ_OK);
   }
   for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 2; i++)
   {
-    assert_int_equal(az_ulib_ipc_unpublish(&descriptors[i], AZ_ULIB_NO_WAIT), AZ_OK);
+    assert_int_equal(az_ulib_ipc_unpublish(&MY_DESCRIPTOR_LIST[i], AZ_ULIB_NO_WAIT), AZ_OK);
   }
 
   /// cleanup
@@ -1206,7 +1248,10 @@ static void az_ulib_ipc_try_get_interface_with_unknown_name_failed(void** state)
 
   /// act
   az_result result = az_ulib_ipc_try_get_interface(
-      "unknown_name", MY_INTERFACE_1_V123.version, AZ_ULIB_VERSION_EQUALS_TO, &interface_handle);
+      AZ_SPAN_FROM_STR("unknown_name"),
+      MY_INTERFACE_1_V123.version,
+      AZ_ULIB_VERSION_EQUALS_TO,
+      &interface_handle);
 
   /// assert
   assert_int_equal(result, AZ_ERROR_ITEM_NOT_FOUND);
