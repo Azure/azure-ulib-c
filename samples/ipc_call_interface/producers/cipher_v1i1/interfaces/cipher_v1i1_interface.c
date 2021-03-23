@@ -9,7 +9,6 @@
  *
  ********************************************************************/
 
-#include "az_core.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"

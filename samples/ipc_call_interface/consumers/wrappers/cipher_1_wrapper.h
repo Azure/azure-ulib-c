@@ -10,6 +10,7 @@
 #ifndef CIPHER_1_WRAPPER_H
 #define CIPHER_1_WRAPPER_H
 
+#include "az_core.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
 #include "cipher_1_interface.h"
