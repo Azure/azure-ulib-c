@@ -204,6 +204,5 @@ common/tools/macro_utils_h_generator/macro_utils_h_generator.exe
 
 build_all/windows/nuget.exe
 
-/cmake
 /build
 *.cert

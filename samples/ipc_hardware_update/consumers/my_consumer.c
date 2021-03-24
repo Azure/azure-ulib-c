@@ -2,22 +2,25 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+#include "my_consumer.h"
 #include "az_ulib_result.h"
 #include "wrappers/display_1_wrapper.h"
+
 #include <inttypes.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 
 static const char hello[] = "Hello world! This is a test to display a message.";
-static const int32_t hello_size = sizeof(hello) - 1;
+static const size_t hello_size = sizeof(hello) - 1;
 static const char bunny_1[] = "(\\(\\";
-static const int32_t bunny_1_size = sizeof(bunny_1) - 1;
+static const size_t bunny_1_size = sizeof(bunny_1) - 1;
 static const char bunny_2[] = "( -.-)";
-static const int32_t bunny_2_size = sizeof(bunny_2) - 1;
+static const size_t bunny_2_size = sizeof(bunny_2) - 1;
 static const char bunny_3[] = "o_(\")(\")";
-static const int32_t bunny_3_size = sizeof(bunny_3) - 1;
+static const size_t bunny_3_size = sizeof(bunny_3) - 1;
 static const char bunny_11[] = "/)/)";
-static const int32_t bunny_11_size = sizeof(bunny_11) - 1;
+static const size_t bunny_11_size = sizeof(bunny_11) - 1;
 
 static az_ulib_ipc_interface_handle _display_1;
 

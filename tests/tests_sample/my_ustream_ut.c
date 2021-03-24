@@ -12,7 +12,6 @@
 #include "az_ulib_ustream_base.h"
 /*TODO:<insert your header file here for testing>*/
 
-#include "az_ulib_ctest_aux.h"
 #include "az_ulib_test_precondition.h"
 #include "az_ulib_ustream_mock_buffer.h"
 #include "azure/core/az_precondition.h"

@@ -28,7 +28,6 @@ extern "C"
 #define DISPLAY_1_INTERFACE_VERSION 1
 #define DISPLAY_1_CAPABILITY_SIZE 3
 
-
 /*
  * Define cls (clear screen) command on display interface.
  */
@@ -44,10 +43,10 @@ extern "C"
 #define DISPLAY_1_INTERFACE_PRINT_COMMAND_NAME "print"
   typedef struct display_1_print_model_in_tag
   {
-    uint32_t x;
-    uint32_t y;
+    int32_t x;
+    int32_t y;
     const char* buffer;
-    uint32_t size;
+    size_t size;
   } display_1_print_model_in;
   typedef void display_1_print_model_out;
 

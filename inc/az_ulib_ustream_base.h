@@ -428,7 +428,7 @@ typedef struct az_ulib_ustream_data_cb_tag
   /** The #az_ulib_ustream_data* pointing to the data to read. It can be anything that a given
    * ustream implementation needs to access the data, whether it be a memory address to a buffer,
    * another struct with more controls, etc */
-  az_ulib_ustream_data* ptr;
+  const az_ulib_ustream_data* ptr;
 
   /** The `volatile uint32_t` with the number of references taken for this memory. */
   volatile uint32_t ref_count;
@@ -801,7 +801,7 @@ az_ulib_ustream_get_position(az_ulib_ustream* ustream_instance, offset_t* const 
  *      @retval #AZ_ERROR_ITEM_NOT_FOUND      If the position is already released.
  *      @retval #AZ_ERROR_ULIB_SYSTEM         If the `release` operation failed on the system
  *                                            level.
- *      @retbal #AZ_ERROR_ARG                 If the position is out of range.
+ *      @retval #AZ_ERROR_ARG                 If the position is out of range.
  */
 AZ_INLINE az_result az_ulib_ustream_release(az_ulib_ustream* ustream_instance, offset_t position)
 {

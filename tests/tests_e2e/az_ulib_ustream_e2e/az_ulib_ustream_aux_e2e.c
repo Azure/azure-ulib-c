@@ -10,8 +10,8 @@
 #include <string.h>
 
 #include "az_ulib_ustream.h"
+#include "az_ulib_ustream_e2e.h"
 
-#include "az_ulib_ctest_aux.h"
 #include "az_ulib_test_thread.h"
 #include "az_ulib_ustream_mock_buffer.h"
 
@@ -114,6 +114,7 @@ static az_ulib_ustream* thread_two_ustream;
 
 static int thread_one_func(void* arg)
 {
+  (void)arg;
   uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
   size_t size_result;
   offset_t cur_pos;
@@ -126,10 +127,10 @@ static int thread_one_func(void* arg)
 
 static int thread_two_func(void* arg)
 {
+  (void)arg;
   uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
   size_t size_result;
   offset_t cur_pos;
-  size_t position = strlen((const char*)USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT_1);
   az_ulib_ustream_set_position(thread_two_ustream, TEST_POSITION);
   az_ulib_ustream_read(thread_two_ustream, buf_result, TEST_SIZE, &size_result);
   az_ulib_ustream_get_position(thread_two_ustream, &cur_pos);
@@ -144,6 +145,7 @@ static int thread_two_func(void* arg)
 static void az_ulib_ustream_multi_read_concurrent_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream* multi_ustream = ustream_mock_create();
 
   az_ulib_ustream concat_ustream;
@@ -198,6 +200,7 @@ static void az_ulib_ustream_multi_read_concurrent_succeed(void** state)
 static void az_ulib_ustream_split_split_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream_data_cb* data_cb
       = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
   az_ulib_ustream ustream_instance;
@@ -263,6 +266,7 @@ static void az_ulib_ustream_split_split_succeed(void** state)
 static void az_ulib_ustream_split_split_and_reset_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream_data_cb* data_cb
       = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
   az_ulib_ustream ustream_instance;
@@ -305,6 +309,7 @@ static void az_ulib_ustream_split_split_and_reset_succeed(void** state)
 static void az_ulib_ustream_split_split_and_concat_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream_data_cb* data_cb
       = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
   az_ulib_ustream ustream_instance;
@@ -376,6 +381,7 @@ static void az_ulib_ustream_split_split_and_concat_succeed(void** state)
 static void az_ulib_ustream_split_concat_and_split_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
 
   create_test_default_multibuffer(&ustream_instance);
@@ -452,6 +458,7 @@ static void az_ulib_ustream_split_concat_and_split_succeed(void** state)
 static void az_ulib_ustream_split_concat_and_split_and_dispose_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
 
   create_test_default_multibuffer(&ustream_instance);

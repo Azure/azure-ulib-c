@@ -5,9 +5,14 @@
 #ifndef CIPHER_V2I1_H
 #define CIPHER_V2I1_H
 
+#include "az_ulib_result.h"
+
 #ifdef __cplusplus
+#include <cstdint>
 extern "C"
 {
+#else
+#include <stdint.h>
 #endif
 
   void cipher_v2i1_create(void);

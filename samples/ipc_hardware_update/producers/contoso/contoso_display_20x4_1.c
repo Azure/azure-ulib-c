@@ -2,9 +2,12 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+#include "contoso_display_20x4_1.h"
 #include "az_ulib_result.h"
 #include "contoso_display_20x4_bsp.h"
 #include "interfaces/contoso_display_20x4_1_interface.h"
+
+#include <stddef.h>
 #include <stdio.h>
 
 void contoso_display_20x4_1_create(void)

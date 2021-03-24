@@ -9,12 +9,14 @@
  *
  ********************************************************************/
 
+#include "cipher_v1i1_interface.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
 #include "cipher_1_interface.h"
 #include "cipher_v1i1.h"
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -32,7 +34,7 @@ static az_result cipher_1_encrypt_concrete(az_ulib_model_in model_in, az_ulib_mo
    * ==================
    * The user code starts here.
    */
-  cipher_1_encrypt_model_in* in = (cipher_1_encrypt_model_in*)model_in;
+  const cipher_1_encrypt_model_in* const in = (const cipher_1_encrypt_model_in* const)model_in;
   cipher_1_encrypt_model_out* out = (cipher_1_encrypt_model_out*)model_out;
 
   result = cipher_v1i1_encrypt(
@@ -54,7 +56,7 @@ static az_result cipher_1_decrypt_concrete(az_ulib_model_in model_in, az_ulib_mo
    * ==================
    * The user code starts here.
    */
-  cipher_1_decrypt_model_in* in = (cipher_1_decrypt_model_in*)model_in;
+  const cipher_1_decrypt_model_in* const in = (const cipher_1_decrypt_model_in* const)model_in;
   cipher_1_decrypt_model_out* out = (cipher_1_decrypt_model_out*)model_out;
 
   result = cipher_v1i1_decrypt(in->src, in->src_size, in->dst_buffer_size, out->dst, out->dst_size);
@@ -78,7 +80,7 @@ static const az_ulib_interface_descriptor CIPHER_1_DESCRIPTOR = AZ_ULIB_DESCRIPT
     CIPHER_1_INTERFACE_NAME,
     CIPHER_1_INTERFACE_VERSION,
     CIPHER_1_CAPABILITY_SIZE,
-    (az_ulib_capability_descriptor*)CIPHER_1_CAPABILITIES);
+    CIPHER_1_CAPABILITIES);
 
 az_result publish_cipher_v1i1_interface(void)
 {

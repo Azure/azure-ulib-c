@@ -202,8 +202,8 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
       // the interlock between this function and the az_ulib_ipc_call.
 
       // Prepare to recover in case it was not possible to unpublish the interface.
-      const az_ulib_interface_descriptor* recover_interface_descriptor
-          = (const az_ulib_interface_descriptor*)release_interface->interface_descriptor;
+      const volatile az_ulib_interface_descriptor* recover_interface_descriptor
+          = release_interface->interface_descriptor;
 
       // Block access to this interface. After this point, any new call to az_ulib_ipc_call that
       // didn't get the interface pointer yet will return AZ_ERROR_ITEM_NOT_FOUND.
@@ -369,8 +369,8 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
   if (ipc_interface->interface_descriptor != NULL)
   {
     (void)AZ_ULIB_PORT_ATOMIC_INC_W(&(ipc_interface->running_count));
-    register const az_ulib_interface_descriptor* descriptor
-        = (const az_ulib_interface_descriptor*)ipc_interface->interface_descriptor;
+    register const volatile az_ulib_interface_descriptor* descriptor
+        = ipc_interface->interface_descriptor;
 
     if (descriptor == NULL)
     {

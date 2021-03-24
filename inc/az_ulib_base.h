@@ -39,10 +39,17 @@ typedef uint32_t az_ulib_version;
 
 typedef enum az_ulib_version_match_criteria_tag
 {
-  AZ_ULIB_VERSION_ANY = 0b00000111, /**<Accept any version */
-  AZ_ULIB_VERSION_GREATER_THAN = 0b00000100, /**<Accept version greater than the provided one */
-  AZ_ULIB_VERSION_EQUALS_TO = 0b00000010, /**<Accept version equals to the provided one */
-  AZ_ULIB_VERSION_LOWER_THAN = 0b00000001 /**<Accept version lower than the provided one */
+  /** Accept any version. */
+  AZ_ULIB_VERSION_ANY = 0x07, // 0b00000111
+
+  /** Accept version greater than the provided one. */
+  AZ_ULIB_VERSION_GREATER_THAN = 0x04, // 0b00000100
+
+  /** Accept version equals to the provided one. */
+  AZ_ULIB_VERSION_EQUALS_TO = 0x02, // 0b00000010
+
+  /** Accept version lower than the provided one. */
+  AZ_ULIB_VERSION_LOWER_THAN = 0x01 // 0b00000001
 } az_ulib_version_match_criteria;
 
 static inline bool az_ulib_version_match(

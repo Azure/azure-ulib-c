@@ -13,6 +13,25 @@
 
 #include <azure/core/internal/az_precondition_internal.h>
 
+#ifdef __clang__
+#define IGNORE_POINTER_TYPE_QUALIFICATION \
+  _Pragma("clang diagnostic push")        \
+      _Pragma("clang diagnostic ignored \"-Wincompatible-pointer-types-discards-qualifiers\"")
+#define IGNORE_MEMCPY_TO_NULL _Pragma("GCC diagnostic push")
+#define RESUME_WARNINGS _Pragma("clang diagnostic pop")
+#elif defined(__GNUC__)
+#define IGNORE_POINTER_TYPE_QUALIFICATION \
+  _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wdiscarded-qualifiers\"")
+#define IGNORE_MEMCPY_TO_NULL _Pragma("GCC diagnostic push")
+#define RESUME_WARNINGS _Pragma("GCC diagnostic pop")
+#else
+#define IGNORE_POINTER_TYPE_QUALIFICATION __pragma(warning(push));
+#define IGNORE_MEMCPY_TO_NULL \
+  __pragma(warning(push));  \
+  __pragma(warning(suppress: 6387));
+#define RESUME_WARNINGS __pragma(warning(pop));
+#endif // __clang__
+
 static az_result concrete_set_position(az_ulib_ustream* ustream_instance, offset_t position);
 static az_result concrete_reset(az_ulib_ustream* ustream_instance);
 static az_result concrete_read(
@@ -51,7 +70,11 @@ static void destroy_control_block(az_ulib_ustream_data_cb* control_block)
 {
   if (control_block->data_release)
   {
+    /* If `data_relese` was provided is because `ptr` is not `const`. So, we have an Warning
+     * exception here to remove the `const` qualification of the `ptr`. */
+    IGNORE_POINTER_TYPE_QUALIFICATION
     control_block->data_release(control_block->ptr);
+    RESUME_WARNINGS
   }
   if (control_block->control_block_release)
   {
@@ -115,8 +138,12 @@ static az_result concrete_read(
     size_t remain_size
         = ustream_instance->length - (size_t)ustream_instance->inner_current_position;
     *size = (buffer_length < remain_size) ? buffer_length : remain_size;
-    (void)memcpy(
-        buffer, (uint8_t*)control_block->ptr + ustream_instance->inner_current_position, *size);
+    IGNORE_MEMCPY_TO_NULL
+    memcpy(
+        buffer,
+        (const uint8_t*)control_block->ptr + ustream_instance->inner_current_position,
+        *size);
+    RESUME_WARNINGS
     ustream_instance->inner_current_position += *size;
     result = AZ_OK;
   }
@@ -223,7 +250,7 @@ AZ_NODISCARD az_result az_ulib_ustream_init(
   _az_PRECONDITION(data_buffer_length > 0);
 
   ustream_control_block->api = &api;
-  ustream_control_block->ptr = (void*)data_buffer;
+  ustream_control_block->ptr = (const az_ulib_ustream_data*)data_buffer;
   ustream_control_block->ref_count = 0;
   ustream_control_block->data_release = data_buffer_release;
   ustream_control_block->control_block_release = control_block_release;

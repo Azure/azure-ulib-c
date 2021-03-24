@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+#include "my_consumer.h"
 #include "az_ulib_result.h"
 #include "wrappers/cipher_1_wrapper.h"
 #include <inttypes.h>
@@ -67,20 +68,20 @@ void my_consumer_do_cipher(uint32_t context)
       AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_encrypt(
           _cipher_1, context, src, src_size, BUFFER_SIZE, encrypted_dst, &encrypted_dst_size));
       (void)printf(
-          "cipher.1 encrypted \"%s\" to \"%s\" with context %d.\r\n", src, encrypted_dst, context);
+          "cipher.1 encrypted \"%s\" to \"%s\" with context %u.\r\n", src, encrypted_dst, context);
 
       AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_decrypt(
           _cipher_1, encrypted_dst, encrypted_dst_size, BUFFER_SIZE, dst, &dst_size));
       dst[dst_size] = '\0';
       (void)printf(
-          "cipher.1 decrypted \"%s\" to \"%s\" with context %d.\r\n", encrypted_dst, dst, context);
+          "cipher.1 decrypted \"%s\" to \"%s\" with context %u.\r\n", encrypted_dst, dst, context);
     }
     AZ_ULIB_CATCH(...)
     {
       if (AZ_ULIB_TRY_RESULT == AZ_ERROR_ITEM_NOT_FOUND)
         (void)printf("cipher.1 was uninstalled.\r\n");
       else if (AZ_ULIB_TRY_RESULT == AZ_ERROR_NOT_SUPPORTED)
-        (void)printf("cipher.1 does not support context %d.\r\n", context);
+        (void)printf("cipher.1 does not support context %u.\r\n", context);
       else
         (void)printf("cipher.1.sum failed with error %d\r\n", AZ_ULIB_TRY_RESULT);
 

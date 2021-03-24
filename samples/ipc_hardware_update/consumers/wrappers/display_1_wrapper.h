@@ -61,7 +61,7 @@ extern "C"
       int32_t x,
       int32_t y,
       const char* buf,
-      int32_t size)
+      size_t size)
   {
     // Marshalling
     display_1_print_model_in in = { .x = x, .y = y, .buffer = buf, .size = size };

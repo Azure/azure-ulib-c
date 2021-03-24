@@ -70,7 +70,7 @@ typedef const void* const az_ulib_model_in;
 /**
  * @brief       model_out type.
  */
-typedef const void* az_ulib_model_out;
+typedef void* az_ulib_model_out;
 
 /**
  * @brief       Handle that uniquely identifies the capability instance.
@@ -128,7 +128,7 @@ typedef az_result (
  */
 typedef az_result (*az_ulib_capability_command_async)(
     az_ulib_model_in model_in,
-    az_ulib_capability_result_callback callback,
+    az_ulib_model_out model_out,
     const az_ulib_capability_token capability_token,
     az_ulib_capability_cancellation_callback* cancel);
 

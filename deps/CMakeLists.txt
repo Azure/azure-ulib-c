@@ -4,7 +4,6 @@
 cmake_minimum_required (VERSION 3.10)
 
 project(az_cmocka VERSION 1.1.5 LANGUAGES C)
-set(CMAKE_C_STANDARD 99)
 
 set(CMOCKA_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/cmocka/include)
 
@@ -27,9 +26,28 @@ target_include_directories (az_cmocka
 target_compile_options(az_cmocka PRIVATE -DHAVE_CONFIG_H)
 
 if ( MSVC )
-  target_compile_options(az_cmocka PRIVATE /wd4267 /wd4244 /wd4267 /wd4996)
+  target_compile_options(
+    az_cmocka 
+  PRIVATE 
+    /wd4267 
+    /wd4244 
+    /wd4267 
+    /wd4701 
+    /wd4702 
+    /wd4703 
+    /wd4996 
+    /wd6011)
 else ()
-  target_compile_options(az_cmocka PRIVATE -Wno-implicit-function-declaration -Wno-int-conversion)
+  target_compile_options(
+    az_cmocka 
+  PRIVATE 
+    -Wno-int-conversion 
+    -Wno-sign-conversion 
+    -Wno-conversion 
+    -Wno-cast-qual
+    -Wno-implicit-function-declaration
+    -Wno-shorten-64-to-32
+    -Wno-implicit-int-float-conversion)
 endif()
 
 # make sure that users can consume the project as a library.

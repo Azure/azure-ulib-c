@@ -2,6 +2,15 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+/**
+ * @file    az_ulib_ipc_api.h
+ *
+ * @brief   The inter-process communication.
+ *
+ * The IPC is the component responsible to expose interfaces created by one component to all other
+ * components in the system.
+ */
+
 #ifndef AZ_ULIB_IPC_H
 #define AZ_ULIB_IPC_H
 
@@ -22,15 +31,9 @@
 
 #include "azure/core/_az_cfg_prefix.h"
 
-/**
- * @file    az_ulib_ipc_api.h
- *
- * @brief   The inter-process communication.
- *
- * The IPC is the component responsible to expose interfaces created by one component to all other
- * components in the system.
+/*
+ * IPC interface control block.
  */
-
 typedef struct
 {
   volatile const az_ulib_interface_descriptor* interface_descriptor;

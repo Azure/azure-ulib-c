@@ -2,9 +2,12 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+#include "fabrikan_display_48x4_1.h"
 #include "az_ulib_result.h"
 #include "fabrikan_display_48x4_bsp.h"
 #include "interfaces/fabrikan_display_48x4_1_interface.h"
+
+#include <stddef.h>
 #include <stdio.h>
 
 void fabrikan_display_48x4_1_create(void)

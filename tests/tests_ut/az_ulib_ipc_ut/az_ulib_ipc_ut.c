@@ -12,6 +12,7 @@
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
+#include "az_ulib_ipc_ut.h"
 #include "az_ulib_pal_os_api.h"
 #include "az_ulib_result.h"
 #include "azure/az_core.h"
@@ -27,7 +28,13 @@ int8_t g_count_acquire;
 int8_t g_count_sleep;
 void az_pal_os_lock_init(az_ulib_pal_os_lock* lock) { g_lock = lock; }
 
-void az_pal_os_lock_deinit(az_ulib_pal_os_lock* lock) { g_lock = NULL; }
+void az_pal_os_lock_deinit(az_ulib_pal_os_lock* lock)
+{
+  if (lock == g_lock)
+  {
+    g_lock = NULL;
+  }
+}
 
 void az_pal_os_lock_acquire(az_ulib_pal_os_lock* lock)
 {
@@ -54,7 +61,7 @@ void az_pal_os_sleep(uint32_t sleep_time_ms)
 
 static uint32_t my_property = 0;
 
-static az_result get_my_property(const void* model_out)
+static az_result get_my_property(az_ulib_model_out model_out)
 {
   uint32_t* new_val = (uint32_t*)model_out;
 
@@ -63,9 +70,9 @@ static az_result get_my_property(const void* model_out)
   return AZ_OK;
 }
 
-static az_result set_my_property(const void* const model_in)
+static az_result set_my_property(az_ulib_model_in model_in)
 {
-  uint32_t* new_val = (uint32_t*)model_in;
+  const uint32_t* const new_val = (const uint32_t* const)model_in;
 
   my_property = *new_val;
 
@@ -92,9 +99,9 @@ typedef enum my_command_capability_tag
   MY_COMMAND_CAPABILITY_RETURN_ERROR
 } my_command_capability;
 
-static az_result my_command(const void* const model_in, const void* model_out)
+static az_result my_command(az_ulib_model_in model_in, az_ulib_model_out model_out)
 {
-  my_command_model_in* in = (my_command_model_in*)model_in;
+  const my_command_model_in* const in = (const my_command_model_in* const)model_in;
   az_result* result = (az_result*)model_out;
   my_command_model_in in_2;
 
@@ -126,8 +133,8 @@ static az_result my_command(const void* const model_in, const void* model_out)
 }
 
 static az_result my_command_async(
-    const void* const model_in,
-    const void* model_out,
+    az_ulib_model_in model_in,
+    az_ulib_model_out model_out,
     const az_ulib_capability_token capability_token,
     az_ulib_capability_cancellation_callback* cancel)
 {
@@ -162,11 +169,8 @@ static const az_ulib_capability_descriptor MY_INTERFACE_1_V123_CAPABILITIES[5] =
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel)
 };
-static const az_ulib_interface_descriptor MY_INTERFACE_1_V123 = AZ_ULIB_DESCRIPTOR_CREATE(
-    "MY_INTERFACE_1",
-    123,
-    5,
-    (az_ulib_capability_descriptor*)MY_INTERFACE_1_V123_CAPABILITIES);
+static const az_ulib_interface_descriptor MY_INTERFACE_1_V123
+    = AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE_1", 123, 5, MY_INTERFACE_1_V123_CAPABILITIES);
 
 static const az_ulib_capability_descriptor MY_INTERFACE_1_V2_CAPABILITIES[5] = {
   AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property),
@@ -175,11 +179,8 @@ static const az_ulib_capability_descriptor MY_INTERFACE_1_V2_CAPABILITIES[5] = {
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel)
 };
-static const az_ulib_interface_descriptor MY_INTERFACE_1_V2 = AZ_ULIB_DESCRIPTOR_CREATE(
-    "MY_INTERFACE_1",
-    2,
-    5,
-    (az_ulib_capability_descriptor*)MY_INTERFACE_1_V2_CAPABILITIES);
+static const az_ulib_interface_descriptor MY_INTERFACE_1_V2
+    = AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE_1", 2, 5, MY_INTERFACE_1_V2_CAPABILITIES);
 
 static const az_ulib_capability_descriptor MY_INTERFACE_2_V123_CAPABILITIES[5] = {
   AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property),
@@ -188,11 +189,8 @@ static const az_ulib_capability_descriptor MY_INTERFACE_2_V123_CAPABILITIES[5] =
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel)
 };
-static const az_ulib_interface_descriptor MY_INTERFACE_2_V123 = AZ_ULIB_DESCRIPTOR_CREATE(
-    "MY_INTERFACE_2",
-    123,
-    5,
-    (az_ulib_capability_descriptor*)MY_INTERFACE_2_V123_CAPABILITIES);
+static const az_ulib_interface_descriptor MY_INTERFACE_2_V123
+    = AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE_2", 123, 5, MY_INTERFACE_2_V123_CAPABILITIES);
 
 static const az_ulib_capability_descriptor MY_INTERFACE_3_V123_CAPABILITIES[5] = {
   AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property),
@@ -201,67 +199,24 @@ static const az_ulib_capability_descriptor MY_INTERFACE_3_V123_CAPABILITIES[5] =
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command),
   AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel)
 };
-static const az_ulib_interface_descriptor MY_INTERFACE_3_V123 = AZ_ULIB_DESCRIPTOR_CREATE(
-    "MY_INTERFACE_3",
-    123,
-    5,
-    (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES);
+static const az_ulib_interface_descriptor MY_INTERFACE_3_V123
+    = AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE_3", 123, 5, MY_INTERFACE_3_V123_CAPABILITIES);
 
 static const az_ulib_interface_descriptor MY_DESCRIPTOR_LIST[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE]
-    = { AZ_ULIB_DESCRIPTOR_CREATE(
-            "MY_INTERFACE",
-            1000,
-            5,
-            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE(
-            "MY_INTERFACE",
-            1001,
-            5,
-            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE(
-            "MY_INTERFACE",
-            1002,
-            5,
-            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE(
-            "MY_INTERFACE",
-            1003,
-            5,
-            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE(
-            "MY_INTERFACE",
-            1004,
-            5,
-            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE(
-            "MY_INTERFACE",
-            1005,
-            5,
-            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE(
-            "MY_INTERFACE",
-            1006,
-            5,
-            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE(
-            "MY_INTERFACE",
-            1007,
-            5,
-            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE(
-            "MY_INTERFACE",
-            1008,
-            5,
-            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE(
-            "MY_INTERFACE",
-            1009,
-            5,
-            (az_ulib_capability_descriptor*)MY_INTERFACE_3_V123_CAPABILITIES) };
+    = { AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1000, 5, MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1001, 5, MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1002, 5, MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1003, 5, MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1004, 5, MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1005, 5, MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1006, 5, MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1007, 5, MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1008, 5, MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1009, 5, MY_INTERFACE_3_V123_CAPABILITIES) };
 
 static az_ulib_ipc g_ipc;
 
-void init_ipc_and_publish_interfaces(void)
+static void init_ipc_and_publish_interfaces(void)
 {
   assert_int_equal(az_ulib_ipc_init(&g_ipc), AZ_OK);
   assert_int_equal(az_ulib_ipc_publish(&MY_INTERFACE_1_V123, NULL), AZ_OK);
@@ -308,7 +263,7 @@ void init_ipc_and_publish_interfaces(void)
   g_count_acquire = 0;
 }
 
-void unpublish_interfaces_and_deinit_ipc(void)
+static void unpublish_interfaces_and_deinit_ipc(void)
 {
   assert_int_equal(az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, AZ_ULIB_NO_WAIT), AZ_OK);
   assert_int_equal(az_ulib_ipc_unpublish(&MY_INTERFACE_2_V123, AZ_ULIB_NO_WAIT), AZ_OK);

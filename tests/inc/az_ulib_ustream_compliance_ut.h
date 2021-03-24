@@ -41,6 +41,7 @@
 static void az_ulib_ustream_dispose_compliance_null_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -57,6 +58,7 @@ static void az_ulib_ustream_dispose_compliance_null_buffer_failed(void** state)
 static void az_ulib_ustream_dispose_compliance_buffer_is_not_type_of_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -73,6 +75,7 @@ static void az_ulib_ustream_dispose_compliance_buffer_is_not_type_of_buffer_fail
 static void az_ulib_ustream_clone_compliance_null_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   az_ulib_ustream ustream_instance_clone;
@@ -90,6 +93,7 @@ static void az_ulib_ustream_clone_compliance_null_buffer_failed(void** state)
 static void az_ulib_ustream_clone_compliance_null_buffer_clone_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -107,6 +111,7 @@ static void az_ulib_ustream_clone_compliance_null_buffer_clone_failed(void** sta
 static void az_ulib_ustream_clone_compliance_buffer_is_not_type_of_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   az_ulib_ustream ustream_instance_clone;
@@ -125,6 +130,7 @@ static void az_ulib_ustream_clone_compliance_buffer_is_not_type_of_buffer_failed
 static void az_ulib_ustream_get_remaining_size_compliance_null_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   size_t size;
@@ -142,6 +148,7 @@ static void az_ulib_ustream_get_remaining_size_compliance_buffer_is_not_type_of_
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   size_t size;
@@ -160,6 +167,7 @@ static void az_ulib_ustream_get_remaining_size_compliance_buffer_is_not_type_of_
 static void az_ulib_ustream_get_remaining_size_compliance_null_size_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -175,6 +183,7 @@ static void az_ulib_ustream_get_remaining_size_compliance_null_size_failed(void*
 static void az_ulib_ustream_get_current_position_compliance_null_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   offset_t position;
@@ -194,6 +203,7 @@ static void az_ulib_ustream_get_current_position_compliance_buffer_is_not_type_o
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   offset_t position;
@@ -211,6 +221,7 @@ static void az_ulib_ustream_get_current_position_compliance_buffer_is_not_type_o
 static void az_ulib_ustream_get_current_position_compliance_null_position_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -226,6 +237,7 @@ static void az_ulib_ustream_get_current_position_compliance_null_position_failed
 static void az_ulib_ustream_read_compliance_null_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -247,6 +259,7 @@ static void az_ulib_ustream_read_compliance_null_buffer_failed(void** state)
 static void az_ulib_ustream_read_compliance_non_type_of_buffer_api_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -269,6 +282,7 @@ static void az_ulib_ustream_read_compliance_non_type_of_buffer_api_failed(void**
 static void az_ulib_ustream_read_compliance_buffer_with_zero_size_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -287,6 +301,7 @@ static void az_ulib_ustream_read_compliance_buffer_with_zero_size_failed(void** 
 static void az_ulib_ustream_read_compliance_null_return_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   size_t size_result;
@@ -304,6 +319,7 @@ static void az_ulib_ustream_read_compliance_null_return_buffer_failed(void** sta
 static void az_ulib_ustream_read_compliance_null_return_size_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -321,6 +337,7 @@ static void az_ulib_ustream_read_compliance_null_return_size_failed(void** state
 static void az_ulib_ustream_set_position_compliance_null_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -338,6 +355,7 @@ static void az_ulib_ustream_set_position_compliance_null_buffer_failed(void** st
 static void az_ulib_ustream_set_position_compliance_non_type_of_buffer_api_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -354,6 +372,7 @@ static void az_ulib_ustream_set_position_compliance_non_type_of_buffer_api_faile
 static void az_ulib_ustream_release_compliance_null_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -370,6 +389,7 @@ static void az_ulib_ustream_release_compliance_null_buffer_failed(void** state)
 static void az_ulib_ustream_release_compliance_non_type_of_buffer_api_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -386,6 +406,7 @@ static void az_ulib_ustream_release_compliance_non_type_of_buffer_api_failed(voi
 static void az_ulib_ustream_reset_compliance_null_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -402,6 +423,7 @@ static void az_ulib_ustream_reset_compliance_null_buffer_failed(void** state)
 static void az_ulib_ustream_reset_compliance_non_type_of_buffer_api_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -420,6 +442,7 @@ static void az_ulib_ustream_reset_compliance_non_type_of_buffer_api_failed(void*
 static void az_ulib_ustream_dispose_compliance_cloned_instance_disposed_first_succeed(void** state)
 {
   /// arrange
+  (void)state;
   offset_t ustream_clone_current_position;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
@@ -442,6 +465,7 @@ static void az_ulib_ustream_dispose_compliance_cloned_instance_disposed_first_su
 static void az_ulib_ustream_dispose_compliance_cloned_instance_disposed_second_succeed(void** state)
 {
   /// arrange
+  (void)state;
   offset_t ustream_clone_current_position;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
@@ -467,6 +491,7 @@ static void az_ulib_ustream_dispose_compliance_cloned_instance_disposed_second_s
 static void az_ulib_ustream_dispose_compliance_single_instance_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -488,6 +513,7 @@ static void az_ulib_ustream_clone_compliance_new_buffer_cloned_with_zero_offset_
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   az_ulib_ustream ustream_instance_clone;
@@ -538,6 +564,7 @@ static void az_ulib_ustream_clone_compliance_new_buffer_cloned_with_zero_offset_
 static void az_ulib_ustream_clone_compliance_new_buffer_cloned_with_offset_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   az_ulib_ustream ustream_instance_clone;
@@ -588,6 +615,7 @@ static void az_ulib_ustream_clone_compliance_new_buffer_cloned_with_offset_succe
 static void az_ulib_ustream_clone_compliance_empty_buffer_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -643,6 +671,7 @@ az_ulib_ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_p
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -683,7 +712,7 @@ az_ulib_ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_p
   assert_int_equal(
       size_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_COMPLIANCE_LENGTH_2);
   assert_memory_equal(
-      (uint8_t*)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_COMPLIANCE_LENGTH_2),
+      (const uint8_t*)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_COMPLIANCE_LENGTH_2),
       buf_result,
       size_result);
 
@@ -704,6 +733,7 @@ az_ulib_ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_p
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -745,7 +775,7 @@ az_ulib_ustream_clone_compliance_new_buffer_with_non_zero_current_and_released_p
   assert_int_equal(
       size_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_COMPLIANCE_LENGTH_2);
   assert_memory_equal(
-      (uint8_t*)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_COMPLIANCE_LENGTH_2),
+      (const uint8_t*)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_COMPLIANCE_LENGTH_2),
       buf_result,
       size_result);
 
@@ -766,6 +796,7 @@ az_ulib_ustream_clone_compliance_cloned_buffer_with_non_zero_current_and_release
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -819,7 +850,7 @@ az_ulib_ustream_clone_compliance_cloned_buffer_with_non_zero_current_and_release
   assert_int_equal(
       size_result, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_COMPLIANCE_LENGTH_2);
   assert_memory_equal(
-      (uint8_t*)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_COMPLIANCE_LENGTH_2),
+      (const uint8_t*)(USTREAM_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_COMPLIANCE_LENGTH_2),
       buf_result,
       size_result);
 
@@ -845,6 +876,7 @@ az_ulib_ustream_clone_compliance_cloned_buffer_with_non_zero_current_and_release
 static void az_ulib_ustream_clone_compliance_offset_exceed_size_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   az_ulib_ustream ustream_instance_clone;
@@ -865,6 +897,7 @@ static void az_ulib_ustream_clone_compliance_offset_exceed_size_failed(void** st
 static void az_ulib_ustream_get_remaining_size_compliance_new_buffer_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   size_t size;
@@ -885,6 +918,7 @@ az_ulib_ustream_get_remaining_size_compliance_new_buffer_with_non_zero_current_p
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -909,6 +943,7 @@ az_ulib_ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_curren
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -943,6 +978,7 @@ az_ulib_ustream_get_remaining_size_compliance_cloned_buffer_with_non_zero_curren
 static void az_ulib_ustream_get_current_position_compliance_new_buffer_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   offset_t position;
@@ -963,6 +999,7 @@ az_ulib_ustream_get_current_position_compliance_new_buffer_with_non_zero_current
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -988,6 +1025,7 @@ az_ulib_ustream_get_current_position_compliance_cloned_buffer_with_non_zero_curr
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1028,6 +1066,7 @@ az_ulib_ustream_get_current_position_compliance_cloned_buffer_with_non_zero_curr
 static void az_ulib_ustream_read_compliance_get_from_original_buffer_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result1[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1068,6 +1107,7 @@ static void az_ulib_ustream_read_compliance_get_from_original_buffer_succeed(voi
 static void az_ulib_ustream_read_compliance_get_from_cloned_buffer_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1119,6 +1159,7 @@ static void az_ulib_ustream_read_compliance_get_from_cloned_buffer_succeed(void*
 static void az_ulib_ustream_read_compliance_single_buffer_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1140,6 +1181,7 @@ static void az_ulib_ustream_read_compliance_single_buffer_succeed(void** state)
 static void az_ulib_ustream_read_compliance_right_boundary_condition_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1179,6 +1221,7 @@ static void az_ulib_ustream_read_compliance_cloned_buffer_right_boundary_conditi
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1219,6 +1262,7 @@ static void az_ulib_ustream_read_compliance_cloned_buffer_right_boundary_conditi
 static void az_ulib_ustream_read_compliance_boundary_condition_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1245,6 +1289,7 @@ static void az_ulib_ustream_read_compliance_boundary_condition_succeed(void** st
 static void az_ulib_ustream_read_compliance_left_boundary_condition_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1271,6 +1316,7 @@ static void az_ulib_ustream_read_compliance_left_boundary_condition_succeed(void
 static void az_ulib_ustream_read_compliance_single_byte_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1298,6 +1344,7 @@ static void az_ulib_ustream_read_compliance_single_byte_succeed(void** state)
 static void az_ulib_ustream_set_position_compliance_back_to_beginning_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1325,6 +1372,7 @@ static void az_ulib_ustream_set_position_compliance_back_to_beginning_succeed(vo
 static void az_ulib_ustream_set_position_compliance_back_position_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1352,6 +1400,7 @@ static void az_ulib_ustream_set_position_compliance_back_position_succeed(void**
 static void az_ulib_ustream_set_position_compliance_forward_position_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1380,6 +1429,7 @@ static void az_ulib_ustream_set_position_compliance_forward_to_the_end_position_
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -1403,6 +1453,7 @@ static void az_ulib_ustream_set_position_compliance_run_full_buffer_byte_by_byte
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[1];
@@ -1434,6 +1485,7 @@ az_ulib_ustream_set_position_compliance_run_full_buffer_byte_by_byte_reverse_ord
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[1];
@@ -1465,6 +1517,7 @@ static void az_ulib_ustream_set_position_compliance_cloned_buffer_back_to_beginn
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1499,6 +1552,7 @@ static void az_ulib_ustream_set_position_compliance_cloned_buffer_back_position_
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1533,6 +1587,7 @@ static void az_ulib_ustream_set_position_compliance_cloned_buffer_forward_positi
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1568,6 +1623,7 @@ az_ulib_ustream_set_position_compliance_cloned_buffer_forward_to_the_end_positio
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1599,6 +1655,7 @@ az_ulib_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_by
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1640,6 +1697,7 @@ az_ulib_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_by
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1683,6 +1741,7 @@ az_ulib_ustream_set_position_compliance_cloned_buffer_run_full_buffer_byte_by_by
 static void az_ulib_ustream_set_position_compliance_forward_out_of_the_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
 
@@ -1708,6 +1767,7 @@ static void az_ulib_ustream_set_position_compliance_back_before_first_valid_posi
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1739,6 +1799,7 @@ az_ulib_ustream_set_position_compliance_back_before_first_valid_position_with_of
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   az_ulib_ustream ustream_instance_clone;
@@ -1765,6 +1826,7 @@ az_ulib_ustream_set_position_compliance_back_before_first_valid_position_with_of
 static void az_ulib_ustream_release_compliance_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -1794,6 +1856,7 @@ static void az_ulib_ustream_release_compliance_succeed(void** state)
 static void az_ulib_ustream_release_compliance_release_all_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1820,6 +1883,7 @@ static void az_ulib_ustream_release_compliance_release_all_succeed(void** state)
 static void az_ulib_ustream_release_compliance_run_full_buffer_byte_by_byte_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[1];
@@ -1853,6 +1917,7 @@ static void az_ulib_ustream_release_compliance_run_full_buffer_byte_by_byte_succ
 static void az_ulib_ustream_release_compliance_cloned_buffer_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1888,6 +1953,7 @@ static void az_ulib_ustream_release_compliance_cloned_buffer_succeed(void** stat
 static void az_ulib_ustream_release_compliance_cloned_buffer_release_all_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1924,6 +1990,7 @@ static void az_ulib_ustream_release_compliance_cloned_buffer_run_full_buffer_byt
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   assert_int_equal(
@@ -1970,6 +2037,7 @@ static void az_ulib_ustream_release_compliance_cloned_buffer_run_full_buffer_byt
 static void az_ulib_ustream_release_compliance_release_after_current_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -2002,6 +2070,7 @@ static void az_ulib_ustream_release_compliance_release_position_already_released
     void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -2033,6 +2102,7 @@ static void az_ulib_ustream_release_compliance_release_position_already_released
 static void az_ulib_ustream_reset_compliance_back_to_beginning_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -2057,6 +2127,7 @@ static void az_ulib_ustream_reset_compliance_back_to_beginning_succeed(void** st
 static void az_ulib_ustream_reset_compliance_back_position_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf_result[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];
@@ -2086,6 +2157,7 @@ static void az_ulib_ustream_reset_compliance_back_position_succeed(void** state)
 static void az_ulib_ustream_reset_compliance_cloned_buffer_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream_instance);
   uint8_t buf[USTREAM_COMPLIANCE_TEMP_BUFFER_LENGTH];

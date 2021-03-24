@@ -43,8 +43,8 @@ static az_result print_buffer(az_ulib_ustream* ustream)
  * This sample creates two ustreams and concatenates them. It then prints the concatenated ustream
  * as if the two original ustreams were one.
  *      Content of ustream one: "Hello "
- *      Content of ustream two: "World\r\n"
- *      Content of concatenated ustream: "Hello World\r\n"
+ *      Content of ustream two: "World"
+ *      Content of concatenated ustream: "Hello World"
  * With both instances, the az_ulib_ustream lives on the stack while the control blocks use stdlib
  * malloc for allocation and stdlib free to free the memory.
  *
