@@ -13,6 +13,7 @@
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
 #include "az_ulib_ulog.h"
+#include "azure/az_core.h"
 
 #include <azure/core/internal/az_precondition_internal.h>
 
@@ -24,7 +25,7 @@
 static az_ulib_ipc* volatile _az_ipc_cb = NULL;
 
 static _az_ulib_ipc_interface* get_interface(
-    const char* const name,
+    az_span name,
     az_ulib_version version,
     az_ulib_version_match_criteria match_criteria)
 {
@@ -33,7 +34,8 @@ static _az_ulib_ipc_interface* get_interface(
   for (size_t i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++)
   {
     if ((_az_ipc_cb->_internal.interface_list[i].interface_descriptor != NULL)
-        && (strcmp(_az_ipc_cb->_internal.interface_list[i].interface_descriptor->name, name) == 0)
+        && (az_span_is_content_equal(
+            _az_ipc_cb->_internal.interface_list[i].interface_descriptor->name, name))
         && az_ulib_version_match(
             _az_ipc_cb->_internal.interface_list[i].interface_descriptor->version,
             version,
@@ -269,13 +271,13 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
 AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
-    const char* const name,
+    az_span name,
     az_ulib_version version,
     az_ulib_version_match_criteria match_criteria,
     az_ulib_ipc_interface_handle* interface_handle)
 {
   _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
-  _az_PRECONDITION_NOT_NULL(name);
+  _az_PRECONDITION_VALID_SPAN(name, 1, false);
   _az_PRECONDITION_NOT_NULL(interface_handle);
 
   az_result result;
@@ -353,8 +355,8 @@ AZ_NODISCARD az_result az_ulib_ipc_release_interface(az_ulib_ipc_interface_handl
 AZ_NODISCARD az_result az_ulib_ipc_call(
     az_ulib_ipc_interface_handle interface_handle,
     az_ulib_capability_index command_index,
-    const void* const model_in,
-    const void* model_out)
+    az_ulib_model_in model_in,
+    az_ulib_model_out model_out)
 {
   _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
   _az_PRECONDITION_NOT_NULL(interface_handle);
@@ -398,8 +400,8 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
 AZ_NODISCARD az_result az_ulib_ipc_call(
     az_ulib_ipc_interface_handle interface_handle,
     az_ulib_capability_index command_index,
-    const void* const model_in,
-    const void* model_out)
+    az_ulib_model_in model_in,
+    az_ulib_model_out model_out)
 {
   _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
   _az_PRECONDITION_NOT_NULL(interface_handle);
