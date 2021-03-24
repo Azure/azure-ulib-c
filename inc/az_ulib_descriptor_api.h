@@ -5,10 +5,10 @@
 #ifndef AZ_ULIB_DESCRIPTOR_H
 #define AZ_ULIB_DESCRIPTOR_H
 
-#include "az_core.h"
 #include "az_ulib_base.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_result.h"
+#include "azure/az_core.h"
 
 #ifndef __cplusplus
 #include <stddef.h>
@@ -60,7 +60,7 @@ typedef struct az_ulib_capability_descriptor_tag
     const az_ulib_capability_cancellation_callback cancel;
   } capability_ptr_2;
 
-  /** This is an 8 bit flags that handles internal status of the capability. */
+  /** This is an 8 bit flag that handles the internal status of the capability. */
   const uint8_t flags;
 } az_ulib_capability_descriptor;
 
@@ -118,8 +118,8 @@ typedef struct az_ulib_interface_descriptor_tag
  * Populate a new [*property* capability](#AZ_ULIB_CAPABILITY_TYPE_PROPERTY) to add to the
  * interface.
  *
- * @param[in]   property_name The `/0` terminated `az_span` with the property name. It cannot be
- *                            `NULL` and shall be allocated in a way that it stays valid
+ * @param[in]   property_name The `/0` terminated `const char* const` with the property name. It
+ *                            cannot be `NULL` and shall be allocated in a way that it stays valid
  *                            until the interface is unpublished at some (potentially) unknown time
  *                            in the future.
  * @param[in]   get           The function pointer to #az_ulib_capability_get with the

@@ -4,7 +4,6 @@
 
 #include <stdint.h>
 
-#include "az_core.h"
 #include "az_ulib_base.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_config.h"
@@ -14,6 +13,7 @@
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
 #include "az_ulib_ulog.h"
+#include "azure/az_core.h"
 
 #include <azure/core/internal/az_precondition_internal.h>
 

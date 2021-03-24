@@ -9,12 +9,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "az_core.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_pal_os_api.h"
 #include "az_ulib_result.h"
+#include "azure/az_core.h"
 
 #include "az_ulib_test_precondition.h"
 #include "azure/core/az_precondition.h"

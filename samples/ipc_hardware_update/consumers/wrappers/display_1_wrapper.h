@@ -10,9 +10,9 @@
 #ifndef DISPLAY_1_WRAPPER_H
 #define DISPLAY_1_WRAPPER_H
 
-#include "az_core.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
+#include "azure/az_core.h"
 #include "display_1_interface.h"
 
 #ifdef __cplusplus

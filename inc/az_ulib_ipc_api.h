@@ -5,7 +5,6 @@
 #ifndef AZ_ULIB_IPC_H
 #define AZ_ULIB_IPC_H
 
-#include "az_core.h"
 #include "az_ulib_base.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_config.h"
@@ -13,6 +12,7 @@
 #include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
+#include "azure/az_core.h"
 
 #ifndef __cplusplus
 #include <stdint.h>
