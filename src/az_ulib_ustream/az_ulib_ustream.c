@@ -9,7 +9,6 @@
 
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
-#include "az_ulib_ulog.h"
 #include "az_ulib_ustream.h"
 
 #include <azure/core/internal/az_precondition_internal.h>

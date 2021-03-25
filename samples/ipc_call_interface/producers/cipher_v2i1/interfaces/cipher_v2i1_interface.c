@@ -13,7 +13,6 @@
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
-#include "az_ulib_ulog.h"
 #include "cipher_1_interface.h"
 #include "cipher_v2i1.h"
 #include <stddef.h>
