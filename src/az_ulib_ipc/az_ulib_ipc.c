@@ -12,6 +12,10 @@
 #include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
+<<<<<<< HEAD
+=======
+#include "azure/az_core.h"
+>>>>>>> 701e680ce416189ae749969e97870bb319e7f41a
 
 #include <azure/core/internal/az_precondition_internal.h>
 
