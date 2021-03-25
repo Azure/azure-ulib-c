@@ -12,6 +12,7 @@
 
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
+#include "azure/az_core.h"
 #include "cipher_1_interface.h"
 
 #ifdef __cplusplus
@@ -28,7 +29,10 @@ extern "C"
   static inline az_result cipher_1_create(az_ulib_ipc_interface_handle handle)
   {
     return az_ulib_ipc_try_get_interface(
-        CIPHER_1_INTERFACE_NAME, CIPHER_1_INTERFACE_VERSION, AZ_ULIB_VERSION_EQUALS_TO, handle);
+        AZ_SPAN_FROM_STR(CIPHER_1_INTERFACE_NAME),
+        CIPHER_1_INTERFACE_VERSION,
+        AZ_ULIB_VERSION_EQUALS_TO,
+        handle);
   }
 
   /*
