@@ -9,7 +9,6 @@ The intention of this repository is to provide developers useful tools to make d
 This repository contains the following:
 
 * [**uStream**](https://azure.github.io/azure-ulib-c/ustream__base_8h.html): avoid copying memory and expose large amounts of data without using a large amount of memory. Samples can be found [here](https://github.com/Azure/azure-ulib-c/tree/master/samples).
-* [**uLog**](https://azure.github.io/azure-ulib-c/ulog_8h.html): a small logging system with constant strings for reduced memory footprint.
 
 ## Table of Contents
 
