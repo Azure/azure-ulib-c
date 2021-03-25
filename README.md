@@ -128,7 +128,7 @@ The following CMake options are available for adding/removing project features.
 </tr>
 <tr>
 <td>LOGGING</td>
-<td>Build uLib with logging support.</td>
+<td>Build uLib with logging support using Azure Core Library's AZ_LOG.</td>
 <td>ON</td>
 </tr>
 <tr>

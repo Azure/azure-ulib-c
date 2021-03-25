@@ -16,26 +16,6 @@ extern "C"
  * @brief Configuration options for ulib
  */
 
-/*
- * Define log Function
- */
-
-/**
- * @brief   ulib logger
- *
- * Defines the log function that the ulib shall use as its own way to print information in the
- * log system.
- */
-#define AZ_ULIB_CONFIG_LOG(category, format, ...) \
-  az_ulib_ulog_print(category, format, ##__VA_ARGS__)
-
-/**
- * @brief   Maximum size of the ulib log.
- *
- * Defines the maximum number of chars in each log line.
- */
-#define AZ_ULIB_CONFIG_MAX_LOG_SIZE 256
-
 /**
  * @brief   IPC public API shall validate the contract
  *
