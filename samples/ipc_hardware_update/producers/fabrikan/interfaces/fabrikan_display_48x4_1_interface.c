@@ -13,7 +13,6 @@
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
-#include "az_ulib_ulog.h"
 #include "display_1_interface.h"
 #include "fabrikan_display_48x4_bsp.h"
 #include <stddef.h>

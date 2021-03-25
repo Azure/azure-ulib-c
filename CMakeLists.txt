@@ -41,7 +41,6 @@ ulib_add_standards()
 
 #Add library of ulib c files
 add_library(azure_ulib_c
-    ${PROJECT_SOURCE_DIR}/src/az_ulib_ulog/az_ulib_ulog.c
     ${PROJECT_SOURCE_DIR}/src/az_ulib_ustream/az_ulib_ustream_aux.c
     ${PROJECT_SOURCE_DIR}/src/az_ulib_ustream/az_ulib_ustream.c
     ${PROJECT_SOURCE_DIR}/src/az_ulib_ipc/az_ulib_ipc.c
