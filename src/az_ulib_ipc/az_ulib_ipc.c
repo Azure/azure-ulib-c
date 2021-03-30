@@ -48,6 +48,23 @@ static _az_ulib_ipc_interface* get_interface(
   return result;
 }
 
+static _az_ulib_ipc_interface* find_interface_descriptor(
+    const az_ulib_interface_descriptor* interface_descriptor)
+{
+  _az_ulib_ipc_interface* result = NULL;
+
+  for (size_t i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++)
+  {
+    if (_az_ipc_cb->_internal.interface_list[i].interface_descriptor == interface_descriptor)
+    {
+      result = &(_az_ipc_cb->_internal.interface_list[i]);
+      break;
+    }
+  }
+
+  return result;
+}
+
 static _az_ulib_ipc_interface* get_first_free()
 {
   _az_ulib_ipc_interface* result = NULL;
@@ -159,7 +176,8 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
     else
     {
       (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
-          &(new_interface->interface_descriptor), interface_descriptor);
+          (const volatile void**)&(new_interface->interface_descriptor),
+          (const void*)interface_descriptor);
       new_interface->ref_count = 0;
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
       new_interface->running_count = 0;
@@ -190,9 +208,7 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
 
   az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
   {
-    if ((release_interface = get_interface(
-             interface_descriptor->name, interface_descriptor->version, AZ_ULIB_VERSION_EQUALS_TO))
-        == NULL)
+    if ((release_interface = find_interface_descriptor(interface_descriptor)) == NULL)
     {
       result = AZ_ERROR_ITEM_NOT_FOUND;
     }
@@ -201,13 +217,10 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
       // The order of the code here, including the ones that looks not necessary, are associated to
       // the interlock between this function and the az_ulib_ipc_call.
 
-      // Prepare to recover in case it was not possible to unpublish the interface.
-      const volatile az_ulib_interface_descriptor* recover_interface_descriptor
-          = release_interface->interface_descriptor;
-
       // Block access to this interface. After this point, any new call to az_ulib_ipc_call that
       // didn't get the interface pointer yet will return AZ_ERROR_ITEM_NOT_FOUND.
-      (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(&(release_interface->interface_descriptor), NULL);
+      (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
+          (const volatile void**)(&(release_interface->interface_descriptor)), (const void*)NULL);
 
       // If the running_count is `0` is because no other process is inside of any of the functions
       // commands, and they may be removed from the memory. There will be the case that the other
@@ -258,7 +271,8 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
         // If caller doesn't want to wait anymore, recover the interface and return
         // AZ_ERROR_ULIB_BUSY.
         (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
-            &(release_interface->interface_descriptor), recover_interface_descriptor);
+            (const volatile void**)(&(release_interface->interface_descriptor)),
+            (const void*)interface_descriptor);
         result = AZ_ERROR_ULIB_BUSY;
       }
     }

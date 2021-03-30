@@ -45,13 +45,13 @@ extern "C"
 #if defined(AZURE_ULIB_C_ATOMIC_DONTCARE)
 #define AZ_ULIB_PORT_ATOMIC_INC_W(count) ++(*(count))
 #define AZ_ULIB_PORT_ATOMIC_DEC_W(count) --(*(count))
-  static inline uint32_t AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(volatile uint32_t* addr, uint32_t val)
+  static inline long AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(volatile long* addr, long val)
   {
-    uint32_t prev = *addr;
+    long prev = *addr;
     *addr = val;
     return prev;
   }
-  static inline uint32_t AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(volatile void** addr, void* val)
+  static inline long AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(volatile void** addr, void* val)
   {
     void* prev = *addr;
     *addr = val;
@@ -64,13 +64,13 @@ extern "C"
 #else
 #include <atomic>
 #endif /* __cplusplus */
-static inline uint32_t AZ_ULIB_PORT_ATOMIC_INC_W(volatile uint32_t* addr)
+static inline long AZ_ULIB_PORT_ATOMIC_INC_W(volatile long* addr)
 {
-  return atomic_fetch_add(addr, 1) + 1;
+  return (long)atomic_fetch_add((atomic_int)addr, 1) + 1;
 }
-static inline uint32_t AZ_ULIB_PORT_ATOMIC_DEC_W(volatile uint32_t* addr)
+static inline long AZ_ULIB_PORT_ATOMIC_DEC_W(volatile long* addr)
 {
-  return atomic_fetch_sub(addr, 1) - 1;
+  return (long)atomic_fetch_sub((atomic_int)addr, 1) - 1;
 }
 #define AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(target, value) atomic_exchange((target), (value))
 #define AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(target, value) atomic_exchange((target), (value))

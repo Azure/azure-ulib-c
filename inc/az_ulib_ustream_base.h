@@ -430,8 +430,8 @@ typedef struct az_ulib_ustream_data_cb_tag
    * another struct with more controls, etc */
   const az_ulib_ustream_data* ptr;
 
-  /** The `volatile uint32_t` with the number of references taken for this memory. */
-  volatile uint32_t ref_count;
+  /** The `volatile long` with the number of references taken for this memory. */
+  volatile long ref_count;
 
   /** The #az_ulib_release_callback to call to release `ptr` once the `ref_count` goes to zero. */
   az_ulib_release_callback data_release;
@@ -508,11 +508,11 @@ typedef struct az_ulib_ustream_multi_data_cb_tag
   /** The #az_ulib_ustream with the second ustream instance. */
   az_ulib_ustream ustream_two;
 
-  /** The `uint32_t` with the number of references to the first ustream. */
-  volatile uint32_t ustream_one_ref_count;
+  /** The `long` with the number of references to the first ustream. */
+  volatile long ustream_one_ref_count;
 
-  /** The `uint32_t` with the number of references to the second ustream. */
-  volatile uint32_t ustream_two_ref_count;
+  /** The `long` with the number of references to the second ustream. */
+  volatile long ustream_two_ref_count;
 
   /** The #az_ulib_pal_os_lock with controls the critical section of the read from the multi
    * ustream. */
