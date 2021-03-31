@@ -5,6 +5,7 @@
 #include "cipher_v2i1.h"
 #include "az_ulib_result.h"
 #include "interfaces/cipher_v2i1_interface.h"
+#include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -25,7 +26,7 @@ void cipher_v2i1_create(void)
 
   if ((result = publish_cipher_v2i1_interface()) != AZ_OK)
   {
-    (void)printf("Publish interface cipher 1 failed with error %d\r\n", result);
+    (void)printf("Publish interface cipher 1 failed with error %" PRIi32 "\r\n", result);
   }
   else
   {

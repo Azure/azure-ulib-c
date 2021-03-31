@@ -7,6 +7,7 @@
 #include "contoso_display_20x4_bsp.h"
 #include "interfaces/contoso_display_20x4_1_interface.h"
 
+#include <inttypes.h>
 #include <stddef.h>
 #include <stdio.h>
 
@@ -16,7 +17,8 @@ void contoso_display_20x4_1_create(void)
   az_result result;
   if ((result = publish_contoso_display_20x4_1_interface()) != AZ_OK)
   {
-    (void)printf("Contoso published display 20x4 v1 interface failed with error %d\r\n", result);
+    (void)printf(
+        "Contoso published display 20x4 v1 interface failed with error %" PRIi32 "\r\n", result);
   }
   else
   {

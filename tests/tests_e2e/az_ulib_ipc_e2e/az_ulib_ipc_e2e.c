@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+#include <inttypes.h>
 #include <setjmp.h>
 #include <stdarg.h>
 #include <stddef.h>
@@ -230,7 +231,7 @@ static int call_sync_thread(void* arg)
   {
     if (result != AZ_ERROR_ITEM_NOT_FOUND)
     {
-      (void)printf("get interface returned: %d\r\n", result);
+      (void)printf("get interface returned: %" PRIi32 "\r\n", result);
     }
   }
   else
@@ -247,13 +248,13 @@ static int call_sync_thread(void* arg)
           result = local_result;
           if (result != AZ_ERROR_ITEM_NOT_FOUND)
           {
-            (void)printf("ipc call returned: %d\r\n", result);
+            (void)printf("ipc call returned: %" PRIi32 "\r\n", result);
           }
         }
         else if (out != AZ_OK)
         {
           result = local_result;
-          (void)printf("command returned: %d\r\n", result);
+          (void)printf("command returned: %" PRIi32 "\r\n", result);
         }
       }
     }
@@ -261,7 +262,7 @@ static int call_sync_thread(void* arg)
     az_result release_result;
     if ((release_result = az_ulib_ipc_release_interface(local_handle)) != AZ_OK)
     {
-      (void)printf("release interface returned: %d\r\n", release_result);
+      (void)printf("release interface returned: %" PRIi32 "\r\n", release_result);
       if (result == AZ_OK)
       {
         result = release_result;

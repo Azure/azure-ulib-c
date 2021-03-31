@@ -39,7 +39,7 @@ static void get_handle_if_need(void)
     }
     else
     {
-      (void)printf("Get display.1 interface failed with code %d\r\n", result);
+      (void)printf("Get display.1 interface failed with code %" PRIi32 "\r\n", result);
     }
   }
 }
@@ -83,7 +83,8 @@ void my_consumer_do_display(void)
           else
           {
             (void)printf(
-                "my consumer uses display.1.cls failed with error %d.\r\n", AZ_ULIB_TRY_RESULT);
+                "my consumer uses display.1.cls failed with error %" PRIi32 ".\r\n",
+                AZ_ULIB_TRY_RESULT);
           }
           (void)printf("Release the handle.\r\n");
           display_1_destroy(_display_1);
@@ -108,7 +109,8 @@ void my_consumer_do_display(void)
           else
           {
             (void)printf(
-                "my consumer uses display.1.cls failed with error %d.\r\n", AZ_ULIB_TRY_RESULT);
+                "my consumer uses display.1.cls failed with error %" PRIi32 ".\r\n",
+                AZ_ULIB_TRY_RESULT);
           }
           (void)printf("Release the handle.\r\n");
           display_1_destroy(_display_1);
@@ -131,7 +133,8 @@ void my_consumer_do_display(void)
             (void)printf("display.1 was uninstalled.\r\n");
           else
             (void)printf(
-                "my consumer uses display.1.cls failed with error %d.\r\n", AZ_ULIB_TRY_RESULT);
+                "my consumer uses display.1.cls failed with error %" PRIi32 ".\r\n",
+                AZ_ULIB_TRY_RESULT);
           (void)printf("Release the handle.\r\n");
           display_1_destroy(_display_1);
           _display_1 = NULL;
