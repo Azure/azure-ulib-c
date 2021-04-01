@@ -11,8 +11,8 @@
 
 #include "az_ulib_ustream.h"
 #include "az_ulib_ustream_base.h"
+#include "az_ulib_ustream_ut.h"
 
-#include "az_ulib_ctest_aux.h"
 #include "az_ulib_ustream_mock_buffer.h"
 
 #include "az_ulib_test_precondition.h"
@@ -81,6 +81,7 @@ static int teardown(void** state)
 static void az_ulib_ustream_init_null_buffer_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   az_ulib_ustream_data_cb control_block;
 
@@ -101,6 +102,7 @@ static void az_ulib_ustream_init_null_buffer_failed(void** state)
 static void az_ulib_ustream_init_zero_length_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
   az_ulib_ustream_data_cb control_block;
 
@@ -116,6 +118,7 @@ static void az_ulib_ustream_init_zero_length_failed(void** state)
 static void az_ulib_ustream_init_NULL_ustream_instance_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream_data_cb control_block;
 
   /// act
@@ -135,6 +138,7 @@ static void az_ulib_ustream_init_NULL_ustream_instance_failed(void** state)
 static void az_ulib_ustream_init_NULL_control_block_failed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream_instance;
 
   /// act
@@ -155,6 +159,7 @@ static void az_ulib_ustream_init_NULL_control_block_failed(void** state)
 static void az_ulib_ustream_init_const_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream_data_cb* control_block
       = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
   az_ulib_ustream ustream_instance;
@@ -179,6 +184,7 @@ static void az_ulib_ustream_init_const_succeed(void** state)
 static void az_ulib_ustream_init_succeed(void** state)
 {
   /// arrange
+  (void)state;
   uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t) * USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
   assert_non_null(buf);
   (void)memcpy(

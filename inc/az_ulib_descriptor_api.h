@@ -46,7 +46,6 @@ typedef struct az_ulib_capability_descriptor_tag
   /** The primary function of the capability. */
   const union
   {
-    const void* capability;
     const az_ulib_capability_get get;
     const az_ulib_capability_command command;
     const az_ulib_capability_command_async command_async;
@@ -55,7 +54,6 @@ typedef struct az_ulib_capability_descriptor_tag
   /** The secondary function of the capability. */
   const union
   {
-    const void* capability;
     const az_ulib_capability_set set;
     const az_ulib_capability_cancellation_callback cancel;
   } capability_ptr_2;
@@ -122,22 +120,21 @@ typedef struct az_ulib_interface_descriptor_tag
  *                            cannot be `NULL` and shall be allocated in a way that it stays valid
  *                            until the interface is unpublished at some (potentially) unknown time
  *                            in the future.
- * @param[in]   get           The function pointer to #az_ulib_capability_get with the
+ * @param[in]   property_get  The function pointer to #az_ulib_capability_get with the
  *                            implementation of the get command for the property. The get command
  *                            shall be valid until the interface is unpublished at some
  *                            (potentially) unknown time in the future.
- * @param[in]   set           The function pointer to #az_ulib_capability_set with the
+ * @param[in]   property_set  The function pointer to #az_ulib_capability_set with the
  *                            implementation of the set command for the property. The set command
  *                            shall be valid until the interface is unpublished at some
  *                            (potentially) unknown time in the future.
  * @return The #az_ulib_capability_descriptor with the property.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(property_name, get, set) \
-  {                                                              \
-    .name = AZ_SPAN_LITERAL_FROM_STR(property_name),             \
-    .capability_ptr_1 = { .capability = (const void*)(get) },    \
-    .capability_ptr_2 = { .capability = (const void*)(set) },    \
-    .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_PROPERTY)         \
+#define AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(property_name, property_get, property_set)                \
+  {                                                                                               \
+    .name = AZ_SPAN_LITERAL_FROM_STR(property_name), .capability_ptr_1 = { .get = property_get }, \
+    .capability_ptr_2 = { .set = property_set },                                                  \
+    .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_PROPERTY)                                          \
   }
 
 /**
@@ -146,22 +143,21 @@ typedef struct az_ulib_interface_descriptor_tag
  * Populate a new [*synchronous command* capability](#AZ_ULIB_CAPABILITY_TYPE_COMMAND) to add
  * to the interface.
  *
- * @param[in]   command_name  The `/0` terminated `const char* const` with the command name. It
- *                            cannot be `NULL` and shall be allocated in a way that it stays valid
- *                            until the interface is unpublished at some (potentially) unknown time
- *                            in the future.
- * @param[in]   command       The function pointer to #az_ulib_capability_command with the
- *                            implementation of the synchronous command. The command shall be valid
- *                            until the interface is unpublished at some (potentially) unknown time
- *                            in the future.
+ * @param[in]   command_name    The `/0` terminated `const char* const` with the command name. It
+ *                              cannot be `NULL` and shall be allocated in a way that it stays valid
+ *                              until the interface is unpublished at some (potentially) unknown
+ *                              time in the future.
+ * @param[in]   command_target  The function pointer to #az_ulib_capability_command with the
+ *                              implementation of the synchronous command. The command shall be
+ *                              valid until the interface is unpublished at some (potentially)
+ *                              unknown time in the future.
  * @return The #az_ulib_capability_descriptor with the command.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_COMMAND(command_name, command)     \
-  {                                                               \
-    .name = AZ_SPAN_LITERAL_FROM_STR(command_name),               \
-    .capability_ptr_1 = { .capability = (const void*)(command) }, \
-    .capability_ptr_2 = { .capability = (const void*)NULL },      \
-    .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND)           \
+#define AZ_ULIB_DESCRIPTOR_ADD_COMMAND(command_name, command_target) \
+  {                                                                  \
+    .name = AZ_SPAN_LITERAL_FROM_STR(command_name),                  \
+    .capability_ptr_1 = { .command = command_target },               \
+    .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND)              \
   }
 
 /**
@@ -174,11 +170,11 @@ typedef struct az_ulib_interface_descriptor_tag
  *                              cannot be `NULL` and shall be allocated in a way that it stays
  *                              valid until the interface is unpublished at some (potentially)
  *                              unknown time in the future.
- * @param[in]   command_async   The function pointer to #az_ulib_capability_command_async with the
+ * @param[in]   command_target  The function pointer to #az_ulib_capability_command_async with the
  *                              implementation of the asynchronous command. The command shall be
  *                              valid until the interface is unpublished at some (potentially)
  *                              unknown time in the future.
- * @param[in]   cancel          The function pointer to #az_ulib_capability_cancellation_callback
+ * @param[in]   command_cancel  The function pointer to #az_ulib_capability_cancellation_callback
  *                              with the implementation of the function to cancel the asynchronous
  *                              command. It can be `NULL` if the command does not allow any
  *                              cancellation. If provided, the cancel shall be valid until the
@@ -186,12 +182,12 @@ typedef struct az_ulib_interface_descriptor_tag
  *                              future.
  * @return The #az_ulib_capability_descriptor with the command async.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC(command_name, command_async, cancel) \
-  {                                                                               \
-    .name = AZ_SPAN_LITERAL_FROM_STR(command_name),                               \
-    .capability_ptr_1 = { .capability = (const void*)(command_async) },           \
-    .capability_ptr_2 = { .capability = (const void*)(cancel) },                  \
-    .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC)                     \
+#define AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC(command_name, command_target, command_cancel) \
+  {                                                                                        \
+    .name = AZ_SPAN_LITERAL_FROM_STR(command_name),                                        \
+    .capability_ptr_1 = { .command_async = command_target },                               \
+    .capability_ptr_2 = { .cancel = command_cancel },                                      \
+    .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC)                              \
   }
 
 /**
@@ -206,12 +202,10 @@ typedef struct az_ulib_interface_descriptor_tag
  *                              time in the future.
  * @return The #az_ulib_capability_descriptor with the telemetry.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY(telemetry_name)       \
-  {                                                            \
-    .name = AZ_SPAN_LITERAL_FROM_STR(telemetry_name),          \
-    .capability_ptr_1 = { .capability = (const void*)(NULL) }, \
-    .capability_ptr_2 = { .capability = (const void*)(NULL) }, \
-    .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_TELEMETRY)      \
+#define AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY(telemetry_name)  \
+  {                                                       \
+    .name = AZ_SPAN_LITERAL_FROM_STR(telemetry_name),     \
+    .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_TELEMETRY) \
   }
 
 #include "azure/core/_az_cfg_suffix.h"

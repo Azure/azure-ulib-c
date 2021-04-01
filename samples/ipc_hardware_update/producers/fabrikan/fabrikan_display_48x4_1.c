@@ -2,9 +2,13 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+#include "fabrikan_display_48x4_1.h"
 #include "az_ulib_result.h"
 #include "fabrikan_display_48x4_bsp.h"
 #include "interfaces/fabrikan_display_48x4_1_interface.h"
+
+#include <inttypes.h>
+#include <stddef.h>
 #include <stdio.h>
 
 void fabrikan_display_48x4_1_create(void)
@@ -13,7 +17,8 @@ void fabrikan_display_48x4_1_create(void)
   az_result result;
   if ((result = publish_fabrikan_display_48x4_1_interface()) != AZ_OK)
   {
-    (void)printf("Fabrikan published display 48x4 v1 interface failed with error %d\r\n", result);
+    (void)printf(
+        "Fabrikan published display 48x4 v1 interface failed with error %" PRIi32 "\r\n", result);
   }
   else
   {

@@ -16,14 +16,53 @@ option(VALIDATE_DOCUMENTATION "set to enable the -Wdocumentation flag on clang t
                                 If not using clang this will have no effect." OFF)
 option(REMOVE_IPC_UNPUBLISH "Remove the ipc unpublish and all the extra code required to handle it." OFF)
 
-# disable preconditions when it's set to OFF
+message("CONFIGURATIONS:")
 if (NOT PRECONDITIONS)
+  message("  -- Preconditions OFF")
   add_compile_definitions(AZ_NO_PRECONDITION_CHECKING)
+else()
+  message("  -- Preconditions ON")
+endif()
+
+if (NOT WARNINGS_AS_ERRORS)
+  message("  -- Warnings as errors OFF")
+else()
+  message("  -- Warnings as errors ON")
 endif()
 
 if (NOT LOGGING)
+  message("  -- Logging OFF")
   add_compile_definitions(AZ_NO_LOGGING)
+else()
+  message("  -- Logging ON")
 endif()
+
+if (NOT VALIDATE_DOCUMENTATION)
+  message("  -- Validate documentation OFF")
+else()
+  message("  -- Validate documentation ON")
+endif()
+
+if (REMOVE_IPC_UNPUBLISH)
+  message("  -- Unpublish in IPC OFF")
+else()
+  message("  -- Unpublish in IPC ON")
+endif()
+
+if (SKIP_SAMPLES)
+  message("  -- Samples OFF")
+else()
+  message("  -- Samples ON")
+endif()
+
+if (UNIT_TESTING)
+  message("  -- Testing ON")
+  add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps)
+else()
+  message("  -- Testing OFF")
+endif()
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-core-c)
+
 
 project(azure_ulib_c)
 enable_testing()
@@ -31,6 +70,15 @@ enable_testing()
 set(AZURE_ULIB_C_VERSION 0.1.0)
 
 set(CMAKE_C_STANDARD 99)
+
+# for gcc, we need to add no-clobbered compile opt to avoid warning about set-jump function
+set(NO_CLOBBERED_WARNING "")
+if (CMAKE_C_COMPILER_ID MATCHES "GNU")
+  set(NO_CLOBBERED_WARNING "-Wno-clobbered")
+endif()
+
+#Include Errors and Warnings configuration.
+include(build_all/global_compile_options.txt)
 
 #Include helper functions
 include("build_all/configs/ulib_functions.cmake")
@@ -83,17 +131,12 @@ target_link_libraries(azure_ulib_c
 
 set(AZURE_ULIB_C_INC_FOLDER ${CMAKE_CURRENT_LIST_DIR}/inc CACHE INTERNAL "this is what needs to be included if using sharedLib lib" FORCE)
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-core-c)
-
 ulib_set_target_build_properties(azure_ulib_c)
 
 # default for Unit testing with cmocka is OFF, however, this will be ON on CI and tests must
 # pass before committing changes
 if (UNIT_TESTING)
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps)
-
     set(TEST_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/tests)
-
     add_subdirectory(tests)
 endif()
 

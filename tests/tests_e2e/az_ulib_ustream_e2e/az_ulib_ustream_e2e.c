@@ -11,8 +11,8 @@
 
 #include "az_ulib_ustream.h"
 #include "az_ulib_ustream_base.h"
+#include "az_ulib_ustream_e2e.h"
 
-#include "az_ulib_ctest_aux.h"
 #include "az_ulib_ustream_mock_buffer.h"
 
 #include "cmocka.h"
@@ -29,6 +29,7 @@ static void ustream_factory(az_ulib_ustream* ustream)
   az_ulib_ustream_data_cb* ustream_control_block
       = (az_ulib_ustream_data_cb*)malloc(sizeof(az_ulib_ustream_data_cb));
   uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t) * USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+  assert_non_null(buf);
   (void)memcpy(
       buf, USTREAM_COMPLIANCE_EXPECTED_CONTENT, USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
   assert_int_equal(

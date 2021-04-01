@@ -2,22 +2,25 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+#include "my_consumer.h"
 #include "az_ulib_result.h"
 #include "wrappers/display_1_wrapper.h"
+
 #include <inttypes.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 
 static const char hello[] = "Hello world! This is a test to display a message.";
-static const int32_t hello_size = sizeof(hello) - 1;
+static const size_t hello_size = sizeof(hello) - 1;
 static const char bunny_1[] = "(\\(\\";
-static const int32_t bunny_1_size = sizeof(bunny_1) - 1;
+static const size_t bunny_1_size = sizeof(bunny_1) - 1;
 static const char bunny_2[] = "( -.-)";
-static const int32_t bunny_2_size = sizeof(bunny_2) - 1;
+static const size_t bunny_2_size = sizeof(bunny_2) - 1;
 static const char bunny_3[] = "o_(\")(\")";
-static const int32_t bunny_3_size = sizeof(bunny_3) - 1;
+static const size_t bunny_3_size = sizeof(bunny_3) - 1;
 static const char bunny_11[] = "/)/)";
-static const int32_t bunny_11_size = sizeof(bunny_11) - 1;
+static const size_t bunny_11_size = sizeof(bunny_11) - 1;
 
 static az_ulib_ipc_interface_handle _display_1;
 
@@ -36,7 +39,7 @@ static void get_handle_if_need(void)
     }
     else
     {
-      (void)printf("Get display.1 interface failed with code %d\r\n", result);
+      (void)printf("Get display.1 interface failed with code %" PRIi32 "\r\n", result);
     }
   }
 }
@@ -80,7 +83,8 @@ void my_consumer_do_display(void)
           else
           {
             (void)printf(
-                "my consumer uses display.1.cls failed with error %d.\r\n", AZ_ULIB_TRY_RESULT);
+                "my consumer uses display.1.cls failed with error %" PRIi32 ".\r\n",
+                AZ_ULIB_TRY_RESULT);
           }
           (void)printf("Release the handle.\r\n");
           display_1_destroy(_display_1);
@@ -105,7 +109,8 @@ void my_consumer_do_display(void)
           else
           {
             (void)printf(
-                "my consumer uses display.1.cls failed with error %d.\r\n", AZ_ULIB_TRY_RESULT);
+                "my consumer uses display.1.cls failed with error %" PRIi32 ".\r\n",
+                AZ_ULIB_TRY_RESULT);
           }
           (void)printf("Release the handle.\r\n");
           display_1_destroy(_display_1);
@@ -128,7 +133,8 @@ void my_consumer_do_display(void)
             (void)printf("display.1 was uninstalled.\r\n");
           else
             (void)printf(
-                "my consumer uses display.1.cls failed with error %d.\r\n", AZ_ULIB_TRY_RESULT);
+                "my consumer uses display.1.cls failed with error %" PRIi32 ".\r\n",
+                AZ_ULIB_TRY_RESULT);
           (void)printf("Release the handle.\r\n");
           display_1_destroy(_display_1);
           _display_1 = NULL;

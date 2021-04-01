@@ -7,6 +7,7 @@
 #include "contoso_display_20x4_1.h"
 #include "fabrikan_display_48x4_1.h"
 #include "my_consumer.h"
+#include <inttypes.h>
 #include <stdio.h>
 
 static az_ulib_ipc ipc_handle;
@@ -26,7 +27,7 @@ int main(void)
    */
   if ((result = az_ulib_ipc_init(&ipc_handle)) != AZ_OK)
   {
-    (void)printf("Initialize IPC failed with code %d.\r\n", result);
+    (void)printf("Initialize IPC failed with code %" PRIi32 ".\r\n", result);
   }
   else
   {

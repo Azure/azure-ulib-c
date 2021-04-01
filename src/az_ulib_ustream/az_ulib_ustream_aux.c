@@ -14,6 +14,19 @@
 
 #include <azure/core/internal/az_precondition_internal.h>
 
+#ifdef __clang__
+#define IGNORE_CAST_QUALIFICATION \
+  _Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wcast-qual\"")
+#define RESUME_WARNINGS _Pragma("clang diagnostic pop")
+#elif defined(__GNUC__)
+#define IGNORE_CAST_QUALIFICATION \
+  _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wcast-qual\"")
+#define RESUME_WARNINGS _Pragma("GCC diagnostic pop")
+#else
+#define IGNORE_CAST_QUALIFICATION
+#define RESUME_WARNINGS
+#endif // __clang__
+
 static az_result concrete_set_position(az_ulib_ustream* ustream_instance, offset_t position);
 static az_result concrete_reset(az_ulib_ustream* ustream_instance);
 static az_result concrete_read(
@@ -35,13 +48,18 @@ static const az_ulib_ustream_interface api
 
 static void destroy_instance(az_ulib_ustream* ustream_instance)
 {
+  /* In multidata, `ptr` points to a internal multidata control block, and the multidata code needs
+   * write permission to execute its function. So, we have an Warning exception here to remove the
+   * `const` qualification of the `ptr`. */
+  IGNORE_CAST_QUALIFICATION
   az_ulib_ustream_multi_data_cb* multidata
       = (az_ulib_ustream_multi_data_cb*)ustream_instance->control_block->ptr;
+  RESUME_WARNINGS
   az_pal_os_lock_deinit(&multidata->lock);
 
   if (ustream_instance->control_block->data_release != NULL)
   {
-    ustream_instance->control_block->data_release(ustream_instance->control_block->ptr);
+    ustream_instance->control_block->data_release(multidata);
   }
 }
 
@@ -86,8 +104,14 @@ static az_result concrete_read(
 
   az_result result;
 
+  /* In multidata, `ptr` points to a internal multidata control block, and the multidata code needs
+   * write permission to execute its function. So, we have an Warning exception here to remove the
+   * `const` qualification of the `ptr`. */
+  IGNORE_CAST_QUALIFICATION
   az_ulib_ustream_multi_data_cb* multi_data
       = (az_ulib_ustream_multi_data_cb*)ustream_instance->control_block->ptr;
+  RESUME_WARNINGS
+
   az_ulib_ustream* current_ustream
       = (ustream_instance->inner_current_position < multi_data->ustream_one.length)
       ? &multi_data->ustream_one
@@ -111,6 +135,7 @@ static az_result concrete_read(
     {
       case AZ_OK:
         *size += copied_size;
+        _az_FALLTHROUGH;
       case AZ_ULIB_EOF:
         if (*size < buffer_length)
         {
@@ -208,8 +233,13 @@ static az_result concrete_clone(
 
     AZ_ULIB_PORT_ATOMIC_INC_W(&(ustream_instance->control_block->ref_count));
 
+    /* In multidata, `ptr` points to a internal multidata control block, and the multidata code
+     * needs write permission to execute its function. So, we have an Warning exception here to
+     * remove the `const` qualification of the `ptr`. */
+    IGNORE_CAST_QUALIFICATION
     az_ulib_ustream_multi_data_cb* multi_data
         = (az_ulib_ustream_multi_data_cb*)ustream_instance->control_block->ptr;
+    RESUME_WARNINGS
     AZ_ULIB_PORT_ATOMIC_INC_W(&(multi_data->ustream_one_ref_count));
     AZ_ULIB_PORT_ATOMIC_INC_W(&(multi_data->ustream_two_ref_count));
     result = AZ_OK;
@@ -222,8 +252,13 @@ static az_result concrete_dispose(az_ulib_ustream* ustream_instance)
 {
   _az_PRECONDITION(AZ_ULIB_USTREAM_IS_TYPE_OF(ustream_instance, api));
 
+  /* In multidata, `ptr` points to a internal multidata control block, and the multidata code needs
+   * write permission to execute its function. So, we have an Warning exception here to remove the
+   * `const` qualification of the `ptr`. */
+  IGNORE_CAST_QUALIFICATION
   az_ulib_ustream_multi_data_cb* multi_data
       = (az_ulib_ustream_multi_data_cb*)ustream_instance->control_block->ptr;
+  RESUME_WARNINGS
   AZ_ULIB_PORT_ATOMIC_DEC_W(&(multi_data->ustream_one_ref_count));
   AZ_ULIB_PORT_ATOMIC_DEC_W(&(multi_data->ustream_two_ref_count));
   if (multi_data->ustream_one_ref_count == 0 && multi_data->ustream_one.control_block != NULL)

@@ -6,10 +6,12 @@
 #define FABRIKAN_DISPLAY_48x4_BSP_H
 
 #ifdef __cplusplus
+#include <cstddef>
 #include <cstdint>
 extern "C"
 {
 #else
+#include <stddef.h>
 #include <stdint.h>
 #endif
 
@@ -18,7 +20,7 @@ extern "C"
 
   void fabrikan_display_48x4_bsp_cls(void);
   void fabrikan_display_48x4_bsp_goto(int32_t x, int32_t y);
-  void fabrikan_display_48x4_bsp_print(const char* buf, int32_t size);
+  void fabrikan_display_48x4_bsp_print(const char* buf, size_t size);
   void fabrikan_display_48x4_bsp_invalidate(void);
 
 #ifdef __cplusplus

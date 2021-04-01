@@ -9,12 +9,14 @@
  *
  ********************************************************************/
 
+#include "fabrikan_display_48x4_1_interface.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
 #include "display_1_interface.h"
 #include "fabrikan_display_48x4_bsp.h"
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -31,6 +33,8 @@ static az_result cls_concrete(az_ulib_model_in model_in, az_ulib_model_out model
    * ==================
    * The user code starts here.
    */
+  (void)model_in;
+  (void)model_out;
 
   fabrikan_display_48x4_bsp_cls();
 
@@ -48,7 +52,8 @@ static az_result print_concrete(az_ulib_model_in model_in, az_ulib_model_out mod
    * ==================
    * The user code starts here.
    */
-  display_1_print_model_in* in = (display_1_print_model_in*)model_in;
+  (void)model_out;
+  const display_1_print_model_in* const in = (const display_1_print_model_in* const)model_in;
 
   fabrikan_display_48x4_bsp_goto(in->x, in->y);
   fabrikan_display_48x4_bsp_print(in->buffer, in->size);
@@ -67,6 +72,8 @@ static az_result invalidate_concrete(az_ulib_model_in model_in, az_ulib_model_ou
    * ==================
    * The user code starts here.
    */
+  (void)model_in;
+  (void)model_out;
 
   fabrikan_display_48x4_bsp_invalidate();
 
@@ -88,7 +95,7 @@ static const az_ulib_interface_descriptor DISPLAY_1_DESCRIPTOR = AZ_ULIB_DESCRIP
     DISPLAY_1_INTERFACE_NAME,
     DISPLAY_1_INTERFACE_VERSION,
     DISPLAY_1_CAPABILITY_SIZE,
-    (az_ulib_capability_descriptor*)DISPLAY_1_CAPABILITIES);
+    DISPLAY_1_CAPABILITIES);
 
 az_result publish_fabrikan_display_48x4_1_interface(void)
 {

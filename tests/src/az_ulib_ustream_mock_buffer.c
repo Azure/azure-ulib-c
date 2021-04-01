@@ -16,9 +16,7 @@ static az_result _concrete_release_result = AZ_OK;
 static az_result _concrete_clone_result = AZ_OK;
 static az_result _concrete_dispose_result = AZ_OK;
 
-#define READ_BUFFER_SIZE 10
 static offset_t current_position = 0;
-static uint8_t read_buffer[READ_BUFFER_SIZE];
 
 static bool concurrency_ustream = false;
 static uint32_t delay_return_value = 0;
@@ -162,8 +160,6 @@ static az_result concrete_dispose(az_ulib_ustream* ustream_instance)
 static const az_ulib_ustream_interface api
     = { concrete_set_position, concrete_reset,   concrete_read,  concrete_get_remaining_size,
         concrete_get_position, concrete_release, concrete_clone, concrete_dispose };
-
-static const int TEST_DATA = 1;
 
 static az_ulib_ustream_data_cb USTREAM_COMPLIANCE_MOCK_CONTROL_BLOCK
     = { .api = (const az_ulib_ustream_interface*)&api,

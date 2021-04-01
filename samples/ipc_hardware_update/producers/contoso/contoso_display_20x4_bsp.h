@@ -6,10 +6,12 @@
 #define CONTOSO_DISPLAY_20x4_BSP_H
 
 #ifdef __cplusplus
+#include <cstddef>
 #include <cstdint>
 extern "C"
 {
 #else
+#include <stddef.h>
 #include <stdint.h>
 #endif
 
@@ -18,7 +20,7 @@ extern "C"
 
   void contoso_display_20x4_bsp_cls(void);
   void contoso_display_20x4_bsp_goto(int32_t x, int32_t y);
-  void contoso_display_20x4_bsp_print(const char* buf, int32_t size);
+  void contoso_display_20x4_bsp_print(const char* buf, size_t size);
   void contoso_display_20x4_bsp_invalidate(void);
 
 #ifdef __cplusplus

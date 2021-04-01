@@ -2,12 +2,15 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+#include "contoso_display_20x4_bsp.h"
 #include "az_ulib_result.h"
+
 #include <memory.h>
+#include <stddef.h>
 #include <stdio.h>
 
-#define MAX_X 20
-#define MAX_Y 4
+#define MAX_X (size_t)20
+#define MAX_Y (size_t)4
 
 typedef struct display_cb_tag
 {
@@ -18,7 +21,7 @@ typedef struct display_cb_tag
 
 static display_cb cb;
 
-static void print_line(int32_t line_number)
+static void print_line(uint32_t line_number)
 {
   char line[MAX_X + 1];
 
@@ -30,7 +33,7 @@ static void print_line(int32_t line_number)
 void contoso_display_20x4_bsp_invalidate(void)
 {
   (void)printf("        +Contoso emulator----+\r\n");
-  for (int i = 0; i < MAX_Y; i++)
+  for (uint32_t i = 0; i < MAX_Y; i++)
   {
     print_line(i);
   }
@@ -39,7 +42,7 @@ void contoso_display_20x4_bsp_invalidate(void)
 
 void contoso_display_20x4_bsp_cls(void)
 {
-  for (int line_number = 0; line_number < MAX_Y; line_number++)
+  for (uint32_t line_number = 0; line_number < MAX_Y; line_number++)
   {
     memset(cb.mem[line_number], ' ', MAX_X);
   }
@@ -51,14 +54,46 @@ void contoso_display_20x4_bsp_goto(int32_t x, int32_t y)
   cb.y = y;
 }
 
-void contoso_display_20x4_bsp_print(const char* buf, int32_t size)
+void contoso_display_20x4_bsp_print(const char* buf, size_t size)
 {
-  if ((cb.x < MAX_X) && (cb.y < MAX_Y))
+  uint32_t pos_x;
+  uint32_t pos_y;
+  bool shall_print = true;
+  if (cb.x < 0)
   {
-    int32_t eol = MAX_X - cb.x;
-    int32_t copy_lenght = (size < eol) ? size : eol;
+    pos_x = (uint32_t)(-cb.x);
+    if (size > pos_x)
+    {
+      buf += pos_x;
+      size -= pos_x;
+      pos_x = 0;
+    }
+    else
+    {
+      shall_print = false;
+    }
+  }
+  else
+  {
+    pos_x = (uint32_t)(cb.x);
+  }
 
-    memcpy(&(cb.mem[cb.y][cb.x]), buf, copy_lenght);
+  if (cb.y < 0)
+  {
+    pos_y = 0;
+    shall_print = false;
+  }
+  else
+  {
+    pos_y = (uint32_t)cb.y;
+  }
+
+  if (shall_print && (pos_x < MAX_X) && (pos_y < MAX_Y))
+  {
+    size_t eol = MAX_X - pos_x;
+    size_t copy_lenght = (size < eol) ? size : eol;
+
+    memcpy(&(cb.mem[pos_y][pos_x]), buf, copy_lenght);
   }
 }
 

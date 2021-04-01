@@ -5,7 +5,6 @@
 #ifndef AZ_ULIB_USTREAM_COMPLIANCE_E2E_H
 #define AZ_ULIB_USTREAM_COMPLIANCE_E2E_H
 
-#include "az_ulib_ctest_aux.h"
 #include "az_ulib_test_thread.h"
 #include "az_ulib_ustream_mock_buffer.h"
 
@@ -41,6 +40,7 @@ static const uint8_t* const compliance_expected_content
 
 static int compliance_thread_one_func(void* arg)
 {
+  (void)arg;
   uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
   size_t size_result;
   offset_t cur_pos;
@@ -59,10 +59,10 @@ static int compliance_thread_one_func(void* arg)
 
 static int compliance_thread_two_func(void* arg)
 {
+  (void)arg;
   uint8_t buf_result[USTREAM_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
   size_t size_result;
   offset_t cur_pos;
-  size_t position = USTREAM_COMPLIANCE_LENGTH_1;
   az_ulib_ustream_set_position(compliance_thread_two_ustream, TEST_POSITION);
   az_ulib_ustream_read(compliance_thread_two_ustream, buf_result, TEST_SIZE, &size_result);
   az_ulib_ustream_get_position(compliance_thread_two_ustream, &cur_pos);
@@ -83,6 +83,7 @@ static int compliance_thread_two_func(void* arg)
 static void az_ulib_ustream_e2e_compliance_multi_read_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream multi_ustream;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&multi_ustream);
   az_ulib_ustream concat_ustream;
@@ -125,6 +126,7 @@ static void az_ulib_ustream_e2e_compliance_multi_read_succeed(void** state)
 static void az_ulib_ustream_e2e_compliance_read_and_reset_succeed(void** state)
 {
   /// arrange
+  (void)state;
   az_ulib_ustream ustream;
   USTREAM_COMPLIANCE_TARGET_FACTORY(&ustream);
 

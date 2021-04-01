@@ -13,79 +13,75 @@ extern "C"
 #include <stdint.h>
 #endif
 
-  __attribute__((always_inline)) static inline uint32_t AZ_ULIB_PORT_ATOMIC_INC_W(
-      volatile uint32_t* addr)
+  __attribute__((always_inline)) static inline long AZ_ULIB_PORT_ATOMIC_INC_W(volatile long* addr)
   {
-    register uint32_t result;
-    register uint32_t prev;
-    register uint32_t modified = 0;
+    register long prev;
+    register long modified;
+    register long result;
 
-    __asm volatile("1:     ldrex   %0, [%2]                \n"
-                   "       str     %0, %1                  \n"
-                   "       add     %0, #1                  \n"
-                   "       strex   %3, %0, [%2]            \n"
-                   "       cmp     %3, #0                  \n"
-                   "       bne     1b                      "
-                   : "=&r"(result), "=&r"(prev)
-                   : "r"(addr), "r"(modified)
-                   : "cc", "memory");
-
-    return prev;
-  }
-
-  __attribute__((always_inline)) static inline uint32_t AZ_ULIB_PORT_ATOMIC_DEC_W(
-      volatile uint32_t* addr)
-  {
-    register uint32_t result;
-    register uint32_t prev;
-    register uint32_t modified = 0;
-
-    __asm volatile("1:     ldrex   %0, [%2]                \n"
-                   "       str     %0, %1                  \n"
-                   "       sub     %0, #1                  \n"
-                   "       strex   %3, %0, [%2]            \n"
-                   "       cmp     %3, #0                  \n"
-                   "       bne     1b                      "
-                   : "=&r"(result), "=&r"(prev)
-                   : "r"(addr), "r"(modified)
-                   : "cc", "memory");
-
-    return prev;
-  }
-
-  __attribute__((always_inline)) static inline uint32_t AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
-      volatile uint32_t* addr,
-      uint32_t val)
-  {
-    register uint32_t result;
-    register uint32_t modified = 0;
-    register uint32_t value = val;
-
-    __asm volatile("1:     ldrex   %0, [%1]                \n"
-                   "       strex   %2, %3, [%1]            \n"
+    __asm volatile("1:     ldrex   %0, [%3]                \n"
+                   "       mov     %1, %0                  \n"
+                   "       adds    %0, #1                  \n"
+                   "       strex   %2, %0, [%3]            \n"
                    "       cmp     %2, #0                  \n"
                    "       bne     1b                      "
-                   : "=&r"(result)
-                   : "r"(addr), "r"(modified), "r"(value)
+                   : "=&r"(result), "=&r"(prev), "=&r"(modified)
+                   : "r"(addr)
+                   : "cc", "memory");
+
+    return prev;
+  }
+
+  __attribute__((always_inline)) static inline long AZ_ULIB_PORT_ATOMIC_DEC_W(volatile long* addr)
+  {
+    register long prev;
+    register long modified;
+    register long result;
+
+    __asm volatile("1:     ldrex   %0, [%3]                \n"
+                   "       mov     %1, %0                  \n"
+                   "       subs    %0, #1                  \n"
+                   "       strex   %2, %0, [%3]            \n"
+                   "       cmp     %2, #0                  \n"
+                   "       bne     1b                      "
+                   : "=&r"(result), "=&r"(prev), "=&r"(modified)
+                   : "r"(addr)
+                   : "cc", "memory");
+
+    return prev;
+  }
+
+  __attribute__((always_inline)) static inline long AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
+      volatile long* addr,
+      long val)
+  {
+    register long result;
+    register long modified;
+
+    __asm volatile("1:     ldrex   %0, [%2]                \n"
+                   "       strex   %1, %3, [%2]            \n"
+                   "       cmp     %1, #0                  \n"
+                   "       bne     1b                      "
+                   : "=&r"(result), "=&r"(modified)
+                   : "r"(addr), "r"(val)
                    : "cc", "memory");
 
     return result;
   }
 
   __attribute__((always_inline)) static inline void* AZ_ULIB_PORT_ATOMIC_EXCHANGE_PTR(
-      volatile void** addr,
-      void* val)
+      const volatile void** addr,
+      const void* val)
   {
     register void* result;
-    register uint32_t modified = 0;
-    register void* value = val;
+    register long modified;
 
-    __asm volatile("1:     ldrex   %0, [%1]                \n"
-                   "       strex   %2, %3, [%1]            \n"
-                   "       cmp     %2, #0                  \n"
+    __asm volatile("1:     ldrex   %0, [%2]                \n"
+                   "       strex   %1, %3, [%2]            \n"
+                   "       cmp     %1, #0                  \n"
                    "       bne     1b                      "
-                   : "=&r"(result)
-                   : "r"(addr), "r"(modified), "r"(value)
+                   : "=&r"(result), "=&r"(modified)
+                   : "r"(addr), "r"(val)
                    : "cc", "memory");
 
     return result;
