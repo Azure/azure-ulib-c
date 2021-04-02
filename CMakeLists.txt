@@ -91,10 +91,10 @@ ulib_add_standards()
 
 #Add library of ulib c files
 add_library(azure_ulib_c
-    ${PROJECT_SOURCE_DIR}/src/az_ulib_ustream/az_ulib_ustream_aux.c
-    ${PROJECT_SOURCE_DIR}/src/az_ulib_ustream/az_ulib_ustream.c
-    ${PROJECT_SOURCE_DIR}/src/az_ulib_ipc/az_ulib_ipc.c
-    ${PROJECT_SOURCE_DIR}/pal/os/src/${ULIB_PAL_OS_DIRECTORY}/az_ulib_pal_os.c
+    ${CMAKE_CURRENT_LIST_DIR}/src/az_ulib_ustream/az_ulib_ustream_aux.c
+    ${CMAKE_CURRENT_LIST_DIR}/src/az_ulib_ustream/az_ulib_ustream.c
+    ${CMAKE_CURRENT_LIST_DIR}/src/az_ulib_ipc/az_ulib_ipc.c
+    ${CMAKE_CURRENT_LIST_DIR}/pal/os/src/${ULIB_PAL_OS_DIRECTORY}/az_ulib_pal_os.c
 )
 
 add_library(az::ulib ALIAS azure_ulib_c)
@@ -102,12 +102,12 @@ add_library(az::ulib ALIAS azure_ulib_c)
 #Add include directories for this target and anyone linking against it
 target_include_directories(azure_ulib_c
     PUBLIC
-        ${PROJECT_SOURCE_DIR}/inc
-        ${PROJECT_SOURCE_DIR}/config
-        ${PROJECT_SOURCE_DIR}/pal/${ULIB_PAL_DIRECTORY}
-        ${PROJECT_SOURCE_DIR}/pal/os/inc
-        ${PROJECT_SOURCE_DIR}/pal/os/inc/${ULIB_PAL_OS_DIRECTORY}
-        ${PROJECT_SOURCE_DIR}/deps/azure-core-c/inc
+        ${CMAKE_CURRENT_LIST_DIR}/inc
+        ${CMAKE_CURRENT_LIST_DIR}/config
+        ${CMAKE_CURRENT_LIST_DIR}/pal/${ULIB_PAL_DIRECTORY}
+        ${CMAKE_CURRENT_LIST_DIR}/pal/os/inc
+        ${CMAKE_CURRENT_LIST_DIR}/pal/os/inc/${ULIB_PAL_OS_DIRECTORY}
+        ${CMAKE_CURRENT_LIST_DIR}/deps/azure-core-c/inc
         ${ULIB_PAL_OS_PORT}
         ${ULIB_PAL_OS_INC}
 )
