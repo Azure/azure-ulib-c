@@ -15,10 +15,10 @@
 
 #include "azure/core/_az_cfg_prefix.h"
 
-// This definition is needed because some samples are not using the latest azure_sdk_for_c library 
-// that constains this definition in the az_result.
+// This definition is needed because some samples are not using the latest azure_sdk_for_c library
+// that contains this definition in the az_result.
 #ifndef _az_FACILITY_ULIB
-#define _az_FACILITY_ULIB  0x7
+#define _az_FACILITY_ULIB 0x7
 #endif //_az_FACILITY_ULIB
 
 /**
