@@ -179,7 +179,7 @@ static void az_ulib_descriptor_interface_descriptor_succeed(void** state)
     AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC("my_command_async", my_command_async, my_command_cancel)
   };
   static const az_ulib_interface_descriptor MY_INTERFACE
-      = AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 123, 5, MY_INTERFACE_CAPABILITIES);
+      = AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 123, 5, NULL, MY_INTERFACE_CAPABILITIES);
 
   /// assert
   /* Interface. */

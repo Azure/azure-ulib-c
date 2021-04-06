@@ -77,7 +77,10 @@ typedef struct az_ulib_interface_descriptor_tag
   const az_ulib_version version;
 
   /** The `uint8_t` with the number of capabilities in the interface. */
-  const uint8_t size;
+  const az_ulib_capability_index size;
+
+  /** The #az_ulib_capability_call_w_str to call if the user call the IPC using strings. */
+  const az_ulib_capability_call_w_str call_w_str;
 
   /** The list of #az_ulib_capability_descriptor with the capabilities in this interface. */
   const az_ulib_capability_descriptor* capability_list;
@@ -103,11 +106,11 @@ typedef struct az_ulib_interface_descriptor_tag
  * @param[in]   capabilities      The list of #az_ulib_capability_descriptor in the interface.
  * @return The #az_ulib_interface_descriptor with the description of the interface.
  */
-#define AZ_ULIB_DESCRIPTOR_CREATE(                                                  \
-    interface_name, interface_version, capability_size, capabilities)               \
-  {                                                                                 \
-    .name = AZ_SPAN_LITERAL_FROM_STR(interface_name), .version = interface_version, \
-    .size = capability_size, .capability_list = capabilities                        \
+#define AZ_ULIB_DESCRIPTOR_CREATE(                                                                \
+    interface_name, interface_version, capability_size, capability_call_w_str, capabilities)      \
+  {                                                                                               \
+    .name = AZ_SPAN_LITERAL_FROM_STR(interface_name), .version = interface_version,               \
+    .call_w_str = capability_call_w_str, .size = capability_size, .capability_list = capabilities \
   }
 
 /**

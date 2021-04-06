@@ -292,12 +292,39 @@ AZ_NODISCARD az_result az_ulib_ipc_release_interface(az_ulib_ipc_interface_handl
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                              If the IPC get success calling the procedure.
  *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the target command was disabled.
+ *  @retval Others                              Defined by the target function.
  */
 AZ_NODISCARD az_result az_ulib_ipc_call(
     az_ulib_ipc_interface_handle interface_handle,
     az_ulib_capability_index command_index,
     az_ulib_model_in model_in,
     az_ulib_model_out model_out);
+
+/**
+ * @brief   Synchronously Call a published procedure using string name and models.
+ *
+ * @param[in]   interface_handle    The #az_ulib_ipc_interface_handle with the interface handle.
+ *                                  It cannot be `NULL`. Call az_ulib_ipc_try_get_interface() to
+ *                                  get the interface handle.
+ * @param[in]   command_name        The #az_span with the command name.
+ * @param[in]   model_in_span       The #az_span with the model in.
+ * @param[out]  model_out_span      The pointer to #az_span where the capability should store the
+ *                                  output content.
+ *
+ * @pre     IPC shall already been initialized.
+ * @pre     \p interface_handle shall be different than `NULL`.
+ * @pre     \p command_name shall contain a valid string.
+ *
+ * @return The #az_result with the result of the call.
+ *  @retval #AZ_OK                              If the IPC get success calling the procedure.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the target command does not exist.
+ *  @retval Others                              Defined by the target function.
+ */
+AZ_NODISCARD az_result az_ulib_ipc_call_w_str(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_span command_name,
+    az_span model_in_span,
+    az_span* model_out_span);
 
 #include "azure/core/_az_cfg_suffix.h"
 

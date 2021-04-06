@@ -95,6 +95,7 @@ static const az_ulib_interface_descriptor DISPLAY_1_DESCRIPTOR = AZ_ULIB_DESCRIP
     DISPLAY_1_INTERFACE_NAME,
     DISPLAY_1_INTERFACE_VERSION,
     DISPLAY_1_CAPABILITY_SIZE,
+    NULL,
     DISPLAY_1_CAPABILITIES);
 
 az_result publish_contoso_display_20x4_1_interface(void)

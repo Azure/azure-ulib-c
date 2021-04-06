@@ -424,3 +424,64 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
       .capability_ptr_1.command(model_in, model_out);
 }
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+
+AZ_NODISCARD az_result az_ulib_ipc_call_w_str(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_span name,
+    az_span model_in_span,
+    az_span* model_out_span)
+{
+  _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
+  _az_PRECONDITION_VALID_SPAN(name, 1, false);
+
+  az_result result = AZ_OK;
+  _az_ulib_ipc_interface* ipc_interface = (_az_ulib_ipc_interface*)interface_handle;
+
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
+  // The double test on the interface_descriptor is part of the interlock between az_ulib_ipc_call
+  // and az_ulib_ipc_unpublish. It will allow a interface to be unpublished even if it has a high
+  // volume of calls.
+  if (ipc_interface->interface_descriptor != NULL)
+  {
+    (void)AZ_ULIB_PORT_ATOMIC_INC_W(&(ipc_interface->running_count));
+    register const volatile az_ulib_interface_descriptor* descriptor
+        = ipc_interface->interface_descriptor;
+
+    if (descriptor == NULL)
+    {
+      result = AZ_ERROR_ITEM_NOT_FOUND;
+    }
+    else
+    {
+#else // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+  register const volatile az_ulib_interface_descriptor* descriptor
+      = ipc_interface->interface_descriptor;
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+
+      if (descriptor->call_w_str != NULL)
+      {
+        result = descriptor->call_w_str(name, model_in_span, model_out_span);
+      }
+      else
+      {
+        result = AZ_ERROR_NOT_SUPPORTED;
+      }
+
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
+    }
+
+    long new_running_count = AZ_ULIB_PORT_ATOMIC_DEC_W(&(ipc_interface->running_count));
+    if (new_running_count < ipc_interface->running_count_low_watermark)
+    {
+      (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
+          &(ipc_interface->running_count_low_watermark), new_running_count);
+    }
+  }
+  else
+  {
+    result = AZ_ERROR_ITEM_NOT_FOUND;
+  }
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+
+  return result;
+}

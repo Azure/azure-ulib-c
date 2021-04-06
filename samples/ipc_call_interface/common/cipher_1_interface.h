@@ -12,6 +12,7 @@
 
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
+#include "azure/az_core.h"
 
 #ifdef __cplusplus
 #include <cstdint>
@@ -36,14 +37,11 @@ extern "C"
   typedef struct
   {
     uint32_t context;
-    const char* const src;
-    uint32_t src_size;
-    uint32_t dst_buffer_size;
+    az_span src;
   } cipher_1_encrypt_model_in;
   typedef struct
   {
-    char* dst;
-    uint32_t* dst_size;
+    az_span* dest;
   } cipher_1_encrypt_model_out;
 
 /*
@@ -53,14 +51,11 @@ extern "C"
 #define CIPHER_1_INTERFACE_DECRYPT_COMMAND_NAME "decrypt"
   typedef struct
   {
-    const char* const src;
-    uint32_t src_size;
-    uint32_t dst_buffer_size;
+    az_span src;
   } cipher_1_decrypt_model_in;
   typedef struct
   {
-    char* dst;
-    uint32_t* dst_size;
+    az_span* dest;
   } cipher_1_decrypt_model_out;
 
 #ifdef __cplusplus
