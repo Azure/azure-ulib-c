@@ -44,6 +44,22 @@ void my_consumer_create(void)
 {
   (void)printf("Create my consumer...\r\n");
 
+  az_result result;
+  uint32_t continuation_token = 0;
+  uint8_t buf[100];
+  az_span interface_list = AZ_SPAN_FROM_BUFFER(buf);
+
+  result = az_ulib_ipc_query(AZ_SPAN_EMPTY, &interface_list, &continuation_token);
+
+  while (result == AZ_OK)
+  {
+    char* name_str = (char*)az_span_ptr(interface_list);
+    name_str[az_span_size(interface_list)] = '\0';
+    (void)printf("Published interfaces [ %s ]\r\n", name_str);
+    interface_list = AZ_SPAN_FROM_BUFFER(buf);
+    result = az_ulib_ipc_query_next(&continuation_token, &interface_list);
+  }
+
   _cipher_1 = NULL;
 }
 
@@ -114,8 +130,11 @@ static az_result call_w_str(uint32_t context)
     encrypt_model_in_json = az_json_writer_get_bytes_used_in_destination(&jw);
     CLOSE_STRING_IN_SPAN(encrypt_model_in_json);
 
+    az_ulib_capability_index command_index;
+    AZ_ULIB_THROW_IF_AZ_ERROR(
+        az_ulib_ipc_try_get_capability(_cipher_1, encrypt_command_name, &command_index));
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call_w_str(
-        _cipher_1, encrypt_command_name, encrypt_model_in_json, &encrypt_model_out_json));
+        _cipher_1, command_index, encrypt_model_in_json, &encrypt_model_out_json));
     CLOSE_STRING_IN_SPAN(encrypt_model_out_json);
     (void)printf(
         "cipher.1 encrypted \"%s\" to \"%s\".\r\n",
@@ -151,8 +170,10 @@ static az_result call_w_str(uint32_t context)
 
     az_span decrypt_model_out_json = AZ_SPAN_FROM_BUFFER(buffer_1);
     const az_span decrypt_command_name = AZ_SPAN_FROM_STR("decrypt");
+    AZ_ULIB_THROW_IF_AZ_ERROR(
+        az_ulib_ipc_try_get_capability(_cipher_1, decrypt_command_name, &command_index));
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call_w_str(
-        _cipher_1, decrypt_command_name, decrypt_model_in_json, &decrypt_model_out_json));
+        _cipher_1, command_index, decrypt_model_in_json, &decrypt_model_out_json));
     CLOSE_STRING_IN_SPAN(decrypt_model_out_json);
     (void)printf(
         "cipher.1 decrypted \"%s\" to \"%s\".\r\n",

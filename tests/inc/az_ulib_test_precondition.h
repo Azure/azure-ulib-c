@@ -31,13 +31,13 @@
 //   separately is advised.
 // - Tests using ASSERT_PRECONDITION_CHECKED(func) currently must not be run in parallel (!).
 
-#define AZ_ULIB_ENABLE_PRECONDITION_CHECK_TESTS()  \
-  static jmp_buf g_precond_test_jmp_buf;           \
-  static unsigned int precondition_test_count = 0; \
-  static void az_precondition_test_failed_fn(void) \
-  {                                                \
-    precondition_test_count++;                     \
-    longjmp(g_precond_test_jmp_buf, 0);            \
+#define AZ_ULIB_ENABLE_PRECONDITION_CHECK_TESTS()    \
+  static jmp_buf g_precond_test_jmp_buf;             \
+  static unsigned int g_precondition_test_count = 0; \
+  static void az_precondition_test_failed_fn(void)   \
+  {                                                  \
+    g_precondition_test_count++;                     \
+    longjmp(g_precond_test_jmp_buf, 0);              \
   }
 
 #define AZ_ULIB_SETUP_PRECONDITION_CHECK_TESTS() \
@@ -47,18 +47,18 @@
 // function parameters not being used. Explicitly storing the function result as a bool and using
 // (void) to cast it away so that we don't get a warning related to unused variables, particularly
 // in release configurations.
-#define AZ_ULIB_ASSERT_PRECONDITION_CHECKED(fn)   \
-  do                                              \
-  {                                               \
-    precondition_test_count = 0;                  \
-    (void)setjmp(g_precond_test_jmp_buf);         \
-    if (precondition_test_count == 0)             \
-    {                                             \
-      bool const result = (fn);                   \
-      assert(result);                             \
-      (void)result;                               \
-    }                                             \
-    assert_int_equal(precondition_test_count, 1); \
+#define AZ_ULIB_ASSERT_PRECONDITION_CHECKED(fn)     \
+  do                                                \
+  {                                                 \
+    g_precondition_test_count = 0;                  \
+    (void)setjmp(g_precond_test_jmp_buf);           \
+    if (g_precondition_test_count == 0)             \
+    {                                               \
+      bool const result = (fn);                     \
+      assert(result);                               \
+      (void)result;                                 \
+    }                                               \
+    assert_int_equal(g_precondition_test_count, 1); \
   } while (0)
 
 #endif // _az_TEST_PRECONDITION_H

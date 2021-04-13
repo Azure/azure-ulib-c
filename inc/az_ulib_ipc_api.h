@@ -215,6 +215,35 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
     az_ulib_ipc_interface_handle* interface_handle);
 
 /**
+ * @brief   Try get an capability index in the interface by the name from the IPC.
+ *
+ * This API tries to find an capability that fits the provided name in the interface. It returns
+ * the capability index.
+ *
+ * @param[in]   interface_handle    The #az_ulib_ipc_interface_handle with the interface handle.
+ *                                  It cannot be `NULL`. Call az_ulib_ipc_try_get_interface() to
+ *                                  get the interface handle.
+ * @param[in]   name                The `az_span` with the interface name.
+ * @param[out]  capability_index    The #az_ulib_capability_index* with the memory to store
+ *                                  the capability index. It cannot be `NULL`.
+ *
+ * @pre     IPC shall already been initialized.
+ * @pre     \p interface_handle shall be different than `NULL`.
+ * @pre     \p name shall be different than `NULL`.
+ * @pre     \p capability_index shall be different than `NULL`.
+ *
+ * @return The #az_result with the result of the get handle.
+ *  @retval #AZ_OK                              If the capability was found and the returned
+ *                                              index can be used.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the provided name didn't match any capability
+ *                                              in the interface.
+ */
+AZ_NODISCARD az_result az_ulib_ipc_try_get_capability(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_span name,
+    az_ulib_capability_index* capability_index);
+
+/**
  * @brief   Get an interface handle by an existent interface handle.
  *
  * This API will return an interface handle based on a provided interface handle. If the provided
@@ -306,14 +335,14 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
  * @param[in]   interface_handle    The #az_ulib_ipc_interface_handle with the interface handle.
  *                                  It cannot be `NULL`. Call az_ulib_ipc_try_get_interface() to
  *                                  get the interface handle.
- * @param[in]   command_name        The #az_span with the command name.
+ * @param[in]   command_index       The #az_ulib_capability_index with the command index. Call
+ *                                  az_ulib_ipc_try_get_capability() to get the command index.
  * @param[in]   model_in_span       The #az_span with the model in.
  * @param[out]  model_out_span      The pointer to #az_span where the capability should store the
  *                                  output content.
  *
  * @pre     IPC shall already been initialized.
  * @pre     \p interface_handle shall be different than `NULL`.
- * @pre     \p command_name shall contain a valid string.
  *
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                              If the IPC get success calling the procedure.
@@ -322,9 +351,61 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
  */
 AZ_NODISCARD az_result az_ulib_ipc_call_w_str(
     az_ulib_ipc_interface_handle interface_handle,
-    az_span command_name,
+    az_ulib_capability_index command_index,
     az_span model_in_span,
     az_span* model_out_span);
+
+/**
+ * @brief   Query IPC information.
+ *
+ * Creates a query for IPC. The query retrieves information from the IPC, depending on the content
+ * of the `query` argument. There are 2 valid query strings:
+ *
+ *  1) Empty string: query will return a list of all published interfaces.
+ *  2) Interface name: query will return a list of all capabilities in the interface.
+ *
+ * The result of the query will be a list with the information separated by comma.
+ *
+ * @param[in]   query               The `az_span` with the query string.
+ * @param[in]   result              The `az_span` with the buffer to return the query result.
+ * @param[in]   continuation_token  The pointer to `uint32_t` to return the query continuation
+ *                                  token. If the continuation token is 0, means that there is
+ *                                  no more information to return in this query, if it is
+ *                                  different than 0, means that a call to
+ *                                  az_ulib_ipc_query_next() shall return more information.
+ *
+ * @pre     IPC shall already been initialized.
+ * @pre     \p result shall be a valid az_span with at least 1 position.
+ * @pre     \p continuation_token shall be different than `NULL`.
+ *
+ * @return The #az_result with the result of the call.
+ *  @retval #AZ_OK                      If the succeeded and the result and continuation have
+ *                                      valid information.
+ *  @retval #AZ_ULIB_EOF                If there is no more information to return in this query.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND    If the target command does not exist.
+ */
+AZ_NODISCARD az_result
+az_ulib_ipc_query(az_span query, az_span* result, uint32_t* continuation_token);
+
+/**
+ * @brief   Query next IPC information.
+ *
+ * Retrieves the next information from the IPC using the continuation token.
+ *
+ * @param[in]   continuation_token  The pointer to `uint32_t` with the current continuation
+ *                                  token and where it will return the next continuation token.
+ * @param[in]   result              The `az_span` with the buffer to return the query result.
+ *
+ * @pre     IPC shall already been initialized.
+ * @pre     \p result shall be a valid az_span with at least 1 position.
+ * @pre     \p continuation_token shall be different than `NULL`.
+ *
+ * @return The #az_result with the result of the call.
+ *  @retval #AZ_OK                      If the succeeded and the result and continuation have
+ *                                      valid information.
+ *  @retval #AZ_ULIB_EOF                If there is no more information to return in this query.
+ */
+AZ_NODISCARD az_result az_ulib_ipc_query_next(uint32_t* continuation_token, az_span* result);
 
 #include "azure/core/_az_cfg_suffix.h"
 

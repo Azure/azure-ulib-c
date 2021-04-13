@@ -98,35 +98,6 @@ typedef az_result (*az_ulib_capability_cancellation_callback)(
     const az_ulib_capability_token capability_token);
 
 /**
- * @brief       Call a capability in the interface using strings in `az_span`.
- *
- * This type defines the signature for the synchronous commands that will be published in an IPC
- * interface. A synchronous command is the one which runs in the same call stack as the caller.
- * The data in the `model_in` will be used only during the execution of the command and may be
- * released as soon as the command returns.
- *
- * As a standard, the synchronous command shall return #az_result. If the command needs to
- * return anything else, the data shall be stored it on the `model_out`.
- *
- * Both `model_in` and `model_out` shall be defined as part of the interface definition, and
- * both shall be strings with JSON inside.
- *
- * @param[in]   model_in_span   The `az_span` that contains a JSON with the input arguments for
- *                              the command. It may be an empty JSON `{}`, the IPC will not do any
- *                              validation on it. The command itself shall implement the JSON
- *                              parser with any needed validation.
- * @param[out]  model_out_span  The `az_ulib_model_out` that contains the memory to store the
- *                              JSON with the output arguments from the command. It may be `NULL`,
- *                              the IPC will not do any validation on it. The command itself shall
- *                              implement the JSON writer with any needed validation.
- *
- * @return The #az_result with the result of the command call. All possible results shall be
- * defined as part of the interface.
- */
-typedef az_result (
-    *az_ulib_capability_call_w_str)(az_span name, az_span model_in_span, az_span* model_out_span);
-
-/**
  * @brief       IPC synchronous command signature.
  *
  * This type defines the signature for the synchronous commands that will be published in an IPC
@@ -154,13 +125,51 @@ typedef az_result (
     *az_ulib_capability_command)(az_ulib_model_in model_in, az_ulib_model_out model_out);
 
 /**
+ * @brief       Call a capability in the interface using strings in `az_span`.
+ *
+ * This type defines the signature for the synchronous commands that will be published in an IPC
+ * interface. A synchronous command is the one which runs in the same call stack as the caller.
+ * The data in the `model_in` will be used only during the execution of the command and may be
+ * released as soon as the command returns.
+ *
+ * As a standard, the synchronous command shall return #az_result. If the command needs to
+ * return anything else, the data shall be stored it on the `model_out`.
+ *
+ * Both `model_in` and `model_out` shall be defined as part of the interface definition, and
+ * both shall be strings with JSON inside.
+ *
+ * @param[in]   model_in_span   The `az_span` that contains a JSON with the input arguments for
+ *                              the command. It may be an empty JSON `{}`, the IPC will not do any
+ *                              validation on it. The command itself shall implement the JSON
+ *                              parser with any needed validation.
+ * @param[out]  model_out_span  The `az_ulib_model_out` that contains the memory to store the
+ *                              JSON with the output arguments from the command. It may be `NULL`,
+ *                              the IPC will not do any validation on it. The command itself shall
+ *                              implement the JSON writer with any needed validation.
+ *
+ * @return The #az_result with the result of the command call. All possible results shall be
+ * defined as part of the interface.
+ */
+typedef az_result (
+    *az_ulib_capability_command_span_wrapper)(az_span model_in_span, az_span* model_out_span);
+
+/**
  * @brief       IPC asynchronous task signature.
  */
 typedef az_result (*az_ulib_capability_command_async)(
     az_ulib_model_in model_in,
     az_ulib_model_out model_out,
     const az_ulib_capability_token capability_token,
-    az_ulib_capability_cancellation_callback* cancel);
+    const az_ulib_capability_cancellation_callback cancel);
+
+/**
+ * @brief       IPC asynchronous task signature using strings in `az_span`.
+ */
+typedef az_result (*az_ulib_capability_command_async_span_wrapper)(
+    az_span model_in_span,
+    az_span* model_out_span,
+    const az_ulib_capability_token capability_token,
+    const az_ulib_capability_cancellation_callback cancel);
 
 /**
  * @brief       IPC get signature.
@@ -168,9 +177,19 @@ typedef az_result (*az_ulib_capability_command_async)(
 typedef az_result (*az_ulib_capability_get)(az_ulib_model_out model_out);
 
 /**
+ * @brief       IPC get signature using strings in `az_span`.
+ */
+typedef az_result (*az_ulib_capability_get_span_wrapper)(az_span* model_out_span);
+
+/**
  * @brief       IPC set signature.
  */
 typedef az_result (*az_ulib_capability_set)(az_ulib_model_in model_in);
+
+/**
+ * @brief       IPC set signature using strings in `az_span`.
+ */
+typedef az_result (*az_ulib_capability_set_span_wrapper)(az_span model_in_span);
 
 #include "azure/core/_az_cfg_suffix.h"
 

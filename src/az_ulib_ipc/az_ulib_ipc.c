@@ -2,8 +2,10 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+#include <memory.h>
 #include <stdint.h>
 
+#include "_az_ulib_ipc_query.h"
 #include "az_ulib_base.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_config.h"
@@ -15,6 +17,17 @@
 #include "azure/az_core.h"
 
 #include <azure/core/internal/az_precondition_internal.h>
+
+typedef union
+{
+  struct
+  {
+    uint8_t query_type;
+    uint8_t reserved;
+    uint16_t count;
+  } fields;
+  uint32_t val;
+} ipc_continuation_token;
 
 /*
  * IPC is a singleton component, and shall be initialized only once.
@@ -30,18 +43,29 @@ static _az_ulib_ipc_interface* get_interface(
 {
   _az_ulib_ipc_interface* result = NULL;
 
+  // Find the lowest version that fits the criteria.
   for (size_t i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++)
   {
     if ((_az_ipc_cb->_internal.interface_list[i].interface_descriptor != NULL)
         && (az_span_is_content_equal(
-            _az_ipc_cb->_internal.interface_list[i].interface_descriptor->name, name))
+            _az_ipc_cb->_internal.interface_list[i].interface_descriptor->_name, name))
         && az_ulib_version_match(
-            _az_ipc_cb->_internal.interface_list[i].interface_descriptor->version,
+            _az_ipc_cb->_internal.interface_list[i].interface_descriptor->_version,
             version,
             match_criteria))
     {
-      result = &(_az_ipc_cb->_internal.interface_list[i]);
-      break;
+      if (result == NULL)
+      {
+        result = &(_az_ipc_cb->_internal.interface_list[i]);
+      }
+      else
+      {
+        if (result->interface_descriptor->_version
+            > _az_ipc_cb->_internal.interface_list[i].interface_descriptor->_version)
+        {
+          result = &(_az_ipc_cb->_internal.interface_list[i]);
+        }
+      }
     }
   }
 
@@ -116,7 +140,7 @@ AZ_NODISCARD az_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle)
     _az_ipc_cb->_internal.interface_list[i].interface_descriptor = NULL;
   }
 
-  return AZ_OK;
+  return _az_ulib_ipc_query_interface_publish();
 }
 
 AZ_NODISCARD az_result az_ulib_ipc_deinit(void)
@@ -125,7 +149,8 @@ AZ_NODISCARD az_result az_ulib_ipc_deinit(void)
 
   az_result result;
 
-  result = AZ_OK;
+  result = _az_ulib_ipc_query_interface_unpublish();
+
   for (size_t i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++)
   {
     if ((_az_ipc_cb->_internal.interface_list[i].interface_descriptor != NULL)
@@ -135,6 +160,8 @@ AZ_NODISCARD az_result az_ulib_ipc_deinit(void)
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
     )
     {
+      // Do our best to publish IPC query the interface again.
+      (void)_az_ulib_ipc_query_interface_publish();
       result = AZ_ERROR_ULIB_BUSY;
       break;
     }
@@ -162,7 +189,7 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
   az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
   {
     if (get_interface(
-            interface_descriptor->name, interface_descriptor->version, AZ_ULIB_VERSION_EQUALS_TO)
+            interface_descriptor->_name, interface_descriptor->_version, AZ_ULIB_VERSION_EQUALS_TO)
         != NULL)
     {
       // IPC shall not accept interfaces with same name and version because it cannot decided each
@@ -312,6 +339,72 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
   return result;
 }
 
+AZ_NODISCARD az_result az_ulib_ipc_try_get_capability(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_span name,
+    az_ulib_capability_index* capability_index)
+{
+  _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
+  _az_PRECONDITION_NOT_NULL(interface_handle);
+  _az_PRECONDITION_VALID_SPAN(name, 1, false);
+  _az_PRECONDITION_NOT_NULL(capability_index);
+
+  az_result result;
+  _az_ulib_ipc_interface* ipc_interface = (_az_ulib_ipc_interface*)interface_handle;
+
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
+  // The double test on the interface_descriptor is part of the interlock between az_ulib_ipc_call
+  // and az_ulib_ipc_unpublish. It will allow a interface to be unpublished even if it has a high
+  // volume of calls.
+  if (ipc_interface->interface_descriptor != NULL)
+  {
+    (void)AZ_ULIB_PORT_ATOMIC_INC_W(&(ipc_interface->running_count));
+    if (ipc_interface->interface_descriptor == NULL)
+    {
+      result = AZ_ERROR_ITEM_NOT_FOUND;
+    }
+    else
+    {
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+
+      az_ulib_capability_index index;
+      for (index = 0; index < ipc_interface->interface_descriptor->_size; index++)
+      {
+        if (az_span_is_content_equal(
+                name, ipc_interface->interface_descriptor->_capability_list[index]._name))
+        {
+          break;
+        }
+      }
+
+      if (index < ipc_interface->interface_descriptor->_size)
+      {
+        *capability_index = index;
+        result = AZ_OK;
+      }
+      else
+      {
+        result = AZ_ERROR_ITEM_NOT_FOUND;
+      }
+
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
+    }
+
+    long new_running_count = AZ_ULIB_PORT_ATOMIC_DEC_W(&(ipc_interface->running_count));
+    if (new_running_count < ipc_interface->running_count_low_watermark)
+    {
+      (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
+          &(ipc_interface->running_count_low_watermark), new_running_count);
+    }
+  }
+  else
+  {
+    result = AZ_ERROR_ITEM_NOT_FOUND;
+  }
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+  return result;
+}
+
 AZ_NODISCARD az_result az_ulib_ipc_get_interface(
     az_ulib_ipc_interface_handle original_interface_handle,
     az_ulib_ipc_interface_handle* interface_handle)
@@ -392,7 +485,7 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
     }
     else
     {
-      result = descriptor->capability_list[command_index].capability_ptr_1.command(
+      result = descriptor->_capability_list[command_index]._capability_ptr_1._command(
           model_in, model_out);
     }
     long new_running_count = AZ_ULIB_PORT_ATOMIC_DEC_W(&(ipc_interface->running_count));
@@ -420,19 +513,18 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
   _az_PRECONDITION_NOT_NULL(interface_handle);
 
   return ((_az_ulib_ipc_interface*)interface_handle)
-      ->interface_descriptor->capability_list[command_index]
-      .capability_ptr_1.command(model_in, model_out);
+      ->interface_descriptor->_capability_list[command_index]
+      ._capability_ptr_1._command(model_in, model_out);
 }
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
 AZ_NODISCARD az_result az_ulib_ipc_call_w_str(
     az_ulib_ipc_interface_handle interface_handle,
-    az_span name,
+    az_ulib_capability_index command_index,
     az_span model_in_span,
     az_span* model_out_span)
 {
   _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
-  _az_PRECONDITION_VALID_SPAN(name, 1, false);
 
   az_result result = AZ_OK;
   _az_ulib_ipc_interface* ipc_interface = (_az_ulib_ipc_interface*)interface_handle;
@@ -444,23 +536,20 @@ AZ_NODISCARD az_result az_ulib_ipc_call_w_str(
   if (ipc_interface->interface_descriptor != NULL)
   {
     (void)AZ_ULIB_PORT_ATOMIC_INC_W(&(ipc_interface->running_count));
-    register const volatile az_ulib_interface_descriptor* descriptor
-        = ipc_interface->interface_descriptor;
-
-    if (descriptor == NULL)
+    if (ipc_interface->interface_descriptor == NULL)
     {
       result = AZ_ERROR_ITEM_NOT_FOUND;
     }
     else
     {
-#else // AZ_ULIB_CONFIG_IPC_UNPUBLISH
-  register const volatile az_ulib_interface_descriptor* descriptor
-      = ipc_interface->interface_descriptor;
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
-      if (descriptor->call_w_str != NULL)
+      if (ipc_interface->interface_descriptor->_capability_list[command_index]
+              ._span_wrapper_ptr_1._command
+          != NULL)
       {
-        result = descriptor->call_w_str(name, model_in_span, model_out_span);
+        result = ipc_interface->interface_descriptor->_capability_list[command_index]
+                     ._span_wrapper_ptr_1._command(model_in_span, model_out_span);
       }
       else
       {
@@ -484,4 +573,131 @@ AZ_NODISCARD az_result az_ulib_ipc_call_w_str(
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
   return result;
+}
+
+static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* next)
+{
+  char* result_str = (char*)az_span_ptr(*result);
+  int32_t result_size = az_span_size(*result);
+  int32_t pos = 0;
+  uint16_t slot;
+
+  az_result res = AZ_ULIB_EOF;
+  for (slot = start; slot < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; slot++)
+  {
+    if (_az_ipc_cb->_internal.interface_list[slot].interface_descriptor != NULL)
+    {
+      int32_t next_size
+          = az_span_size(_az_ipc_cb->_internal.interface_list[slot].interface_descriptor->_name);
+      char version_str[12];
+      az_span version_span = AZ_SPAN_FROM_BUFFER(version_str);
+      az_span reminder;
+      if ((res = az_span_u32toa(
+               version_span,
+               _az_ipc_cb->_internal.interface_list[slot].interface_descriptor->_version,
+               &reminder))
+          == AZ_OK)
+      {
+        int32_t next_version_size = az_span_size(version_span) - az_span_size(reminder);
+        if (pos == 0)
+        {
+          if (next_size + next_version_size + 1 > result_size) // 1 = '.'
+          {
+            res = AZ_ERROR_NOT_ENOUGH_SPACE;
+            break;
+          }
+        }
+        else
+        {
+          if (next_size + 2 + next_version_size > result_size - pos) // 3 = ',' and '.'
+          {
+            break;
+          }
+          else
+          {
+            result_str[pos++] = ',';
+          }
+        }
+
+        res = AZ_OK;
+        memcpy(
+            &(result_str[pos]),
+            az_span_ptr(_az_ipc_cb->_internal.interface_list[slot].interface_descriptor->_name),
+            (size_t)next_size);
+        pos += next_size;
+        result_str[pos++] = '.';
+        memcpy(&(result_str[pos]), az_span_ptr(version_span), (size_t)next_version_size);
+        pos += next_version_size;
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  if (res == AZ_OK)
+  {
+    *next = slot;
+    *result = az_span_create((uint8_t*)result_str, pos);
+  }
+
+  return res;
+}
+
+AZ_NODISCARD az_result
+az_ulib_ipc_query(az_span query, az_span* result, uint32_t* continuation_token)
+{
+  _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
+  _az_PRECONDITION_NOT_NULL(result);
+  _az_PRECONDITION_VALID_SPAN(*result, 1, false);
+  _az_PRECONDITION_NOT_NULL(continuation_token);
+  az_result res;
+
+  az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
+  {
+    ipc_continuation_token* token = (ipc_continuation_token*)continuation_token;
+
+    if (az_span_size(query) == 0)
+    {
+      if ((res = report_interfaces(0, result, &(token->fields.count))) == AZ_OK)
+      {
+        token->fields.query_type = 0xFF;
+        token->fields.reserved = 0;
+      }
+    }
+    else
+    {
+      res = AZ_ERROR_NOT_IMPLEMENTED;
+    }
+  }
+  az_pal_os_lock_release(&(_az_ipc_cb->_internal.lock));
+
+  return res;
+}
+
+AZ_NODISCARD az_result az_ulib_ipc_query_next(uint32_t* continuation_token, az_span* result)
+{
+  _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
+  _az_PRECONDITION_NOT_NULL(result);
+  _az_PRECONDITION_VALID_SPAN(*result, 1, false);
+  _az_PRECONDITION_NOT_NULL(continuation_token);
+  az_result res;
+
+  az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
+  {
+    ipc_continuation_token* token = (ipc_continuation_token*)continuation_token;
+
+    if (token->fields.query_type == 0xFF)
+    {
+      res = report_interfaces(token->fields.count, result, &(token->fields.count));
+    }
+    else
+    {
+      res = AZ_ERROR_NOT_IMPLEMENTED;
+    }
+  }
+  az_pal_os_lock_release(&(_az_ipc_cb->_internal.lock));
+
+  return res;
 }

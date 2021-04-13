@@ -13,7 +13,7 @@
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
 #include "azure/az_core.h"
-#include "cipher_1_interface.h"
+#include "cipher_1_model.h"
 
 #ifdef __cplusplus
 #include <cstdint>
@@ -58,7 +58,7 @@ extern "C"
     cipher_1_encrypt_model_out out = { .dest = dest };
 
     // Call
-    return az_ulib_ipc_call(handle, CIPHER_1_INTERFACE_ENCRYPT_COMMAND, &in, &out);
+    return az_ulib_ipc_call(handle, CIPHER_1_ENCRYPT_COMMAND, &in, &out);
   }
 
   /*
@@ -74,7 +74,7 @@ extern "C"
     cipher_1_decrypt_model_out out = { .dest = dest };
 
     // Call
-    return az_ulib_ipc_call(handle, CIPHER_1_INTERFACE_DECRYPT_COMMAND, &in, &out);
+    return az_ulib_ipc_call(handle, CIPHER_1_DECRYPT_COMMAND, &in, &out);
   }
 
 #ifdef __cplusplus
