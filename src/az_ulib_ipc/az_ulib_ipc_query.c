@@ -79,7 +79,7 @@ static az_result query_1_query_span_wrapper(az_span model_in_span, az_span* mode
 {
   AZ_ULIB_TRY
   {
-    // Unmarshalling JSON to model_in.
+    // Unmarshalling JSON in model_in_span to query_model_in.
     az_json_reader jr;
     query_1_query_model_in query_model_in = { 0 };
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_init(&jr, model_in_span, NULL));
@@ -96,7 +96,7 @@ static az_result query_1_query_span_wrapper(az_span model_in_span, az_span* mode
     }
     AZ_ULIB_THROW_IF_AZ_ERROR(AZ_ULIB_TRY_RESULT);
 
-    // Build model_out_span.
+    // Create a temporary buffer to store the query_model_out.
     char dest_buffer[200];
     az_span dest_span = AZ_SPAN_FROM_BUFFER(dest_buffer);
     query_1_query_model_out query_model_out = { .result = &dest_span, .continuation_token = 0 };
@@ -105,7 +105,7 @@ static az_result query_1_query_span_wrapper(az_span model_in_span, az_span* mode
     AZ_ULIB_THROW_IF_AZ_ERROR(query_1_query_concrete(
         (az_ulib_model_in)&query_model_in, (az_ulib_model_out)&query_model_out));
 
-    // Marshalling model_out to JSON.
+    // Marshalling query_model_out to JSON in model_out_span.
     AZ_ULIB_THROW_IF_AZ_ERROR(marshalling_model_out_to_json(&query_model_out, model_out_span));
   }
   AZ_ULIB_CATCH(...) {}
@@ -125,7 +125,7 @@ static az_result query_1_next_span_wrapper(az_span model_in_span, az_span* model
 {
   AZ_ULIB_TRY
   {
-    // Unmarshalling JSON to model_in_span.
+    // Unmarshalling JSON in model_in_span to next_model_in.
     az_json_reader jr;
     query_1_next_model_in next_model_in = { 0 };
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_init(&jr, model_in_span, NULL));
@@ -143,7 +143,7 @@ static az_result query_1_next_span_wrapper(az_span model_in_span, az_span* model
     }
     AZ_ULIB_THROW_IF_AZ_ERROR(AZ_ULIB_TRY_RESULT);
 
-    // Build model_out_span.
+    // Create a temporary buffer to store the next_model_out.
     char dest_buffer[200];
     az_span dest_span = AZ_SPAN_FROM_BUFFER(dest_buffer);
     query_1_next_model_out next_model_out = { .result = &dest_span, .continuation_token = 0 };
@@ -152,7 +152,7 @@ static az_result query_1_next_span_wrapper(az_span model_in_span, az_span* model
     AZ_ULIB_THROW_IF_AZ_ERROR(query_1_next_concrete(
         (az_ulib_model_in)&next_model_in, (az_ulib_model_out)&next_model_out));
 
-    // Marshalling model_out_span to JSON.
+    // Marshalling next_model_out to JSON in model_out_span.
     AZ_ULIB_THROW_IF_AZ_ERROR(
         marshalling_model_out_to_json((query_1_query_model_out*)&next_model_out, model_out_span));
   }
