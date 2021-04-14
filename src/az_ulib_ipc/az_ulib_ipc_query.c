@@ -108,9 +108,9 @@ static az_result query_1_query_span_wrapper(az_span model_in_span, az_span* mode
     // Marshalling model_out to JSON.
     AZ_ULIB_THROW_IF_AZ_ERROR(marshalling_model_out_to_json(&query_model_out, model_out_span));
   }
-  AZ_ULIB_CATCH(...) { return AZ_ULIB_TRY_RESULT; }
+  AZ_ULIB_CATCH(...) {}
 
-  return AZ_OK;
+  return AZ_ULIB_TRY_RESULT;
 }
 
 static az_result query_1_next_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
@@ -156,9 +156,9 @@ static az_result query_1_next_span_wrapper(az_span model_in_span, az_span* model
     AZ_ULIB_THROW_IF_AZ_ERROR(
         marshalling_model_out_to_json((query_1_query_model_out*)&next_model_out, model_out_span));
   }
-  AZ_ULIB_CATCH(...) { return AZ_ULIB_TRY_RESULT; }
+  AZ_ULIB_CATCH(...) {}
 
-  return AZ_OK;
+  return AZ_ULIB_TRY_RESULT;
 }
 
 static const az_ulib_capability_descriptor QUERY_1_CAPABILITIES[QUERY_1_CAPABILITY_SIZE]
