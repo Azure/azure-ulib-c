@@ -580,21 +580,22 @@ static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* ne
   char* result_str = (char*)az_span_ptr(*result);
   int32_t result_size = az_span_size(*result);
   int32_t pos = 0;
-  uint16_t slot;
+  uint16_t interface_index;
 
   az_result res = AZ_ULIB_EOF;
-  for (slot = start; slot < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; slot++)
+  for (interface_index = start; interface_index < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE;
+       interface_index++)
   {
-    if (_az_ipc_cb->_internal.interface_list[slot].interface_descriptor != NULL)
+    if (_az_ipc_cb->_internal.interface_list[interface_index].interface_descriptor != NULL)
     {
-      int32_t next_size
-          = az_span_size(_az_ipc_cb->_internal.interface_list[slot].interface_descriptor->_name);
+      int32_t next_size = az_span_size(
+          _az_ipc_cb->_internal.interface_list[interface_index].interface_descriptor->_name);
       char version_str[12];
       az_span version_span = AZ_SPAN_FROM_BUFFER(version_str);
       az_span reminder;
       if ((res = az_span_u32toa(
                version_span,
-               _az_ipc_cb->_internal.interface_list[slot].interface_descriptor->_version,
+               _az_ipc_cb->_internal.interface_list[interface_index].interface_descriptor->_version,
                &reminder))
           == AZ_OK)
       {
@@ -622,7 +623,8 @@ static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* ne
         res = AZ_OK;
         memcpy(
             &(result_str[pos]),
-            az_span_ptr(_az_ipc_cb->_internal.interface_list[slot].interface_descriptor->_name),
+            az_span_ptr(
+                _az_ipc_cb->_internal.interface_list[interface_index].interface_descriptor->_name),
             (size_t)next_size);
         pos += next_size;
         result_str[pos++] = '.';
@@ -638,7 +640,7 @@ static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* ne
 
   if (res == AZ_OK)
   {
-    *next = slot;
+    *next = interface_index;
     *result = az_span_create((uint8_t*)result_str, pos);
   }
 
