@@ -18,6 +18,7 @@
 #include "az_ulib_capability_api.h"
 #include "az_ulib_config.h"
 #include "az_ulib_descriptor_api.h"
+#include "az_ulib_ipc_interface.h"
 #include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
@@ -55,11 +56,6 @@ typedef struct az_ulib_ipc_tag
     _az_ulib_ipc_interface interface_list[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE];
   } _internal;
 } az_ulib_ipc;
-
-/**
- * @brief Interface handle.
- */
-typedef void* az_ulib_ipc_interface_handle;
 
 /**
  * @brief   Initialize the IPC system.
@@ -112,6 +108,15 @@ AZ_NODISCARD az_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle);
 AZ_NODISCARD az_result az_ulib_ipc_deinit(void);
 
 /**
+ * @brief   Return the vtable of the ipc interface.
+ *
+ * @pre     IPC shall already been initialized.
+ *
+ * @return The #az_ulib_ipc_vtable with the pointer to the IPC vtable.
+ */
+const az_ulib_ipc_vtable* az_ulib_ipc_get_vtable(void);
+
+/**
  * @brief   Publish a new interface on the IPC.
  *
  * This API publishes a new interface in the IPC using the interface descriptor. The interface
@@ -142,7 +147,7 @@ AZ_NODISCARD az_result az_ulib_ipc_deinit(void);
  *                                              new interface.
  */
 AZ_NODISCARD az_result az_ulib_ipc_publish(
-    const az_ulib_interface_descriptor* interface_descriptor,
+    const az_ulib_interface_descriptor* const interface_descriptor,
     az_ulib_ipc_interface_handle* interface_handle);
 
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
@@ -172,7 +177,7 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
  *                                              now.
  */
 AZ_NODISCARD az_result az_ulib_ipc_unpublish(
-    const az_ulib_interface_descriptor* interface_descriptor,
+    const az_ulib_interface_descriptor* const interface_descriptor,
     uint32_t wait_option_ms);
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 

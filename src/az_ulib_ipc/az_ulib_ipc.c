@@ -11,6 +11,7 @@
 #include "az_ulib_config.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
+#include "az_ulib_ipc_interface.h"
 #include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
@@ -177,7 +178,7 @@ AZ_NODISCARD az_result az_ulib_ipc_deinit(void)
 }
 
 AZ_NODISCARD az_result az_ulib_ipc_publish(
-    const az_ulib_interface_descriptor* interface_descriptor,
+    const az_ulib_interface_descriptor* const interface_descriptor,
     az_ulib_ipc_interface_handle* interface_handle)
 {
   _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
@@ -224,7 +225,7 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
 
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
 AZ_NODISCARD az_result az_ulib_ipc_unpublish(
-    const az_ulib_interface_descriptor* interface_descriptor,
+    const az_ulib_interface_descriptor* const interface_descriptor,
     uint32_t wait_option_ms)
 {
   _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
@@ -457,7 +458,6 @@ AZ_NODISCARD az_result az_ulib_ipc_release_interface(az_ulib_ipc_interface_handl
   return result;
 }
 
-#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
 AZ_NODISCARD az_result az_ulib_ipc_call(
     az_ulib_ipc_interface_handle interface_handle,
     az_ulib_capability_index command_index,
@@ -470,23 +470,24 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
   az_result result;
   _az_ulib_ipc_interface* ipc_interface = (_az_ulib_ipc_interface*)interface_handle;
 
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
   // The double test on the interface_descriptor is part of the interlock between az_ulib_ipc_call
   // and az_ulib_ipc_unpublish. It will allow a interface to be unpublished even if it has a high
   // volume of calls.
   if (ipc_interface->interface_descriptor != NULL)
   {
     (void)AZ_ULIB_PORT_ATOMIC_INC_W(&(ipc_interface->running_count));
-    register const volatile az_ulib_interface_descriptor* descriptor
-        = ipc_interface->interface_descriptor;
 
-    if (descriptor == NULL)
+    if (ipc_interface->interface_descriptor == NULL)
     {
       result = AZ_ERROR_ITEM_NOT_FOUND;
     }
     else
     {
-      result = descriptor->_capability_list[command_index]._capability_ptr_1._command(
-          model_in, model_out);
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+      result = ipc_interface->interface_descriptor->_capability_list[command_index]
+                   ._capability_ptr_1._command(model_in, model_out);
+#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
     }
     long new_running_count = AZ_ULIB_PORT_ATOMIC_DEC_W(&(ipc_interface->running_count));
     if (new_running_count < ipc_interface->running_count_low_watermark)
@@ -499,24 +500,10 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
   {
     result = AZ_ERROR_ITEM_NOT_FOUND;
   }
+#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
   return result;
 }
-#else // AZ_ULIB_CONFIG_IPC_UNPUBLISH
-AZ_NODISCARD az_result az_ulib_ipc_call(
-    az_ulib_ipc_interface_handle interface_handle,
-    az_ulib_capability_index command_index,
-    az_ulib_model_in model_in,
-    az_ulib_model_out model_out)
-{
-  _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
-  _az_PRECONDITION_NOT_NULL(interface_handle);
-
-  return ((_az_ulib_ipc_interface*)interface_handle)
-      ->interface_descriptor->_capability_list[command_index]
-      ._capability_ptr_1._command(model_in, model_out);
-}
-#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
 AZ_NODISCARD az_result az_ulib_ipc_call_w_str(
     az_ulib_ipc_interface_handle interface_handle,
@@ -703,3 +690,16 @@ AZ_NODISCARD az_result az_ulib_ipc_query_next(uint32_t* continuation_token, az_s
 
   return res;
 }
+
+static const az_ulib_ipc_vtable _vtable = { az_ulib_ipc_publish,
+                                            az_ulib_ipc_unpublish,
+                                            az_ulib_ipc_try_get_interface,
+                                            az_ulib_ipc_try_get_capability,
+                                            az_ulib_ipc_get_interface,
+                                            az_ulib_ipc_release_interface,
+                                            az_ulib_ipc_call,
+                                            az_ulib_ipc_call_w_str,
+                                            az_ulib_ipc_query,
+                                            az_ulib_ipc_query_next };
+
+const az_ulib_ipc_vtable* az_ulib_ipc_get_vtable(void) { return &_vtable; }

@@ -98,6 +98,11 @@ typedef struct az_ulib_interface_descriptor_tag
 } az_ulib_interface_descriptor;
 
 /**
+ * @brief Interface handle.
+ */
+typedef void* az_ulib_ipc_interface_handle;
+
+/**
  * @brief   Create a new Interface descriptor.
  *
  * This API creates a new description for a interface, it will create the

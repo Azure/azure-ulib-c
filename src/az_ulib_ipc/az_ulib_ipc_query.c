@@ -47,7 +47,7 @@ static az_result marshalling_model_out_to_json(
 
     az_span remaining
         = az_span_create(az_span_ptr(*(model_out->result)), az_span_size(*(model_out->result)));
-    LONG split_pos = az_span_find(remaining, AZ_SPAN_FROM_STR(","));
+    int32_t split_pos = az_span_find(remaining, AZ_SPAN_FROM_STR(","));
     while (split_pos != -1)
     {
       az_span interface_name = az_span_slice(remaining, 0, split_pos);
