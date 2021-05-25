@@ -335,7 +335,7 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
     az_ulib_model_out model_out);
 
 /**
- * @brief   Synchronously Call a published procedure using string name and models.
+ * @brief   Synchronously Call a published procedure using string models.
  *
  * @param[in]   interface_handle    The #az_ulib_ipc_interface_handle with the interface handle.
  *                                  It cannot be `NULL`. Call az_ulib_ipc_try_get_interface() to

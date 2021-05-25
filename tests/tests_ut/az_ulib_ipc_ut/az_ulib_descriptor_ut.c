@@ -28,6 +28,12 @@ static az_result get_my_property(az_ulib_model_out model_out)
   return AZ_OK;
 }
 
+static az_result get_my_property_span_wrapper(az_span* model_out_span)
+{
+  (void)model_out_span;
+  return AZ_OK;
+}
+
 static az_result set_my_property(az_ulib_model_in model_in)
 {
   const uint32_t* const new_val = (const uint32_t* const)model_in;
@@ -37,10 +43,24 @@ static az_result set_my_property(az_ulib_model_in model_in)
   return AZ_OK;
 }
 
+static az_result set_my_property_span_wrapper(az_span model_in_span)
+{
+  (void)model_in_span;
+  return AZ_OK;
+}
+
 static az_result my_command(az_ulib_model_in model_in, az_ulib_model_out model_out)
 {
   (void)model_in;
   (void)model_out;
+
+  return AZ_OK;
+}
+
+static az_result my_command_span_wrapper(az_span model_in_span, az_span* model_out_span)
+{
+  (void)model_in_span;
+  (void)model_out_span;
 
   return AZ_OK;
 }
@@ -59,6 +79,20 @@ static az_result my_command_async(
   return AZ_OK;
 }
 
+static az_result my_command_async_span_wrapper(
+    az_span model_in_span,
+    az_span* model_out_span,
+    const az_ulib_capability_token capability_token,
+    const az_ulib_capability_cancellation_callback cancel)
+{
+  (void)model_in_span;
+  (void)model_out_span;
+  (void)capability_token;
+  (void)cancel;
+
+  return AZ_OK;
+}
+
 static az_result my_command_cancel(const az_ulib_capability_token capability_token)
 {
   (void)capability_token;
@@ -69,9 +103,9 @@ static az_result my_command_cancel(const az_ulib_capability_token capability_tok
 /**
  * Beginning of the UT for interface module.
  */
-/* The AZ_ULIB_DESCRIPTOR_ADD_PROPERTY shall create an descriptor for a property with name, get, and
- * set pointers. */
-static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_succeed(void** state)
+/* The AZ_ULIB_DESCRIPTOR_ADD_PROPERTY shall create an descriptor for a property with name, get,
+ * set, get_span_warapper, and set_span_wrapper pointers. */
+static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_w_null_wrappers_succeed(void** state)
 {
   /// arrange
   (void)state;
@@ -86,6 +120,34 @@ static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_succeed(void** st
   assert_memory_equal(az_span_ptr(capability._name), property_name, _az_COUNTOF(property_name) - 1);
   assert_ptr_equal(capability._capability_ptr_1._get, get_my_property);
   assert_ptr_equal(capability._capability_ptr_2._set, set_my_property);
+  assert_ptr_equal(capability._span_wrapper_ptr_1._get, NULL);
+  assert_ptr_equal(capability._span_wrapper_ptr_2._set, NULL);
+  assert_int_equal(capability._flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_PROPERTY);
+
+  /// cleanup
+}
+
+static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_succeed(void** state)
+{
+  /// arrange
+  (void)state;
+  const char property_name[] = "my_property";
+
+  /// act
+  static az_ulib_capability_descriptor capability = AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(
+      "my_property",
+      get_my_property,
+      set_my_property,
+      get_my_property_span_wrapper,
+      set_my_property_span_wrapper);
+
+  /// assert
+  assert_int_equal(az_span_size(capability._name), _az_COUNTOF(property_name) - 1);
+  assert_memory_equal(az_span_ptr(capability._name), property_name, _az_COUNTOF(property_name) - 1);
+  assert_ptr_equal(capability._capability_ptr_1._get, get_my_property);
+  assert_ptr_equal(capability._capability_ptr_2._set, set_my_property);
+  assert_ptr_equal(capability._span_wrapper_ptr_1._get, get_my_property_span_wrapper);
+  assert_ptr_equal(capability._span_wrapper_ptr_2._set, set_my_property_span_wrapper);
   assert_int_equal(capability._flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_PROPERTY);
 
   /// cleanup
@@ -93,7 +155,7 @@ static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_succeed(void** st
 
 /* The AZ_ULIB_DESCRIPTOR_ADD_COMMAND shall create an descriptor for a command with name and pointer
  * to the command. */
-static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_succeed(void** state)
+static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_w_null_wrapper_succeed(void** state)
 {
   /// arrange
   (void)state;
@@ -112,9 +174,30 @@ static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_succeed(void** sta
   /// cleanup
 }
 
+static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_succeed(void** state)
+{
+  /// arrange
+  (void)state;
+  const char command_name[] = "my_command";
+
+  /// act
+  static az_ulib_capability_descriptor capability
+      = AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command, my_command_span_wrapper);
+
+  /// assert
+  assert_int_equal(az_span_size(capability._name), _az_COUNTOF(command_name) - 1);
+  assert_memory_equal(az_span_ptr(capability._name), command_name, _az_COUNTOF(command_name) - 1);
+  assert_ptr_equal(capability._capability_ptr_1._command, my_command);
+  assert_ptr_equal(capability._span_wrapper_ptr_1._command, my_command_span_wrapper);
+  assert_int_equal(capability._flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_COMMAND);
+
+  /// cleanup
+}
+
 /* The AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC shall create an descriptor for an async command with
  * name and pointer to the command and the cancellation command. */
-static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC_succeed(void** state)
+static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC_w_null_wrapper_succeed(
+    void** state)
 {
   /// arrange
   (void)state;
@@ -130,6 +213,28 @@ static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC_succeed(void
       az_span_ptr(capability._name), command_async_name, _az_COUNTOF(command_async_name) - 1);
   assert_ptr_equal(capability._capability_ptr_1._command_async, my_command_async);
   assert_ptr_equal(capability._capability_ptr_2._cancel, my_command_cancel);
+  assert_int_equal(capability._flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC);
+
+  /// cleanup
+}
+
+static void az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC_succeed(void** state)
+{
+  /// arrange
+  (void)state;
+  const char command_async_name[] = "my_command_async";
+
+  /// act
+  static az_ulib_capability_descriptor capability = AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC(
+      "my_command_async", my_command_async, my_command_async_span_wrapper, my_command_cancel);
+
+  /// assert
+  assert_int_equal(az_span_size(capability._name), _az_COUNTOF(command_async_name) - 1);
+  assert_memory_equal(
+      az_span_ptr(capability._name), command_async_name, _az_COUNTOF(command_async_name) - 1);
+  assert_ptr_equal(capability._capability_ptr_1._command_async, my_command_async);
+  assert_ptr_equal(capability._capability_ptr_2._cancel, my_command_cancel);
+  assert_ptr_equal(capability._span_wrapper_ptr_1._command_async, my_command_async_span_wrapper);
   assert_int_equal(capability._flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC);
 
   /// cleanup
@@ -172,12 +277,17 @@ static void az_ulib_descriptor_interface_descriptor_succeed(void** state)
 
   /// act
   static const az_ulib_capability_descriptor MY_INTERFACE_CAPABILITIES[5] = {
-    AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property, NULL, NULL),
+    AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(
+        "my_property",
+        get_my_property,
+        set_my_property,
+        get_my_property_span_wrapper,
+        set_my_property_span_wrapper),
     AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry"),
     AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY("my_telemetry2"),
-    AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command, NULL),
+    AZ_ULIB_DESCRIPTOR_ADD_COMMAND("my_command", my_command, my_command_span_wrapper),
     AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC(
-        "my_command_async", my_command_async, NULL, my_command_cancel)
+        "my_command_async", my_command_async, my_command_async_span_wrapper, my_command_cancel)
   };
   static const az_ulib_interface_descriptor MY_INTERFACE
       = AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 123, 5, MY_INTERFACE_CAPABILITIES);
@@ -191,7 +301,13 @@ static void az_ulib_descriptor_interface_descriptor_succeed(void** state)
   assert_true(az_ulib_version_match(version, MY_INTERFACE._version, AZ_ULIB_VERSION_EQUALS_TO));
   assert_int_equal(MY_INTERFACE._size, 5);
 
-  /* AZ_ULIB_DESCRIPTOR_ADD_PROPERTY("my_property", get_my_property, set_my_property) */
+  /* AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(
+   *    "my_property",
+   *    get_my_property,
+   *    set_my_property,
+   *    get_my_property_span_wrapper,
+   *    set_my_property_span_wrapper)
+   */
   assert_int_equal(
       az_span_size(MY_INTERFACE._capability_list[0]._name), _az_COUNTOF(property_name) - 1);
   assert_memory_equal(
@@ -200,6 +316,10 @@ static void az_ulib_descriptor_interface_descriptor_succeed(void** state)
       _az_COUNTOF(property_name) - 1);
   assert_ptr_equal(MY_INTERFACE._capability_list[0]._capability_ptr_1._get, get_my_property);
   assert_ptr_equal(MY_INTERFACE._capability_list[0]._capability_ptr_2._set, set_my_property);
+  assert_ptr_equal(
+      MY_INTERFACE._capability_list[0]._span_wrapper_ptr_1._get, get_my_property_span_wrapper);
+  assert_ptr_equal(
+      MY_INTERFACE._capability_list[0]._span_wrapper_ptr_2._set, set_my_property_span_wrapper);
   assert_int_equal(
       MY_INTERFACE._capability_list[0]._flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_PROPERTY);
 
@@ -231,6 +351,8 @@ static void az_ulib_descriptor_interface_descriptor_succeed(void** state)
       command_name,
       _az_COUNTOF(command_name) - 1);
   assert_ptr_equal(MY_INTERFACE._capability_list[3]._capability_ptr_1._command, my_command);
+  assert_ptr_equal(
+      MY_INTERFACE._capability_list[3]._span_wrapper_ptr_1._command, my_command_span_wrapper);
   assert_int_equal(
       MY_INTERFACE._capability_list[3]._flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_COMMAND);
 
@@ -244,6 +366,9 @@ static void az_ulib_descriptor_interface_descriptor_succeed(void** state)
       _az_COUNTOF(command_async_name) - 1);
   assert_ptr_equal(
       MY_INTERFACE._capability_list[4]._capability_ptr_1._command_async, my_command_async);
+  assert_ptr_equal(
+      MY_INTERFACE._capability_list[4]._span_wrapper_ptr_1._command_async,
+      my_command_async_span_wrapper);
   assert_ptr_equal(MY_INTERFACE._capability_list[4]._capability_ptr_2._cancel, my_command_cancel);
   assert_int_equal(
       MY_INTERFACE._capability_list[4]._flags, (uint8_t)AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC);
@@ -254,8 +379,12 @@ static void az_ulib_descriptor_interface_descriptor_succeed(void** state)
 int az_ulib_descriptor_ut()
 {
   const struct CMUnitTest tests[] = {
+    cmocka_unit_test(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_w_null_wrappers_succeed),
     cmocka_unit_test(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_PROPERTY_succeed),
+    cmocka_unit_test(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_w_null_wrapper_succeed),
     cmocka_unit_test(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_succeed),
+    cmocka_unit_test(
+        az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC_w_null_wrapper_succeed),
     cmocka_unit_test(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC_succeed),
     cmocka_unit_test(az_ulib_descriptor_AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY_succeed),
     cmocka_unit_test(az_ulib_descriptor_interface_descriptor_succeed),

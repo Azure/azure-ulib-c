@@ -353,56 +353,26 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_capability(
   az_result result;
   _az_ulib_ipc_interface* ipc_interface = (_az_ulib_ipc_interface*)interface_handle;
 
-#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
-  // The double test on the interface_descriptor is part of the interlock between az_ulib_ipc_call
-  // and az_ulib_ipc_unpublish. It will allow a interface to be unpublished even if it has a high
-  // volume of calls.
-  if (ipc_interface->interface_descriptor != NULL)
+  az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
   {
-    (void)AZ_ULIB_PORT_ATOMIC_INC_W(&(ipc_interface->running_count));
-    if (ipc_interface->interface_descriptor == NULL)
+    result = AZ_ERROR_ITEM_NOT_FOUND;
+    if (ipc_interface->interface_descriptor != NULL)
     {
-      result = AZ_ERROR_ITEM_NOT_FOUND;
-    }
-    else
-    {
-#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
-
-      az_ulib_capability_index index;
-      for (index = 0; index < ipc_interface->interface_descriptor->_size; index++)
+      for (az_ulib_capability_index index = 0; index < ipc_interface->interface_descriptor->_size;
+           index++)
       {
         if (az_span_is_content_equal(
                 name, ipc_interface->interface_descriptor->_capability_list[index]._name))
         {
+          *capability_index = index;
+          result = AZ_OK;
           break;
         }
       }
-
-      if (index < ipc_interface->interface_descriptor->_size)
-      {
-        *capability_index = index;
-        result = AZ_OK;
-      }
-      else
-      {
-        result = AZ_ERROR_ITEM_NOT_FOUND;
-      }
-
-#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
-    }
-
-    long new_running_count = AZ_ULIB_PORT_ATOMIC_DEC_W(&(ipc_interface->running_count));
-    if (new_running_count < ipc_interface->running_count_low_watermark)
-    {
-      (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
-          &(ipc_interface->running_count_low_watermark), new_running_count);
     }
   }
-  else
-  {
-    result = AZ_ERROR_ITEM_NOT_FOUND;
-  }
-#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+  az_pal_os_lock_release(&(_az_ipc_cb->_internal.lock));
+
   return result;
 }
 
@@ -512,6 +482,7 @@ AZ_NODISCARD az_result az_ulib_ipc_call_w_str(
     az_span* model_out_span)
 {
   _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
+  _az_PRECONDITION_NOT_NULL(interface_handle);
 
   az_result result = AZ_OK;
   _az_ulib_ipc_interface* ipc_interface = (_az_ulib_ipc_interface*)interface_handle;
@@ -589,7 +560,7 @@ static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* ne
         int32_t next_version_size = az_span_size(version_span) - az_span_size(reminder);
         if (pos == 0)
         {
-          if (next_size + next_version_size + 1 > result_size) // 1 = '.'
+          if (next_size + next_version_size + 3 > result_size) // 3 = '"', '.' and '"'
           {
             res = AZ_ERROR_NOT_ENOUGH_SPACE;
             break;
@@ -597,7 +568,7 @@ static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* ne
         }
         else
         {
-          if (next_size + 2 + next_version_size > result_size - pos) // 3 = ',' and '.'
+          if (next_size + 4 + next_version_size > result_size - pos) // 4 = ',', '"', '.' and '"'
           {
             break;
           }
@@ -608,6 +579,7 @@ static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* ne
         }
 
         res = AZ_OK;
+        result_str[pos++] = '"';
         memcpy(
             &(result_str[pos]),
             az_span_ptr(
@@ -617,6 +589,7 @@ static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* ne
         result_str[pos++] = '.';
         memcpy(&(result_str[pos]), az_span_ptr(version_span), (size_t)next_version_size);
         pos += next_version_size;
+        result_str[pos++] = '"';
       }
       else
       {
@@ -657,7 +630,7 @@ az_ulib_ipc_query(az_span query, az_span* result, uint32_t* continuation_token)
     }
     else
     {
-      res = AZ_ERROR_NOT_IMPLEMENTED;
+      res = AZ_ERROR_NOT_SUPPORTED;
     }
   }
   az_pal_os_lock_release(&(_az_ipc_cb->_internal.lock));
@@ -683,7 +656,7 @@ AZ_NODISCARD az_result az_ulib_ipc_query_next(uint32_t* continuation_token, az_s
     }
     else
     {
-      res = AZ_ERROR_NOT_IMPLEMENTED;
+      res = AZ_ERROR_NOT_SUPPORTED;
     }
   }
   az_pal_os_lock_release(&(_az_ipc_cb->_internal.lock));

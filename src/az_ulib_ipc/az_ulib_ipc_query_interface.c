@@ -31,6 +31,14 @@ static az_result query_1_query_concrete(az_ulib_model_in model_in, az_ulib_model
   return az_ulib_ipc_query(in->query, out->result, &(out->continuation_token));
 }
 
+inline uint32_t model_out_span_min_size(void)
+{
+  return 2 + // {}
+      sizeof(QUERY_1_NEXT_RESULT_NAME) + 6 + // "result":[],
+      sizeof(QUERY_1_NEXT_CONTINUATION_TOKEN_NAME) + 13 + //"continuation_token":4294967295
+      64; // az_json_writer requires a leftover of _az_MINIMUM_STRING_CHUNK_SIZE to properly work
+}
+
 static az_result marshalling_model_out_to_json(
     query_1_query_model_out* model_out,
     az_span* model_out_span)
@@ -50,7 +58,7 @@ static az_result marshalling_model_out_to_json(
     int32_t split_pos = az_span_find(remaining, AZ_SPAN_FROM_STR(","));
     while (split_pos != -1)
     {
-      az_span interface_name = az_span_slice(remaining, 0, split_pos);
+      az_span interface_name = az_span_slice(remaining, 1, split_pos - 1);
       AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_string(&jw, interface_name));
       remaining = az_span_slice_to_end(remaining, split_pos + 1);
       split_pos = az_span_find(remaining, AZ_SPAN_FROM_STR(","));
@@ -58,7 +66,8 @@ static az_result marshalling_model_out_to_json(
     AZ_ULIB_THROW_IF_AZ_ERROR(AZ_ULIB_TRY_RESULT);
     if (az_span_size(remaining) > 0)
     {
-      AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_string(&jw, remaining));
+      az_span interface_name = az_span_slice(remaining, 1, az_span_size(remaining) - 1);
+      AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_string(&jw, interface_name));
     }
 
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_end_array(&jw));
@@ -97,8 +106,8 @@ static az_result query_1_query_span_wrapper(az_span model_in_span, az_span* mode
     AZ_ULIB_THROW_IF_AZ_ERROR(AZ_ULIB_TRY_RESULT);
 
     // Create a temporary buffer to store the query_model_out.
-    char dest_buffer[200];
-    az_span dest_span = AZ_SPAN_FROM_BUFFER(dest_buffer);
+    uint32_t dest_span_start_pos = model_out_span_min_size() + 1;
+    az_span dest_span = az_span_slice_to_end(*model_out_span, dest_span_start_pos);
     query_1_query_model_out query_model_out = { .result = &dest_span, .continuation_token = 0 };
 
     // Call.
@@ -152,9 +161,12 @@ static az_result query_1_next_span_wrapper(az_span model_in_span, az_span* model
     AZ_ULIB_THROW_IF_AZ_ERROR(query_1_next_concrete(
         (az_ulib_model_in)&next_model_in, (az_ulib_model_out)&next_model_out));
 
-    // Marshalling next_model_out to JSON in model_out_span.
-    AZ_ULIB_THROW_IF_AZ_ERROR(
-        marshalling_model_out_to_json((query_1_query_model_out*)&next_model_out, model_out_span));
+    if (AZ_ULIB_TRY_RESULT != AZ_ULIB_EOF)
+    {
+      // Marshalling next_model_out to JSON in model_out_span.
+      AZ_ULIB_THROW_IF_AZ_ERROR(
+          marshalling_model_out_to_json((query_1_query_model_out*)&next_model_out, model_out_span));
+    }
   }
   AZ_ULIB_CATCH(...) {}
 

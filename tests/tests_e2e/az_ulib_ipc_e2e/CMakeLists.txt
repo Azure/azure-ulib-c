@@ -11,6 +11,7 @@ include(AddCMockaTest)
 add_cmocka_test(az_ulib_ipc_e2e SOURCES
                 main.c
                 az_ulib_ipc_e2e.c
+                ${TEST_DIRECTORY}/src/az_ulib_test_my_interface.c
                 ${TEST_DIRECTORY}/src/${ULIB_PAL_OS_DIRECTORY}/az_ulib_test_thread.c
                 COMPILE_OPTIONS ${DEFAULT_C_COMPILE_FLAGS} ${NO_CLOBBERED_WARNING}
                 LINK_LIBRARIES ${CMOCKA_LIBRARIES} azure_ulib_c ${PAL} az::cmocka
