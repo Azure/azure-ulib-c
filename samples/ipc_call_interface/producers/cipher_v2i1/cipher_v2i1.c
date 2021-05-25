@@ -55,6 +55,10 @@ static inline uint32_t next_key_pos(uint32_t cur)
 static int32_t encoded_len(az_span src)
 {
   int32_t size = az_span_size(src);
+  // Base 64 uses 4 characters to represent each set of 3 bytes,
+  //   so the final size is 4/3 of the original size.
+  // Round it up and add '=' at the end to make the final
+  //   size divisible by 4.
   return (size == 0) ? (0) : (((((size - 1) / 3) + 1) * 4) + 1) + 1;
 }
 
@@ -167,6 +171,13 @@ static size_t numberOfBase64Characters(const char* encodedString)
   return length;
 }
 
+/*
+ * This is a simple encrypt algorithm that use an Exclusive or of the data with
+ * a key and encode the result in base-64 so we can send over IoTHub.
+ *
+ * The first char in the encrypted data represent the context, which is, at the end
+ * the key used in the encryption process.
+ */
 az_result cipher_v2i1_encrypt(uint32_t context, az_span src, az_span* dest)
 {
   AZ_ULIB_TRY

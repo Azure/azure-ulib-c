@@ -133,7 +133,7 @@ typedef az_result (
  * released as soon as the command returns.
  *
  * As a standard, the synchronous command shall return #az_result. If the command needs to
- * return anything else, the data shall be stored it on the `model_out`.
+ * return anything else, the data shall be stored in the `model_out`.
  *
  * Both `model_in` and `model_out` shall be defined as part of the interface definition, and
  * both shall be strings with JSON inside.

@@ -11,8 +11,8 @@
  * components in the system.
  */
 
-#ifndef AZ_ULIB_IPC_H
-#define AZ_ULIB_IPC_H
+#ifndef AZ_ULIB_IPC_API_H
+#define AZ_ULIB_IPC_API_H
 
 #include "az_ulib_base.h"
 #include "az_ulib_capability_api.h"
@@ -69,7 +69,7 @@ typedef struct az_ulib_ipc_tag
  * @param[in]   ipc_handle      The #az_ulib_ipc* that points to a memory position where
  *                              the IPC shall create its control block.
  *
- * @pre     \p ipc_handle shall be different than `NULL`.
+ * @pre     \p ipc_handle shall not be 'NULL'.
  * @pre     IPC shall not been initialized.
  *
  * @note    This API **is not** thread safe, no other IPC API may be called during the execution of
@@ -138,7 +138,7 @@ const az_ulib_ipc_vtable* az_ulib_ipc_get_vtable(void);
  *                                    interface handle.
  *
  * @pre     IPC shall already been initialized.
- * @pre     \p interface_handle shall be different than `NULL`.
+ * @pre     \p interface_handle shall not be 'NULL'.
  *
  * @return The #az_result with the result of the interface publish.
  *  @retval #AZ_OK                              If the interface is published with success.
@@ -167,7 +167,7 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
  *                                        - timeout value (0x00000001 through 0xFFFFFFFE)
  *
  * @pre     IPC shall already been initialized.
- * @pre     \p interface_descriptor shall be different than `NULL`.
+ * @pre     \p interface_descriptor shall not be 'NULL'.
  *
  * @return The #az_result with the result of the interface unpublish.
  *  @retval #AZ_OK                              If the interface is unpublished with success.
@@ -202,8 +202,8 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *                                the interface handle. It cannot be `NULL`.
  *
  * @pre     IPC shall already been initialized.
- * @pre     \p name shall be different than `NULL`.
- * @pre     \p interface_handle shall be different than `NULL`.
+ * @pre     \p name shall not be 'NULL'.
+ * @pre     \p interface_handle shall not be 'NULL'.
  *
  * @return The #az_result with the result of the get handle.
  *  @retval #AZ_OK                              If the interface was found and the returned
@@ -220,7 +220,7 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
     az_ulib_ipc_interface_handle* interface_handle);
 
 /**
- * @brief   Try get an capability index in the interface by the name from the IPC.
+ * @brief   Try get a capability index in the interface by the name from the IPC.
  *
  * This API tries to find an capability that fits the provided name in the interface. It returns
  * the capability index.
@@ -233,9 +233,9 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
  *                                  the capability index. It cannot be `NULL`.
  *
  * @pre     IPC shall already been initialized.
- * @pre     \p interface_handle shall be different than `NULL`.
- * @pre     \p name shall be different than `NULL`.
- * @pre     \p capability_index shall be different than `NULL`.
+ * @pre     \p interface_handle shall not be 'NULL'.
+ * @pre     \p name shall not be 'NULL'.
+ * @pre     \p capability_index shall not be 'NULL'.
  *
  * @return The #az_result with the result of the get handle.
  *  @retval #AZ_OK                              If the capability was found and the returned
@@ -266,8 +266,8 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_capability(
  *                                        store the interface handle. It cannot be `NULL`.
  *
  * @pre     IPC shall already been initialized.
- * @pre     \p original_interface_handle shall be different than `NULL`.
- * @pre     \p interface_handle shall be different than `NULL`.
+ * @pre     \p original_interface_handle shall not be 'NULL'.
+ * @pre     \p interface_handle shall not be 'NULL'.
  *
  * @return The #az_result with the result of the get handle.
  *  @retval #AZ_OK                              If the interface was found and the returned handle
@@ -299,7 +299,7 @@ AZ_NODISCARD az_result az_ulib_ipc_get_interface(
  *                                  handle to release. It cannot be `NULL`.
  *
  * @pre     IPC shall already been initialized.
- * @pre     \p interface_handle shall be different than `NULL`.
+ * @pre     \p interface_handle shall not be 'NULL'.
  *
  * @return The #az_result with the result of the release.
  *  @retval #AZ_OK                              If the interface is released with success.
@@ -321,7 +321,7 @@ AZ_NODISCARD az_result az_ulib_ipc_release_interface(az_ulib_ipc_interface_handl
  *                                should store the output model content.
  *
  * @pre     IPC shall already been initialized.
- * @pre     \p interface_handle shall be different than `NULL`.
+ * @pre     \p interface_handle shall not be 'NULL'.
  *
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                              If the IPC get success calling the procedure.
@@ -347,14 +347,14 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
  *                                  output content.
  *
  * @pre     IPC shall already been initialized.
- * @pre     \p interface_handle shall be different than `NULL`.
+ * @pre     \p interface_handle shall not be 'NULL'.
  *
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                              If the IPC get success calling the procedure.
  *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the target command does not exist.
  *  @retval Others                              Defined by the target function.
  */
-AZ_NODISCARD az_result az_ulib_ipc_call_w_str(
+AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
     az_ulib_ipc_interface_handle interface_handle,
     az_ulib_capability_index command_index,
     az_span model_in_span,
@@ -381,7 +381,7 @@ AZ_NODISCARD az_result az_ulib_ipc_call_w_str(
  *
  * @pre     IPC shall already been initialized.
  * @pre     \p result shall be a valid az_span with at least 1 position.
- * @pre     \p continuation_token shall be different than `NULL`.
+ * @pre     \p continuation_token shall not be 'NULL'.
  *
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                      If the succeeded and the result and continuation have
@@ -403,7 +403,7 @@ az_ulib_ipc_query(az_span query, az_span* result, uint32_t* continuation_token);
  *
  * @pre     IPC shall already been initialized.
  * @pre     \p result shall be a valid az_span with at least 1 position.
- * @pre     \p continuation_token shall be different than `NULL`.
+ * @pre     \p continuation_token shall not be 'NULL'.
  *
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                      If the succeeded and the result and continuation have
@@ -414,4 +414,4 @@ AZ_NODISCARD az_result az_ulib_ipc_query_next(uint32_t* continuation_token, az_s
 
 #include "azure/core/_az_cfg_suffix.h"
 
-#endif /* AZ_ULIB_IPC_H */
+#endif /* AZ_ULIB_IPC_API_H */

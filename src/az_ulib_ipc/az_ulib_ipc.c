@@ -475,7 +475,7 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
   return result;
 }
 
-AZ_NODISCARD az_result az_ulib_ipc_call_w_str(
+AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
     az_ulib_ipc_interface_handle interface_handle,
     az_ulib_capability_index command_index,
     az_span model_in_span,
@@ -671,7 +671,7 @@ static const az_ulib_ipc_vtable _vtable = { az_ulib_ipc_publish,
                                             az_ulib_ipc_get_interface,
                                             az_ulib_ipc_release_interface,
                                             az_ulib_ipc_call,
-                                            az_ulib_ipc_call_w_str,
+                                            az_ulib_ipc_call_with_str,
                                             az_ulib_ipc_query,
                                             az_ulib_ipc_query_next };
 

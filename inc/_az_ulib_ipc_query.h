@@ -2,15 +2,14 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#ifndef _az_ULIB_IPC_QUERY_INTERFACE_H
-#define _az_ULIB_IPC_QUERY_INTERFACE_H
+#ifndef _az_ULIB_IPC_QUERY_H
+#define _az_ULIB_IPC_QUERY_H
 
 #include "az_ulib_result.h"
 
 #ifdef __cplusplus
 extern "C"
 {
-#else
 #endif
 
   /*
@@ -27,4 +26,4 @@ extern "C"
 }
 #endif
 
-#endif /* _az_ULIB_IPC_QUERY_INTERFACE_H */
+#endif /* _az_ULIB_IPC_QUERY_H */

@@ -2,8 +2,8 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#ifndef AZ_ULIB_DESCRIPTOR_H
-#define AZ_ULIB_DESCRIPTOR_H
+#ifndef AZ_ULIB_DESCRIPTOR_API_H
+#define AZ_ULIB_DESCRIPTOR_API_H
 
 #include "az_ulib_base.h"
 #include "az_ulib_capability_api.h"
@@ -240,4 +240,4 @@ typedef void* az_ulib_ipc_interface_handle;
 
 #include "azure/core/_az_cfg_suffix.h"
 
-#endif /* AZ_ULIB_DESCRIPTOR_H */
+#endif /* AZ_ULIB_DESCRIPTOR_API_H */

@@ -133,7 +133,7 @@ static az_result call_w_str(uint32_t context)
     az_ulib_capability_index command_index;
     AZ_ULIB_THROW_IF_AZ_ERROR(
         az_ulib_ipc_try_get_capability(_cipher_1, encrypt_command_name, &command_index));
-    AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call_w_str(
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call_with_str(
         _cipher_1, command_index, encrypt_model_in_json, &encrypt_model_out_json));
     CLOSE_STRING_IN_SPAN(encrypt_model_out_json);
     (void)printf(
@@ -172,7 +172,7 @@ static az_result call_w_str(uint32_t context)
     const az_span decrypt_command_name = AZ_SPAN_FROM_STR("decrypt");
     AZ_ULIB_THROW_IF_AZ_ERROR(
         az_ulib_ipc_try_get_capability(_cipher_1, decrypt_command_name, &command_index));
-    AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call_w_str(
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call_with_str(
         _cipher_1, command_index, decrypt_model_in_json, &decrypt_model_out_json));
     CLOSE_STRING_IN_SPAN(decrypt_model_out_json);
     (void)printf(
