@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 static az_ulib_ipc_interface_handle _cipher_1;
-#define BUFFER_SIZE 200
+#define BUFFER_SIZE 200 // Should be big enough to fit JSON input and output.
 
 #define CLOSE_STRING_IN_SPAN(span)                                                           \
   do                                                                                         \

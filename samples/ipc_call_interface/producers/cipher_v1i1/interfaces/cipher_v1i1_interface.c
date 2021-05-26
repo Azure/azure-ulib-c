@@ -23,6 +23,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+AZ_INLINE int32_t model_out_span_min_size(void)
+{
+  return (int32_t)(
+      2 + // {}
+      sizeof(CIPHER_1_ENCRYPT_DEST_NAME) + 5 + // "dest":""
+      64); // az_json_writer requires a leftover of _az_MINIMUM_STRING_CHUNK_SIZE to properly work.
+}
+
 static az_result cipher_1_encrypt_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
 {
   const cipher_1_encrypt_model_in* const in = (const cipher_1_encrypt_model_in* const)model_in;
@@ -57,8 +65,7 @@ static az_result cipher_1_encrypt_span_wrapper(az_span model_in_span, az_span* m
     AZ_ULIB_THROW_IF_AZ_ERROR(AZ_ULIB_TRY_RESULT);
 
     // Create a temporary buffer to store the encrypt_model_out.
-    char dest_buffer[200];
-    az_span dest_span = AZ_SPAN_FROM_BUFFER(dest_buffer);
+    az_span dest_span = az_span_slice_to_end(*model_out_span, model_out_span_min_size() + 1);
     cipher_1_encrypt_model_out encrypt_model_out = { .dest = &dest_span };
 
     // Call.
@@ -109,8 +116,7 @@ static az_result cipher_1_decrypt_span_wrapper(az_span model_in_span, az_span* m
     AZ_ULIB_THROW_IF_AZ_ERROR(AZ_ULIB_TRY_RESULT);
 
     // Create a temporary buffer to store the decrypt_model_out.
-    char dest_buffer[200];
-    az_span dest_span = AZ_SPAN_FROM_BUFFER(dest_buffer);
+    az_span dest_span = az_span_slice_to_end(*model_out_span, model_out_span_min_size() + 1);
     cipher_1_decrypt_model_out decrypt_model_out = { .dest = &dest_span };
 
     // Call.

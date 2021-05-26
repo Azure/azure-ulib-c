@@ -634,7 +634,8 @@ static void az_ulib_ipc_query_query_next_w_str_succeed(void** state)
           &query_handle),
       AZ_OK);
 
-  uint8_t buf[170];
+  uint8_t buf[170]; // This buffer shall fit the JSON with 3 interfaces, so query next will have
+                    // some more interfaces to report.
 
   /// act
   /// assert

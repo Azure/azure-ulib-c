@@ -37,7 +37,7 @@ AZ_INLINE int32_t model_out_span_min_size(void)
       2 + // {}
       sizeof(QUERY_1_NEXT_RESULT_NAME) + 6 + // "result":[],
       sizeof(QUERY_1_NEXT_CONTINUATION_TOKEN_NAME) + 13 + //"continuation_token":4294967295
-      64); // az_json_writer requires a leftover of _az_MINIMUM_STRING_CHUNK_SIZE to properly work
+      64); // az_json_writer requires a leftover of _az_MINIMUM_STRING_CHUNK_SIZE to properly work.
 }
 
 static az_result marshalling_model_out_to_json(

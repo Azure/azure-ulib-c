@@ -162,10 +162,8 @@ static az_result my_command_span_wrapper(az_span model_in_span, az_span* model_o
       else if (az_json_token_is_text_equal(
                    &jr.token, AZ_SPAN_FROM_STR(MY_INTERFACE_MY_COMMAND_DESCRIPTOR_NAME)))
       {
-        AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
-        uint64_t val;
-        AZ_ULIB_THROW_IF_AZ_ERROR(az_json_token_get_uint64(&jr.token, &val));
-        model_in.descriptor = (az_ulib_interface_descriptor*)val;
+        // Does not support local pointer over JSON.
+        AZ_ULIB_THROW(AZ_ERROR_NOT_SUPPORTED);
       }
       else if (az_json_token_is_text_equal(
                    &jr.token, AZ_SPAN_FROM_STR(MY_INTERFACE_MY_COMMAND_WAIT_POLICY_MS_NAME)))
@@ -176,10 +174,8 @@ static az_result my_command_span_wrapper(az_span model_in_span, az_span* model_o
       else if (az_json_token_is_text_equal(
                    &jr.token, AZ_SPAN_FROM_STR(MY_INTERFACE_MY_COMMAND_HANDLE_NAME)))
       {
-        AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
-        uint64_t val;
-        AZ_ULIB_THROW_IF_AZ_ERROR(az_json_token_get_uint64(&jr.token, &val));
-        model_in.handle = (az_ulib_ipc_interface_handle)val;
+        // Does not support local pointer over JSON.
+        AZ_ULIB_THROW(AZ_ERROR_NOT_SUPPORTED);
       }
       else if (az_json_token_is_text_equal(
                    &jr.token, AZ_SPAN_FROM_STR(MY_INTERFACE_MY_COMMAND_COMMAND_INDEX_NAME)))
