@@ -23,7 +23,7 @@
 /**
  * @brief Vtable to IPC APIs.
  *
- * Set of pointers to the IPC APIs used to expose the IPC APIs to Modules that cannot be statically
+ * Set of pointers to the IPC APIs uses to expose the IPC APIs to Modules that cannot be statically
  * linked to the IPC APIs.
  */
 typedef struct

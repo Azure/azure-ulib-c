@@ -99,7 +99,7 @@ AZ_NODISCARD az_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle);
  * @note    Deinit the IPC without follow these steps may result in error, segmentation fault or
  *          memory leak.
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  *
  * @return The #az_result with the result of the de-initialization.
  *  @retval #AZ_OK                              If the IPC de-initialize with success.
@@ -110,7 +110,7 @@ AZ_NODISCARD az_result az_ulib_ipc_deinit(void);
 /**
  * @brief   Return the vtable of the ipc interface.
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  *
  * @return The #az_ulib_ipc_vtable with the pointer to the IPC vtable.
  */
@@ -137,7 +137,7 @@ const az_ulib_ipc_vtable* az_ulib_ipc_get_vtable(void);
  *                                    `NULL`. If it is `NULL`, this API will not return the
  *                                    interface handle.
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  * @pre     \p interface_handle shall not be 'NULL'.
  *
  * @return The #az_result with the result of the interface publish.
@@ -166,7 +166,7 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
  *                                        - #AZ_ULIB_WAIT_FOREVER (0xFFFFFFFF)
  *                                        - timeout value (0x00000001 through 0xFFFFFFFE)
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  * @pre     \p interface_descriptor shall not be 'NULL'.
  *
  * @return The #az_result with the result of the interface unpublish.
@@ -201,7 +201,7 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  * @param[out]  interface_handle  The #az_ulib_ipc_interface_handle* with the memory to store
  *                                the interface handle. It cannot be `NULL`.
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  * @pre     \p name shall not be 'NULL'.
  * @pre     \p interface_handle shall not be 'NULL'.
  *
@@ -232,7 +232,7 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
  * @param[out]  capability_index    The #az_ulib_capability_index* with the memory to store
  *                                  the capability index. It cannot be `NULL`.
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  * @pre     \p interface_handle shall not be 'NULL'.
  * @pre     \p name shall not be 'NULL'.
  * @pre     \p capability_index shall not be 'NULL'.
@@ -265,7 +265,7 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_capability(
  * @param[out]  interface_handle          The #az_ulib_ipc_interface_handle* with the memory to
  *                                        store the interface handle. It cannot be `NULL`.
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  * @pre     \p original_interface_handle shall not be 'NULL'.
  * @pre     \p interface_handle shall not be 'NULL'.
  *
@@ -298,7 +298,7 @@ AZ_NODISCARD az_result az_ulib_ipc_get_interface(
  * @param[in]   interface_handle    The #az_ulib_ipc_interface_handle with the interface
  *                                  handle to release. It cannot be `NULL`.
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  * @pre     \p interface_handle shall not be 'NULL'.
  *
  * @return The #az_result with the result of the release.
@@ -320,7 +320,7 @@ AZ_NODISCARD az_result az_ulib_ipc_release_interface(az_ulib_ipc_interface_handl
  * @param[out]  model_out         The `const void *` that points to the memory where the capability
  *                                should store the output model content.
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  * @pre     \p interface_handle shall not be 'NULL'.
  *
  * @return The #az_result with the result of the call.
@@ -346,7 +346,7 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
  * @param[out]  model_out_span      The pointer to #az_span where the capability should store the
  *                                  output content.
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  * @pre     \p interface_handle shall not be 'NULL'.
  *
  * @return The #az_result with the result of the call.
@@ -379,7 +379,7 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
  *                                  different than 0, means that a call to
  *                                  az_ulib_ipc_query_next() shall return more information.
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  * @pre     \p result shall be a valid az_span with at least 1 position.
  * @pre     \p continuation_token shall not be 'NULL'.
  *
@@ -401,7 +401,7 @@ az_ulib_ipc_query(az_span query, az_span* result, uint32_t* continuation_token);
  *                                  token and where it will return the next continuation token.
  * @param[in]   result              The `az_span` with the buffer to return the query result.
  *
- * @pre     IPC shall already been initialized.
+ * @pre     IPC shall already be initialized.
  * @pre     \p result shall be a valid az_span with at least 1 position.
  * @pre     \p continuation_token shall not be 'NULL'.
  *

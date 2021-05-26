@@ -46,7 +46,7 @@ void my_consumer_create(void)
 
   az_result result;
   uint32_t continuation_token = 0;
-  uint8_t buf[100];
+  uint8_t buf[BUFFER_SIZE];
   az_span interface_list = AZ_SPAN_FROM_BUFFER(buf);
 
   result = az_ulib_ipc_query(AZ_SPAN_EMPTY, &interface_list, &continuation_token);
