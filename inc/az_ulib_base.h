@@ -58,8 +58,9 @@ static inline bool az_ulib_version_match(
     az_ulib_version_match_criteria match_criteria)
 {
   return (
-      (AZ_ULIB_FLAGS_IS_SET(match_criteria, AZ_ULIB_VERSION_EQUALS_TO)
-       && (current_version == required_version))
+      (match_criteria == AZ_ULIB_VERSION_ANY)
+      || (AZ_ULIB_FLAGS_IS_SET(match_criteria, AZ_ULIB_VERSION_EQUALS_TO)
+          && (current_version == required_version))
       || (AZ_ULIB_FLAGS_IS_SET(match_criteria, AZ_ULIB_VERSION_GREATER_THAN)
           && (current_version > required_version))
       || (AZ_ULIB_FLAGS_IS_SET(match_criteria, AZ_ULIB_VERSION_LOWER_THAN)

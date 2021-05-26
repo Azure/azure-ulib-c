@@ -6,6 +6,7 @@
 #define CIPHER_V2I1_H
 
 #include "az_ulib_result.h"
+#include "azure/az_core.h"
 
 #ifdef __cplusplus
 #include <cstdint>
@@ -18,20 +19,9 @@ extern "C"
   void cipher_v2i1_create(void);
   void cipher_v2i1_destroy(void);
 
-  az_result cipher_v2i1_encrypt(
-      uint32_t context,
-      const char* const src,
-      uint32_t src_size,
-      uint32_t dst_buffer_size,
-      char* dst,
-      uint32_t* dst_size);
+  az_result cipher_v2i1_encrypt(uint32_t context, az_span src, az_span* dest);
 
-  az_result cipher_v2i1_decrypt(
-      const char* const src,
-      uint32_t src_size,
-      uint32_t dst_buffer_size,
-      char* dst,
-      uint32_t* dst_size);
+  az_result cipher_v2i1_decrypt(az_span src, az_span* dest);
 
 #ifdef __cplusplus
 }

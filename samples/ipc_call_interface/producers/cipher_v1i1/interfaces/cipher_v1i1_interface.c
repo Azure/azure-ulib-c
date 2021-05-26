@@ -14,7 +14,7 @@
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
-#include "cipher_1_interface.h"
+#include "cipher_1_model.h"
 #include "cipher_v1i1.h"
 
 #include <stddef.h>
@@ -23,58 +23,130 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*
- * Concrete implementations of the cipher commands.
- */
+AZ_INLINE int32_t model_out_span_min_size(void)
+{
+  return (int32_t)(
+      2 + // {}
+      sizeof(CIPHER_1_ENCRYPT_DEST_NAME) + 5 + // "dest":""
+      64); // az_json_writer requires a leftover of _az_MINIMUM_STRING_CHUNK_SIZE to properly work.
+}
+
 static az_result cipher_1_encrypt_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
 {
-  az_result result;
-
-  /*
-   * ==================
-   * The user code starts here.
-   */
   const cipher_1_encrypt_model_in* const in = (const cipher_1_encrypt_model_in* const)model_in;
   cipher_1_encrypt_model_out* out = (cipher_1_encrypt_model_out*)model_out;
+  return cipher_v1i1_encrypt(in->context, in->src, out->dest);
+}
 
-  result = cipher_v1i1_encrypt(
-      in->context, in->src, in->src_size, in->dst_buffer_size, out->dst, out->dst_size);
+static az_result cipher_1_encrypt_span_wrapper(az_span model_in_span, az_span* model_out_span)
+{
+  AZ_ULIB_TRY
+  {
+    // Unmarshalling JSON in model_in_span to encrypt_model_in.
+    az_json_reader jr;
+    cipher_1_encrypt_model_in encrypt_model_in = { 0 };
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_init(&jr, model_in_span, NULL));
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
+    while (jr.token.kind != AZ_JSON_TOKEN_END_OBJECT)
+    {
+      if (az_json_token_is_text_equal(&jr.token, AZ_SPAN_FROM_STR(CIPHER_1_ENCRYPT_CONTEXT_NAME)))
+      {
+        AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
+        AZ_ULIB_THROW_IF_AZ_ERROR(az_json_token_get_uint32(&jr.token, &encrypt_model_in.context));
+      }
+      else if (az_json_token_is_text_equal(&jr.token, AZ_SPAN_FROM_STR(CIPHER_1_ENCRYPT_SRC_NAME)))
+      {
+        AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
+        encrypt_model_in.src
+            = az_span_create(az_span_ptr(jr.token.slice), az_span_size(jr.token.slice));
+      }
+      AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
+    }
+    AZ_ULIB_THROW_IF_AZ_ERROR(AZ_ULIB_TRY_RESULT);
 
-  /*
-   * The user code ends here.
-   * ==================
-   */
+    // Create a temporary buffer to store the encrypt_model_out.
+    az_span dest_span = az_span_slice_to_end(*model_out_span, model_out_span_min_size() + 1);
+    cipher_1_encrypt_model_out encrypt_model_out = { .dest = &dest_span };
 
-  return result;
+    // Call.
+    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_encrypt_concrete(
+        (az_ulib_model_in)&encrypt_model_in, (az_ulib_model_out)&encrypt_model_out));
+
+    // Marshalling encrypt_model_out to JSON in model_out_span.
+    az_json_writer jw;
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_init(&jw, *model_out_span, NULL));
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_begin_object(&jw));
+    AZ_ULIB_THROW_IF_AZ_ERROR(
+        az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(CIPHER_1_ENCRYPT_DEST_NAME)));
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_string(&jw, *encrypt_model_out.dest));
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_end_object(&jw));
+    *model_out_span = az_json_writer_get_bytes_used_in_destination(&jw);
+  }
+  AZ_ULIB_CATCH(...) {}
+
+  return AZ_ULIB_TRY_RESULT;
 }
 
 static az_result cipher_1_decrypt_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
 {
-  az_result result;
-
-  /*
-   * ==================
-   * The user code starts here.
-   */
   const cipher_1_decrypt_model_in* const in = (const cipher_1_decrypt_model_in* const)model_in;
   cipher_1_decrypt_model_out* out = (cipher_1_decrypt_model_out*)model_out;
-
-  result = cipher_v1i1_decrypt(in->src, in->src_size, in->dst_buffer_size, out->dst, out->dst_size);
-
-  /*
-   * The user code ends here.
-   * ==================
-   */
-
-  return result;
+  return cipher_v1i1_decrypt(in->src, out->dest);
 }
 
-static const az_ulib_capability_descriptor CIPHER_1_CAPABILITIES[CIPHER_1_CAPABILITY_SIZE] = {
-  AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
-      CIPHER_1_INTERFACE_ENCRYPT_COMMAND_NAME,
-      cipher_1_encrypt_concrete),
-  AZ_ULIB_DESCRIPTOR_ADD_COMMAND(CIPHER_1_INTERFACE_DECRYPT_COMMAND_NAME, cipher_1_decrypt_concrete)
-};
+static az_result cipher_1_decrypt_span_wrapper(az_span model_in_span, az_span* model_out_span)
+{
+  AZ_ULIB_TRY
+  {
+    // Unmarshalling JSON in model_in_span to decrypt_model_in.
+    az_json_reader jr;
+    cipher_1_decrypt_model_in decrypt_model_in = { 0 };
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_init(&jr, model_in_span, NULL));
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
+    while (jr.token.kind != AZ_JSON_TOKEN_END_OBJECT)
+    {
+      if (az_json_token_is_text_equal(&jr.token, AZ_SPAN_FROM_STR(CIPHER_1_DECRYPT_SRC_NAME)))
+      {
+        AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
+        decrypt_model_in.src
+            = az_span_create(az_span_ptr(jr.token.slice), az_span_size(jr.token.slice));
+      }
+      AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
+    }
+    AZ_ULIB_THROW_IF_AZ_ERROR(AZ_ULIB_TRY_RESULT);
+
+    // Create a temporary buffer to store the decrypt_model_out.
+    az_span dest_span = az_span_slice_to_end(*model_out_span, model_out_span_min_size() + 1);
+    cipher_1_decrypt_model_out decrypt_model_out = { .dest = &dest_span };
+
+    // Call.
+    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_decrypt_concrete(
+        (az_ulib_model_in)&decrypt_model_in, (az_ulib_model_out)&decrypt_model_out));
+
+    // Marshalling decrypt_model_out to JSON in model_out_span.
+    az_json_writer jw;
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_init(&jw, *model_out_span, NULL));
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_begin_object(&jw));
+    AZ_ULIB_THROW_IF_AZ_ERROR(
+        az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(CIPHER_1_DECRYPT_DEST_NAME)));
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_string(&jw, *decrypt_model_out.dest));
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_end_object(&jw));
+    *model_out_span = az_json_writer_get_bytes_used_in_destination(&jw);
+  }
+  AZ_ULIB_CATCH(...) {}
+
+  return AZ_ULIB_TRY_RESULT;
+}
+
+static const az_ulib_capability_descriptor CIPHER_1_CAPABILITIES[CIPHER_1_CAPABILITY_SIZE]
+    = { AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
+            CIPHER_1_ENCRYPT_COMMAND_NAME,
+            cipher_1_encrypt_concrete,
+            cipher_1_encrypt_span_wrapper),
+        AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
+            CIPHER_1_DECRYPT_COMMAND_NAME,
+            cipher_1_decrypt_concrete,
+            cipher_1_decrypt_span_wrapper) };
 
 static const az_ulib_interface_descriptor CIPHER_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
     CIPHER_1_INTERFACE_NAME,

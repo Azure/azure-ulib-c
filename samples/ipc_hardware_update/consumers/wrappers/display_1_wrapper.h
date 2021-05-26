@@ -13,7 +13,7 @@
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
 #include "azure/az_core.h"
-#include "display_1_interface.h"
+#include "display_1_model.h"
 
 #ifdef __cplusplus
 #include <cstdint>
@@ -50,7 +50,7 @@ extern "C"
   static inline az_result display_1_cls(az_ulib_ipc_interface_handle handle)
   {
     // Call
-    return az_ulib_ipc_call(handle, DISPLAY_1_INTERFACE_CLS_COMMAND, NULL, NULL);
+    return az_ulib_ipc_call(handle, DISPLAY_1_CLS_COMMAND, NULL, NULL);
   }
 
   /*
@@ -67,7 +67,7 @@ extern "C"
     display_1_print_model_in in = { .x = x, .y = y, .buffer = buf, .size = size };
 
     // Call
-    return az_ulib_ipc_call(handle, DISPLAY_1_INTERFACE_PRINT_COMMAND, &in, NULL);
+    return az_ulib_ipc_call(handle, DISPLAY_1_PRINT_COMMAND, &in, NULL);
   }
 
   /*
@@ -76,7 +76,7 @@ extern "C"
   static inline az_result display_1_invalidate(az_ulib_ipc_interface_handle handle)
   {
     // Call
-    return az_ulib_ipc_call(handle, DISPLAY_1_INTERFACE_INVALIDATE_COMMAND, NULL, NULL);
+    return az_ulib_ipc_call(handle, DISPLAY_1_INVALIDATE_COMMAND, NULL, NULL);
   }
 
 #ifdef __cplusplus

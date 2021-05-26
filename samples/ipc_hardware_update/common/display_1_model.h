@@ -7,8 +7,8 @@
  * modified.
  ********************************************************************/
 
-#ifndef DISPLAY_1_INTERFACE_H
-#define DISPLAY_1_INTERFACE_H
+#ifndef DISPLAY_1_MODEL_H
+#define DISPLAY_1_MODEL_H
 
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
@@ -31,16 +31,20 @@ extern "C"
 /*
  * Define cls (clear screen) command on display interface.
  */
-#define DISPLAY_1_INTERFACE_CLS_COMMAND (az_ulib_capability_index)0
-#define DISPLAY_1_INTERFACE_CLS_COMMAND_NAME "cls"
+#define DISPLAY_1_CLS_COMMAND (az_ulib_capability_index)0
+#define DISPLAY_1_CLS_COMMAND_NAME "cls"
   typedef void display_1_cls_model_in;
   typedef void display_1_cls_model_out;
 
 /*
  * Define print command on display interface.
  */
-#define DISPLAY_1_INTERFACE_PRINT_COMMAND (az_ulib_capability_index)1
-#define DISPLAY_1_INTERFACE_PRINT_COMMAND_NAME "print"
+#define DISPLAY_1_PRINT_COMMAND (az_ulib_capability_index)1
+#define DISPLAY_1_PRINT_COMMAND_NAME "print"
+#define DISPLAY_1_PRINT_X_NAME "x"
+#define DISPLAY_1_PRINT_Y_NAME "y"
+#define DISPLAY_1_PRINT_BUFFER_NAME "buffer"
+#define DISPLAY_1_PRINT_SIZE_NAME "size"
   typedef struct display_1_print_model_in_tag
   {
     int32_t x;
@@ -53,8 +57,8 @@ extern "C"
 /*
  * Define invalidate (refresh display) command on display interface.
  */
-#define DISPLAY_1_INTERFACE_INVALIDATE_COMMAND (az_ulib_capability_index)2
-#define DISPLAY_1_INTERFACE_INVALIDATE_COMMAND_NAME "invalidate"
+#define DISPLAY_1_INVALIDATE_COMMAND (az_ulib_capability_index)2
+#define DISPLAY_1_INVALIDATE_COMMAND_NAME "invalidate"
   typedef void display_1_invalidate_model_in;
   typedef void display_1_invalidate_model_out;
 
@@ -62,4 +66,4 @@ extern "C"
 }
 #endif
 
-#endif /* DISPLAY_1_INTERFACE_H */
+#endif /* DISPLAY_1_MODEL_H */
