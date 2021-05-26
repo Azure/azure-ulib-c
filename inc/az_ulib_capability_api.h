@@ -111,11 +111,11 @@ typedef az_result (*az_ulib_capability_cancellation_callback)(
  * Both `model_in` and `model_out` shall be defined as part of the interface definition.
  *
  * @param[in]   model_in    The `az_ulib_model_in` that contains the input arguments for the
- *                          command. It may be `NULL`, the IPC will not do any validation on it.
+ *                          command. It may be `NULL`, the IPC will not validate it.
  *                          The command itself shall implement any needed validation.
  * @param[out]  model_out   The `az_ulib_model_out` that contains the memory to store the output
- *                          arguments from the command. It may be `NULL`, the IPC will not do any
- *                          validation on it. The command itself shall implement any needed
+ *                          arguments from the command. It may be `NULL`, the IPC will not
+ *                          validate it. The command itself shall implement any needed
  *                          validation.
  *
  * @return The #az_result with the result of the command call. All possible results shall be
@@ -139,12 +139,12 @@ typedef az_result (
  * both shall be strings with JSON inside.
  *
  * @param[in]   model_in_span   The `az_span` that contains a JSON with the input arguments for
- *                              the command. It may be an empty JSON `{}`, the IPC will not do any
- *                              validation on it. The command itself shall implement the JSON
+ *                              the command. It may be an empty JSON `{}`, the IPC will not
+ *                              validate it. The command itself shall implement the JSON
  *                              parser with any needed validation.
  * @param[out]  model_out_span  The `az_ulib_model_out` that contains the memory to store the
  *                              JSON with the output arguments from the command. It may be `NULL`,
- *                              the IPC will not do any validation on it. The command itself shall
+ *                              the IPC will not validate it. The command itself shall
  *                              implement the JSON writer with any needed validation.
  *
  * @return The #az_result with the result of the command call. All possible results shall be
