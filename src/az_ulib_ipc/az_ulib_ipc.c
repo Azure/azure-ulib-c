@@ -49,9 +49,9 @@ static _az_ulib_ipc_interface* get_interface(
   {
     if ((_az_ipc_cb->_internal.interface_list[i].interface_descriptor != NULL)
         && (az_span_is_content_equal(
-            _az_ipc_cb->_internal.interface_list[i].interface_descriptor->_name, name))
+            _az_ipc_cb->_internal.interface_list[i].interface_descriptor->_internal.name, name))
         && az_ulib_version_match(
-            _az_ipc_cb->_internal.interface_list[i].interface_descriptor->_version,
+            _az_ipc_cb->_internal.interface_list[i].interface_descriptor->_internal.version,
             version,
             match_criteria))
     {
@@ -61,8 +61,8 @@ static _az_ulib_ipc_interface* get_interface(
       }
       else
       {
-        if (result->interface_descriptor->_version
-            > _az_ipc_cb->_internal.interface_list[i].interface_descriptor->_version)
+        if (result->interface_descriptor->_internal.version
+            > _az_ipc_cb->_internal.interface_list[i].interface_descriptor->_internal.version)
         {
           result = &(_az_ipc_cb->_internal.interface_list[i]);
         }
@@ -190,7 +190,9 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
   az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
   {
     if (get_interface(
-            interface_descriptor->_name, interface_descriptor->_version, AZ_ULIB_VERSION_EQUALS_TO)
+            interface_descriptor->_internal.name,
+            interface_descriptor->_internal.version,
+            AZ_ULIB_VERSION_EQUALS_TO)
         != NULL)
     {
       // IPC shall not accept interfaces with same name and version because it cannot decided each
@@ -358,11 +360,14 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_capability(
     result = AZ_ERROR_ITEM_NOT_FOUND;
     if (ipc_interface->interface_descriptor != NULL)
     {
-      for (az_ulib_capability_index index = 0; index < ipc_interface->interface_descriptor->_size;
+      for (az_ulib_capability_index index = 0;
+           index < ipc_interface->interface_descriptor->_internal.size;
            index++)
       {
         if (az_span_is_content_equal(
-                name, ipc_interface->interface_descriptor->_capability_list[index]._name))
+                name,
+                ipc_interface->interface_descriptor->_internal.capability_list[index]
+                    ._internal.name))
         {
           *capability_index = index;
           result = AZ_OK;
@@ -455,8 +460,8 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
     else
     {
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
-      result = ipc_interface->interface_descriptor->_capability_list[command_index]
-                   ._capability_ptr_1._command(model_in, model_out);
+      result = ipc_interface->interface_descriptor->_internal.capability_list[command_index]
+                   ._internal.capability_ptr_1.command(model_in, model_out);
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
     }
     long new_running_count = AZ_ULIB_PORT_ATOMIC_DEC_W(&(ipc_interface->running_count));
@@ -502,12 +507,12 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
     {
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
-      if (ipc_interface->interface_descriptor->_capability_list[command_index]
-              ._span_wrapper_ptr_1._command
+      if (ipc_interface->interface_descriptor->_internal.capability_list[command_index]
+              ._internal.span_wrapper_ptr_1.command
           != NULL)
       {
-        result = ipc_interface->interface_descriptor->_capability_list[command_index]
-                     ._span_wrapper_ptr_1._command(model_in_span, model_out_span);
+        result = ipc_interface->interface_descriptor->_internal.capability_list[command_index]
+                     ._internal.span_wrapper_ptr_1.command(model_in_span, model_out_span);
       }
       else
       {
@@ -546,14 +551,15 @@ static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* ne
   {
     if (_az_ipc_cb->_internal.interface_list[interface_index].interface_descriptor != NULL)
     {
-      int32_t next_size = az_span_size(
-          _az_ipc_cb->_internal.interface_list[interface_index].interface_descriptor->_name);
+      int32_t next_size = az_span_size(_az_ipc_cb->_internal.interface_list[interface_index]
+                                           .interface_descriptor->_internal.name);
       char version_str[12];
       az_span version_span = AZ_SPAN_FROM_BUFFER(version_str);
       az_span reminder;
       if ((res = az_span_u32toa(
                version_span,
-               _az_ipc_cb->_internal.interface_list[interface_index].interface_descriptor->_version,
+               _az_ipc_cb->_internal.interface_list[interface_index]
+                   .interface_descriptor->_internal.version,
                &reminder))
           == AZ_OK)
       {
@@ -582,8 +588,8 @@ static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* ne
         result_str[pos++] = '"';
         memcpy(
             &(result_str[pos]),
-            az_span_ptr(
-                _az_ipc_cb->_internal.interface_list[interface_index].interface_descriptor->_name),
+            az_span_ptr(_az_ipc_cb->_internal.interface_list[interface_index]
+                            .interface_descriptor->_internal.name),
             (size_t)next_size);
         pos += next_size;
         result_str[pos++] = '.';

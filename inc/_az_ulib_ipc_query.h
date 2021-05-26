@@ -7,23 +7,18 @@
 
 #include "az_ulib_result.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+#include "azure/core/_az_cfg_prefix.h"
 
-  /*
-   * Publish IPC query interface.
-   */
-  az_result _az_ulib_ipc_query_interface_publish(void);
+/*
+ * Publish IPC query interface.
+ */
+az_result _az_ulib_ipc_query_interface_publish(void);
 
-  /*
-   * Unpublish IPC query interface.
-   */
-  az_result _az_ulib_ipc_query_interface_unpublish(void);
+/*
+ * Unpublish IPC query interface.
+ */
+az_result _az_ulib_ipc_query_interface_unpublish(void);
 
-#ifdef __cplusplus
-}
-#endif
+#include "azure/core/_az_cfg_suffix.h"
 
 #endif /* _az_ULIB_IPC_QUERY_H */

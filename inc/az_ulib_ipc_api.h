@@ -384,10 +384,10 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
  * @pre     \p continuation_token shall not be 'NULL'.
  *
  * @return The #az_result with the result of the call.
- *  @retval #AZ_OK                      If the succeeded and the result and continuation have
- *                                      valid information.
+ *  @retval #AZ_OK                      If the query call succeeded and the result and continuation
+ *                                      have valid information.
  *  @retval #AZ_ULIB_EOF                If there is no more information to return in this query.
- *  @retval #AZ_ERROR_ITEM_NOT_FOUND    If the target command does not exist.
+ *  @retval #AZ_ERROR_NOT_SUPPORTED     If the query is not supported.
  */
 AZ_NODISCARD az_result
 az_ulib_ipc_query(az_span query, az_span* result, uint32_t* continuation_token);
@@ -406,9 +406,10 @@ az_ulib_ipc_query(az_span query, az_span* result, uint32_t* continuation_token);
  * @pre     \p continuation_token shall not be 'NULL'.
  *
  * @return The #az_result with the result of the call.
- *  @retval #AZ_OK                      If the succeeded and the result and continuation have
- *                                      valid information.
+ *  @retval #AZ_OK                      If the query next call succeeded and the result and
+ *                                      continuation have valid information.
  *  @retval #AZ_ULIB_EOF                If there is no more information to return in this query.
+ *  @retval #AZ_ERROR_NOT_SUPPORTED     If the continuation token is not supported.
  */
 AZ_NODISCARD az_result az_ulib_ipc_query_next(uint32_t* continuation_token, az_span* result);
 

@@ -16,11 +16,11 @@
 
 #ifdef __cplusplus
 #include <cstdint>
-extern "C"
-{
 #else
 #include <stdint.h>
 #endif
+
+#include "azure/core/_az_cfg_prefix.h"
 
 /*
  * interface definition
@@ -37,15 +37,15 @@ extern "C"
 #define QUERY_1_QUERY_QUERY_NAME "query"
 #define QUERY_1_QUERY_RESULT_NAME "result"
 #define QUERY_1_QUERY_CONTINUATION_TOKEN_NAME "continuation_token"
-  typedef struct
-  {
-    az_span query;
-  } query_1_query_model_in;
-  typedef struct
-  {
-    az_span* result;
-    uint32_t continuation_token;
-  } query_1_query_model_out;
+typedef struct
+{
+  az_span query;
+} query_1_query_model_in;
+typedef struct
+{
+  az_span* result;
+  uint32_t continuation_token;
+} query_1_query_model_out;
 
 /*
  * Define next command on query interface.
@@ -54,14 +54,12 @@ extern "C"
 #define QUERY_1_NEXT_COMMAND_NAME "next"
 #define QUERY_1_NEXT_CONTINUATION_TOKEN_NAME "continuation_token"
 #define QUERY_1_NEXT_RESULT_NAME "result"
-  typedef struct
-  {
-    uint32_t continuation_token;
-  } query_1_next_model_in;
-  typedef query_1_query_model_out query_1_next_model_out;
+typedef struct
+{
+  uint32_t continuation_token;
+} query_1_next_model_in;
+typedef query_1_query_model_out query_1_next_model_out;
 
-#ifdef __cplusplus
-}
-#endif
+#include "azure/core/_az_cfg_suffix.h"
 
 #endif /* AZ_ULIB_QUERY_1_MODEL_H */
