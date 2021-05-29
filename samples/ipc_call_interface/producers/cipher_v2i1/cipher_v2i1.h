@@ -19,7 +19,13 @@ extern "C"
   void cipher_v2i1_create(void);
   void cipher_v2i1_destroy(void);
 
-  az_result cipher_v2i1_encrypt(uint32_t context, az_span src, az_span* dest);
+  int8_t cipher_v2i1_alpha_get(void);
+  void cipher_v2i1_alpha_set(const int8_t val);
+
+  uint32_t cipher_v2i1_delta_get(void);
+  void cipher_v2i1_delta_set(const uint32_t val);
+
+  az_result cipher_v2i1_encrypt(uint32_t algorithm, az_span src, az_span* dest);
 
   az_result cipher_v2i1_decrypt(az_span src, az_span* dest);
 

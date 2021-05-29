@@ -164,16 +164,16 @@ typedef void* az_ulib_ipc_interface_handle;
  *                              with the wrapper for the set command using strings in `az_span`.
  * @return The #az_ulib_capability_descriptor with the property.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(                                           \
-    property_name, get_concrete, set_concrete, get_span_wrapper, set_span_wrapper) \
-  {                                                                                \
-    ._internal                                                                     \
-        = {.name = AZ_SPAN_LITERAL_FROM_STR(property_name),                        \
-           .capability_ptr_1 = { .get = get_concrete },                            \
-           .capability_ptr_2 = { .set = set_concrete },                            \
-           .span_wrapper_ptr_1 = { .get = get_span_wrapper },                      \
-           .span_wrapper_ptr_2 = { .set = set_span_wrapper },                      \
-           .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_PROPERTY) }                  \
+#define AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(                                                          \
+    property_name, get_concrete, set_concrete, get_span_wrapper, set_span_wrapper)                \
+  {                                                                                               \
+    ._internal                                                                                    \
+        = {.name = AZ_SPAN_LITERAL_FROM_STR(property_name),                                       \
+           .capability_ptr_1.get = (const az_ulib_capability_get)get_concrete,                    \
+           .capability_ptr_2.set = (const az_ulib_capability_set)set_concrete,                    \
+           .span_wrapper_ptr_1.get = (const az_ulib_capability_get_span_wrapper)get_span_wrapper, \
+           .span_wrapper_ptr_2.set = (const az_ulib_capability_set_span_wrapper)set_span_wrapper, \
+           .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_PROPERTY) }                                 \
   }
 
 /**
@@ -198,8 +198,9 @@ typedef void* az_ulib_ipc_interface_handle;
   {                                                                                          \
     ._internal                                                                               \
         = {.name = AZ_SPAN_LITERAL_FROM_STR(command_name),                                   \
-           .capability_ptr_1 = { .command = command_concrete },                              \
-           .span_wrapper_ptr_1 = { .command = command_span_wrapper },                        \
+           .capability_ptr_1.command = (const az_ulib_capability_command)command_concrete,   \
+           .span_wrapper_ptr_1.command                                                       \
+           = (const az_ulib_capability_command_span_wrapper)command_span_wrapper,            \
            .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND) }                             \
   }
 
@@ -229,15 +230,17 @@ typedef void* az_ulib_ipc_interface_handle;
  *                                  the future.
  * @return The #az_ulib_capability_descriptor with the command async.
  */
-#define AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC(                               \
-    command_name, command_concrete, command_span_wrapper, cancel_concrete)  \
-  {                                                                         \
-    ._internal                                                              \
-        = {.name = AZ_SPAN_LITERAL_FROM_STR(command_name),                  \
-           .capability_ptr_1 = { .command_async = command_concrete },       \
-           .capability_ptr_2 = { .cancel = cancel_concrete },               \
-           .span_wrapper_ptr_1 = { .command_async = command_span_wrapper }, \
-           .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC) }      \
+#define AZ_ULIB_DESCRIPTOR_ADD_COMMAND_ASYNC(                                                     \
+    command_name, command_concrete, command_span_wrapper, cancel_concrete)                        \
+  {                                                                                               \
+    ._internal = {                                                                                \
+      .name = AZ_SPAN_LITERAL_FROM_STR(command_name),                                             \
+      .capability_ptr_1.command_async = (const az_ulib_capability_command_async)command_concrete, \
+      .capability_ptr_2.cancel = (const az_ulib_capability_cancellation_callback)cancel_concrete, \
+      .span_wrapper_ptr_1.command_async                                                           \
+      = (const az_ulib_capability_command_async_span_wrapper)command_span_wrapper,                \
+      .flags = (uint8_t)(AZ_ULIB_CAPABILITY_TYPE_COMMAND_ASYNC)                                   \
+    }                                                                                             \
   }
 
 /**

@@ -18,6 +18,14 @@ static const char key[NUMBER_OF_KEYS][KEY_SIZE] = { "12345678912345678901" };
 #define joinChars(a, b, c, d) \
   (uint32_t)((uint32_t)a + ((uint32_t)b << 8) + ((uint32_t)c << 16) + ((uint32_t)d << 24))
 
+static int8_t alpha = 0;
+int8_t cipher_v1i1_alpha_get(void) { return alpha; }
+void cipher_v1i1_alpha_set(const int8_t val) { alpha = val; }
+
+static uint32_t delta = 0;
+uint32_t cipher_v1i1_delta_get(void) { return delta; }
+void cipher_v1i1_delta_set(const uint32_t val) { delta = val; }
+
 void cipher_v1i1_create(void)
 {
   az_result result;
@@ -174,14 +182,14 @@ static size_t numberOfBase64Characters(const char* encodedString)
  * This is a simple encrypt algorithm that use an Exclusive or of the data with
  * a key and encode the result in base-64 so we can send over IoTHub.
  *
- * The first char in the encrypted data represent the context, which is, at the end
+ * The first char in the encrypted data represent the algorithm, which is, at the end
  * the key used in the encryption process.
  */
-az_result cipher_v1i1_encrypt(uint32_t context, az_span src, az_span* dest)
+az_result cipher_v1i1_encrypt(uint32_t algorithm, az_span src, az_span* dest)
 {
   AZ_ULIB_TRY
   {
-    AZ_ULIB_THROW_IF_ERROR((context < NUMBER_OF_KEYS), AZ_ERROR_NOT_SUPPORTED);
+    AZ_ULIB_THROW_IF_ERROR((algorithm < NUMBER_OF_KEYS), AZ_ERROR_NOT_SUPPORTED);
     AZ_ULIB_THROW_IF_ERROR((encoded_len(src) <= az_span_size(*dest)), AZ_ERROR_NOT_ENOUGH_SPACE);
 
     uint32_t key_pos = 0;
@@ -190,18 +198,18 @@ az_result cipher_v1i1_encrypt(uint32_t context, az_span src, az_span* dest)
     int32_t src_size = az_span_size(src);
     char* src_str = (char*)az_span_ptr(src);
 
-    dest_str[0] = (char)(context + '0');
+    dest_str[0] = (char)(algorithm + '0');
 
     int32_t destinationPosition = 1;
     int32_t currentPosition = 0;
     char src_char[3];
     while (src_size - currentPosition >= 3)
     {
-      src_char[0] = src_str[currentPosition] ^ key[context][key_pos];
+      src_char[0] = src_str[currentPosition] ^ key[algorithm][key_pos];
       key_pos = next_key_pos(key_pos);
-      src_char[1] = src_str[currentPosition + 1] ^ key[context][key_pos];
+      src_char[1] = src_str[currentPosition + 1] ^ key[algorithm][key_pos];
       key_pos = next_key_pos(key_pos);
-      src_char[2] = src_str[currentPosition + 2] ^ key[context][key_pos];
+      src_char[2] = src_str[currentPosition + 2] ^ key[algorithm][key_pos];
       key_pos = next_key_pos(key_pos);
 
       char c1 = base64char((unsigned char)(src_char[0] >> 2));
@@ -216,9 +224,9 @@ az_result cipher_v1i1_encrypt(uint32_t context, az_span src, az_span* dest)
     }
     if (src_size - currentPosition == 2)
     {
-      src_char[0] = src_str[currentPosition] ^ key[context][key_pos];
+      src_char[0] = src_str[currentPosition] ^ key[algorithm][key_pos];
       key_pos = next_key_pos(key_pos);
-      src_char[1] = src_str[currentPosition + 1] ^ key[context][key_pos];
+      src_char[1] = src_str[currentPosition + 1] ^ key[algorithm][key_pos];
       char c1 = base64char((unsigned char)(src_char[0] >> 2));
       char c2 = base64char((unsigned char)(((src_char[0] & 0x03) << 4) | (src_char[1] >> 4)));
       char c3 = base64b16(src_char[1] & 0x0F);
@@ -229,7 +237,7 @@ az_result cipher_v1i1_encrypt(uint32_t context, az_span src, az_span* dest)
     }
     else if (src_size - currentPosition == 1)
     {
-      src_char[0] = src_str[currentPosition] ^ key[context][key_pos];
+      src_char[0] = src_str[currentPosition] ^ key[algorithm][key_pos];
       char c1 = base64char((unsigned char)(src_char[0] >> 2));
       char c2 = base64b8(src_char[0] & 0x03);
       dest_str[destinationPosition++] = c1;
@@ -259,8 +267,8 @@ az_result cipher_v1i1_decrypt(az_span src, az_span* dest)
 
     AZ_ULIB_THROW_IF_ERROR((src_size > 1), AZ_ERROR_ARG);
 
-    uint32_t context = (uint32_t)(src_str[0] - '0');
-    AZ_ULIB_THROW_IF_ERROR((context < NUMBER_OF_KEYS), AZ_ERROR_NOT_SUPPORTED);
+    uint32_t algorithm = (uint32_t)(src_str[0] - '0');
+    AZ_ULIB_THROW_IF_ERROR((algorithm < NUMBER_OF_KEYS), AZ_ERROR_NOT_SUPPORTED);
 
     AZ_ULIB_THROW_IF_ERROR(
         (decoded_len(&src_str[1], src_size) <= dest_size), AZ_ERROR_NOT_ENOUGH_SPACE);
@@ -314,7 +322,7 @@ az_result cipher_v1i1_decrypt(az_span src, az_span* dest)
     uint32_t key_pos = 0;
     for (int32_t i = 0; i < decodedIndex; i++)
     {
-      dest_str[i] ^= key[context][key_pos];
+      dest_str[i] ^= key[algorithm][key_pos];
       key_pos = next_key_pos(key_pos);
     }
 

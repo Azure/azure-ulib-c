@@ -31,11 +31,11 @@ AZ_INLINE int32_t model_out_span_min_size(void)
       64); // az_json_writer requires a leftover of _az_MINIMUM_STRING_CHUNK_SIZE to properly work.
 }
 
-static az_result cipher_1_encrypt_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
+static az_result cipher_1_encrypt_concrete(
+    const cipher_1_encrypt_model_in* const in,
+    cipher_1_encrypt_model_out* out)
 {
-  const cipher_1_encrypt_model_in* const in = (const cipher_1_encrypt_model_in* const)model_in;
-  cipher_1_encrypt_model_out* out = (cipher_1_encrypt_model_out*)model_out;
-  return cipher_v1i1_encrypt(in->context, in->src, out->dest);
+  return cipher_v1i1_encrypt(in->algorithm, in->src, out->dest);
 }
 
 static az_result cipher_1_encrypt_span_wrapper(az_span model_in_span, az_span* model_out_span)
@@ -49,10 +49,10 @@ static az_result cipher_1_encrypt_span_wrapper(az_span model_in_span, az_span* m
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
     while (jr.token.kind != AZ_JSON_TOKEN_END_OBJECT)
     {
-      if (az_json_token_is_text_equal(&jr.token, AZ_SPAN_FROM_STR(CIPHER_1_ENCRYPT_CONTEXT_NAME)))
+      if (az_json_token_is_text_equal(&jr.token, AZ_SPAN_FROM_STR(CIPHER_1_ENCRYPT_ALGORITHM_NAME)))
       {
         AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
-        AZ_ULIB_THROW_IF_AZ_ERROR(az_json_token_get_uint32(&jr.token, &encrypt_model_in.context));
+        AZ_ULIB_THROW_IF_AZ_ERROR(az_json_token_get_uint32(&jr.token, &encrypt_model_in.algorithm));
       }
       else if (az_json_token_is_text_equal(&jr.token, AZ_SPAN_FROM_STR(CIPHER_1_ENCRYPT_SRC_NAME)))
       {
@@ -69,8 +69,7 @@ static az_result cipher_1_encrypt_span_wrapper(az_span model_in_span, az_span* m
     cipher_1_encrypt_model_out encrypt_model_out = { .dest = &dest_span };
 
     // Call.
-    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_encrypt_concrete(
-        (az_ulib_model_in)&encrypt_model_in, (az_ulib_model_out)&encrypt_model_out));
+    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_encrypt_concrete(&encrypt_model_in, &encrypt_model_out));
 
     // Marshalling encrypt_model_out to JSON in model_out_span.
     az_json_writer jw;
@@ -87,10 +86,10 @@ static az_result cipher_1_encrypt_span_wrapper(az_span model_in_span, az_span* m
   return AZ_ULIB_TRY_RESULT;
 }
 
-static az_result cipher_1_decrypt_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
+static az_result cipher_1_decrypt_concrete(
+    const cipher_1_decrypt_model_in* const in,
+    cipher_1_decrypt_model_out* out)
 {
-  const cipher_1_decrypt_model_in* const in = (const cipher_1_decrypt_model_in* const)model_in;
-  cipher_1_decrypt_model_out* out = (cipher_1_decrypt_model_out*)model_out;
   return cipher_v1i1_decrypt(in->src, out->dest);
 }
 
@@ -120,8 +119,7 @@ static az_result cipher_1_decrypt_span_wrapper(az_span model_in_span, az_span* m
     cipher_1_decrypt_model_out decrypt_model_out = { .dest = &dest_span };
 
     // Call.
-    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_decrypt_concrete(
-        (az_ulib_model_in)&decrypt_model_in, (az_ulib_model_out)&decrypt_model_out));
+    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_decrypt_concrete(&decrypt_model_in, &decrypt_model_out));
 
     // Marshalling decrypt_model_out to JSON in model_out_span.
     az_json_writer jw;
@@ -138,6 +136,28 @@ static az_result cipher_1_decrypt_span_wrapper(az_span model_in_span, az_span* m
   return AZ_ULIB_TRY_RESULT;
 }
 
+static az_result cipher_1_alpha_get_concrete(cipher_1_alpha_model* out)
+{
+  *out = cipher_v1i1_alpha_get();
+  return AZ_OK;
+}
+static az_result cipher_1_alpha_set_concrete(const cipher_1_alpha_model* const in)
+{
+  cipher_v1i1_alpha_set(*in);
+  return AZ_OK;
+}
+
+static az_result cipher_1_delta_get_concrete(cipher_1_delta_model* out)
+{
+  *out = cipher_v1i1_delta_get();
+  return AZ_OK;
+}
+static az_result cipher_1_delta_set_concrete(const cipher_1_delta_model* const in)
+{
+  cipher_v1i1_delta_set(*in);
+  return AZ_OK;
+}
+
 static const az_ulib_capability_descriptor CIPHER_1_CAPABILITIES[CIPHER_1_CAPABILITY_SIZE]
     = { AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
             CIPHER_1_ENCRYPT_COMMAND_NAME,
@@ -146,7 +166,19 @@ static const az_ulib_capability_descriptor CIPHER_1_CAPABILITIES[CIPHER_1_CAPABI
         AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
             CIPHER_1_DECRYPT_COMMAND_NAME,
             cipher_1_decrypt_concrete,
-            cipher_1_decrypt_span_wrapper) };
+            cipher_1_decrypt_span_wrapper),
+        AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(
+            CIPHER_1_ALPHA_PROPERTY_NAME,
+            cipher_1_alpha_get_concrete,
+            cipher_1_alpha_set_concrete,
+            NULL,
+            NULL),
+        AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(
+            CIPHER_1_DELTA_PROPERTY_NAME,
+            cipher_1_delta_get_concrete,
+            cipher_1_delta_set_concrete,
+            NULL,
+            NULL) };
 
 static const az_ulib_interface_descriptor CIPHER_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
     CIPHER_1_INTERFACE_NAME,

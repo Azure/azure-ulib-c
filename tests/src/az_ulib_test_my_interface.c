@@ -7,12 +7,9 @@
 
 static my_property_model my_property = 0;
 
-static az_result get_my_property(az_ulib_model_out model_out)
+static az_result get_my_property(my_property_model* val)
 {
-  my_property_model* new_val = (my_property_model*)model_out;
-
-  *new_val = my_property;
-
+  *val = my_property;
   return AZ_OK;
 }
 
@@ -22,7 +19,7 @@ static az_result get_my_property_span_wrapper(az_span* model_out_span)
   {
     // Call get.
     my_property_model val;
-    AZ_ULIB_THROW_IF_AZ_ERROR(get_my_property((az_ulib_model_out)&val));
+    AZ_ULIB_THROW_IF_AZ_ERROR(get_my_property(&val));
 
     // Marshalling val to JSON in model_out_span.
     az_json_writer jw;
@@ -39,12 +36,9 @@ static az_result get_my_property_span_wrapper(az_span* model_out_span)
   return AZ_ULIB_TRY_RESULT;
 }
 
-static az_result set_my_property(az_ulib_model_in model_in)
+static az_result set_my_property(const my_property_model* const new_val)
 {
-  const my_property_model* const new_val = (const my_property_model* const)model_in;
-
   my_property = *new_val;
-
   return AZ_OK;
 }
 
@@ -71,7 +65,7 @@ static az_result set_my_property_span_wrapper(az_span model_in_span)
     AZ_ULIB_THROW_IF_AZ_ERROR(AZ_ULIB_TRY_RESULT);
 
     // Call get.
-    AZ_ULIB_THROW_IF_AZ_ERROR(set_my_property((az_ulib_model_in)&val));
+    AZ_ULIB_THROW_IF_AZ_ERROR(set_my_property(&val));
   }
   AZ_ULIB_CATCH(...) {}
 
@@ -82,10 +76,8 @@ volatile long g_is_running;
 volatile long g_lock_thread;
 volatile uint32_t g_sum_sleep;
 
-static az_result my_command(az_ulib_model_in model_in, az_ulib_model_out model_out)
+static az_result my_command(const my_command_model_in* const in, my_command_model_out* out)
 {
-  const my_command_model_in* const in = (const my_command_model_in* const)model_in;
-  my_command_model_out* result = (my_command_model_out*)model_out;
   my_command_model_in in_2;
   uint64_t sum = 0;
 
@@ -93,7 +85,7 @@ static az_result my_command(az_ulib_model_in model_in, az_ulib_model_out model_o
   switch (in->capability)
   {
     case MY_COMMAND_CAPABILITY_JUST_RETURN:
-      *result = in->return_result;
+      *out = in->return_result;
       break;
     case MY_COMMAND_CAPABILITY_SUM:
       while (g_lock_thread != 0)
@@ -108,24 +100,24 @@ static az_result my_command(az_ulib_model_in model_in, az_ulib_model_out model_o
         }
         sum += i;
       }
-      *result = in->return_result;
+      *out = in->return_result;
       break;
     case MY_COMMAND_CAPABILITY_UNPUBLISH:
-      *result = az_ulib_ipc_unpublish(in->descriptor, in->wait_policy_ms);
+      *out = az_ulib_ipc_unpublish(in->descriptor, in->wait_policy_ms);
       break;
     case MY_COMMAND_CAPABILITY_RELEASE_INTERFACE:
-      *result = az_ulib_ipc_release_interface(in->handle);
+      *out = az_ulib_ipc_release_interface(in->handle);
       break;
     case MY_COMMAND_CAPABILITY_DEINIT:
-      *result = az_ulib_ipc_deinit();
+      *out = az_ulib_ipc_deinit();
       break;
     case MY_COMMAND_CAPABILITY_CALL_AGAIN:
       in_2.capability = 0;
       in_2.return_result = AZ_OK;
-      *result = az_ulib_ipc_call(in->handle, in->command_index, &in_2, model_out);
+      *out = az_ulib_ipc_call(in->handle, in->command_index, &in_2, out);
       break;
     default:
-      *result = AZ_ERROR_ITEM_NOT_FOUND;
+      *out = AZ_ERROR_ITEM_NOT_FOUND;
       break;
   }
   (void)AZ_ULIB_PORT_ATOMIC_DEC_W(&g_is_running);
@@ -199,8 +191,7 @@ static az_result my_command_span_wrapper(az_span model_in_span, az_span* model_o
 
     // Call get.
     my_command_model_out model_out;
-    AZ_ULIB_THROW_IF_AZ_ERROR(
-        my_command((az_ulib_model_in)&model_in, (az_ulib_model_out)&model_out));
+    AZ_ULIB_THROW_IF_AZ_ERROR(my_command(&model_in, &model_out));
 
     // Marshalling encrypt_model_out to JSON in model_out_span.
     az_json_writer jw;
@@ -218,13 +209,13 @@ static az_result my_command_span_wrapper(az_span model_in_span, az_span* model_o
 }
 
 static az_result my_command_async(
-    az_ulib_model_in model_in,
-    az_ulib_model_out model_out,
+    const my_command_async_model_in* const in,
+    my_command_async_model_out* out,
     const az_ulib_capability_token capability_token,
     const az_ulib_capability_cancellation_callback cancel)
 {
-  (void)model_in;
-  (void)model_out;
+  (void)in;
+  (void)out;
   (void)capability_token;
   (void)cancel;
 

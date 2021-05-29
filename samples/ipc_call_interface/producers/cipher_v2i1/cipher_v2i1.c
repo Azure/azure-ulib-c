@@ -12,12 +12,27 @@
 
 #define NUMBER_OF_KEYS 2
 #define KEY_SIZE 21
-static const char key[NUMBER_OF_KEYS][KEY_SIZE]
+static const uint8_t key[NUMBER_OF_KEYS][KEY_SIZE]
     = { "12345678912345678901", "h948kfd--fsd{jfh}l2D" };
 
 #define splitInt(intVal, bytePos) (char)((intVal >> (bytePos << 3)) & 0xFF)
 #define joinChars(a, b, c, d) \
   (uint32_t)((uint32_t)a + ((uint32_t)b << 8) + ((uint32_t)c << 16) + ((uint32_t)d << 24))
+
+static int8_t alpha = -3;
+int8_t cipher_v2i1_alpha_get(void) { return alpha; }
+void cipher_v2i1_alpha_set(const int8_t val) { alpha = val; }
+
+static uint32_t delta = 8;
+uint32_t cipher_v2i1_delta_get(void) { return delta; }
+void cipher_v2i1_delta_set(const uint32_t val)
+{
+  delta = val;
+  while (delta >= KEY_SIZE)
+  {
+    delta -= KEY_SIZE;
+  }
+}
 
 void cipher_v2i1_create(void)
 {
@@ -86,7 +101,7 @@ static int32_t decoded_len(const char* encodedString, int32_t size)
   return result;
 }
 
-static char base64char(unsigned char val)
+static char base64char(uint8_t val)
 {
   char result;
 
@@ -114,7 +129,7 @@ static char base64char(unsigned char val)
   return result;
 }
 
-static char base64b16(unsigned char val)
+static char base64b16(uint8_t val)
 {
   const uint32_t base64b16values[4] = { joinChars('A', 'E', 'I', 'M'),
                                         joinChars('Q', 'U', 'Y', 'c'),
@@ -123,26 +138,26 @@ static char base64b16(unsigned char val)
   return splitInt(base64b16values[val >> 2], (val & 0x03));
 }
 
-static char base64b8(unsigned char val)
+static char base64b8(uint8_t val)
 {
   const uint32_t base64b8values = joinChars('A', 'Q', 'g', 'w');
   return splitInt(base64b8values, val);
 }
 
-static int base64toValue(char base64character, unsigned char* value)
+static int base64toValue(char base64character, uint8_t* value)
 {
   int result = 0;
   if (('A' <= base64character) && (base64character <= 'Z'))
   {
-    *value = (unsigned char)(base64character - 'A');
+    *value = (uint8_t)(base64character - 'A');
   }
   else if (('a' <= base64character) && (base64character <= 'z'))
   {
-    *value = (unsigned char)(('Z' - 'A') + 1 + (base64character - 'a'));
+    *value = (uint8_t)(('Z' - 'A') + 1 + (base64character - 'a'));
   }
   else if (('0' <= base64character) && (base64character <= '9'))
   {
-    *value = (unsigned char)(('Z' - 'A') + 1 + ('z' - 'a') + 1 + (base64character - '0'));
+    *value = (uint8_t)(('Z' - 'A') + 1 + ('z' - 'a') + 1 + (base64character - '0'));
   }
   else if ('+' == base64character)
   {
@@ -163,7 +178,7 @@ static int base64toValue(char base64character, unsigned char* value)
 static size_t numberOfBase64Characters(const char* encodedString)
 {
   size_t length = 0;
-  unsigned char junkChar;
+  uint8_t junkChar;
   while (base64toValue(encodedString[length], &junkChar) != -1)
   {
     length++;
@@ -175,66 +190,67 @@ static size_t numberOfBase64Characters(const char* encodedString)
  * This is a simple encrypt algorithm that use an Exclusive or of the data with
  * a key and encode the result in base-64 so we can send over IoTHub.
  *
- * The first char in the encrypted data represent the context, which is, at the end
+ * The first char in the encrypted data represent the algorithm, which is, at the end
  * the key used in the encryption process.
  */
-az_result cipher_v2i1_encrypt(uint32_t context, az_span src, az_span* dest)
+az_result cipher_v2i1_encrypt(uint32_t algorithm, az_span src, az_span* dest)
 {
   AZ_ULIB_TRY
   {
-    AZ_ULIB_THROW_IF_ERROR((context < NUMBER_OF_KEYS), AZ_ERROR_NOT_SUPPORTED);
+    AZ_ULIB_THROW_IF_ERROR((algorithm < NUMBER_OF_KEYS), AZ_ERROR_NOT_SUPPORTED);
     AZ_ULIB_THROW_IF_ERROR((encoded_len(src) <= az_span_size(*dest)), AZ_ERROR_NOT_ENOUGH_SPACE);
 
+    int8_t a = 0;
     uint32_t key_pos = 0;
+    if (algorithm != 0)
+    {
+      a = alpha;
+      key_pos = delta;
+    }
+
     char* dest_str = (char*)az_span_ptr(*dest);
 
     int32_t src_size = az_span_size(src);
-    char* src_str = (char*)az_span_ptr(src);
+    uint8_t* src_str = az_span_ptr(src);
 
-    dest_str[0] = (char)(context + '0');
+    dest_str[0] = (char)(algorithm + '0');
 
     int32_t destinationPosition = 1;
     int32_t currentPosition = 0;
-    char src_char[3];
+    uint8_t src_char[3];
     while (src_size - currentPosition >= 3)
     {
-      src_char[0] = src_str[currentPosition] ^ key[context][key_pos];
+      src_char[0] = src_str[currentPosition] ^ (uint8_t)(key[algorithm][key_pos] + a);
       key_pos = next_key_pos(key_pos);
-      src_char[1] = src_str[currentPosition + 1] ^ key[context][key_pos];
+      src_char[1] = src_str[currentPosition + 1] ^ (uint8_t)(key[algorithm][key_pos] + a);
       key_pos = next_key_pos(key_pos);
-      src_char[2] = src_str[currentPosition + 2] ^ key[context][key_pos];
+      src_char[2] = src_str[currentPosition + 2] ^ (uint8_t)(key[algorithm][key_pos] + a);
       key_pos = next_key_pos(key_pos);
 
-      char c1 = base64char((unsigned char)(src_char[0] >> 2));
-      char c2 = base64char((unsigned char)(((src_char[0] & 3) << 4) | (src_char[1] >> 4)));
-      char c3 = base64char((unsigned char)(((src_char[1] & 0x0F) << 2) | ((src_char[2] >> 6) & 3)));
-      char c4 = base64char((unsigned char)(src_char[2] & 0x3F));
+      dest_str[destinationPosition++] = base64char((uint8_t)(src_char[0] >> 2));
+      dest_str[destinationPosition++]
+          = base64char((uint8_t)(((src_char[0] & 3) << 4) | (src_char[1] >> 4)));
+      dest_str[destinationPosition++]
+          = base64char((uint8_t)(((src_char[1] & 0x0F) << 2) | ((src_char[2] >> 6) & 3)));
+      dest_str[destinationPosition++] = base64char((uint8_t)(src_char[2] & 0x3F));
       currentPosition += 3;
-      dest_str[destinationPosition++] = c1;
-      dest_str[destinationPosition++] = c2;
-      dest_str[destinationPosition++] = c3;
-      dest_str[destinationPosition++] = c4;
     }
     if (src_size - currentPosition == 2)
     {
-      src_char[0] = src_str[currentPosition] ^ key[context][key_pos];
+      src_char[0] = src_str[currentPosition] ^ (uint8_t)(key[algorithm][key_pos] + a);
       key_pos = next_key_pos(key_pos);
-      src_char[1] = src_str[currentPosition + 1] ^ key[context][key_pos];
-      char c1 = base64char((unsigned char)(src_char[0] >> 2));
-      char c2 = base64char((unsigned char)(((src_char[0] & 0x03) << 4) | (src_char[1] >> 4)));
-      char c3 = base64b16(src_char[1] & 0x0F);
-      dest_str[destinationPosition++] = c1;
-      dest_str[destinationPosition++] = c2;
-      dest_str[destinationPosition++] = c3;
+      src_char[1] = src_str[currentPosition + 1] ^ (uint8_t)(key[algorithm][key_pos] + a);
+      dest_str[destinationPosition++] = base64char(src_char[0] >> 2);
+      dest_str[destinationPosition++]
+          = base64char((uint8_t)(((src_char[0] & 0x03) << 4) | (src_char[1] >> 4)));
+      dest_str[destinationPosition++] = base64b16(src_char[1] & 0x0F);
       dest_str[destinationPosition++] = '=';
     }
     else if (src_size - currentPosition == 1)
     {
-      src_char[0] = src_str[currentPosition] ^ key[context][key_pos];
-      char c1 = base64char((unsigned char)(src_char[0] >> 2));
-      char c2 = base64b8(src_char[0] & 0x03);
-      dest_str[destinationPosition++] = c1;
-      dest_str[destinationPosition++] = c2;
+      src_char[0] = src_str[currentPosition] ^ (uint8_t)(key[algorithm][key_pos] + a);
+      dest_str[destinationPosition++] = base64char(src_char[0] >> 2);
+      dest_str[destinationPosition++] = base64b8(src_char[0] & 0x03);
       dest_str[destinationPosition++] = '=';
       dest_str[destinationPosition++] = '=';
     }
@@ -255,13 +271,13 @@ az_result cipher_v2i1_decrypt(az_span src, az_span* dest)
     char* src_str = (char*)az_span_ptr(src);
     int32_t src_size = az_span_size(src);
 
-    char* dest_str = (char*)az_span_ptr(*dest);
+    uint8_t* dest_str = az_span_ptr(*dest);
     int32_t dest_size = az_span_size(*dest);
 
     AZ_ULIB_THROW_IF_ERROR((src_size > 1), AZ_ERROR_ARG);
 
-    uint32_t context = (uint32_t)(src_str[0] - '0');
-    AZ_ULIB_THROW_IF_ERROR((context < NUMBER_OF_KEYS), AZ_ERROR_NOT_SUPPORTED);
+    uint32_t algorithm = (uint32_t)(src_str[0] - '0');
+    AZ_ULIB_THROW_IF_ERROR((algorithm < NUMBER_OF_KEYS), AZ_ERROR_NOT_SUPPORTED);
 
     AZ_ULIB_THROW_IF_ERROR(
         (decoded_len(&src_str[1], src_size) <= dest_size), AZ_ERROR_NOT_ENOUGH_SPACE);
@@ -275,53 +291,57 @@ az_result cipher_v2i1_decrypt(az_span src, az_span* dest)
     decodedIndex = 0;
     while (numberOfEncodedChars >= 4)
     {
-      unsigned char c1;
-      unsigned char c2;
-      unsigned char c3;
-      unsigned char c4;
+      uint8_t c1;
+      uint8_t c2;
+      uint8_t c3;
+      uint8_t c4;
       (void)base64toValue(src_str[indexOfFirstEncodedChar], &c1);
       (void)base64toValue(src_str[indexOfFirstEncodedChar + 1], &c2);
       (void)base64toValue(src_str[indexOfFirstEncodedChar + 2], &c3);
       (void)base64toValue(src_str[indexOfFirstEncodedChar + 3], &c4);
-      dest_str[decodedIndex] = (char)((c1 << 2) | (c2 >> 4));
-      decodedIndex++;
-      dest_str[decodedIndex] = (char)(((c2 & 0x0f) << 4) | (c3 >> 2));
-      decodedIndex++;
-      dest_str[decodedIndex] = (char)(((c3 & 0x03) << 6) | c4);
-      decodedIndex++;
+      dest_str[decodedIndex++] = (uint8_t)((c1 << 2) | (c2 >> 4));
+      dest_str[decodedIndex++] = (uint8_t)(((c2 & 0x0f) << 4) | (c3 >> 2));
+      dest_str[decodedIndex++] = (uint8_t)(((c3 & 0x03) << 6) | c4);
       numberOfEncodedChars -= 4;
       indexOfFirstEncodedChar += 4;
     }
     if (numberOfEncodedChars == 2)
     {
-      unsigned char c1;
-      unsigned char c2;
+      uint8_t c1;
+      uint8_t c2;
       (void)base64toValue(src_str[indexOfFirstEncodedChar], &c1);
       (void)base64toValue(src_str[indexOfFirstEncodedChar + 1], &c2);
-      dest_str[decodedIndex++] = (char)((c1 << 2) | (c2 >> 4));
+      dest_str[decodedIndex++] = (uint8_t)((c1 << 2) | (c2 >> 4));
     }
     else if (numberOfEncodedChars == 3)
     {
-      unsigned char c1;
-      unsigned char c2;
-      unsigned char c3;
+      uint8_t c1;
+      uint8_t c2;
+      uint8_t c3;
       (void)base64toValue(src_str[indexOfFirstEncodedChar], &c1);
       (void)base64toValue(src_str[indexOfFirstEncodedChar + 1], &c2);
       (void)base64toValue(src_str[indexOfFirstEncodedChar + 2], &c3);
-      dest_str[decodedIndex++] = (char)((c1 << 2) | (c2 >> 4));
-      dest_str[decodedIndex++] = (char)(((c2 & 0x0f) << 4) | (c3 >> 2));
+      dest_str[decodedIndex++] = (uint8_t)((c1 << 2) | (c2 >> 4));
+      dest_str[decodedIndex++] = (uint8_t)(((c2 & 0x0f) << 4) | (c3 >> 2));
     }
 
+    int8_t a = 0;
     uint32_t key_pos = 0;
+    if (algorithm != 0)
+    {
+      a = alpha;
+      key_pos = delta;
+    }
+
     for (int32_t i = 0; i < decodedIndex; i++)
     {
-      dest_str[i] ^= key[context][key_pos];
+      dest_str[i] ^= (uint8_t)(key[algorithm][key_pos] + a);
       key_pos = next_key_pos(key_pos);
     }
 
     dest_str[decodedIndex] = '\0';
 
-    *dest = az_span_create((uint8_t*)dest_str, decodedIndex);
+    *dest = az_span_create(dest_str, decodedIndex);
   }
   AZ_ULIB_CATCH(...) { return AZ_ULIB_TRY_RESULT; }
 

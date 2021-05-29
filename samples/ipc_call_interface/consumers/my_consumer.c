@@ -72,7 +72,7 @@ void my_consumer_destroy(void)
   }
 }
 
-static az_result call_wrappers(uint32_t context)
+static az_result call_wrappers(uint32_t algorithm)
 {
   AZ_ULIB_TRY
   {
@@ -81,31 +81,41 @@ static az_result call_wrappers(uint32_t context)
     char buffer_1[BUFFER_SIZE];
     char buffer_2[BUFFER_SIZE];
 
+    int8_t alpha = 0;
+    uint32_t delta = 0;
+    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_get_alpha(_cipher_1, &alpha));
+    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_get_delta(_cipher_1, &delta));
+    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_set_alpha(_cipher_1, (int8_t)(alpha - 5)));
+    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_set_delta(_cipher_1, delta + 10));
+    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_get_alpha(_cipher_1, &alpha));
+    AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_get_delta(_cipher_1, &delta));
+    (void)printf("cipher.1 alpha:%" PRId8 " and delta:%" PRIu32 ".\r\n", alpha, delta);
+
     az_span encrypted_span = AZ_SPAN_FROM_BUFFER(buffer_1);
     AZ_ULIB_THROW_IF_AZ_ERROR(
-        cipher_1_encrypt(_cipher_1, context, original_span_to_encrypt, &encrypted_span));
+        cipher_1_encrypt(_cipher_1, algorithm, original_span_to_encrypt, &encrypted_span));
     CLOSE_STRING_IN_SPAN(encrypted_span);
     (void)printf(
-        "cipher.1 encrypted \"%s\" to \"%s\" with context %" PRIu32 ".\r\n",
+        "cipher.1 encrypted \"%s\" to \"%s\" with algorithm %" PRIu32 ".\r\n",
         az_span_ptr(original_span_to_encrypt),
         az_span_ptr(encrypted_span),
-        context);
+        algorithm);
 
     az_span decrypted_span = AZ_SPAN_FROM_BUFFER(buffer_2);
     AZ_ULIB_THROW_IF_AZ_ERROR(cipher_1_decrypt(_cipher_1, encrypted_span, &decrypted_span));
     CLOSE_STRING_IN_SPAN(decrypted_span);
     (void)printf(
-        "cipher.1 decrypted \"%s\" to \"%s\" with context %" PRIu32 ".\r\n",
+        "cipher.1 decrypted \"%s\" to \"%s\" with algorithm %" PRIu32 ".\r\n",
         az_span_ptr(encrypted_span),
         az_span_ptr(decrypted_span),
-        context);
+        algorithm);
   }
   AZ_ULIB_CATCH(...) { return AZ_ULIB_TRY_RESULT; }
 
   return AZ_OK;
 }
 
-static az_result call_w_str(uint32_t context)
+static az_result call_w_str(uint32_t algorithm)
 {
   AZ_ULIB_TRY
   {
@@ -121,8 +131,8 @@ static az_result call_w_str(uint32_t context)
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_init(&jw, encrypt_model_in_json, NULL));
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_begin_object(&jw));
     AZ_ULIB_THROW_IF_AZ_ERROR(
-        az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR("context")));
-    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_int32(&jw, (int32_t)context));
+        az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR("algorithm")));
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_int32(&jw, (int32_t)algorithm));
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR("src")));
     AZ_ULIB_THROW_IF_AZ_ERROR(
         az_json_writer_append_string(&jw, AZ_SPAN_FROM_STR("Welcome to Azure IoT!")));
@@ -185,7 +195,7 @@ static az_result call_w_str(uint32_t context)
   return AZ_OK;
 }
 
-void my_consumer_do_cipher(uint32_t context)
+void my_consumer_do_cipher(uint32_t algorithm)
 {
   (void)printf("My consumer try use cipher.1 interface... \r\n");
 
@@ -195,15 +205,15 @@ void my_consumer_do_cipher(uint32_t context)
   {
     AZ_ULIB_TRY
     {
-      AZ_ULIB_THROW_IF_AZ_ERROR(call_wrappers(context));
-      AZ_ULIB_THROW_IF_AZ_ERROR(call_w_str(context));
+      AZ_ULIB_THROW_IF_AZ_ERROR(call_wrappers(algorithm));
+      AZ_ULIB_THROW_IF_AZ_ERROR(call_w_str(algorithm));
     }
     AZ_ULIB_CATCH(...)
     {
       switch (AZ_ULIB_TRY_RESULT)
       {
         case AZ_ERROR_NOT_SUPPORTED:
-          (void)printf("cipher.1 does not support context %" PRIu32 ".\r\n", context);
+          (void)printf("cipher.1 does not support algorithm %" PRIu32 ".\r\n", algorithm);
           break;
         case AZ_ERROR_ITEM_NOT_FOUND:
           (void)printf("cipher.1 was uninstalled. Release the handle.\r\n");

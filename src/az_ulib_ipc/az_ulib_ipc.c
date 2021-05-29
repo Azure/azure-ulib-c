@@ -538,6 +538,108 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
   return result;
 }
 
+AZ_NODISCARD az_result az_ulib_ipc_get(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_capability_index property_index,
+    az_ulib_model_out model_out)
+{
+  _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
+  _az_PRECONDITION_NOT_NULL(interface_handle);
+
+  az_result result;
+
+  az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
+  {
+    const volatile az_ulib_interface_descriptor* descriptor
+        = ((_az_ulib_ipc_interface*)interface_handle)->interface_descriptor;
+    result = (descriptor == NULL)
+        ? AZ_ERROR_ITEM_NOT_FOUND
+        : descriptor->_internal.capability_list[property_index]._internal.capability_ptr_1.get(
+            model_out);
+  }
+  az_pal_os_lock_release(&(_az_ipc_cb->_internal.lock));
+
+  return result;
+}
+
+AZ_NODISCARD az_result az_ulib_ipc_get_with_str(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_capability_index property_index,
+    az_span* model_out_span)
+{
+  _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
+  _az_PRECONDITION_NOT_NULL(interface_handle);
+
+  az_result result;
+
+  az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
+  {
+    const volatile az_ulib_interface_descriptor* descriptor
+        = ((_az_ulib_ipc_interface*)interface_handle)->interface_descriptor;
+    result = (descriptor == NULL)
+        ? AZ_ERROR_ITEM_NOT_FOUND
+        : ((descriptor->_internal.capability_list[property_index]._internal.span_wrapper_ptr_1.get
+            == NULL)
+               ? AZ_ERROR_NOT_SUPPORTED
+               : descriptor->_internal.capability_list[property_index]
+                     ._internal.span_wrapper_ptr_1.get(model_out_span));
+  }
+  az_pal_os_lock_release(&(_az_ipc_cb->_internal.lock));
+
+  return result;
+}
+
+AZ_NODISCARD az_result az_ulib_ipc_set(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_capability_index property_index,
+    az_ulib_model_in model_in)
+{
+  _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
+  _az_PRECONDITION_NOT_NULL(interface_handle);
+
+  az_result result;
+
+  az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
+  {
+    const volatile az_ulib_interface_descriptor* descriptor
+        = ((_az_ulib_ipc_interface*)interface_handle)->interface_descriptor;
+    result = (descriptor == NULL)
+        ? AZ_ERROR_ITEM_NOT_FOUND
+        : descriptor->_internal.capability_list[property_index]._internal.capability_ptr_2.set(
+            model_in);
+  }
+  az_pal_os_lock_release(&(_az_ipc_cb->_internal.lock));
+
+  return result;
+}
+
+AZ_NODISCARD az_result az_ulib_ipc_set_with_str(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_capability_index property_index,
+    az_span model_out_span)
+{
+  _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
+  _az_PRECONDITION_NOT_NULL(interface_handle);
+
+  az_result result;
+
+  az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
+  {
+    const volatile az_ulib_interface_descriptor* descriptor
+        = ((_az_ulib_ipc_interface*)interface_handle)->interface_descriptor;
+    result = (descriptor == NULL)
+        ? AZ_ERROR_ITEM_NOT_FOUND
+        : ((descriptor->_internal.capability_list[property_index]._internal.span_wrapper_ptr_1.get
+            == NULL)
+               ? AZ_ERROR_NOT_SUPPORTED
+               : descriptor->_internal.capability_list[property_index]
+                     ._internal.span_wrapper_ptr_2.set(model_out_span));
+  }
+  az_pal_os_lock_release(&(_az_ipc_cb->_internal.lock));
+
+  return result;
+}
+
 static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* next)
 {
   char* result_str = (char*)az_span_ptr(*result);

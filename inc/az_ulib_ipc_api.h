@@ -312,20 +312,20 @@ AZ_NODISCARD az_result az_ulib_ipc_release_interface(az_ulib_ipc_interface_handl
  * @brief   Synchronously Call a published procedure.
  *
  * @param[in]   interface_handle  The #az_ulib_ipc_interface_handle with the interface handle. It
- *                                cannot be `NULL`. Call
- *                                az_ulib_ipc_try_get_interface() to get the interface handle.
- * @param[in]   command_index      The #az_ulib_capability_index with the command handle.
- * @param[in]   model_in          The `const void *const` that points to the memory with the
+ *                                cannot be `NULL`. Call az_ulib_ipc_try_get_interface() to get
+ *                                the interface handle.
+ * @param[in]   command_index     The #az_ulib_capability_index with the command handle.
+ * @param[in]   model_in          The `az_ulib_model_in` that points to the memory with the
  *                                input model content.
- * @param[out]  model_out         The `const void *` that points to the memory where the capability
- *                                should store the output model content.
+ * @param[out]  model_out         The `az_ulib_model_out` that points to the memory where the
+ *                                capability should store the output model content.
  *
  * @pre     IPC shall already be initialized.
  * @pre     \p interface_handle shall not be 'NULL'.
  *
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                              If the IPC get success calling the procedure.
- *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the target command was disabled.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the target command does not exist.
  *  @retval Others                              Defined by the target function.
  */
 AZ_NODISCARD az_result az_ulib_ipc_call(
@@ -352,6 +352,8 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                              If the IPC get success calling the procedure.
  *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the target command does not exist.
+ *  @retval #AZ_ERROR_NOT_SUPPORTED             If the target command does not support call with
+ *                                              string.
  *  @retval Others                              Defined by the target function.
  */
 AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
@@ -359,6 +361,103 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
     az_ulib_capability_index command_index,
     az_span model_in_span,
     az_span* model_out_span);
+
+/**
+ * @brief   Get value of a published property.
+ *
+ * @param[in]   interface_handle  The #az_ulib_ipc_interface_handle with the interface handle. It
+ *                                cannot be `NULL`. Call az_ulib_ipc_try_get_interface() to get
+ *                                the interface handle.
+ * @param[in]   property_index    The #az_ulib_capability_index with the property handle.
+ * @param[out]  model_out         The `az_ulib_model_out` that points to the memory where the
+ *                                capability should store the property value.
+ *
+ * @pre     IPC shall already be initialized.
+ * @pre     \p interface_handle shall not be 'NULL'.
+ *
+ * @return The #az_result with the result of the get.
+ *  @retval #AZ_OK                              If the IPC get success getting the property.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the target interface does not exist.
+ *  @retval Others                              Defined by the target get.
+ */
+AZ_NODISCARD az_result az_ulib_ipc_get(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_capability_index property_index,
+    az_ulib_model_out model_out);
+
+/**
+ * @brief   Get content of a published property using string models.
+ *
+ * @param[in]   interface_handle    The #az_ulib_ipc_interface_handle with the interface handle.
+ *                                  It cannot be `NULL`. Call az_ulib_ipc_try_get_interface() to
+ *                                  get the interface handle.
+ * @param[in]   property_index      The #az_ulib_capability_index with the property index. Call
+ *                                  az_ulib_ipc_try_get_capability() to get the property index.
+ * @param[out]  model_out_span      The pointer to #az_span where the capability should store the
+ *                                  output content.
+ *
+ * @pre     IPC shall already be initialized.
+ * @pre     \p interface_handle shall not be 'NULL'.
+ *
+ * @return The #az_result with the result of the call.
+ *  @retval #AZ_OK                              If the IPC get success getting the property content.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the target property does not exist.
+ *  @retval #AZ_ERROR_NOT_SUPPORTED             If the target property does not support get with
+ *                                              string.
+ *  @retval Others                              Defined by the target `get` function.
+ */
+AZ_NODISCARD az_result az_ulib_ipc_get_with_str(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_capability_index command_index,
+    az_span* model_out_span);
+
+/**
+ * @brief   Set value to a published property.
+ *
+ * @param[in]   interface_handle  The #az_ulib_ipc_interface_handle with the interface handle. It
+ *                                cannot be `NULL`. Call az_ulib_ipc_try_get_interface() to get
+ *                                the interface handle.
+ * @param[in]   property_index    The #az_ulib_capability_index with the property handle.
+ * @param[in]   model_in          The `az_ulib_model_in` that points to the memory with the
+ *                                new value for the property.
+ *
+ * @pre     IPC shall already be initialized.
+ * @pre     \p interface_handle shall not be 'NULL'.
+ *
+ * @return The #az_result with the result of the set.
+ *  @retval #AZ_OK                              If the IPC get success setting the property.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the target interface does not exist.
+ *  @retval Others                              Defined by the target set.
+ */
+AZ_NODISCARD az_result az_ulib_ipc_set(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_capability_index property_index,
+    az_ulib_model_in model_in);
+
+/**
+ * @brief   Set content of a published property using string models.
+ *
+ * @param[in]   interface_handle    The #az_ulib_ipc_interface_handle with the interface handle.
+ *                                  It cannot be `NULL`. Call az_ulib_ipc_try_get_interface() to
+ *                                  get the interface handle.
+ * @param[in]   property_index      The #az_ulib_capability_index with the property index. Call
+ *                                  az_ulib_ipc_try_get_capability() to get the property index.
+ * @param[in]   model_in_span       The #az_span with the model in.
+ *
+ * @pre     IPC shall already be initialized.
+ * @pre     \p interface_handle shall not be 'NULL'.
+ *
+ * @return The #az_result with the result of the call.
+ *  @retval #AZ_OK                              If the IPC get success setting the property content.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the target property does not exist.
+ *  @retval #AZ_ERROR_NOT_SUPPORTED             If the target property does not support set with
+ *                                              string.
+ *  @retval Others                              Defined by the target `get` function.
+ */
+AZ_NODISCARD az_result az_ulib_ipc_set_with_str(
+    az_ulib_ipc_interface_handle interface_handle,
+    az_ulib_capability_index command_index,
+    az_span model_in_span);
 
 /**
  * @brief   Query IPC information.

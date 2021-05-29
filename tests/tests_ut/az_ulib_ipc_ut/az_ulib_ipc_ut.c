@@ -527,6 +527,70 @@ static void az_ulib_ipc_call_with_null_interface_handle_failed(void** state)
   unpublish_interfaces_and_deinit_ipc();
 }
 
+/* If the IPC is not initialized, the az_ulib_ipc_get shall fail with precondition. */
+static void az_ulib_ipc_get_with_ipc_not_initialized_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  my_property_model out = 0;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      az_ulib_ipc_get((az_ulib_ipc_interface_handle)0x1234, MY_INTERFACE_MY_PROPERTY, &out));
+
+  /// cleanup
+}
+
+/* If the interface handle is NULL, the az_ulib_ipc_get shall fail with precondition. */
+static void az_ulib_ipc_get_with_null_interface_handle_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  my_property_model out = 0;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_get(NULL, MY_INTERFACE_MY_PROPERTY, &out));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the IPC is not initialized, the az_ulib_ipc_set shall fail with precondition. */
+static void az_ulib_ipc_set_with_ipc_not_initialized_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  my_property_model in = 0;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      az_ulib_ipc_set((az_ulib_ipc_interface_handle)0x1234, MY_INTERFACE_MY_PROPERTY, &in));
+
+  /// cleanup
+}
+
+/* If the interface handle is NULL, the az_ulib_ipc_set shall fail with precondition. */
+static void az_ulib_ipc_set_with_null_interface_handle_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  my_property_model in = 0;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_set(NULL, MY_INTERFACE_MY_PROPERTY, &in));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
 /* If the IPC is not initialized, the az_ulib_ipc_call_with_str shall fail with precondition. */
 static void az_ulib_ipc_call_with_str_with_ipc_not_initialized_failed(void** state)
 {
@@ -559,6 +623,73 @@ static void az_ulib_ipc_call_with_str_with_null_interface_handle_failed(void** s
   /// assert
   AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
       az_ulib_ipc_call_with_str(NULL, MY_INTERFACE_MY_COMMAND, in, &out));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the IPC is not initialized, the az_ulib_ipc_get_with_str shall fail with precondition. */
+static void az_ulib_ipc_get_with_str_with_ipc_not_initialized_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  uint8_t buf[100];
+  az_span out = AZ_SPAN_FROM_BUFFER(buf);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_get_with_str(
+      (az_ulib_ipc_interface_handle)0x1234, MY_INTERFACE_MY_PROPERTY, &out));
+
+  /// cleanup
+}
+
+/* If the interface handle is NULL, the az_ulib_ipc_get_with_str shall fail with precondition. */
+static void az_ulib_ipc_get_with_str_with_null_interface_handle_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  uint8_t buf[100];
+  az_span out = AZ_SPAN_FROM_BUFFER(buf);
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      az_ulib_ipc_get_with_str(NULL, MY_INTERFACE_MY_PROPERTY, &out));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the IPC is not initialized, the az_ulib_ipc_set_with_str shall fail with precondition. */
+static void az_ulib_ipc_set_with_str_with_ipc_not_initialized_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  az_span in = AZ_SPAN_LITERAL_FROM_STR("{ \"val\":0 }");
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      az_ulib_ipc_set_with_str((az_ulib_ipc_interface_handle)0x1234, MY_INTERFACE_MY_PROPERTY, in));
+
+  /// cleanup
+}
+
+/* If the interface handle is NULL, the az_ulib_ipc_set_with_str shall fail with precondition. */
+static void az_ulib_ipc_set_with_str_with_null_interface_handle_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  az_span in = AZ_SPAN_LITERAL_FROM_STR("{ \"val\":0 }");
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_set_with_str(NULL, MY_INTERFACE_MY_COMMAND, in));
 
   /// cleanup
   unpublish_interfaces_and_deinit_ipc();
@@ -1912,6 +2043,292 @@ static void az_ulib_ipc_call_with_str_unpublished_interface_failed(void** state)
   assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
 }
 
+/* The az_ulib_ipc_get shall return the content of a property published by the interface. */
+/* The az_ulib_ipc_get shall return AZ_OK. */
+/* The az_ulib_ipc_set shall replace the content of a property published by the interface. */
+/* The az_ulib_ipc_set shall return AZ_OK. */
+static void az_ulib_ipc_get_and_set_succeed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  az_ulib_ipc_interface_handle interface_handle;
+  assert_int_equal(
+      az_ulib_ipc_try_get_interface(
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
+          AZ_ULIB_VERSION_EQUALS_TO,
+          &interface_handle),
+      AZ_OK);
+
+  my_property_model val = 10;
+  my_property_model new_val = 0;
+
+  /// act
+  /// assert
+  assert_int_equal(az_ulib_ipc_set(interface_handle, MY_INTERFACE_MY_PROPERTY, &new_val), AZ_OK);
+  assert_int_equal(az_ulib_ipc_get(interface_handle, MY_INTERFACE_MY_PROPERTY, &val), AZ_OK);
+  assert_int_equal(val, 0);
+  new_val = 20;
+  assert_int_equal(az_ulib_ipc_set(interface_handle, MY_INTERFACE_MY_PROPERTY, &new_val), AZ_OK);
+  assert_int_equal(az_ulib_ipc_get(interface_handle, MY_INTERFACE_MY_PROPERTY, &val), AZ_OK);
+  assert_int_equal(val, 20);
+  assert_int_equal(g_lock_diff, 0);
+
+  /// cleanup
+  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the interface was unpublished, the az_ulib_ipc_get shall return AZ_ERROR_ITEM_NOT_FOUND
+ * and do not change the model_out content. */
+static void az_ulib_ipc_get_unpublished_interface_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  az_ulib_ipc_interface_handle interface_handle;
+  assert_int_equal(
+      az_ulib_ipc_try_get_interface(
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
+          AZ_ULIB_VERSION_EQUALS_TO,
+          &interface_handle),
+      AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_1_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+
+  my_property_model val = 10;
+
+  /// act
+  az_result result = az_ulib_ipc_get(interface_handle, MY_INTERFACE_MY_COMMAND, &val);
+
+  /// assert
+  assert_int_equal(result, AZ_ERROR_ITEM_NOT_FOUND);
+  assert_int_equal(val, 10);
+  assert_int_equal(g_lock_diff, 0);
+
+  /// cleanup
+  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_2_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_1_v2_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_3_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
+}
+
+/* If the interface was unpublished, the az_ulib_ipc_set shall return AZ_ERROR_ITEM_NOT_FOUND. */
+static void az_ulib_ipc_set_unpublished_interface_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  az_ulib_ipc_interface_handle interface_handle;
+  assert_int_equal(
+      az_ulib_ipc_try_get_interface(
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
+          AZ_ULIB_VERSION_EQUALS_TO,
+          &interface_handle),
+      AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_1_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+
+  my_property_model val = 10;
+
+  /// act
+  az_result result = az_ulib_ipc_set(interface_handle, MY_INTERFACE_MY_COMMAND, &val);
+
+  /// assert
+  assert_int_equal(result, AZ_ERROR_ITEM_NOT_FOUND);
+  assert_int_equal(g_lock_diff, 0);
+
+  /// cleanup
+  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_2_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_1_v2_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_3_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
+}
+
+/* The az_ulib_ipc_get_with_str shall return the content of a property published by the interface.
+ */
+/* The az_ulib_ipc_get_with_str shall return AZ_OK. */
+/* The az_ulib_ipc_set_with_str shall replace the content of a property published by the interface.
+ */
+/* The az_ulib_ipc_set_with_str shall return AZ_OK. */
+static void az_ulib_ipc_get_and_set_with_str_succeed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  az_ulib_ipc_interface_handle interface_handle;
+  assert_int_equal(
+      az_ulib_ipc_try_get_interface(
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
+          AZ_ULIB_VERSION_EQUALS_TO,
+          &interface_handle),
+      AZ_OK);
+
+  az_span in = AZ_SPAN_LITERAL_FROM_STR("{ \"val\":20 }");
+  uint8_t buf[100];
+  az_span out = AZ_SPAN_FROM_BUFFER(buf);
+  my_property_model new_val = 0;
+  assert_int_equal(az_ulib_ipc_set(interface_handle, MY_INTERFACE_MY_PROPERTY, &new_val), AZ_OK);
+
+  /// act
+  /// assert
+  assert_int_equal(
+      az_ulib_ipc_get_with_str(interface_handle, MY_INTERFACE_MY_PROPERTY, &out), AZ_OK);
+  assert_true(az_span_is_content_equal(out, AZ_SPAN_FROM_STR("{\"val\":0}")));
+  assert_int_equal(az_ulib_ipc_set_with_str(interface_handle, MY_INTERFACE_MY_PROPERTY, in), AZ_OK);
+  az_span out1 = AZ_SPAN_FROM_BUFFER(buf);
+  assert_int_equal(
+      az_ulib_ipc_get_with_str(interface_handle, MY_INTERFACE_MY_PROPERTY, &out1), AZ_OK);
+  assert_true(az_span_is_content_equal(out1, AZ_SPAN_FROM_STR("{\"val\":20}")));
+  assert_int_equal(g_lock_diff, 0);
+
+  /// cleanup
+  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the interface does not support call with string, the az_ulib_ipc_get_with_str shall return
+ * AZ_ERROR_NOT_SUPPORTED. */
+static void az_ulib_ipc_get_with_str_calls_not_supporte_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  az_ulib_ipc_interface_handle interface_handle;
+  assert_int_equal(
+      az_ulib_ipc_try_get_interface(
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_2_INTERFACE_NAME),
+          MY_INTERFACE_1_2_INTERFACE_VERSION,
+          AZ_ULIB_VERSION_EQUALS_TO,
+          &interface_handle),
+      AZ_OK);
+
+  uint8_t buf[100];
+  az_span out = AZ_SPAN_FROM_BUFFER(buf);
+
+  /// act
+  az_result result = az_ulib_ipc_get_with_str(interface_handle, MY_INTERFACE_MY_PROPERTY, &out);
+
+  /// assert
+  assert_int_equal(result, AZ_ERROR_NOT_SUPPORTED);
+  assert_int_equal(g_lock_diff, 0);
+
+  /// cleanup
+  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the interface does not support call with string, the az_ulib_ipc_set_with_str shall return
+ * AZ_ERROR_NOT_SUPPORTED. */
+static void az_ulib_ipc_set_with_str_calls_not_supporte_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  az_ulib_ipc_interface_handle interface_handle;
+  assert_int_equal(
+      az_ulib_ipc_try_get_interface(
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_2_INTERFACE_NAME),
+          MY_INTERFACE_1_2_INTERFACE_VERSION,
+          AZ_ULIB_VERSION_EQUALS_TO,
+          &interface_handle),
+      AZ_OK);
+
+  az_span in = AZ_SPAN_LITERAL_FROM_STR("{ \"val\":20 }");
+
+  /// act
+  az_result result = az_ulib_ipc_set_with_str(interface_handle, MY_INTERFACE_MY_PROPERTY, in);
+
+  /// assert
+  assert_int_equal(result, AZ_ERROR_NOT_SUPPORTED);
+  assert_int_equal(g_lock_diff, 0);
+
+  /// cleanup
+  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the interface was unpublished, the az_ulib_ipc_get_with_str shall return
+ * AZ_ERROR_ITEM_NOT_FOUND. */
+static void az_ulib_ipc_get_with_str_unpublished_interface_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  az_ulib_ipc_interface_handle interface_handle;
+  assert_int_equal(
+      az_ulib_ipc_try_get_interface(
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
+          AZ_ULIB_VERSION_EQUALS_TO,
+          &interface_handle),
+      AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_1_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+
+  uint8_t buf[100];
+  az_span out = AZ_SPAN_FROM_BUFFER(buf);
+
+  /// act
+  az_result result = az_ulib_ipc_get_with_str(interface_handle, MY_INTERFACE_MY_PROPERTY, &out);
+
+  /// assert
+  assert_int_equal(result, AZ_ERROR_ITEM_NOT_FOUND);
+  assert_int_equal(g_lock_diff, 0);
+
+  /// cleanup
+  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_2_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_1_v2_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_3_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
+}
+
+/* If the interface was unpublished, the az_ulib_ipc_set_with_str shall return
+ * AZ_ERROR_ITEM_NOT_FOUND. */
+static void az_ulib_ipc_set_with_str_unpublished_interface_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+
+  az_ulib_ipc_interface_handle interface_handle;
+  assert_int_equal(
+      az_ulib_ipc_try_get_interface(
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
+          AZ_ULIB_VERSION_EQUALS_TO,
+          &interface_handle),
+      AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_1_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+
+  az_span in = AZ_SPAN_LITERAL_FROM_STR("{ \"val\":20 }");
+
+  /// act
+  az_result result = az_ulib_ipc_set_with_str(interface_handle, MY_INTERFACE_MY_PROPERTY, in);
+
+  /// assert
+  assert_int_equal(result, AZ_ERROR_ITEM_NOT_FOUND);
+  assert_int_equal(g_lock_diff, 0);
+
+  /// cleanup
+  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_2_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_1_v2_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_3_v123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
+  assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
+}
+
 /* The az_ulib_ipc_deinit shall release all resources associate with ipc. */
 /* The az_ulib_ipc_deinit shall return AZ_OK. */
 static void az_ulib_ipc_deinit_succeed(void** state)
@@ -2220,8 +2637,16 @@ int az_ulib_ipc_ut()
     cmocka_unit_test(az_ulib_ipc_release_interface_with_ipc_not_initialized_failed),
     cmocka_unit_test(az_ulib_ipc_call_with_ipc_not_initialized_failed),
     cmocka_unit_test(az_ulib_ipc_call_with_null_interface_handle_failed),
+    cmocka_unit_test(az_ulib_ipc_get_with_ipc_not_initialized_failed),
+    cmocka_unit_test(az_ulib_ipc_get_with_null_interface_handle_failed),
+    cmocka_unit_test(az_ulib_ipc_set_with_ipc_not_initialized_failed),
+    cmocka_unit_test(az_ulib_ipc_set_with_null_interface_handle_failed),
     cmocka_unit_test(az_ulib_ipc_call_with_str_with_ipc_not_initialized_failed),
     cmocka_unit_test(az_ulib_ipc_call_with_str_with_null_interface_handle_failed),
+    cmocka_unit_test(az_ulib_ipc_get_with_str_with_ipc_not_initialized_failed),
+    cmocka_unit_test(az_ulib_ipc_get_with_str_with_null_interface_handle_failed),
+    cmocka_unit_test(az_ulib_ipc_set_with_str_with_ipc_not_initialized_failed),
+    cmocka_unit_test(az_ulib_ipc_set_with_str_with_null_interface_handle_failed),
     cmocka_unit_test(az_ulib_ipc_query_with_ipc_not_initialized_failed),
     cmocka_unit_test(az_ulib_ipc_query_with_null_result_failed),
     cmocka_unit_test(az_ulib_ipc_query_with_empty_result_failed),
@@ -2271,6 +2696,14 @@ int az_ulib_ipc_ut()
     cmocka_unit_test_setup(az_ulib_ipc_call_with_str_calls_the_command_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_call_with_str_calls_not_supporte_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_call_with_str_unpublished_interface_failed, setup),
+    cmocka_unit_test_setup(az_ulib_ipc_get_and_set_succeed, setup),
+    cmocka_unit_test_setup(az_ulib_ipc_get_unpublished_interface_failed, setup),
+    cmocka_unit_test_setup(az_ulib_ipc_set_unpublished_interface_failed, setup),
+    cmocka_unit_test_setup(az_ulib_ipc_get_and_set_with_str_succeed, setup),
+    cmocka_unit_test_setup(az_ulib_ipc_get_with_str_calls_not_supporte_failed, setup),
+    cmocka_unit_test_setup(az_ulib_ipc_set_with_str_calls_not_supporte_failed, setup),
+    cmocka_unit_test_setup(az_ulib_ipc_get_with_str_unpublished_interface_failed, setup),
+    cmocka_unit_test_setup(az_ulib_ipc_set_with_str_unpublished_interface_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_deinit_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_deinit_with_published_interface_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_deinit_with_instace_failed, setup),

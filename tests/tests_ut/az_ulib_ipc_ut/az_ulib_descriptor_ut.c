@@ -19,12 +19,9 @@
 
 static uint32_t my_property = 0;
 
-static az_result get_my_property(az_ulib_model_out model_out)
+static az_result get_my_property(uint32_t* val)
 {
-  uint32_t* new_val = (uint32_t*)model_out;
-
-  *new_val = my_property;
-
+  *val = my_property;
   return AZ_OK;
 }
 
@@ -34,12 +31,9 @@ static az_result get_my_property_span_wrapper(az_span* model_out_span)
   return AZ_OK;
 }
 
-static az_result set_my_property(az_ulib_model_in model_in)
+static az_result set_my_property(const uint32_t* const new_val)
 {
-  const uint32_t* const new_val = (const uint32_t* const)model_in;
-
   my_property = *new_val;
-
   return AZ_OK;
 }
 
@@ -49,7 +43,20 @@ static az_result set_my_property_span_wrapper(az_span model_in_span)
   return AZ_OK;
 }
 
-static az_result my_command(az_ulib_model_in model_in, az_ulib_model_out model_out)
+typedef struct
+{
+  uint32_t arg1;
+  uint32_t arg2;
+} my_command_model_in;
+
+typedef struct
+{
+  uint32_t arg1;
+} my_command_model_out;
+
+static az_result my_command(
+    const my_command_model_in* const model_in,
+    my_command_model_out* model_out)
 {
   (void)model_in;
   (void)model_out;
@@ -66,8 +73,8 @@ static az_result my_command_span_wrapper(az_span model_in_span, az_span* model_o
 }
 
 static az_result my_command_async(
-    az_ulib_model_in model_in,
-    az_ulib_model_out model_out,
+    const my_command_model_in* const model_in,
+    my_command_model_out* model_out,
     const az_ulib_capability_token capability_token,
     const az_ulib_capability_cancellation_callback cancel)
 {
