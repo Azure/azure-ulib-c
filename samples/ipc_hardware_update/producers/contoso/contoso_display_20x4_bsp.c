@@ -12,6 +12,9 @@
 #define MAX_X (size_t)20
 #define MAX_Y (size_t)4
 
+int32_t contoso_display_20x4_bsp_get_max_x(void) { return MAX_X; }
+int32_t contoso_display_20x4_bsp_get_max_y(void) { return MAX_Y; }
+
 typedef struct display_cb_tag
 {
   int32_t x;

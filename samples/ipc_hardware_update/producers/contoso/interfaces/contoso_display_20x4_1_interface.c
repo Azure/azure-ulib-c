@@ -88,16 +88,57 @@ static az_result invalidate_concrete(
   return AZ_OK;
 }
 
-static const az_ulib_capability_descriptor DISPLAY_1_CAPABILITIES[DISPLAY_1_CAPABILITY_SIZE] = {
-  AZ_ULIB_DESCRIPTOR_ADD_COMMAND(DISPLAY_1_CLS_COMMAND_NAME, cls_concrete, NULL),
-  AZ_ULIB_DESCRIPTOR_ADD_COMMAND(DISPLAY_1_PRINT_COMMAND_NAME, print_concrete, NULL),
-  AZ_ULIB_DESCRIPTOR_ADD_COMMAND(DISPLAY_1_INVALIDATE_COMMAND_NAME, invalidate_concrete, NULL)
+static az_result get_max_x_concrete(
+    const display_1_max_x_model* const in,
+    display_1_max_x_model* out)
+{
+  /*
+   * ==================
+   * The user code starts here.
+   */
+  (void)in;
+
+  *out = contoso_display_20x4_bsp_get_max_x();
+
+  /*
+   * The user code ends here.
+   * ==================
+   */
+
+  return AZ_OK;
+}
+
+static az_result get_max_y_concrete(
+    const display_1_max_y_model* const in,
+    display_1_max_y_model* out)
+{
+  /*
+   * ==================
+   * The user code starts here.
+   */
+  (void)in;
+
+  *out = contoso_display_20x4_bsp_get_max_y();
+
+  /*
+   * The user code ends here.
+   * ==================
+   */
+
+  return AZ_OK;
+}
+
+static const az_ulib_capability_descriptor DISPLAY_1_CAPABILITIES[] = {
+  AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(DISPLAY_1_CLS_COMMAND_NAME, cls_concrete, NULL),
+  AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(DISPLAY_1_PRINT_COMMAND_NAME, print_concrete, NULL),
+  AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(DISPLAY_1_INVALIDATE_COMMAND_NAME, invalidate_concrete, NULL),
+  AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(DISPLAY_1_GET_MAX_X_PROPERTY_NAME, get_max_x_concrete, NULL),
+  AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(DISPLAY_1_GET_MAX_Y_PROPERTY_NAME, get_max_y_concrete, NULL)
 };
 
 static const az_ulib_interface_descriptor DISPLAY_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
     DISPLAY_1_INTERFACE_NAME,
     DISPLAY_1_INTERFACE_VERSION,
-    DISPLAY_1_CAPABILITY_SIZE,
     DISPLAY_1_CAPABILITIES);
 
 az_result publish_contoso_display_20x4_1_interface(void)

@@ -20,12 +20,12 @@ static const uint8_t key[NUMBER_OF_KEYS][KEY_SIZE]
   (uint32_t)((uint32_t)a + ((uint32_t)b << 8) + ((uint32_t)c << 16) + ((uint32_t)d << 24))
 
 static int8_t alpha = -3;
-int8_t cipher_v2i1_alpha_get(void) { return alpha; }
-void cipher_v2i1_alpha_set(const int8_t val) { alpha = val; }
+int8_t cipher_v2i1_get_alpha(void) { return alpha; }
+void cipher_v2i1_set_alpha(const int8_t val) { alpha = val; }
 
 static uint32_t delta = 8;
-uint32_t cipher_v2i1_delta_get(void) { return delta; }
-void cipher_v2i1_delta_set(const uint32_t val)
+uint32_t cipher_v2i1_get_delta(void) { return delta; }
+void cipher_v2i1_set_delta(const uint32_t val)
 {
   delta = val;
   while (delta >= KEY_SIZE)

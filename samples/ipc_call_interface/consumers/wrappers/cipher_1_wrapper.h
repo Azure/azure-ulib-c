@@ -82,7 +82,7 @@ extern "C"
    */
   static inline az_result cipher_1_get_alpha(az_ulib_ipc_interface_handle handle, int8_t* val)
   {
-    return az_ulib_ipc_get(handle, CIPHER_1_ALPHA_PROPERTY, val);
+    return az_ulib_ipc_call(handle, CIPHER_1_GET_ALPHA_PROPERTY, NULL, val);
   }
 
   /*
@@ -90,7 +90,7 @@ extern "C"
    */
   static inline az_result cipher_1_set_alpha(az_ulib_ipc_interface_handle handle, const int8_t val)
   {
-    return az_ulib_ipc_set(handle, CIPHER_1_ALPHA_PROPERTY, &val);
+    return az_ulib_ipc_call(handle, CIPHER_1_SET_ALPHA_PROPERTY, &val, NULL);
   }
 
   /*
@@ -98,7 +98,7 @@ extern "C"
    */
   static inline az_result cipher_1_get_delta(az_ulib_ipc_interface_handle handle, uint32_t* val)
   {
-    return az_ulib_ipc_get(handle, CIPHER_1_DELTA_PROPERTY, val);
+    return az_ulib_ipc_call(handle, CIPHER_1_GET_DELTA_PROPERTY, NULL, val);
   }
 
   /*
@@ -108,7 +108,7 @@ extern "C"
       az_ulib_ipc_interface_handle handle,
       const uint32_t val)
   {
-    return az_ulib_ipc_set(handle, CIPHER_1_DELTA_PROPERTY, &val);
+    return az_ulib_ipc_call(handle, CIPHER_1_SET_DELTA_PROPERTY, &val, NULL);
   }
 
 #ifdef __cplusplus

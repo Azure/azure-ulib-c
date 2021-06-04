@@ -123,7 +123,6 @@ static az_result call_w_str(uint32_t algorithm)
     char buffer_2[BUFFER_SIZE];
 
     // Encrypt string.
-    const az_span encrypt_command_name = AZ_SPAN_FROM_STR("encrypt");
     az_json_writer jw;
     az_span encrypt_model_in_json = AZ_SPAN_FROM_BUFFER(buffer_1);
     az_span encrypt_model_out_json = AZ_SPAN_FROM_BUFFER(buffer_2);
@@ -140,11 +139,11 @@ static az_result call_w_str(uint32_t algorithm)
     encrypt_model_in_json = az_json_writer_get_bytes_used_in_destination(&jw);
     CLOSE_STRING_IN_SPAN(encrypt_model_in_json);
 
-    az_ulib_capability_index command_index;
+    az_ulib_capability_index capability_index;
     AZ_ULIB_THROW_IF_AZ_ERROR(
-        az_ulib_ipc_try_get_capability(_cipher_1, encrypt_command_name, &command_index));
+        az_ulib_ipc_try_get_capability(_cipher_1, AZ_SPAN_FROM_STR("encrypt"), &capability_index));
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call_with_str(
-        _cipher_1, command_index, encrypt_model_in_json, &encrypt_model_out_json));
+        _cipher_1, capability_index, encrypt_model_in_json, &encrypt_model_out_json));
     CLOSE_STRING_IN_SPAN(encrypt_model_out_json);
     (void)printf(
         "cipher.1 encrypted \"%s\" to \"%s\".\r\n",
@@ -179,11 +178,10 @@ static az_result call_w_str(uint32_t algorithm)
     CLOSE_STRING_IN_SPAN(decrypt_model_in_json);
 
     az_span decrypt_model_out_json = AZ_SPAN_FROM_BUFFER(buffer_1);
-    const az_span decrypt_command_name = AZ_SPAN_FROM_STR("decrypt");
     AZ_ULIB_THROW_IF_AZ_ERROR(
-        az_ulib_ipc_try_get_capability(_cipher_1, decrypt_command_name, &command_index));
+        az_ulib_ipc_try_get_capability(_cipher_1, AZ_SPAN_FROM_STR("decrypt"), &capability_index));
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call_with_str(
-        _cipher_1, command_index, decrypt_model_in_json, &decrypt_model_out_json));
+        _cipher_1, capability_index, decrypt_model_in_json, &decrypt_model_out_json));
     CLOSE_STRING_IN_SPAN(decrypt_model_out_json);
     (void)printf(
         "cipher.1 decrypted \"%s\" to \"%s\".\r\n",

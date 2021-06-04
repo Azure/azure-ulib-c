@@ -19,12 +19,12 @@ static const char key[NUMBER_OF_KEYS][KEY_SIZE] = { "12345678912345678901" };
   (uint32_t)((uint32_t)a + ((uint32_t)b << 8) + ((uint32_t)c << 16) + ((uint32_t)d << 24))
 
 static int8_t alpha = 0;
-int8_t cipher_v1i1_alpha_get(void) { return alpha; }
-void cipher_v1i1_alpha_set(const int8_t val) { alpha = val; }
+int8_t cipher_v1i1_get_alpha(void) { return alpha; }
+void cipher_v1i1_set_alpha(const int8_t val) { alpha = val; }
 
 static uint32_t delta = 0;
-uint32_t cipher_v1i1_delta_get(void) { return delta; }
-void cipher_v1i1_delta_set(const uint32_t val) { delta = val; }
+uint32_t cipher_v1i1_get_delta(void) { return delta; }
+void cipher_v1i1_set_delta(const uint32_t val) { delta = val; }
 
 void cipher_v1i1_create(void)
 {

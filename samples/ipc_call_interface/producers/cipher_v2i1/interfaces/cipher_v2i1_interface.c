@@ -136,54 +136,77 @@ static az_result cipher_1_decrypt_span_wrapper(az_span model_in_span, az_span* m
   return AZ_ULIB_TRY_RESULT;
 }
 
-static az_result cipher_1_alpha_get_concrete(cipher_1_alpha_model* out)
+static az_result cipher_1_get_alpha_concrete(
+    const cipher_1_alpha_model* const in,
+    cipher_1_alpha_model* out)
 {
-  *out = cipher_v2i1_alpha_get();
-  return AZ_OK;
-}
-static az_result cipher_1_alpha_set_concrete(const cipher_1_alpha_model* const in)
-{
-  cipher_v2i1_alpha_set(*in);
-  return AZ_OK;
-}
-
-static az_result cipher_1_delta_get_concrete(cipher_1_delta_model* out)
-{
-  *out = cipher_v2i1_delta_get();
-  return AZ_OK;
-}
-static az_result cipher_1_delta_set_concrete(const cipher_1_delta_model* const in)
-{
-  cipher_v2i1_delta_set(*in);
+  (void)in;
+  *out = cipher_v2i1_get_alpha();
   return AZ_OK;
 }
 
-static const az_ulib_capability_descriptor CIPHER_1_CAPABILITIES[CIPHER_1_CAPABILITY_SIZE]
-    = { AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
+static az_result cipher_1_set_alpha_concrete(
+    const cipher_1_alpha_model* const in,
+    cipher_1_alpha_model* out)
+{
+  cipher_v2i1_set_alpha(*in);
+  if (out != NULL)
+  {
+    *out = cipher_v2i1_get_alpha();
+  }
+  return AZ_OK;
+}
+
+static az_result cipher_1_get_delta_concrete(
+    const cipher_1_delta_model* const in,
+    cipher_1_delta_model* out)
+{
+  (void)in;
+  *out = cipher_v2i1_get_delta();
+  return AZ_OK;
+}
+
+static az_result cipher_1_set_delta_concrete(
+    const cipher_1_delta_model* const in,
+    cipher_1_delta_model* out)
+{
+  cipher_v2i1_set_delta(*in);
+  if (out != NULL)
+  {
+    *out = cipher_v2i1_get_delta();
+  }
+  return AZ_OK;
+}
+
+static const az_ulib_capability_descriptor CIPHER_1_CAPABILITIES[]
+    = { AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
             CIPHER_1_ENCRYPT_COMMAND_NAME,
             cipher_1_encrypt_concrete,
             cipher_1_encrypt_span_wrapper),
-        AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
+        AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
             CIPHER_1_DECRYPT_COMMAND_NAME,
             cipher_1_decrypt_concrete,
             cipher_1_decrypt_span_wrapper),
-        AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(
-            CIPHER_1_ALPHA_PROPERTY_NAME,
-            cipher_1_alpha_get_concrete,
-            cipher_1_alpha_set_concrete,
-            NULL,
+        AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
+            CIPHER_1_GET_ALPHA_PROPERTY_NAME,
+            cipher_1_get_alpha_concrete,
             NULL),
-        AZ_ULIB_DESCRIPTOR_ADD_PROPERTY(
-            CIPHER_1_DELTA_PROPERTY_NAME,
-            cipher_1_delta_get_concrete,
-            cipher_1_delta_set_concrete,
-            NULL,
+        AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
+            CIPHER_1_SET_ALPHA_PROPERTY_NAME,
+            cipher_1_set_alpha_concrete,
+            NULL),
+        AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
+            CIPHER_1_GET_DELTA_PROPERTY_NAME,
+            cipher_1_get_delta_concrete,
+            NULL),
+        AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
+            CIPHER_1_SET_DELTA_PROPERTY_NAME,
+            cipher_1_set_delta_concrete,
             NULL) };
 
 static const az_ulib_interface_descriptor CIPHER_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
     CIPHER_1_INTERFACE_NAME,
     CIPHER_1_INTERFACE_VERSION,
-    CIPHER_1_CAPABILITY_SIZE,
     CIPHER_1_CAPABILITIES);
 
 az_result publish_cipher_v2i1_interface(void)

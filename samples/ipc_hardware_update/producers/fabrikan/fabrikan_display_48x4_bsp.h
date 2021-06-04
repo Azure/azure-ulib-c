@@ -23,6 +23,9 @@ extern "C"
   void fabrikan_display_48x4_bsp_print(const char* buf, size_t size);
   void fabrikan_display_48x4_bsp_invalidate(void);
 
+  int32_t fabrikan_display_48x4_bsp_get_max_x(void);
+  int32_t fabrikan_display_48x4_bsp_get_max_y(void);
+
 #ifdef __cplusplus
 }
 #endif

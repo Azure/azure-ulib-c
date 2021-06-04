@@ -26,7 +26,6 @@ extern "C"
  */
 #define DISPLAY_1_INTERFACE_NAME "display"
 #define DISPLAY_1_INTERFACE_VERSION 1
-#define DISPLAY_1_CAPABILITY_SIZE 3
 
 /*
  * Define cls (clear screen) command on display interface.
@@ -61,6 +60,20 @@ extern "C"
 #define DISPLAY_1_INVALIDATE_COMMAND_NAME "invalidate"
   typedef void display_1_invalidate_model_in;
   typedef void display_1_invalidate_model_out;
+
+/*
+ * Define display maximum X dimensions property on display interface.
+ */
+#define DISPLAY_1_GET_MAX_X_PROPERTY (az_ulib_capability_index)3
+#define DISPLAY_1_GET_MAX_X_PROPERTY_NAME "get_max_x"
+  typedef int32_t display_1_max_x_model;
+
+/*
+ * Define display maximum Y dimensions property on display interface.
+ */
+#define DISPLAY_1_GET_MAX_Y_PROPERTY (az_ulib_capability_index)4
+#define DISPLAY_1_GET_MAX_Y_PROPERTY_NAME "get_max_y"
+  typedef int32_t display_1_max_y_model;
 
 #ifdef __cplusplus
 }

@@ -171,11 +171,11 @@ static az_result query_1_next_span_wrapper(az_span model_in_span, az_span* model
 }
 
 static const az_ulib_capability_descriptor QUERY_1_CAPABILITIES[QUERY_1_CAPABILITY_SIZE]
-    = { AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
+    = { AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
             QUERY_1_QUERY_COMMAND_NAME,
             query_1_query_concrete,
             query_1_query_span_wrapper),
-        AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
+        AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
             QUERY_1_NEXT_COMMAND_NAME,
             query_1_next_concrete,
             query_1_next_span_wrapper) };
@@ -183,7 +183,6 @@ static const az_ulib_capability_descriptor QUERY_1_CAPABILITIES[QUERY_1_CAPABILI
 static const az_ulib_interface_descriptor QUERY_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
     IPC_QUERY_1_INTERFACE_NAME,
     QUERY_1_INTERFACE_VERSION,
-    QUERY_1_CAPABILITY_SIZE,
     QUERY_1_CAPABILITIES);
 
 az_result _az_ulib_ipc_query_interface_publish(void)

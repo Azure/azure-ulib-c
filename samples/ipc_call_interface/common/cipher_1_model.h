@@ -27,7 +27,6 @@ extern "C"
  */
 #define CIPHER_1_INTERFACE_NAME "cipher"
 #define CIPHER_1_INTERFACE_VERSION 1
-#define CIPHER_1_CAPABILITY_SIZE 4
 
 /*
  * Define encrypt command on cipher interface.
@@ -66,15 +65,19 @@ extern "C"
 /*
  * Define alpha property on cipher interface.
  */
-#define CIPHER_1_ALPHA_PROPERTY (az_ulib_capability_index)2
-#define CIPHER_1_ALPHA_PROPERTY_NAME "alpha"
+#define CIPHER_1_GET_ALPHA_PROPERTY (az_ulib_capability_index)2
+#define CIPHER_1_GET_ALPHA_PROPERTY_NAME "get_alpha"
+#define CIPHER_1_SET_ALPHA_PROPERTY (az_ulib_capability_index)3
+#define CIPHER_1_SET_ALPHA_PROPERTY_NAME "set_alpha"
   typedef int8_t cipher_1_alpha_model;
 
 /*
  * Define delta property on cipher interface.
  */
-#define CIPHER_1_DELTA_PROPERTY (az_ulib_capability_index)3
-#define CIPHER_1_DELTA_PROPERTY_NAME "delta"
+#define CIPHER_1_GET_DELTA_PROPERTY (az_ulib_capability_index)4
+#define CIPHER_1_GET_DELTA_PROPERTY_NAME "get_delta"
+#define CIPHER_1_SET_DELTA_PROPERTY (az_ulib_capability_index)5
+#define CIPHER_1_SET_DELTA_PROPERTY_NAME "set_delta"
   typedef uint32_t cipher_1_delta_model;
 
 #ifdef __cplusplus
