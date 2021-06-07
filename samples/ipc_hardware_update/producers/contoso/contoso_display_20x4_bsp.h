@@ -23,6 +23,9 @@ extern "C"
   void contoso_display_20x4_bsp_print(const char* buf, size_t size);
   void contoso_display_20x4_bsp_invalidate(void);
 
+  int32_t contoso_display_20x4_bsp_get_max_x(void);
+  int32_t contoso_display_20x4_bsp_get_max_y(void);
+
 #ifdef __cplusplus
 }
 #endif

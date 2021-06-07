@@ -24,10 +24,10 @@
 
 #define IPC_QUERY_1_INTERFACE_NAME "ipc_" QUERY_1_INTERFACE_NAME
 
-static az_result query_1_query_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
+static az_result query_1_query_concrete(
+    const query_1_query_model_in* const in,
+    query_1_query_model_out* out)
 {
-  const query_1_query_model_in* const in = (const query_1_query_model_in* const)model_in;
-  query_1_query_model_out* out = (query_1_query_model_out*)model_out;
   return az_ulib_ipc_query(in->query, out->result, &(out->continuation_token));
 }
 
@@ -111,8 +111,7 @@ static az_result query_1_query_span_wrapper(az_span model_in_span, az_span* mode
     query_1_query_model_out query_model_out = { .result = &dest_span, .continuation_token = 0 };
 
     // Call.
-    AZ_ULIB_THROW_IF_AZ_ERROR(query_1_query_concrete(
-        (az_ulib_model_in)&query_model_in, (az_ulib_model_out)&query_model_out));
+    AZ_ULIB_THROW_IF_AZ_ERROR(query_1_query_concrete(&query_model_in, &query_model_out));
 
     // Marshalling query_model_out to JSON in model_out_span.
     AZ_ULIB_THROW_IF_AZ_ERROR(marshalling_model_out_to_json(&query_model_out, model_out_span));
@@ -122,10 +121,10 @@ static az_result query_1_query_span_wrapper(az_span model_in_span, az_span* mode
   return AZ_ULIB_TRY_RESULT;
 }
 
-static az_result query_1_next_concrete(az_ulib_model_in model_in, az_ulib_model_out model_out)
+static az_result query_1_next_concrete(
+    const query_1_next_model_in* const in,
+    query_1_next_model_out* out)
 {
-  const query_1_next_model_in* const in = (const query_1_next_model_in* const)model_in;
-  query_1_next_model_out* out = (query_1_next_model_out*)model_out;
   out->continuation_token = in->continuation_token;
   return az_ulib_ipc_query_next(&(out->continuation_token), out->result);
 }
@@ -157,8 +156,7 @@ static az_result query_1_next_span_wrapper(az_span model_in_span, az_span* model
     query_1_next_model_out next_model_out = { .result = &dest_span, .continuation_token = 0 };
 
     // Call.
-    AZ_ULIB_THROW_IF_AZ_ERROR(query_1_next_concrete(
-        (az_ulib_model_in)&next_model_in, (az_ulib_model_out)&next_model_out));
+    AZ_ULIB_THROW_IF_AZ_ERROR(query_1_next_concrete(&next_model_in, &next_model_out));
 
     if (AZ_ULIB_TRY_RESULT != AZ_ULIB_EOF)
     {
@@ -173,11 +171,11 @@ static az_result query_1_next_span_wrapper(az_span model_in_span, az_span* model
 }
 
 static const az_ulib_capability_descriptor QUERY_1_CAPABILITIES[QUERY_1_CAPABILITY_SIZE]
-    = { AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
+    = { AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
             QUERY_1_QUERY_COMMAND_NAME,
             query_1_query_concrete,
             query_1_query_span_wrapper),
-        AZ_ULIB_DESCRIPTOR_ADD_COMMAND(
+        AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
             QUERY_1_NEXT_COMMAND_NAME,
             query_1_next_concrete,
             query_1_next_span_wrapper) };
@@ -185,7 +183,6 @@ static const az_ulib_capability_descriptor QUERY_1_CAPABILITIES[QUERY_1_CAPABILI
 static const az_ulib_interface_descriptor QUERY_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
     IPC_QUERY_1_INTERFACE_NAME,
     QUERY_1_INTERFACE_VERSION,
-    QUERY_1_CAPABILITY_SIZE,
     QUERY_1_CAPABILITIES);
 
 az_result _az_ulib_ipc_query_interface_publish(void)

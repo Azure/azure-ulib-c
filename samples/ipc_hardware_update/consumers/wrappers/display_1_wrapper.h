@@ -79,6 +79,24 @@ extern "C"
     return az_ulib_ipc_call(handle, DISPLAY_1_INVALIDATE_COMMAND, NULL, NULL);
   }
 
+  /*
+   * Azure Callable Wrapper for display get max_x.
+   */
+  static inline az_result display_1_get_max_x(az_ulib_ipc_interface_handle handle, int32_t* max_x)
+  {
+    // Call
+    return az_ulib_ipc_call(handle, DISPLAY_1_GET_MAX_X_PROPERTY, NULL, max_x);
+  }
+
+  /*
+   * Azure Callable Wrapper for display get max_y.
+   */
+  static inline az_result display_1_get_max_y(az_ulib_ipc_interface_handle handle, int32_t* max_y)
+  {
+    // Call
+    return az_ulib_ipc_call(handle, DISPLAY_1_GET_MAX_Y_PROPERTY, NULL, max_y);
+  }
+
 #ifdef __cplusplus
 }
 #endif

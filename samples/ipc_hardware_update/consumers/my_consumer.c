@@ -24,6 +24,21 @@ static const size_t bunny_11_size = sizeof(bunny_11) - 1;
 
 static az_ulib_ipc_interface_handle _display_1;
 
+static void release_display(az_result error)
+{
+  if (error == AZ_ERROR_ITEM_NOT_FOUND)
+  {
+    (void)printf("display.1 was uninstalled.\r\n");
+  }
+  else
+  {
+    (void)printf("my consumer uses display.1.cls failed with error %" PRIi32 ".\r\n", error);
+  }
+  (void)printf("Release the handle.\r\n");
+  display_1_destroy(_display_1);
+  _display_1 = NULL;
+}
+
 static void get_handle_if_need(void)
 {
   az_result result;
@@ -31,7 +46,18 @@ static void get_handle_if_need(void)
   {
     if ((result = display_1_create(&_display_1)) == AZ_OK)
     {
-      (void)printf("My consumer got display.1 interface with success.\r\n");
+      AZ_ULIB_TRY
+      {
+        int32_t max_x = 0;
+        int32_t max_y = 0;
+        AZ_ULIB_THROW_IF_AZ_ERROR(display_1_get_max_x(_display_1, &max_x));
+        AZ_ULIB_THROW_IF_AZ_ERROR(display_1_get_max_y(_display_1, &max_y));
+        (void)printf(
+            "My consumer got display.1 with dimensions %" PRIi32 "x%" PRIi32 " with success.\r\n",
+            max_x,
+            max_y);
+      }
+      AZ_ULIB_CATCH(...) { release_display(AZ_ULIB_TRY_RESULT); }
     }
     else if (result == AZ_ERROR_ITEM_NOT_FOUND)
     {
@@ -74,22 +100,7 @@ void my_consumer_do_display(void)
           AZ_ULIB_THROW_IF_AZ_ERROR(display_1_invalidate(_display_1));
           state = 1;
         }
-        AZ_ULIB_CATCH(...)
-        {
-          if (AZ_ULIB_TRY_RESULT == AZ_ERROR_ITEM_NOT_FOUND)
-          {
-            (void)printf("display.1 was uninstalled.\r\n");
-          }
-          else
-          {
-            (void)printf(
-                "my consumer uses display.1.cls failed with error %" PRIi32 ".\r\n",
-                AZ_ULIB_TRY_RESULT);
-          }
-          (void)printf("Release the handle.\r\n");
-          display_1_destroy(_display_1);
-          _display_1 = NULL;
-        }
+        AZ_ULIB_CATCH(...) { release_display(AZ_ULIB_TRY_RESULT); }
         break;
       }
       case 1:
@@ -102,19 +113,7 @@ void my_consumer_do_display(void)
         }
         AZ_ULIB_CATCH(...)
         {
-          if (AZ_ULIB_TRY_RESULT == AZ_ERROR_ITEM_NOT_FOUND)
-          {
-            (void)printf("display.1 was uninstalled.\r\n");
-          }
-          else
-          {
-            (void)printf(
-                "my consumer uses display.1.cls failed with error %" PRIi32 ".\r\n",
-                AZ_ULIB_TRY_RESULT);
-          }
-          (void)printf("Release the handle.\r\n");
-          display_1_destroy(_display_1);
-          _display_1 = NULL;
+          release_display(AZ_ULIB_TRY_RESULT);
           state = 0;
         }
         break;
@@ -129,15 +128,7 @@ void my_consumer_do_display(void)
         }
         AZ_ULIB_CATCH(...)
         {
-          if (AZ_ULIB_TRY_RESULT == AZ_ERROR_ITEM_NOT_FOUND)
-            (void)printf("display.1 was uninstalled.\r\n");
-          else
-            (void)printf(
-                "my consumer uses display.1.cls failed with error %" PRIi32 ".\r\n",
-                AZ_ULIB_TRY_RESULT);
-          (void)printf("Release the handle.\r\n");
-          display_1_destroy(_display_1);
-          _display_1 = NULL;
+          release_display(AZ_ULIB_TRY_RESULT);
           state = 0;
         }
         break;

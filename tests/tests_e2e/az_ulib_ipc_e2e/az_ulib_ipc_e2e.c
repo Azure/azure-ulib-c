@@ -133,8 +133,8 @@ static void az_ulib_ipc_e2e_call_sync_command_succeed(void** state)
   az_ulib_ipc_interface_handle interface_handle;
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
-          MY_INTERFACE_1_V123._internal.name,
-          MY_INTERFACE_1_V123._internal.version,
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle),
       AZ_OK);
@@ -166,8 +166,8 @@ static void az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed(void** state)
   az_ulib_ipc_interface_handle interface_handle;
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
-          MY_INTERFACE_1_V123._internal.name,
-          MY_INTERFACE_1_V123._internal.version,
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle),
       AZ_OK);
@@ -199,8 +199,8 @@ static void az_ulib_ipc_e2e_release_interface_in_the_call_succeed(void** state)
   az_ulib_ipc_interface_handle interface_handle;
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
-          MY_INTERFACE_1_V123._internal.name,
-          MY_INTERFACE_1_V123._internal.version,
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle),
       AZ_OK);
@@ -230,8 +230,8 @@ static void az_ulib_ipc_e2e_deinit_ipc_in_the_call_failed(void** state)
   az_ulib_ipc_interface_handle interface_handle;
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
-          MY_INTERFACE_1_V123._internal.name,
-          MY_INTERFACE_1_V123._internal.version,
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle),
       AZ_OK);
@@ -261,8 +261,8 @@ static void az_ulib_ipc_e2e_call_recursive_in_the_call_succeed(void** state)
   az_ulib_ipc_interface_handle interface_handle;
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
-          MY_INTERFACE_1_V123._internal.name,
-          MY_INTERFACE_1_V123._internal.version,
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle),
       AZ_OK);
@@ -270,7 +270,7 @@ static void az_ulib_ipc_e2e_call_recursive_in_the_call_succeed(void** state)
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_CALL_AGAIN;
   in.handle = interface_handle;
-  in.command_index = MY_INTERFACE_MY_COMMAND;
+  in.capability_index = MY_INTERFACE_MY_COMMAND;
   az_result out = AZ_ULIB_PENDING;
 
   /// act
@@ -294,8 +294,8 @@ static void az_ulib_ipc_e2e_unpublish_interface_before_call_succeed(void** state
   az_ulib_ipc_interface_handle interface_handle;
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
-          MY_INTERFACE_1_V123._internal.name,
-          MY_INTERFACE_1_V123._internal.version,
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle),
       AZ_OK);
@@ -331,8 +331,8 @@ static void az_ulib_ipc_e2e_release_after_unpublish_succeed(void** state)
   az_ulib_ipc_interface_handle interface_handle;
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
-          MY_INTERFACE_1_V123._internal.name,
-          MY_INTERFACE_1_V123._internal.version,
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle),
       AZ_OK);
@@ -368,8 +368,8 @@ static void az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_succeed(void**
   az_ulib_ipc_interface_handle interface_handle;
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
-          MY_INTERFACE_1_V123._internal.name,
-          MY_INTERFACE_1_V123._internal.version,
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle),
       AZ_OK);
@@ -405,8 +405,8 @@ static void az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_time
   az_ulib_ipc_interface_handle interface_handle;
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
-          MY_INTERFACE_1_V123._internal.name,
-          MY_INTERFACE_1_V123._internal.version,
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle),
       AZ_OK);
@@ -456,8 +456,8 @@ static void az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_and_unpublish_
   az_ulib_ipc_interface_handle interface_handle;
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
-          MY_INTERFACE_1_V123._internal.name,
-          MY_INTERFACE_1_V123._internal.version,
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME),
+          MY_INTERFACE_1_123_INTERFACE_VERSION,
           AZ_ULIB_VERSION_EQUALS_TO,
           &interface_handle),
       AZ_OK);
