@@ -79,6 +79,11 @@ if (CMAKE_C_COMPILER_ID MATCHES "GNU")
   set(NO_CLOBBERED_WARNING "-Wno-clobbered")
 endif()
 
+if(UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
+endif()
+
 #Include Errors and Warnings configuration.
 include(build_all/global_compile_options.txt)
 
