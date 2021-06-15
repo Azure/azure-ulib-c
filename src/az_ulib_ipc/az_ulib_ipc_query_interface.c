@@ -2,13 +2,6 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-/********************************************************************
- * This code was auto-generated from query v1 DL.
- *
- * Implement the code under the concrete functions.
- *
- ********************************************************************/
-
 #include "_az_ulib_ipc_query.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"

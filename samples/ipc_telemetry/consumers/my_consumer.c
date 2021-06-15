@@ -41,13 +41,13 @@ void my_consumer_create(void)
         AZ_ULIB_VERSION_EQUALS_TO,
         &_sensors_1));
 
-    (void)printf("Subscribe for temperature.\r\n");
+    (void)printf("Subscribe to temperature.\r\n");
     az_ulib_telemetry_subscribe_model temperature_in
         = { .context = NULL, .callback = (az_ulib_telemetry_callback)temperature_callback };
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call(
         _sensors_1, SENSORS_1_SUBSCRIBE_TEMPERATURE_TELEMETRY, &temperature_in, NULL));
 
-    (void)printf("Subscribe for accelerometer.\r\n");
+    (void)printf("Subscribe to accelerometer.\r\n");
     az_ulib_telemetry_subscribe_model accelerometer_in
         = { .context = NULL, .callback = (az_ulib_telemetry_callback)accelerometer_callback };
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call(
@@ -64,13 +64,13 @@ void my_consumer_destroy(void)
   (void)printf("Destroy my consumer\r\n");
   AZ_ULIB_TRY
   {
-    (void)printf("unsubscribe for temperature.\r\n");
+    (void)printf("unsubscribe from temperature.\r\n");
     az_ulib_telemetry_subscribe_model temperature_in
         = { .context = NULL, .callback = (az_ulib_telemetry_callback)temperature_callback };
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call(
         _sensors_1, SENSORS_1_UNSUBSCRIBE_TEMPERATURE_TELEMETRY, &temperature_in, NULL));
 
-    (void)printf("unsubscribe for accelerometer.\r\n");
+    (void)printf("unsubscribe from accelerometer.\r\n");
     az_ulib_telemetry_subscribe_model accelerometer_in
         = { .context = NULL, .callback = (az_ulib_telemetry_callback)accelerometer_callback };
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call(

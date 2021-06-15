@@ -45,14 +45,14 @@ int main(void)
     /* Run the telemetry for 5 seconds. */
     az_pal_os_sleep(5000);
 
-    /* Destroy consumer to unsubscribe for the telemetries in sensors.1 interface. */
+    /* Destroy consumer to unsubscribe from the telemetries in sensors.1 interface. */
     my_consumer_destroy();
     (void)printf("\r\n");
 
-    /* Wait 2 seconds to check that there is no more telemetries. */
+    /* Wait 2 seconds to check that there are no more telemetries. */
     az_pal_os_sleep(2000);
 
-    /* Consumer subscribe again for telemetries. */
+    /* Consumer subscribe to telemetries again. */
     my_consumer_create();
     (void)printf("\r\n");
 
