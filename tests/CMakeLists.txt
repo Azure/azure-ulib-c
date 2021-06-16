@@ -6,11 +6,6 @@ cmake_minimum_required(VERSION 3.10)
 
 ulib_use_permissive_rules_for_samples_and_tests()
 
-if(UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
-endif()
-
 if(${UNIT_TESTING})
     add_subdirectory(tests_ut/az_ulib_ipc_ut)
     add_subdirectory(tests_ut/az_ulib_ustream_ut)

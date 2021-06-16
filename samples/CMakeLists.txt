@@ -3,7 +3,8 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ustream_basic)
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ustream_split)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ipc_call_interface)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ipc_hardware_update)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ipc_telemetry)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ustream_basic)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/ustream_split)

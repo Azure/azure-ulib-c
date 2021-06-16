@@ -10,6 +10,7 @@
 #define AZ_ULIB_PAL_OS_API_H
 
 #include "az_ulib_pal_os.h"
+#include "az_ulib_result.h"
 
 #ifndef __cplusplus
 #include <stdint.h>
@@ -55,6 +56,37 @@ void az_pal_os_lock_release(az_ulib_pal_os_lock* lock);
  * @param[in]       sleep_time_ms    The `uint32_t` with the number of milliseconds to sleep.
  */
 void az_pal_os_sleep(uint32_t sleep_time_ms);
+
+/**
+ * @brief   Create a thread.
+ *
+ * @param[in]       function_ptr    The function with prototype `az_ulib_pal_start_function_ptr`
+ *                                  that the thread shall run.
+ * @param[in]       args            The `az_ulib_pal_thread_args` with the arguments to
+ *                                  to the thread.
+ * @param[out]      handle          The `az_ulib_pal_thread_handle` to return the thread handle.
+ *
+ * @return The #az_result with the thread creation result.
+ *  @retval #AZ_OK                  If the thread was created with success.
+ *  @retval #AZ_ERROR_OUT_OF_MEMORY If there is not enough memory to create the new thread.
+ *  @retval #AZ_ERROR_ULIB_SYSTEM   If the create API in the OS return error.
+ */
+az_result az_pal_os_thread_create(
+    az_ulib_pal_start_function_ptr function_ptr,
+    az_ulib_pal_thread_args args,
+    az_ulib_pal_thread_handle* handle);
+
+/**
+ * @brief   Join a thread.
+ *
+ * @param[out]      handle          The `az_ulib_pal_thread_handle` with the thread handle.
+ * @param[out]      res             The `int` to return the thread join result.
+ *
+ * @return The #az_result with the join to a thread result.
+ *  @retval #AZ_OK                  If the thread join was done with success.
+ *  @retval #AZ_ERROR_ULIB_SYSTEM   If the join API in the OS return error.
+ */
+az_result az_pal_os_thread_join(az_ulib_pal_thread_handle handle, int* res);
 
 #ifdef __cplusplus
 }

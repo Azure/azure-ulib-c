@@ -101,6 +101,53 @@ typedef az_result (*az_ulib_capability)(az_ulib_model_in model_in, az_ulib_model
 typedef az_result (
     *az_ulib_capability_span_wrapper)(az_span model_in_span, az_span* model_out_span);
 
+/**
+ * @brief       Context that uniquely identifies the callback.
+ *
+ * The callback context is the way that the capability's caller associates the call to its answer.
+ * It can have any value that is meaningful for the caller.
+ */
+typedef void* az_ulib_callback_context;
+
+/**
+ * @brief       Telemetry callback signature.
+ *
+ * This type defines the signature of a callback for telemetry notification. This is the callback
+ * that components shall implement to receive notification when subscribe for a telemetry.
+ *
+ * As any event callback, this function shall be small and quick, developers shall avoid any complex
+ * business logic here. The `model_in` shall be defined as part of the interface definition. The
+ * caller may release the `model_in` as soon as this callback returns, so if the callee needs the
+ * `model_in` information in the future, it shall copy this content locally.
+ *
+ * @param[in]   context     The `az_ulib_callback_context` that unique identify this capability to
+ *                          the callback function.
+ * @param[in]   model_in    The `az_ulib_model_in` that contains the telemetry information. It may
+ *                          be `NULL`, the IPC will not validate it. The callback shall implement
+ *                          any needed validation.
+ */
+typedef void (
+    *az_ulib_telemetry_callback)(az_ulib_callback_context context, az_ulib_model_in model_in);
+
+/** Name of telemetry context in string based protocol. */
+#define AZ_ULIB_TELEMETRY_SUBSCRIBE_CONTEXT_NAME "context"
+
+/** Name of telemetry callback in string based protocol. */
+#define AZ_ULIB_TELEMETRY_SUBSCRIBE_CALLBACK_NAME "callback"
+
+/*
+ * @brief Model in to subscribe and unsubscribe from telemetry.
+ */
+typedef struct
+{
+  /** callback context. */
+  az_ulib_callback_context context;
+
+  /** callback pointer. */
+  az_ulib_telemetry_callback callback;
+
+} az_ulib_telemetry_subscribe_model;
+
 #include "azure/core/_az_cfg_suffix.h"
 
 #endif /* AZ_ULIB_CAPABILITY_API_H */
