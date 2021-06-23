@@ -3,17 +3,15 @@
 // See LICENSE file in the project root for full license information.
 
 /********************************************************************
- * This code was auto-generated from display v1 DL.
- *
- * Implement the code under the concrete functions.
- *
+ * This code was auto-generated from display v1 DL and shall not be
+ * modified.
  ********************************************************************/
 
-#include "contoso_display_20x4_1_interface.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
+#include "contoso_display_20x4_1_interface.h"
 #include "contoso_display_20x4_bsp.h"
 #include "display_1_model.h"
 
