@@ -230,7 +230,7 @@ static az_result my_command_span_wrapper(az_span model_in_span, az_span* model_o
  * Publish MY_INTERFACE_1_V123
  */
 static const az_ulib_capability_descriptor
-    MY_INTERFACE_1_V123_CAPABILITIES[MY_INTERFACE_1_123_CAPABILITY_SIZE]
+    MY_INTERFACE_1_V123_CAPABILITIES[]
     = { AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
             MY_INTERFACE_GET_MY_PROPERTY_NAME,
             get_my_property,
@@ -246,6 +246,8 @@ static const az_ulib_capability_descriptor
             my_command,
             my_command_span_wrapper) };
 const az_ulib_interface_descriptor MY_INTERFACE_1_V123 = AZ_ULIB_DESCRIPTOR_CREATE(
+    MY_PACKAGE_1_NAME,
+    MY_PACKAGE_1_VERSION,
     MY_INTERFACE_1_123_INTERFACE_NAME,
     MY_INTERFACE_1_123_INTERFACE_VERSION,
     MY_INTERFACE_1_V123_CAPABILITIES);
@@ -260,17 +262,36 @@ az_result az_ulib_test_my_interface_1_v123_unpublish(uint32_t wait_ms)
   return az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123, wait_ms);
 }
 
+const az_ulib_interface_descriptor MY_INTERFACE_1_V123_P2 = AZ_ULIB_DESCRIPTOR_CREATE(
+    MY_PACKAGE_2_NAME,
+    MY_PACKAGE_2_VERSION,
+    MY_INTERFACE_1_123_INTERFACE_NAME,
+    MY_INTERFACE_1_123_INTERFACE_VERSION,
+    MY_INTERFACE_1_V123_CAPABILITIES);
+
+az_result az_ulib_test_my_interface_1_v123_p2_publish(az_ulib_ipc_interface_handle* interface_handle)
+{
+  return az_ulib_ipc_publish(&MY_INTERFACE_1_V123_P2, interface_handle);
+}
+
+az_result az_ulib_test_my_interface_1_v123_p2_unpublish(uint32_t wait_ms)
+{
+  return az_ulib_ipc_unpublish(&MY_INTERFACE_1_V123_P2, wait_ms);
+}
+
 /*
  * Publish MY_INTERFACE_1_V2
  */
 static const az_ulib_capability_descriptor
-    MY_INTERFACE_1_V2_CAPABILITIES[MY_INTERFACE_1_2_CAPABILITY_SIZE]
+    MY_INTERFACE_1_V2_CAPABILITIES[]
     = { AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(MY_INTERFACE_GET_MY_PROPERTY_NAME, get_my_property, NULL),
         AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(MY_INTERFACE_SET_MY_PROPERTY_NAME, set_my_property, NULL),
         AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY(MY_INTERFACE_MY_TELEMETRY_NAME),
         AZ_ULIB_DESCRIPTOR_ADD_TELEMETRY(MY_INTERFACE_MY_TELEMETRY2_NAME),
         AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(MY_INTERFACE_MY_COMMAND_NAME, my_command, NULL) };
 static const az_ulib_interface_descriptor MY_INTERFACE_1_V2 = AZ_ULIB_DESCRIPTOR_CREATE(
+    MY_PACKAGE_1_NAME,
+    MY_PACKAGE_1_VERSION,
     MY_INTERFACE_1_2_INTERFACE_NAME,
     MY_INTERFACE_1_2_INTERFACE_VERSION,
     MY_INTERFACE_1_V2_CAPABILITIES);
@@ -289,7 +310,7 @@ az_result az_ulib_test_my_interface_1_v2_unpublish(uint32_t wait_ms)
  * Publish MY_INTERFACE_2_V123
  */
 static const az_ulib_capability_descriptor
-    MY_INTERFACE_2_V123_CAPABILITIES[MY_INTERFACE_2_123_CAPABILITY_SIZE]
+    MY_INTERFACE_2_V123_CAPABILITIES[]
     = { AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
             MY_INTERFACE_GET_MY_PROPERTY_NAME,
             get_my_property,
@@ -302,6 +323,8 @@ static const az_ulib_capability_descriptor
             my_command,
             my_command_span_wrapper) };
 static const az_ulib_interface_descriptor MY_INTERFACE_2_V123 = AZ_ULIB_DESCRIPTOR_CREATE(
+    MY_PACKAGE_1_NAME,
+    MY_PACKAGE_1_VERSION,
     MY_INTERFACE_2_123_INTERFACE_NAME,
     MY_INTERFACE_2_123_INTERFACE_VERSION,
     MY_INTERFACE_2_V123_CAPABILITIES);
@@ -320,7 +343,7 @@ az_result az_ulib_test_my_interface_2_v123_unpublish(uint32_t wait_ms)
  * Publish MY_INTERFACE_3_V123
  */
 static const az_ulib_capability_descriptor
-    MY_INTERFACE_3_V123_CAPABILITIES[MY_INTERFACE_3_123_CAPABILITY_SIZE]
+    MY_INTERFACE_3_V123_CAPABILITIES[]
     = { AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
             MY_INTERFACE_GET_MY_PROPERTY_NAME,
             get_my_property,
@@ -336,6 +359,8 @@ static const az_ulib_capability_descriptor
             my_command,
             my_command_span_wrapper) };
 static const az_ulib_interface_descriptor MY_INTERFACE_3_V123 = AZ_ULIB_DESCRIPTOR_CREATE(
+    MY_PACKAGE_1_NAME,
+    MY_PACKAGE_1_VERSION,
     MY_INTERFACE_3_123_INTERFACE_NAME,
     MY_INTERFACE_3_123_INTERFACE_VERSION,
     MY_INTERFACE_3_V123_CAPABILITIES);
@@ -351,16 +376,66 @@ az_result az_ulib_test_my_interface_3_v123_unpublish(uint32_t wait_ms)
 }
 
 static const az_ulib_interface_descriptor MY_DESCRIPTOR_LIST[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE]
-    = { AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1000, MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1001, MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1002, MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1003, MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1004, MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1005, MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1006, MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1007, MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1008, MY_INTERFACE_3_V123_CAPABILITIES),
-        AZ_ULIB_DESCRIPTOR_CREATE("MY_INTERFACE", 1009, MY_INTERFACE_3_V123_CAPABILITIES) };
+    = { AZ_ULIB_DESCRIPTOR_CREATE(
+            MY_PACKAGE_1_NAME,
+            MY_PACKAGE_1_VERSION,
+            "MY_INTERFACE",
+            1000,
+            MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            MY_PACKAGE_1_NAME,
+            MY_PACKAGE_1_VERSION,
+            "MY_INTERFACE",
+            1001,
+            MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            MY_PACKAGE_1_NAME,
+            MY_PACKAGE_1_VERSION,
+            "MY_INTERFACE",
+            1002,
+            MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            MY_PACKAGE_1_NAME,
+            MY_PACKAGE_1_VERSION,
+            "MY_INTERFACE",
+            1003,
+            MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            MY_PACKAGE_1_NAME,
+            MY_PACKAGE_1_VERSION,
+            "MY_INTERFACE",
+            1004,
+            MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            MY_PACKAGE_1_NAME,
+            MY_PACKAGE_1_VERSION,
+            "MY_INTERFACE",
+            1005,
+            MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            MY_PACKAGE_1_NAME,
+            MY_PACKAGE_1_VERSION,
+            "MY_INTERFACE",
+            1006,
+            MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            MY_PACKAGE_1_NAME,
+            MY_PACKAGE_1_VERSION,
+            "MY_INTERFACE",
+            1007,
+            MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            MY_PACKAGE_1_NAME,
+            MY_PACKAGE_1_VERSION,
+            "MY_INTERFACE",
+            1008,
+            MY_INTERFACE_3_V123_CAPABILITIES),
+        AZ_ULIB_DESCRIPTOR_CREATE(
+            MY_PACKAGE_1_NAME,
+            MY_PACKAGE_1_VERSION,
+            "MY_INTERFACE",
+            1009,
+            MY_INTERFACE_3_V123_CAPABILITIES) };
 
 az_result az_ulib_test_my_interface_publish(int i)
 {

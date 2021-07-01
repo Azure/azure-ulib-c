@@ -63,11 +63,17 @@ typedef struct az_ulib_interface_descriptor_tag
 {
   struct
   {
+    /** The `\0` terminated `az_span` with the package name. */
+    const az_span pkg_name;
+
+    /** The #az_ulib_version with the package version. */
+    const az_ulib_version pkg_version;
+
     /** The `\0` terminated `az_span` with the interface name. */
-    const az_span name;
+    const az_span intf_name;
 
     /** The #az_ulib_version with the interface version. */
-    const az_ulib_version version;
+    const az_ulib_version intf_version;
 
     /** The #az_ulib_capability_index with the number of capabilities in the interface. */
     const az_ulib_capability_index size;
@@ -94,21 +100,29 @@ typedef void* az_ulib_ipc_interface_handle;
  * interface_var. In this way, no other components on the system needs to copy any of the data on
  * the descriptor.
  *
+ * @param[in]   package_name      The `/0` terminated `const char* const` with the package name.
+ *                                It cannot be `NULL` and shall be allocated in a way that it stays
+ *                                valid until the interface is unpublished at some (potentially)
+ *                                unknown time in the future.
+ * @param[in]   package_version   The #az_ulib_version with the package version. It cannot be `0`.
  * @param[in]   interface_name    The `/0` terminated `const char* const` with the interface name.
  *                                It cannot be `NULL` and shall be allocated in a way that it stays
  *                                valid until the interface is unpublished at some (potentially)
  *                                unknown time in the future.
- * @param[in]   interface_version The #az_ulib_version with the interface version.
+ * @param[in]   interface_version The #az_ulib_version with the interface version. It cannot be `0`.
  * @param[in]   capabilities      The list of #az_ulib_capability_descriptor in the interface.
  * @return The #az_ulib_interface_descriptor with the description of the interface.
  */
-#define AZ_ULIB_DESCRIPTOR_CREATE(interface_name, interface_version, capabilities) \
-  {                                                                                \
-    ._internal                                                                     \
-        = {.name = AZ_SPAN_LITERAL_FROM_STR(interface_name),                       \
-           .version = interface_version,                                           \
-           .size = sizeof(capabilities) / sizeof(az_ulib_capability_descriptor),   \
-           .capability_list = capabilities }                                       \
+#define AZ_ULIB_DESCRIPTOR_CREATE(                                                  \
+    package_name, package_version, interface_name, interface_version, capabilities) \
+  {                                                                                 \
+    ._internal                                                                      \
+        = {.pkg_name = AZ_SPAN_LITERAL_FROM_STR(package_name),                      \
+           .pkg_version = package_version,                                          \
+           .intf_name = AZ_SPAN_LITERAL_FROM_STR(interface_name),                   \
+           .intf_version = interface_version,                                       \
+           .size = sizeof(capabilities) / sizeof(az_ulib_capability_descriptor),    \
+           .capability_list = capabilities }                                        \
   }
 
 /**

@@ -32,14 +32,22 @@ typedef struct
       const az_ulib_interface_descriptor* const interface_descriptor,
       az_ulib_ipc_interface_handle* interface_handle);
 
+  az_result (*set_default)(
+      az_span package_name,
+      az_ulib_version package_version,
+      az_span interface_name,
+      az_ulib_version interface_version);
+
   az_result (*unpublish)(
       const az_ulib_interface_descriptor* const interface_descriptor,
       uint32_t wait_option_ms);
 
   az_result (*try_get_interface)(
-      az_span name,
-      az_ulib_version version,
-      az_ulib_version_match_criteria match_criteria,
+      az_span device,
+      az_span package_name,
+      az_ulib_version package_version,
+      az_span interface_name,
+      az_ulib_version interface_version,
       az_ulib_ipc_interface_handle* interface_handle);
 
   az_result (*try_get_capability)(
@@ -70,123 +78,6 @@ typedef struct
   az_result (*query_next)(uint32_t* continuation_token, az_span* result);
 
 } az_ulib_ipc_table;
-
-/*
- * @brief   Dynamically linked wrapper to az_ulib_ipc_publish().
- */
-AZ_INLINE AZ_NODISCARD az_result azi_ulib_ipc_publish(
-    const az_ulib_ipc_table* const table,
-    const az_ulib_interface_descriptor* const interface_descriptor,
-    az_ulib_ipc_interface_handle* interface_handle)
-{
-  return table->publish(interface_descriptor, interface_handle);
-}
-
-/*
- * @brief   Dynamically linked wrapper to az_ulib_ipc_publish().
- */
-AZ_INLINE AZ_NODISCARD az_result azi_ulib_ipc_unpublish(
-    const az_ulib_ipc_table* const table,
-    const az_ulib_interface_descriptor* const interface_descriptor,
-    uint32_t wait_option_ms)
-{
-  return table->unpublish(interface_descriptor, wait_option_ms);
-}
-
-/*
- * @brief   Dynamically linked wrapper to az_ulib_ipc_try_get_interface().
- */
-AZ_INLINE AZ_NODISCARD az_result azi_ulib_ipc_try_get_interface(
-    const az_ulib_ipc_table* const table,
-    az_span name,
-    az_ulib_version version,
-    az_ulib_version_match_criteria match_criteria,
-    az_ulib_ipc_interface_handle* interface_handle)
-{
-  return table->try_get_interface(name, version, match_criteria, interface_handle);
-}
-
-/*
- * @brief   Dynamically linked wrapper to az_ulib_ipc_try_get_capability().
- */
-AZ_INLINE AZ_NODISCARD az_result azi_ulib_ipc_try_get_capability(
-    const az_ulib_ipc_table* const table,
-    az_ulib_ipc_interface_handle interface_handle,
-    az_span name,
-    az_ulib_capability_index* capability_index)
-{
-  return table->try_get_capability(interface_handle, name, capability_index);
-}
-
-/*
- * @brief   Dynamically linked wrapper to az_ulib_ipc_get_interface().
- */
-AZ_INLINE AZ_NODISCARD az_result azi_ulib_ipc_get_interface(
-    const az_ulib_ipc_table* const table,
-    az_ulib_ipc_interface_handle original_interface_handle,
-    az_ulib_ipc_interface_handle* interface_handle)
-{
-  return table->get_interface(original_interface_handle, interface_handle);
-}
-
-/*
- * @brief   Dynamically linked wrapper to az_ulib_ipc_release_interface().
- */
-AZ_INLINE AZ_NODISCARD az_result azi_ulib_ipc_release_interface(
-    const az_ulib_ipc_table* table,
-    az_ulib_ipc_interface_handle interface_handle)
-{
-  return table->release_interface(interface_handle);
-}
-
-/*
- * @brief   Dynamically linked wrapper to az_ulib_ipc_call().
- */
-AZ_INLINE AZ_NODISCARD az_result azi_ulib_ipc_call(
-    const az_ulib_ipc_table* const table,
-    az_ulib_ipc_interface_handle interface_handle,
-    az_ulib_capability_index capability_index,
-    az_ulib_model_in model_in,
-    az_ulib_model_out model_out)
-{
-  return table->call(interface_handle, capability_index, model_in, model_out);
-}
-
-/*
- * @brief   Dynamically linked wrapper to az_ulib_ipc_call_with_str().
- */
-AZ_INLINE AZ_NODISCARD az_result azi_ulib_ipc_call_with_str(
-    const az_ulib_ipc_table* const table,
-    az_ulib_ipc_interface_handle interface_handle,
-    az_ulib_capability_index capability_index,
-    az_span model_in_span,
-    az_span* model_out_span)
-{
-  return table->call_with_str(interface_handle, capability_index, model_in_span, model_out_span);
-}
-
-/*
- * @brief   Dynamically linked wrapper to az_ulib_ipc_query().
- */
-AZ_INLINE AZ_NODISCARD az_result azi_ulib_ipc_query(
-    const az_ulib_ipc_table* const table,
-    az_span query,
-    az_span* result,
-    uint32_t* continuation_token)
-{
-  return table->query(query, result, continuation_token);
-}
-
-/*
- * @brief   Dynamically linked wrapper to az_ulib_ipc_query_next().
- */
-AZ_INLINE AZ_NODISCARD az_result azi_ulib_ipc_query_next(
-    const az_ulib_ipc_table* const table,
-    uint32_t* continuation_token,
-    az_span* result)
-{
-  return table->query_next(continuation_token, result);
-}
 
 #include "azure/core/_az_cfg_suffix.h"
 

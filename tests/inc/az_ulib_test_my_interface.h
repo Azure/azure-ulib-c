@@ -20,21 +20,22 @@ extern "C"
 /*
  * interface definition
  */
+#define MY_PACKAGE_1_NAME "MY_PACKAGE"
+#define MY_PACKAGE_1_VERSION 1
+#define MY_PACKAGE_2_NAME "MY_PACKAGE"
+#define MY_PACKAGE_2_VERSION 2
+
 #define MY_INTERFACE_1_123_INTERFACE_NAME "MY_INTERFACE_1"
 #define MY_INTERFACE_1_123_INTERFACE_VERSION 123
-#define MY_INTERFACE_1_123_CAPABILITY_SIZE 5
 
 #define MY_INTERFACE_1_2_INTERFACE_NAME "MY_INTERFACE_1"
-#define MY_INTERFACE_1_2_INTERFACE_VERSION 2
-#define MY_INTERFACE_1_2_CAPABILITY_SIZE 5
+#define MY_INTERFACE_1_2_INTERFACE_VERSION 200
 
 #define MY_INTERFACE_2_123_INTERFACE_NAME "MY_INTERFACE_2"
 #define MY_INTERFACE_2_123_INTERFACE_VERSION 123
-#define MY_INTERFACE_2_123_CAPABILITY_SIZE 5
 
 #define MY_INTERFACE_3_123_INTERFACE_NAME "MY_INTERFACE_3"
 #define MY_INTERFACE_3_123_INTERFACE_VERSION 123
-#define MY_INTERFACE_3_123_CAPABILITY_SIZE 5
 
 /*
  * Define model of my_property in my_interface.
@@ -106,6 +107,9 @@ extern "C"
   az_result az_ulib_test_my_interface_1_v123_publish(
       az_ulib_ipc_interface_handle* interface_handle);
   az_result az_ulib_test_my_interface_1_v123_unpublish(uint32_t wait_ms);
+  az_result az_ulib_test_my_interface_1_v123_p2_publish(
+      az_ulib_ipc_interface_handle* interface_handle);
+  az_result az_ulib_test_my_interface_1_v123_p2_unpublish(uint32_t wait_ms);
   az_result az_ulib_test_my_interface_1_v2_publish(az_ulib_ipc_interface_handle* interface_handle);
   az_result az_ulib_test_my_interface_1_v2_unpublish(uint32_t wait_ms);
   az_result az_ulib_test_my_interface_2_v123_publish(

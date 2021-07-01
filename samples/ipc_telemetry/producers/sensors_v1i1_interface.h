@@ -18,6 +18,9 @@ extern "C"
 #else
 #endif
 
+#define SENSORS_1_PACKAGE_NAME "sensors"
+#define SENSORS_1_PACKAGE_VERSION 1
+
   /*
    * Publish sensors interface.
    */

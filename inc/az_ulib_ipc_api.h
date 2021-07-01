@@ -32,12 +32,22 @@
 
 #include "azure/core/_az_cfg_prefix.h"
 
+#define IPC_1_PACKAGE_NAME "ipc"
+#define IPC_1_PACKAGE_VERSION 1
+
+typedef enum
+{
+  AZ_ULIB_IPC_FLAGS_NONE = 0x00,
+  AZ_ULIB_IPC_FLAGS_DEFAULT = 0x01
+} _az_ulib_ipc_flags;
+
 /*
  * IPC interface control block.
  */
 typedef struct
 {
   volatile const az_ulib_interface_descriptor* interface_descriptor;
+  volatile _az_ulib_ipc_flags flags;
   volatile long ref_count;
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
   volatile long running_count;
@@ -69,7 +79,7 @@ typedef struct az_ulib_ipc_tag
  * @param[in]   ipc_handle      The #az_ulib_ipc* that points to a memory position where
  *                              the IPC shall create its control block.
  *
- * @pre     \p ipc_handle shall not be 'NULL'.
+ * @pre     \p ipc_handle shall not be `NULL`.
  * @pre     IPC shall not been initialized.
  *
  * @note    This API **is not** thread safe, no other IPC API may be called during the execution of
@@ -122,8 +132,17 @@ const az_ulib_ipc_table* az_ulib_ipc_get_table(void);
  * This API publishes a new interface in the IPC using the interface descriptor. The interface
  * descriptor shall be valid up to the point when the interface is unpublished with success.
  *
+ * If the interface to publish already exist in the device, the new interface cannot have a version
+ * smaller than the ones already installed. It will avoid brake other codes that are already running
+ * in the device that depends on this interface. The `az_ulib_ipc_try_get_interface()` will always
+ * return the smallest version, so install a new interface with version equal or bigger than the
+ * current ones will not change the get interface behavior.
+ *
  * Optionally, this API may return the handle of the interface in the IPC. This handle will be
  * automatically released when the interface is unpublished.
+ *
+ * If no other package has published an interface with the same name and version of the provided in
+ * the descriptor, this function will make this interface the default one.
  *
  * @note    **Try to release the handle returned by this API may result in
  *          #AZ_ERROR_ITEM_NOT_FOUND or a future segmentation fault.**
@@ -138,17 +157,53 @@ const az_ulib_ipc_table* az_ulib_ipc_get_table(void);
  *                                    interface handle.
  *
  * @pre     IPC shall already be initialized.
- * @pre     \p interface_handle shall not be 'NULL'.
+ * @pre     \p interface_handle shall not be `NULL`.
  *
  * @return The #az_result with the result of the interface publish.
  *  @retval #AZ_OK                              If the interface is published with success.
  *  @retval #AZ_ERROR_ULIB_ELEMENT_DUPLICATE    If the interface is already published.
  *  @retval #AZ_ERROR_NOT_ENOUGH_SPACE          If there is no more available space to store the
  *                                              new interface.
+ *  @retval #AZ_ERROR_ULIB_PRECONDITION         If the interface already exist with a version
+ *                                              bigger than the new one.
  */
 AZ_NODISCARD az_result az_ulib_ipc_publish(
     const az_ulib_interface_descriptor* const interface_descriptor,
     az_ulib_ipc_interface_handle* interface_handle);
+
+/**
+ * @brief   Make an interface default in the device.
+ *
+ * This API sets an interface implementation as default in the device, so if 2 or more packages
+ * implement the same interface, IPC will be able to define each one shall be returned, if the
+ * caller didn't specify the desired package.
+ *
+ * If another package was already defined as default for the interface, call this function will
+ * change the default, from the previous package, to the provided one.
+ *
+ * @param[in]   package_name      The `az_span` with the package name. It cannot be #AZ_SPAN_EMPTY.
+ * @param[in]   package_version   The #az_ulib_version with the package version. It cannot be `0`.
+ * @param[in]   interface_name    The `az_span` with the interface name. It cannot be
+ *                                #AZ_SPAN_EMPTY.
+ * @param[in]   interface_version The #az_ulib_version with the interface version. It cannot be `0`.
+ *
+ * @pre     IPC shall already be initialized.
+ * @pre     \p package_name shall not be `NULL`.
+ * @pre     \p package_version shall not be `0`
+ * @pre     \p interface_name shall not be `NULL`.
+ * @pre     \p interface_version shall not be `0`
+ *
+ * @return The #az_result with the result of the interface publish.
+ *  @retval #AZ_OK                              If the interface has been set as default with
+ *                                              success.
+ *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the provided name didn't match any published
+ *                                              interface.
+ */
+AZ_NODISCARD az_result az_ulib_ipc_set_default(
+    az_span package_name,
+    az_ulib_version package_version,
+    az_span interface_name,
+    az_ulib_version interface_version);
 
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
 /**
@@ -167,7 +222,7 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
  *                                        - timeout value (0x00000001 through 0xFFFFFFFE)
  *
  * @pre     IPC shall already be initialized.
- * @pre     \p interface_descriptor shall not be 'NULL'.
+ * @pre     \p interface_descriptor shall not be `NULL`.
  *
  * @return The #az_result with the result of the interface unpublish.
  *  @retval #AZ_OK                              If the interface is unpublished with success.
@@ -185,25 +240,60 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  * @brief   Try get an interface handle by the name from the IPC.
  *
  * This API tries to find an interface that fits the provided name. If there is an interface that
- * fits this criteria, this API will return its handle. If no published procedure fits it, this API
- * will return #AZ_ERROR_ITEM_NOT_FOUND.
+ * fits this criteria, this API will return its handle.
  *
  * Get a interface handle will increment the number of references to this interface, which means
  * that the IPC will know how many components is using this interface. When a component does not
- * need this interface anymore, it shall release it by calling az_ulib_ipc_release_interface().
+ * need this interface anymore, it shall release the handle by calling
+ * az_ulib_ipc_release_interface().
  *
  * @note    **Do not release an interface will cause memory leak.**
  *
- * @param[in]   name              The `az_span` with the interface name.
- * @param[in]   version           The #az_ulib_version with the desired version.
- * @param[in]   match_criteria    The #az_ulib_version_match_criteria with the match criteria for
- *                                the interface version.
+ * An interface is identified by 3 characteristics.
+ *  1. device:      Identifies **where** the interface is on a complex device that is composed by
+ *                  multiple CPUs.
+ *  2. package:     Identifies the **implementation** of the capabilities.
+ *  3. interface:   Identifies the **signature** of the capabilities.
+ *
+ * This function returns the handle of the interface that best fits the requirements following the
+ * follow rules. If the criteria doesn't match, this function will return #AZ_ERROR_ITEM_NOT_FOUND.
+ *
+ *  - interface_name is mandatory.
+ *  - interface_version
+ *      - If provided, this function will look up only for the interface with the interface_version.
+ *      - If #AZ_ULIB_VERSION_ANY (0), this function will look up for the interface with the lowest
+ *          version, which matches the other criteria.
+ *  - package_name
+ *      - If provided, this function will look up for the interface in the packages with
+ *          package_name.
+ *      - If #AZ_SPAN_EMPTY, this function will look up for the interface only in the default
+ *          package. In this case, package_version will be ignored. To set a package as default
+ *          use the API az_ulib_ipc_set_default().
+ *  - package_version
+ *      - If package name and version are provided, this function will look up for the interface
+ *          only in the package_name.package_version.
+ *      - If package name is provided and version is #AZ_ULIB_VERSION_ANY (0), this function will
+ *          look up for the interface in the package that matches the package_name with the lowest
+ *          version.
+ * - device_name
+ *      - If provided, this function will send the request for the Gateways that has theEDS
+ *          communication with the leaves devices. The Gateway will look up for the interface
+ *          in the appropriate device, if it exist. **This functionality is not supported yet.**
+ *      - If #AZ_SPAN_EMPTY, this function will look up for the interface only in the local
+ *          device.
+ *
+ * @param[in]   device_name       The `az_span` with the device name. It can be #AZ_SPAN_EMPTY.
+ * @param[in]   package_name      The `az_span` with the package name. It can be #AZ_SPAN_EMPTY.
+ * @param[in]   package_version   The #az_ulib_version with the package version.
+ * @param[in]   interface_name    The `az_span` with the interface name. It cannot be
+ *                                #AZ_SPAN_EMPTY.
+ * @param[in]   interface_version The #az_ulib_version with the interface version.
  * @param[out]  interface_handle  The #az_ulib_ipc_interface_handle* with the memory to store
  *                                the interface handle. It cannot be `NULL`.
  *
  * @pre     IPC shall already be initialized.
- * @pre     \p name shall not be 'NULL'.
- * @pre     \p interface_handle shall not be 'NULL'.
+ * @pre     \p interface_name shall not be #AZ_SPAN_EMPTY.
+ * @pre     \p interface_handle shall not be `NULL`.
  *
  * @return The #az_result with the result of the get handle.
  *  @retval #AZ_OK                              If the interface was found and the returned
@@ -214,9 +304,11 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *                                              number of instances.
  */
 AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
-    az_span name,
-    az_ulib_version version,
-    az_ulib_version_match_criteria match_criteria,
+    az_span device,
+    az_span package_name,
+    az_ulib_version package_version,
+    az_span interface_name,
+    az_ulib_version interface_version,
     az_ulib_ipc_interface_handle* interface_handle);
 
 /**
@@ -233,9 +325,9 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
  *                                  the capability index. It cannot be `NULL`.
  *
  * @pre     IPC shall already be initialized.
- * @pre     \p interface_handle shall not be 'NULL'.
- * @pre     \p name shall not be 'NULL'.
- * @pre     \p capability_index shall not be 'NULL'.
+ * @pre     \p interface_handle shall not be `NULL`.
+ * @pre     \p name shall not be `NULL`.
+ * @pre     \p capability_index shall not be `NULL`.
  *
  * @return The #az_result with the result of the get handle.
  *  @retval #AZ_OK                              If the capability was found and the returned
@@ -266,8 +358,8 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_capability(
  *                                        store the interface handle. It cannot be `NULL`.
  *
  * @pre     IPC shall already be initialized.
- * @pre     \p original_interface_handle shall not be 'NULL'.
- * @pre     \p interface_handle shall not be 'NULL'.
+ * @pre     \p original_interface_handle shall not be `NULL`.
+ * @pre     \p interface_handle shall not be `NULL`.
  *
  * @return The #az_result with the result of the get handle.
  *  @retval #AZ_OK                              If the interface was found and the returned handle
@@ -299,7 +391,7 @@ AZ_NODISCARD az_result az_ulib_ipc_get_interface(
  *                                  handle to release. It cannot be `NULL`.
  *
  * @pre     IPC shall already be initialized.
- * @pre     \p interface_handle shall not be 'NULL'.
+ * @pre     \p interface_handle shall not be `NULL`.
  *
  * @return The #az_result with the result of the release.
  *  @retval #AZ_OK                              If the interface is released with success.
@@ -321,7 +413,7 @@ AZ_NODISCARD az_result az_ulib_ipc_release_interface(az_ulib_ipc_interface_handl
  *                                capability should store the output model content.
  *
  * @pre     IPC shall already be initialized.
- * @pre     \p interface_handle shall not be 'NULL'.
+ * @pre     \p interface_handle shall not be `NULL`.
  *
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                              If the IPC get success calling the procedure.
@@ -347,7 +439,7 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
  *                                  output content.
  *
  * @pre     IPC shall already be initialized.
- * @pre     \p interface_handle shall not be 'NULL'.
+ * @pre     \p interface_handle shall not be `NULL`.
  *
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                              If the IPC get success calling the procedure.
@@ -383,7 +475,7 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
  *
  * @pre     IPC shall already be initialized.
  * @pre     \p result shall be a valid az_span with at least 1 position.
- * @pre     \p continuation_token shall not be 'NULL'.
+ * @pre     \p continuation_token shall not be `NULL`.
  *
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                      If the query call succeeded and the result and continuation
@@ -405,7 +497,7 @@ az_ulib_ipc_query(az_span query, az_span* result, uint32_t* continuation_token);
  *
  * @pre     IPC shall already be initialized.
  * @pre     \p result shall be a valid az_span with at least 1 position.
- * @pre     \p continuation_token shall not be 'NULL'.
+ * @pre     \p continuation_token shall not be `NULL`.
  *
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                      If the query next call succeeded and the result and

@@ -29,9 +29,11 @@ extern "C"
   static inline az_result cipher_1_create(az_ulib_ipc_interface_handle handle)
   {
     return az_ulib_ipc_try_get_interface(
+        AZ_SPAN_EMPTY,
+        AZ_SPAN_EMPTY,
+        AZ_ULIB_VERSION_ANY,
         AZ_SPAN_FROM_STR(CIPHER_1_INTERFACE_NAME),
         CIPHER_1_INTERFACE_VERSION,
-        AZ_ULIB_VERSION_EQUALS_TO,
         handle);
   }
 
