@@ -42,7 +42,7 @@ typedef struct az_ulib_capability_descriptor_tag
 {
   struct
   {
-    /** The `\0` terminated `az_span` with the capability name. */
+    /** The `az_span` with the capability name. */
     const az_span name;
 
     /** Pointer to the capability function to call. */
@@ -63,13 +63,13 @@ typedef struct az_ulib_interface_descriptor_tag
 {
   struct
   {
-    /** The `\0` terminated `az_span` with the package name. */
+    /** The `az_span` with the package name. */
     const az_span pkg_name;
 
     /** The #az_ulib_version with the package version. */
     const az_ulib_version pkg_version;
 
-    /** The `\0` terminated `az_span` with the interface name. */
+    /** The `az_span` with the interface name. */
     const az_span intf_name;
 
     /** The #az_ulib_version with the interface version. */

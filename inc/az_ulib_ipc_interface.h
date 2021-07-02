@@ -43,7 +43,7 @@ typedef struct
       uint32_t wait_option_ms);
 
   az_result (*try_get_interface)(
-      az_span device,
+      az_span device_name,
       az_span package_name,
       az_ulib_version package_version,
       az_span interface_name,

@@ -138,14 +138,18 @@ const az_ulib_ipc_table* az_ulib_ipc_get_table(void);
  * return the smallest version, so install a new interface with version equal or bigger than the
  * current ones will not change the get interface behavior.
  *
- * Optionally, this API may return the handle of the interface in the IPC. This handle will be
- * automatically released when the interface is unpublished.
- *
  * If no other package has published an interface with the same name and version of the provided in
  * the descriptor, this function will make this interface the default one.
  *
+ * Optionally, this API may return the handle of the interface in the IPC. This handle will be
+ * automatically released when the interface is unpublished.
+ *
  * @note    **Try to release the handle returned by this API may result in
  *          #AZ_ERROR_ITEM_NOT_FOUND or a future segmentation fault.**
+ *
+ * The handle returned by this API shall not be shared with other functions, if the publisher of an
+ * interface needs to provide the handle for other functions, it should make a copy of it using the
+ * `az_ulib_ipc_get_interface()`.
  *
  * @param[in]   interface_descriptor  The `const` #az_ulib_interface_descriptor* with the
  *                                    descriptor of the interface. It cannot be `NULL` and
@@ -188,9 +192,9 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
  * @param[in]   interface_version The #az_ulib_version with the interface version. It cannot be `0`.
  *
  * @pre     IPC shall already be initialized.
- * @pre     \p package_name shall not be `NULL`.
+ * @pre     \p package_name shall not be #AZ_SPAN_EMPTY.
  * @pre     \p package_version shall not be `0`
- * @pre     \p interface_name shall not be `NULL`.
+ * @pre     \p interface_name shall not be #AZ_SPAN_EMPTY.
  * @pre     \p interface_version shall not be `0`
  *
  * @return The #az_result with the result of the interface publish.
@@ -276,7 +280,7 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *          look up for the interface in the package that matches the package_name with the lowest
  *          version.
  * - device_name
- *      - If provided, this function will send the request for the Gateways that has theEDS
+ *      - If provided, this function will send the request for the Gateways that has the
  *          communication with the leaves devices. The Gateway will look up for the interface
  *          in the appropriate device, if it exist. **This functionality is not supported yet.**
  *      - If #AZ_SPAN_EMPTY, this function will look up for the interface only in the local
@@ -304,7 +308,7 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *                                              number of instances.
  */
 AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
-    az_span device,
+    az_span device_name,
     az_span package_name,
     az_ulib_version package_version,
     az_span interface_name,

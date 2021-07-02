@@ -451,7 +451,7 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
 AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
-    az_span device,
+    az_span device_name,
     az_span package_name,
     az_ulib_version package_version,
     az_span interface_name,
@@ -462,7 +462,7 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
   _az_PRECONDITION_VALID_SPAN(interface_name, 1, false);
   _az_PRECONDITION_NOT_NULL(interface_handle);
 
-  if (az_span_size(device) != 0)
+  if (az_span_size(device_name) != 0)
   {
     return AZ_ERROR_NOT_IMPLEMENTED;
   }
