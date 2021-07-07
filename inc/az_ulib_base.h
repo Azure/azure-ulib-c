@@ -40,7 +40,7 @@ typedef uint32_t az_ulib_version;
 /**
  * @brief   Version 0 is reserved for ANY version.
  */
-#define AZ_ULIB_VERSION_ANY 0
+#define AZ_ULIB_VERSION_DEFAULT 0
 
 #include "azure/core/_az_cfg_suffix.h"
 

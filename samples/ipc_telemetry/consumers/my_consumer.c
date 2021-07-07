@@ -38,7 +38,7 @@ void my_consumer_create(void)
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_try_get_interface(
         AZ_SPAN_EMPTY,
         AZ_SPAN_EMPTY,
-        AZ_ULIB_VERSION_ANY,
+        AZ_ULIB_VERSION_DEFAULT,
         AZ_SPAN_FROM_STR(SENSORS_1_INTERFACE_NAME),
         SENSORS_1_INTERFACE_VERSION,
         &_sensors_1));

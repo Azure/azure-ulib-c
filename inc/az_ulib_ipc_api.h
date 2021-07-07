@@ -132,14 +132,12 @@ const az_ulib_ipc_table* az_ulib_ipc_get_table(void);
  * This API publishes a new interface in the IPC using the interface descriptor. The interface
  * descriptor shall be valid up to the point when the interface is unpublished with success.
  *
- * If the interface to publish already exist in the device, the new interface cannot have a version
- * smaller than the ones already installed. It will avoid brake other codes that are already running
- * in the device that depends on this interface. The `az_ulib_ipc_try_get_interface()` will always
- * return the smallest version, so install a new interface with version equal or bigger than the
- * current ones will not change the get interface behavior.
+ * If the interface to publish already exist in the device, the new interface cannot belong to the
+ * same package name and version.
  *
- * If no other package has published an interface with the same name and version of the provided in
- * the descriptor, this function will make this interface the default one.
+ * If no other package has published an interface with the same name and version, and the same
+ * package name of the provided in the descriptor, this function will make this interface the
+ * default one.
  *
  * Optionally, this API may return the handle of the interface in the IPC. This handle will be
  * automatically released when the interface is unpublished.
@@ -165,11 +163,10 @@ const az_ulib_ipc_table* az_ulib_ipc_get_table(void);
  *
  * @return The #az_result with the result of the interface publish.
  *  @retval #AZ_OK                              If the interface is published with success.
+ *  @retval #AZ_ERROR_ARG                       If the interface of package version is ANY [0].
  *  @retval #AZ_ERROR_ULIB_ELEMENT_DUPLICATE    If the interface is already published.
  *  @retval #AZ_ERROR_NOT_ENOUGH_SPACE          If there is no more available space to store the
  *                                              new interface.
- *  @retval #AZ_ERROR_ULIB_PRECONDITION         If the interface already exist with a version
- *                                              bigger than the new one.
  */
 AZ_NODISCARD az_result az_ulib_ipc_publish(
     const az_ulib_interface_descriptor* const interface_descriptor,
@@ -200,6 +197,7 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
  * @return The #az_result with the result of the interface publish.
  *  @retval #AZ_OK                              If the interface has been set as default with
  *                                              success.
+ *  @retval #AZ_ERROR_ARG                       If the interface of package version is ANY [0].
  *  @retval #AZ_ERROR_ITEM_NOT_FOUND            If the provided name didn't match any published
  *                                              interface.
  */
@@ -262,11 +260,8 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  * This function returns the handle of the interface that best fits the requirements following the
  * follow rules. If the criteria doesn't match, this function will return #AZ_ERROR_ITEM_NOT_FOUND.
  *
- *  - interface_name is mandatory.
- *  - interface_version
- *      - If provided, this function will look up only for the interface with the interface_version.
- *      - If #AZ_ULIB_VERSION_ANY (0), this function will look up for the interface with the lowest
- *          version, which matches the other criteria.
+ *  - interface_name is mandatory and shall match exactly.
+ *  - interface_version is mandatory and shall match exactly.
  *  - package_name
  *      - If provided, this function will look up for the interface in the packages with
  *          package_name.
@@ -276,9 +271,8 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *  - package_version
  *      - If package name and version are provided, this function will look up for the interface
  *          only in the package_name.package_version.
- *      - If package name is provided and version is #AZ_ULIB_VERSION_ANY (0), this function will
- *          look up for the interface in the package that matches the package_name with the lowest
- *          version.
+ *      - If package name is provided and version is #AZ_ULIB_VERSION_DEFAULT (0), this function
+ *          will look up for the interface in the default package that matches the package_name.
  * - device_name
  *      - If provided, this function will send the request for the Gateways that has the
  *          communication with the leaves devices. The Gateway will look up for the interface
@@ -306,6 +300,12 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *                                              interface.
  *  @retval #AZ_ERROR_NOT_ENOUGH_SPACE          If the interface already provided the maximum
  *                                              number of instances.
+ *  @retval #AZ_ERROR_NOT_IMPLEMENTED           If the device name is not #AZ_SPAN_EMPTY. Complex
+ *                                              device is not supported yet.
+ *  @retval #AZ_ERROR_ULIB_AMBIGUOUS            If more than one interface matches the provided
+ *                                              name. Caller shall provide package_name and/or
+ *                                              package_version, or alternatively define the
+ *                                              default package for this interface.
  */
 AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
     az_span device_name,

@@ -40,13 +40,15 @@ static az_ulib_ipc* volatile _az_ipc_cb = NULL;
 /*
  * This function follow the rules define in az_ulib_ipc_try_get_interface().
  */
-static _az_ulib_ipc_interface* get_interface(
+static az_result get_interface(
     az_span package_name,
     az_ulib_version package_version,
     az_span interface_name,
-    az_ulib_version interface_version)
+    az_ulib_version interface_version,
+    _az_ulib_ipc_interface** handle)
 {
-  _az_ulib_ipc_interface* result = NULL;
+  _az_ulib_ipc_interface* interface_handle = NULL;
+  az_result result = AZ_ERROR_ITEM_NOT_FOUND;
 
   // Find the lowest version that fits the criteria.
   for (size_t i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++)
@@ -58,50 +60,62 @@ static _az_ulib_ipc_interface* get_interface(
     if ((descriptor != NULL)
         // Does the interface name matches.
         && az_span_is_content_equal(descriptor->_internal.intf_name, interface_name)
-        // Does the interface version matches using the MATCH criteria.
-        && ((interface_version == AZ_ULIB_VERSION_ANY)
-            || (interface_version == descriptor->_internal.intf_version)))
+        // Does the interface version matches.
+        && (interface_version == descriptor->_internal.intf_version))
     {
 
       // Check package name.
       if (az_span_size(package_name) == 0) // No package name was provided, use default instead.
       {
-        if (!AZ_ULIB_FLAGS_IS_SET(
+        if (AZ_ULIB_FLAGS_IS_SET(
                 _az_ipc_cb->_internal.interface_list[i].flags, AZ_ULIB_IPC_FLAGS_DEFAULT))
         {
-          continue; // Jump to the next descriptor in the loop.
+          // There is no other default package for the same interface.
+          if (interface_handle == NULL)
+          {
+            // Use this interface, but keep looking to make sure that there is no ambiguous
+            // interface qualification.
+            result = AZ_OK;
+            interface_handle = &(_az_ipc_cb->_internal.interface_list[i]);
+          }
+          else
+          {
+            // More than one default package for this interface. The package shall be specified.
+            result = AZ_ERROR_ULIB_AMBIGUOUS;
+            break;
+          }
         }
       }
-      else // Look up for the package name and version.
+      // Does the package name matches.
+      else if (az_span_is_content_equal(descriptor->_internal.pkg_name, package_name))
       {
-        // Does the package name matches.
-        if (!az_span_is_content_equal(descriptor->_internal.pkg_name, package_name))
+        if (package_version
+            == AZ_ULIB_VERSION_DEFAULT) // No package version was provided, use default instead.
         {
-          continue; // Jump to the next descriptor in the loop.
+          // Is this the default version for this package.
+          if (AZ_ULIB_FLAGS_IS_SET(
+                  _az_ipc_cb->_internal.interface_list[i].flags, AZ_ULIB_IPC_FLAGS_DEFAULT))
+          {
+            // Use this interface.
+            result = AZ_OK;
+            interface_handle = &(_az_ipc_cb->_internal.interface_list[i]);
+            break;
+          }
         }
-
-        // Does the package version matches.
-        if ((package_version != AZ_ULIB_VERSION_ANY)
-            && (package_version != descriptor->_internal.pkg_version))
+        // Package version matches.
+        else if (package_version == descriptor->_internal.pkg_version)
         {
-          continue; // Jump to the next descriptor in the loop.
-        }
-      }
-
-      // Get the lowest interface version.
-      if (result == NULL)
-      {
-        result = &(_az_ipc_cb->_internal.interface_list[i]);
-      }
-      else
-      {
-        if (result->interface_descriptor->_internal.intf_version
-            > descriptor->_internal.intf_version)
-        {
-          result = &(_az_ipc_cb->_internal.interface_list[i]);
+          result = AZ_OK;
+          interface_handle = &(_az_ipc_cb->_internal.interface_list[i]);
+          break;
         }
       }
     }
+  }
+
+  if ((handle != NULL) && (result == AZ_OK))
+  {
+    *handle = interface_handle;
   }
 
   return result;
@@ -139,40 +153,6 @@ static _az_ulib_ipc_interface* get_first_free()
   }
 
   return result;
-}
-
-static az_result is_new_interface_valid(
-    const az_ulib_interface_descriptor* const interface_descriptor)
-{
-  AZ_ULIB_TRY
-  {
-    _az_ulib_ipc_interface* old_interface = get_interface(
-        AZ_SPAN_EMPTY,
-        AZ_ULIB_VERSION_ANY,
-        interface_descriptor->_internal.intf_name,
-        AZ_ULIB_VERSION_ANY);
-    if (old_interface != NULL)
-    {
-      // IPC shall not accept a new interface with version smaller than the ones already published.
-      AZ_ULIB_THROW_IF_ERROR(
-          (old_interface->interface_descriptor->_internal.intf_version
-           <= interface_descriptor->_internal.intf_version),
-          AZ_ERROR_ULIB_PRECONDITION);
-    }
-
-    // IPC shall not accept interfaces with same name and version because it cannot decided
-    // each one to retrieve when someone uses az_ulib_ipc_try_get_interface().
-    AZ_ULIB_THROW_IF_ERROR(
-        (get_interface(
-             interface_descriptor->_internal.pkg_name,
-             interface_descriptor->_internal.pkg_version,
-             interface_descriptor->_internal.intf_name,
-             interface_descriptor->_internal.intf_version)
-         == NULL),
-        AZ_ERROR_ULIB_ELEMENT_DUPLICATE);
-  }
-  AZ_ULIB_CATCH(...) {}
-  return AZ_ULIB_TRY_RESULT;
 }
 
 static az_result get_instance(_az_ulib_ipc_interface* ipc_interface)
@@ -256,8 +236,8 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
   az_result result;
   _az_ulib_ipc_interface* new_interface;
 
-  if ((interface_descriptor->_internal.pkg_version == AZ_ULIB_VERSION_ANY)
-      || (interface_descriptor->_internal.intf_version == AZ_ULIB_VERSION_ANY))
+  if ((interface_descriptor->_internal.pkg_version == AZ_ULIB_VERSION_DEFAULT)
+      || (interface_descriptor->_internal.intf_version == AZ_ULIB_VERSION_DEFAULT))
   {
     result = AZ_ERROR_ARG;
   }
@@ -265,7 +245,19 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
   {
     az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
     {
-      if ((result = is_new_interface_valid(interface_descriptor)) == AZ_OK)
+      if (get_interface(
+              interface_descriptor->_internal.pkg_name,
+              interface_descriptor->_internal.pkg_version,
+              interface_descriptor->_internal.intf_name,
+              interface_descriptor->_internal.intf_version,
+              NULL)
+          == AZ_OK)
+      {
+        // IPC shall not accept interfaces with same name and version because it cannot decided
+        // each one to retrieve when someone uses az_ulib_ipc_try_get_interface().
+        result = AZ_ERROR_ULIB_ELEMENT_DUPLICATE;
+      }
+      else
       {
         if ((new_interface = get_first_free()) == NULL)
         {
@@ -285,11 +277,12 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
 
           // Look up for default.
           if (get_interface(
-                  AZ_SPAN_EMPTY,
-                  AZ_ULIB_VERSION_ANY,
+                  interface_descriptor->_internal.pkg_name,
+                  AZ_ULIB_VERSION_DEFAULT,
                   interface_descriptor->_internal.intf_name,
-                  interface_descriptor->_internal.intf_version)
-              == NULL)
+                  interface_descriptor->_internal.intf_version,
+                  NULL)
+              != AZ_OK)
           {
             new_interface->flags = AZ_ULIB_IPC_FLAGS_DEFAULT;
           }
@@ -322,7 +315,8 @@ AZ_NODISCARD az_result az_ulib_ipc_set_default(
   az_result result;
   _az_ulib_ipc_interface* new_default_interface;
 
-  if ((package_version == AZ_ULIB_VERSION_ANY) || (interface_version == AZ_ULIB_VERSION_ANY))
+  if ((package_version == AZ_ULIB_VERSION_DEFAULT)
+      || (interface_version == AZ_ULIB_VERSION_DEFAULT))
   {
     result = AZ_ERROR_ARG;
   }
@@ -331,9 +325,13 @@ AZ_NODISCARD az_result az_ulib_ipc_set_default(
     az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
     {
       // Find the interface to be the new default.
-      if ((new_default_interface
-           = get_interface(package_name, package_version, interface_name, interface_version))
-          == NULL)
+      if (get_interface(
+              package_name,
+              package_version,
+              interface_name,
+              interface_version,
+              &new_default_interface)
+          != AZ_OK)
       {
         result = AZ_ERROR_ITEM_NOT_FOUND;
       }
@@ -341,9 +339,13 @@ AZ_NODISCARD az_result az_ulib_ipc_set_default(
       {
         _az_ulib_ipc_interface* old_default_interface;
         // Try to find the old default.
-        if ((old_default_interface
-             = get_interface(AZ_SPAN_EMPTY, AZ_ULIB_VERSION_ANY, interface_name, interface_version))
-            != NULL)
+        if (get_interface(
+                package_name,
+                AZ_ULIB_VERSION_DEFAULT,
+                interface_name,
+                interface_version,
+                &old_default_interface)
+            == AZ_OK)
         {
           // Set as not default anymore.
           old_default_interface->flags &= !AZ_ULIB_IPC_FLAGS_DEFAULT;
@@ -460,6 +462,7 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
 {
   _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
   _az_PRECONDITION_VALID_SPAN(interface_name, 1, false);
+  _az_PRECONDITION(interface_version != AZ_ULIB_VERSION_DEFAULT);
   _az_PRECONDITION_NOT_NULL(interface_handle);
 
   if (az_span_size(device_name) != 0)
@@ -472,15 +475,14 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
 
   az_pal_os_lock_acquire(&(_az_ipc_cb->_internal.lock));
   {
-    if ((ipc_interface
-         = get_interface(package_name, package_version, interface_name, interface_version))
-        == NULL)
+    if ((result = get_interface(
+             package_name, package_version, interface_name, interface_version, &ipc_interface))
+        == AZ_OK)
     {
-      result = AZ_ERROR_ITEM_NOT_FOUND;
-    }
-    else if ((result = get_instance(ipc_interface)) == AZ_OK)
-    {
-      *interface_handle = ipc_interface;
+      if ((result = get_instance(ipc_interface)) == AZ_OK)
+      {
+        *interface_handle = ipc_interface;
+      }
     }
   }
   az_pal_os_lock_release(&(_az_ipc_cb->_internal.lock));

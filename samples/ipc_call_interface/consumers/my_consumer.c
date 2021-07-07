@@ -69,7 +69,7 @@ void my_consumer_query_interfaces(void)
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_try_get_interface(
         AZ_SPAN_EMPTY,
         AZ_SPAN_FROM_STR(IPC_1_PACKAGE_NAME),
-        AZ_ULIB_VERSION_ANY,
+        AZ_ULIB_VERSION_DEFAULT,
         AZ_SPAN_FROM_STR(QUERY_1_INTERFACE_NAME),
         QUERY_1_INTERFACE_VERSION,
         &handle));
