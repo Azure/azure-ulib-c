@@ -100,12 +100,12 @@ typedef void* az_ulib_ipc_interface_handle;
  * interface_var. In this way, no other components on the system needs to copy any of the data on
  * the descriptor.
  *
- * @param[in]   package_name      The `/0` terminated `const char* const` with the package name.
+ * @param[in]   package_name      The `\0` terminated `const char* const` with the package name.
  *                                It cannot be `NULL` and shall be allocated in a way that it stays
  *                                valid until the interface is unpublished at some (potentially)
  *                                unknown time in the future.
  * @param[in]   package_version   The #az_ulib_version with the package version. It cannot be `0`.
- * @param[in]   interface_name    The `/0` terminated `const char* const` with the interface name.
+ * @param[in]   interface_name    The `\0` terminated `const char* const` with the interface name.
  *                                It cannot be `NULL` and shall be allocated in a way that it stays
  *                                valid until the interface is unpublished at some (potentially)
  *                                unknown time in the future.
@@ -128,7 +128,7 @@ typedef void* az_ulib_ipc_interface_handle;
 /**
  * @brief   Add a synchronous capability to the interface descriptor.
  *
- * @param[in] capability_name     The `/0` terminated `const char* const` with the capability name.
+ * @param[in] capability_name     The `\0` terminated `const char* const` with the capability name.
  *                                It cannot be `NULL` and shall be allocated in a way that it
  *                                stays valid until the interface is unpublished at some
  *                                (potentially) unknown time in the future.
@@ -151,7 +151,7 @@ typedef void* az_ulib_ipc_interface_handle;
 /**
  * @brief   Add a telemetry to the interface descriptor.
  *
- * @param[in] telemetry_name    The `/0` terminated `const char* const` with the telemetry name. It
+ * @param[in] telemetry_name    The `\0` terminated `const char* const` with the telemetry name. It
  *                              cannot be `NULL` and shall be allocated in a way that it stays valid
  *                              until the interface is unpublished at some (potentially) unknown
  *                              time in the future.

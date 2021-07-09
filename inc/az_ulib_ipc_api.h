@@ -70,11 +70,11 @@ typedef struct az_ulib_ipc_tag
 /**
  * @brief   Initialize the IPC system.
  *
- * This API initialize the IPC. It shall be called only once, at the beginning of the code
+ * This API initializes the IPC. It shall be called only once, at the beginning of the code
  * execution.
  *
- * @note    This API **is not** thread safe, the other IPC API shall only be called after the
- *          initialization process is completely done.
+ * @note    This API **is not** thread safe. The other IPC APIs shall only be called after the
+ *          initialization process is complete.
  *
  * @param[in]   ipc_handle      The #az_ulib_ipc* that points to a memory position where
  *                              the IPC shall create its control block.
@@ -82,11 +82,8 @@ typedef struct az_ulib_ipc_tag
  * @pre     \p ipc_handle shall not be `NULL`.
  * @pre     IPC shall not been initialized.
  *
- * @note    This API **is not** thread safe, no other IPC API may be called during the execution of
- *          this init.
- *
  * @return The #az_result with the result of the initialization.
- *  @retval #AZ_OK                              If the IPC initialize with success.
+ *  @retval #AZ_OK                              If the IPC initializes with success.
  */
 AZ_NODISCARD az_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle);
 
@@ -104,7 +101,7 @@ AZ_NODISCARD az_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle);
  * If the system needs the IPC again, it may call az_ulib_ipc_init() again to reinitialize the IPC.
  *
  * @note    This API **is not** thread safe, no other IPC API may be called during the execution of
- *          this deinit, and no other IPC API shall be running during the execution of this API.
+ *          this deinit and no other IPC API shall be running during the execution of this API.
  *
  * @note    Deinit the IPC without follow these steps may result in error, segmentation fault or
  *          memory leak.
@@ -136,8 +133,7 @@ const az_ulib_ipc_table* az_ulib_ipc_get_table(void);
  * same package name and version.
  *
  * If no other package has published an interface with the same name and version, and the same
- * package name of the provided in the descriptor, this function will make this interface the
- * default one.
+ * package name provided in the descriptor, this function will make this interface the default one.
  *
  * Optionally, this API may return the handle of the interface in the IPC. This handle will be
  * automatically released when the interface is unpublished.
@@ -151,8 +147,8 @@ const az_ulib_ipc_table* az_ulib_ipc_get_table(void);
  *
  * @param[in]   interface_descriptor  The `const` #az_ulib_interface_descriptor* with the
  *                                    descriptor of the interface. It cannot be `NULL` and
- *                                    shall be valid up to the interface is unpublished with
- *                                    success.
+ *                                    shall be valid up to the point the interface is successfully
+ *                                    unpublished.
  * @param[out]  interface_handle      A pointer to #az_ulib_ipc_interface_handle to return the
  *                                    handle of the published interface in the IPC. It may be
  *                                    `NULL`. If it is `NULL`, this API will not return the
@@ -173,20 +169,20 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
     az_ulib_ipc_interface_handle* interface_handle);
 
 /**
- * @brief   Make an interface default in the device.
+ * @brief   Set a default package for a given interface in the device.
  *
  * This API sets an interface implementation as default in the device, so if 2 or more packages
  * implement the same interface, IPC will be able to define each one shall be returned, if the
  * caller didn't specify the desired package.
  *
- * If another package was already defined as default for the interface, call this function will
- * change the default, from the previous package, to the provided one.
+ * If another package was already defined as default for the given interface, calling this API will
+ * change the default from the previous package to the provided one.
  *
  * @param[in]   package_name      The `az_span` with the package name. It cannot be #AZ_SPAN_EMPTY.
- * @param[in]   package_version   The #az_ulib_version with the package version. It cannot be `0`.
+ * @param[in]   package_version   The #az_ulib_version with the package version.
  * @param[in]   interface_name    The `az_span` with the interface name. It cannot be
  *                                #AZ_SPAN_EMPTY.
- * @param[in]   interface_version The #az_ulib_version with the interface version. It cannot be `0`.
+ * @param[in]   interface_version The #az_ulib_version with the interface version.
  *
  * @pre     IPC shall already be initialized.
  * @pre     \p package_name shall not be #AZ_SPAN_EMPTY.
@@ -263,21 +259,21 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *  - interface_name is mandatory and shall match exactly.
  *  - interface_version is mandatory and shall match exactly.
  *  - package_name
- *      - If provided, this function will look up for the interface in the packages with
+ *      - If provided, this function will look up the interface in the packages with
  *          package_name.
- *      - If #AZ_SPAN_EMPTY, this function will look up for the interface only in the default
+ *      - If #AZ_SPAN_EMPTY, this function will look up the interface only in the default
  *          package. In this case, package_version will be ignored. To set a package as default
  *          use the API az_ulib_ipc_set_default().
  *  - package_version
- *      - If package name and version are provided, this function will look up for the interface
+ *      - If package name and version are provided, this function will look up the interface
  *          only in the package_name.package_version.
  *      - If package name is provided and version is #AZ_ULIB_VERSION_DEFAULT (0), this function
- *          will look up for the interface in the default package that matches the package_name.
+ *          will look up the interface in the default package that matches the package_name.
  * - device_name
  *      - If provided, this function will send the request for the Gateways that has the
- *          communication with the leaves devices. The Gateway will look up for the interface
+ *          communication with the leaf devices. The Gateway will look up the interface
  *          in the appropriate device, if it exist. **This functionality is not supported yet.**
- *      - If #AZ_SPAN_EMPTY, this function will look up for the interface only in the local
+ *      - If #AZ_SPAN_EMPTY, this function will look up the interface only in the local
  *          device.
  *
  * @param[in]   device_name       The `az_span` with the device name. It can be #AZ_SPAN_EMPTY.
