@@ -15,6 +15,8 @@ extern "C"
 
   void my_consumer_create(void);
   void my_consumer_destroy(void);
+  void my_consumer_change_default(void);
+  void my_consumer_query_interfaces(void);
   void my_consumer_do_cipher(uint32_t algorithm);
 
 #ifdef __cplusplus

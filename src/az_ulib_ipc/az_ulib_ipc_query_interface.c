@@ -15,13 +15,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define IPC_QUERY_1_INTERFACE_NAME "ipc_" QUERY_1_INTERFACE_NAME
-
 static az_result query_1_query_concrete(
     const query_1_query_model_in* const in,
     query_1_query_model_out* out)
 {
-  return az_ulib_ipc_query(in->query, out->result, &(out->continuation_token));
+  return az_ulib_ipc_query(*in, out->result, &(out->continuation_token));
 }
 
 AZ_INLINE int32_t model_out_span_min_size(void)
@@ -84,7 +82,7 @@ static az_result query_1_query_span_wrapper(az_span model_in_span, az_span* mode
   {
     // Unmarshalling JSON in model_in_span to query_model_in.
     az_json_reader jr;
-    query_1_query_model_in query_model_in = { 0 };
+    az_span query_model_in = AZ_SPAN_EMPTY;
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_init(&jr, model_in_span, NULL));
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
     while (jr.token.kind != AZ_JSON_TOKEN_END_OBJECT)
@@ -92,8 +90,7 @@ static az_result query_1_query_span_wrapper(az_span model_in_span, az_span* mode
       if (az_json_token_is_text_equal(&jr.token, AZ_SPAN_FROM_STR(QUERY_1_QUERY_QUERY_NAME)))
       {
         AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
-        query_model_in.query
-            = az_span_create(az_span_ptr(jr.token.slice), az_span_size(jr.token.slice));
+        query_model_in = az_span_create(az_span_ptr(jr.token.slice), az_span_size(jr.token.slice));
       }
       AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
     }
@@ -118,7 +115,7 @@ static az_result query_1_next_concrete(
     const query_1_next_model_in* const in,
     query_1_next_model_out* out)
 {
-  out->continuation_token = in->continuation_token;
+  out->continuation_token = *in;
   return az_ulib_ipc_query_next(&(out->continuation_token), out->result);
 }
 
@@ -128,7 +125,7 @@ static az_result query_1_next_span_wrapper(az_span model_in_span, az_span* model
   {
     // Unmarshalling JSON in model_in_span to next_model_in.
     az_json_reader jr;
-    query_1_next_model_in next_model_in = { 0 };
+    uint32_t next_model_in = 0;
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_init(&jr, model_in_span, NULL));
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
     while (jr.token.kind != AZ_JSON_TOKEN_END_OBJECT)
@@ -137,8 +134,7 @@ static az_result query_1_next_span_wrapper(az_span model_in_span, az_span* model
               &jr.token, AZ_SPAN_FROM_STR(QUERY_1_NEXT_CONTINUATION_TOKEN_NAME)))
       {
         AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
-        AZ_ULIB_THROW_IF_AZ_ERROR(
-            az_span_atou32(jr.token.slice, &(next_model_in.continuation_token)));
+        AZ_ULIB_THROW_IF_AZ_ERROR(az_span_atou32(jr.token.slice, &next_model_in));
       }
       AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
     }
@@ -163,7 +159,7 @@ static az_result query_1_next_span_wrapper(az_span model_in_span, az_span* model
   return AZ_ULIB_TRY_RESULT;
 }
 
-static const az_ulib_capability_descriptor QUERY_1_CAPABILITIES[QUERY_1_CAPABILITY_SIZE]
+static const az_ulib_capability_descriptor QUERY_1_CAPABILITIES[]
     = { AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
             QUERY_1_QUERY_COMMAND_NAME,
             query_1_query_concrete,
@@ -174,7 +170,9 @@ static const az_ulib_capability_descriptor QUERY_1_CAPABILITIES[QUERY_1_CAPABILI
             query_1_next_span_wrapper) };
 
 static const az_ulib_interface_descriptor QUERY_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
-    IPC_QUERY_1_INTERFACE_NAME,
+    IPC_1_PACKAGE_NAME,
+    IPC_1_PACKAGE_VERSION,
+    QUERY_1_INTERFACE_NAME,
     QUERY_1_INTERFACE_VERSION,
     QUERY_1_CAPABILITIES);
 

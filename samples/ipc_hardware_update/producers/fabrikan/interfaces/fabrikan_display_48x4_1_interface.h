@@ -18,6 +18,9 @@ extern "C"
 #else
 #endif
 
+#define FABRIKAN_PACKAGE_NAME "fabrikan"
+#define FABRIKAN_PACKAGE_VERSION 1
+
   /*
    * Publish display interface.
    */

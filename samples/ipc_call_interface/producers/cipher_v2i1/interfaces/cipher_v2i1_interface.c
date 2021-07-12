@@ -203,6 +203,8 @@ static const az_ulib_capability_descriptor CIPHER_1_CAPABILITIES[]
             NULL) };
 
 static const az_ulib_interface_descriptor CIPHER_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
+    CIPHER_2_PACKAGE_NAME,
+    CIPHER_2_PACKAGE_VERSION,
     CIPHER_1_INTERFACE_NAME,
     CIPHER_1_INTERFACE_VERSION,
     CIPHER_1_CAPABILITIES);

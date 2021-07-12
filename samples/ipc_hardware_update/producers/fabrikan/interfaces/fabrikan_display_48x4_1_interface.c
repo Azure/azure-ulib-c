@@ -7,12 +7,12 @@
  * modified.
  ********************************************************************/
 
+#include "fabrikan_display_48x4_1_interface.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
 #include "display_1_model.h"
-#include "fabrikan_display_48x4_1_interface.h"
 #include "fabrikan_display_48x4_bsp.h"
 
 #include <stddef.h>
@@ -135,6 +135,8 @@ static const az_ulib_capability_descriptor DISPLAY_1_CAPABILITIES[] = {
 };
 
 static const az_ulib_interface_descriptor DISPLAY_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
+    FABRIKAN_PACKAGE_NAME,
+    FABRIKAN_PACKAGE_VERSION,
     DISPLAY_1_INTERFACE_NAME,
     DISPLAY_1_INTERFACE_VERSION,
     DISPLAY_1_CAPABILITIES);
