@@ -705,25 +705,26 @@ static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* ne
           + az_span_size(descriptor->_internal.intf_name)
           + 6; // 6 = '"', '*', '.', '.', '.' and '"'
 
-      char package_version_str[12];
+      char package_version_str[AZ_ULIB_STRINGIFIED_VERSION_SIZE];
       az_span package_version_span = AZ_SPAN_FROM_BUFFER(package_version_str);
-      char interface_version_str[12];
+      char interface_version_str[AZ_ULIB_STRINGIFIED_VERSION_SIZE];
       az_span interface_version_span = AZ_SPAN_FROM_BUFFER(interface_version_str);
-      az_span reminder;
+      az_span remainder;
 
-      if ((res = az_span_u32toa(package_version_span, descriptor->_internal.pkg_version, &reminder))
+      if ((res
+           = az_span_u32toa(package_version_span, descriptor->_internal.pkg_version, &remainder))
           == AZ_OK)
       {
         int32_t next_package_version_size
-            = az_span_size(package_version_span) - az_span_size(reminder);
+            = az_span_size(package_version_span) - az_span_size(remainder);
         next_size += next_package_version_size;
 
         if ((res = az_span_u32toa(
-                 interface_version_span, descriptor->_internal.intf_version, &reminder))
+                 interface_version_span, descriptor->_internal.intf_version, &remainder))
             == AZ_OK)
         {
           int32_t next_interface_version_size
-              = az_span_size(interface_version_span) - az_span_size(reminder);
+              = az_span_size(interface_version_span) - az_span_size(remainder);
           next_size += next_interface_version_size;
 
           if (pos == 0)

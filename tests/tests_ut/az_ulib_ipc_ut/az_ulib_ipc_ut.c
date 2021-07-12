@@ -437,7 +437,7 @@ static void az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed(void**
 
 /* If the provided interface handle is NULL, the az_ulib_ipc_try_get_capability shall fail with
  * precondition. */
-static void az_ulib_ipc_try_get_capability_with_null_name_failed(void** state)
+static void az_ulib_ipc_try_get_capability_with_null_interface_handle_failed(void** state)
 {
   /// arrange
   (void)state;
@@ -455,7 +455,7 @@ static void az_ulib_ipc_try_get_capability_with_null_name_failed(void** state)
 
 /* If the provided pointer to return the capability index is NULL, the
  * az_ulib_ipc_try_get_capability shall fail with precondition. */
-static void az_ulib_ipc_try_get_capability_with_null_handle_failed(void** state)
+static void az_ulib_ipc_try_get_capability_with_null_return_capability_handle_failed(void** state)
 {
   /// arrange
   (void)state;
@@ -1320,6 +1320,31 @@ static void az_ulib_ipc_set_default_move_default_version_succeed(void** state)
   unpublish_interfaces_and_deinit_ipc();
 }
 
+/* If the interface version is #AZ_ULIB_VERSION_DEFAULT, The az_ulib_ipc_set_default shall return
+ * AZ_ERROR_ARG.*/
+static void az_ulib_ipc_set_default_any_interface_version_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+  g_count_acquire = 0;
+
+  /// act
+  az_result result = az_ulib_ipc_set_default(
+      AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME),
+      MY_PACKAGE_2_VERSION,
+      AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
+      AZ_ULIB_VERSION_DEFAULT);
+
+  /// assert
+  assert_int_equal(g_lock_diff, 0);
+  assert_int_equal(g_count_acquire, 0);
+  assert_int_equal(result, AZ_ERROR_ARG);
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
 /* If there is no package.version.interface.version, The az_ulib_ipc_set_default shall return
  * AZ_ERROR_ITEM_NOT_FOUND.*/
 static void az_ulib_ipc_set_default_unknown_interface_failed(void** state)
@@ -1340,29 +1365,6 @@ static void az_ulib_ipc_set_default_unknown_interface_failed(void** state)
   assert_int_equal(g_lock_diff, 0);
   assert_int_equal(g_count_acquire, 1);
   assert_int_equal(result, AZ_ERROR_ITEM_NOT_FOUND);
-
-  /// cleanup
-  unpublish_interfaces_and_deinit_ipc();
-}
-
-static void az_ulib_ipc_set_default_any_interface_version_failed(void** state)
-{
-  /// arrange
-  (void)state;
-  init_ipc_and_publish_interfaces();
-  g_count_acquire = 0;
-
-  /// act
-  az_result result = az_ulib_ipc_set_default(
-      AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME),
-      MY_PACKAGE_2_VERSION,
-      AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
-      AZ_ULIB_VERSION_DEFAULT);
-
-  /// assert
-  assert_int_equal(g_lock_diff, 0);
-  assert_int_equal(g_count_acquire, 0);
-  assert_int_equal(result, AZ_ERROR_ARG);
 
   /// cleanup
   unpublish_interfaces_and_deinit_ipc();
@@ -1961,6 +1963,7 @@ static void az_ulib_ipc_try_get_interface_default_anbiguous_name_failed(void** s
 
 /* If the device is not AZ_SPAN_EMPTY, the az_ulib_ipc_try_get_interface shall return
  * AZ_ERROR_NOT_IMPLEMENTED. */
+/* NOTE: This will be implemented in the future and this test shall reflect it. */
 static void az_ulib_ipc_try_get_interface_for_specific_device_failed(void** state)
 {
   /// arrange
@@ -2863,8 +2866,8 @@ int az_ulib_ipc_ut()
     cmocka_unit_test(az_ulib_ipc_try_get_interface_with_defult_version_failed),
     cmocka_unit_test(az_ulib_ipc_try_get_interface_with_null_handle_failed),
     cmocka_unit_test(az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_capability_with_null_name_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_capability_with_null_handle_failed),
+    cmocka_unit_test(az_ulib_ipc_try_get_capability_with_null_interface_handle_failed),
+    cmocka_unit_test(az_ulib_ipc_try_get_capability_with_null_return_capability_handle_failed),
     cmocka_unit_test(az_ulib_ipc_try_get_capability_with_ipc_not_initialized_failed),
     cmocka_unit_test(az_ulib_ipc_try_get_capability_with_invalid_name_failed),
     cmocka_unit_test(az_ulib_ipc_get_interface_with_null_original_interface_handle_failed),

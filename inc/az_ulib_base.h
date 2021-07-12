@@ -42,6 +42,11 @@ typedef uint32_t az_ulib_version;
  */
 #define AZ_ULIB_VERSION_DEFAULT 0
 
+/**
+ * @brief   Maximum number of characters in a stringified version.
+ */
+#define AZ_ULIB_STRINGIFIED_VERSION_SIZE 12
+
 #include "azure/core/_az_cfg_suffix.h"
 
 #endif // AZ_ULIB_BASE_H
