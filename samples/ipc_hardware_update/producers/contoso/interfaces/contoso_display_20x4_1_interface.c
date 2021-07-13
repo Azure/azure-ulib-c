@@ -7,11 +7,11 @@
  * modified.
  ********************************************************************/
 
+#include "contoso_display_20x4_1_interface.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
-#include "contoso_display_20x4_1_interface.h"
 #include "contoso_display_20x4_bsp.h"
 #include "display_1_model.h"
 
@@ -135,6 +135,8 @@ static const az_ulib_capability_descriptor DISPLAY_1_CAPABILITIES[] = {
 };
 
 static const az_ulib_interface_descriptor DISPLAY_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
+    CONTOSO_PACKAGE_NAME,
+    CONTOSO_PACKAGE_VERSION,
     DISPLAY_1_INTERFACE_NAME,
     DISPLAY_1_INTERFACE_VERSION,
     DISPLAY_1_CAPABILITIES);

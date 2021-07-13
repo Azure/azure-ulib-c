@@ -61,6 +61,15 @@ enum az_result_ulib
 
   /** A singleton component is already initialized. */
   AZ_ERROR_ULIB_ALREADY_INITIALIZED = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 9),
+
+  /** The required operation is forbidden. */
+  AZ_ERROR_ULIB_FORBIDDEN = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 10),
+
+  /** Timeout. */
+  AZ_ERROR_ULIB_TIMEOUT = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 11),
+
+  /** The symbol identifies more than one element and need to be better qualified. */
+  AZ_ERROR_ULIB_AMBIGUOUS = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 12),
 };
 
 /**

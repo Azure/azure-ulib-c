@@ -36,9 +36,11 @@ void my_consumer_create(void)
   {
     (void)printf("Try get sensors interface.\r\n");
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_try_get_interface(
+        AZ_SPAN_EMPTY,
+        AZ_SPAN_EMPTY,
+        AZ_ULIB_VERSION_DEFAULT,
         AZ_SPAN_FROM_STR(SENSORS_1_INTERFACE_NAME),
         SENSORS_1_INTERFACE_VERSION,
-        AZ_ULIB_VERSION_EQUALS_TO,
         &_sensors_1));
 
     (void)printf("Subscribe to temperature.\r\n");

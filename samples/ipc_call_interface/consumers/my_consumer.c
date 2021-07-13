@@ -3,6 +3,8 @@
 // See LICENSE file in the project root for full license information.
 
 #include "my_consumer.h"
+#include "az_ulib_ipc_api.h"
+#include "az_ulib_query_1_model.h"
 #include "az_ulib_result.h"
 #include "azure/az_core.h"
 #include "wrappers/cipher_1_wrapper.h"
@@ -40,26 +42,66 @@ static void get_handle_if_need(void)
   }
 }
 
+void my_consumer_change_default(void)
+{
+  (void)printf("Set cipher.2 as default.\r\n");
+
+  AZ_ULIB_TRY
+  {
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_set_default(
+        AZ_SPAN_FROM_STR("cipher"),
+        2,
+        AZ_SPAN_FROM_STR(CIPHER_1_INTERFACE_NAME),
+        CIPHER_1_INTERFACE_VERSION));
+  }
+  AZ_ULIB_CATCH(...)
+  {
+    (void)printf("Set default interface failed with code %" PRIi32 "\r\n", AZ_ULIB_TRY_RESULT);
+  }
+}
+
+void my_consumer_query_interfaces(void)
+{
+  az_ulib_ipc_interface_handle handle;
+
+  AZ_ULIB_TRY
+  {
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_try_get_interface(
+        AZ_SPAN_EMPTY,
+        AZ_SPAN_FROM_STR(IPC_1_PACKAGE_NAME),
+        AZ_ULIB_VERSION_DEFAULT,
+        AZ_SPAN_FROM_STR(QUERY_1_INTERFACE_NAME),
+        QUERY_1_INTERFACE_VERSION,
+        &handle));
+
+    uint8_t buf[BUFFER_SIZE];
+    az_span interface_list = AZ_SPAN_FROM_BUFFER(buf);
+    az_span query = AZ_SPAN_FROM_STR("");
+    query_1_query_model_out out = { .result = &interface_list, .continuation_token = 0 };
+    az_result result = az_ulib_ipc_call(handle, QUERY_1_QUERY_COMMAND, &query, &out);
+
+    while (result == AZ_OK)
+    {
+      uint32_t continuation_token = 0;
+      char* name_str = (char*)az_span_ptr(interface_list);
+      name_str[az_span_size(interface_list)] = '\0';
+      (void)printf("Published interfaces [ %s ]\r\n", name_str);
+      interface_list = AZ_SPAN_FROM_BUFFER(buf);
+      result = az_ulib_ipc_call(handle, QUERY_1_NEXT_COMMAND, &continuation_token, &out);
+    }
+
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_release_interface(handle));
+  }
+  AZ_ULIB_CATCH(...)
+  {
+    (void)printf(
+        "Get ipc.1.query.1 interface failed with code %" PRIi32 "\r\n", AZ_ULIB_TRY_RESULT);
+  }
+}
+
 void my_consumer_create(void)
 {
   (void)printf("Create my consumer...\r\n");
-
-  az_result result;
-  uint32_t continuation_token = 0;
-  uint8_t buf[BUFFER_SIZE];
-  az_span interface_list = AZ_SPAN_FROM_BUFFER(buf);
-
-  result = az_ulib_ipc_query(AZ_SPAN_EMPTY, &interface_list, &continuation_token);
-
-  while (result == AZ_OK)
-  {
-    char* name_str = (char*)az_span_ptr(interface_list);
-    name_str[az_span_size(interface_list)] = '\0';
-    (void)printf("Published interfaces [ %s ]\r\n", name_str);
-    interface_list = AZ_SPAN_FROM_BUFFER(buf);
-    result = az_ulib_ipc_query_next(&continuation_token, &interface_list);
-  }
-
   _cipher_1 = NULL;
 }
 

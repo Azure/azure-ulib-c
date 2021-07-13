@@ -18,6 +18,9 @@ extern "C"
 #else
 #endif
 
+#define CONTOSO_PACKAGE_NAME "contoso"
+#define CONTOSO_PACKAGE_VERSION 1
+
   /*
    * Publish display interface.
    */

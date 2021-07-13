@@ -141,8 +141,10 @@ static const az_ulib_capability_descriptor MY_INTERFACE_1_V123_CAPABILITIES[]
             my_command,
             my_command_span_wrapper) };
 const az_ulib_interface_descriptor MY_INTERFACE = AZ_ULIB_DESCRIPTOR_CREATE(
-    MY_INTERFACE_1_123_INTERFACE_NAME,
-    MY_INTERFACE_1_123_INTERFACE_VERSION,
+    MY_PACKAGE_A_NAME,
+    MY_PACKAGE_1_VERSION,
+    MY_INTERFACE_1_NAME,
+    MY_INTERFACE_123_VERSION,
     MY_INTERFACE_1_V123_CAPABILITIES);
 
 static void az_ulib_descriptor_interface_descriptor_succeed(void** state)
@@ -154,12 +156,11 @@ static void az_ulib_descriptor_interface_descriptor_succeed(void** state)
   /// assert
   /* Interface. */
   assert_true(az_span_is_content_equal(
-      MY_INTERFACE._internal.name, AZ_SPAN_FROM_STR(MY_INTERFACE_1_123_INTERFACE_NAME)));
-  assert_int_equal(MY_INTERFACE._internal.version, 123);
-  assert_true(az_ulib_version_match(
-      MY_INTERFACE_1_123_INTERFACE_VERSION,
-      MY_INTERFACE._internal.version,
-      AZ_ULIB_VERSION_EQUALS_TO));
+      MY_INTERFACE._internal.pkg_name, AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME)));
+  assert_int_equal(MY_INTERFACE._internal.pkg_version, MY_PACKAGE_1_VERSION);
+  assert_true(az_span_is_content_equal(
+      MY_INTERFACE._internal.intf_name, AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME)));
+  assert_int_equal(MY_INTERFACE._internal.intf_version, MY_INTERFACE_123_VERSION);
   assert_int_equal(MY_INTERFACE._internal.size, 5);
 
   /* AZ_ULIB_DESCRIPTOR_ADD_CAPABILITY(
