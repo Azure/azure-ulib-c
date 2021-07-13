@@ -31,9 +31,15 @@ typedef size_t offset_t;
 typedef struct az_ulib_ustream_forward_tag az_ulib_ustream_forward;
 
 /**
- * @brief Define az_ulib_callback as void*.
+ * @brief Signature of the function to be invoked by the `ustream_forward->flush` operation when the 
+ *        `const az_span* const` buffer has been created.
+ * 
+ * @param[in]   buffer                  The `const az_span* const` buffer to be handled by the 
+ *                                      implementation of this callback.
+ * @param[in]   push_callback_context   The #az_context* contract held between the owner of this
+ *                                      callback and the `ustream_forward->flush` operation.
  */
-typedef az_ulib_callback void*;
+typedef void (*az_ulib_flush_callback)(const az_span* const buffer, az_context* push_callback_context);
 
 /**
  * @brief   vTable with the ustream_forward APIs.
@@ -48,7 +54,7 @@ typedef struct az_ulib_ustream_forward_interface_tag
   /** Concrete `flush` implementation. */
   az_result (*flush)(
       az_ulib_ustream_forward* ustream_forward_instance, 
-      az_ulib_callback* push_callback, 
+      az_ulib_flush_callback* push_callback, 
       az_context* push_callback_context);
 
   /** Concrete `read` implementation. */
@@ -117,13 +123,8 @@ typedef struct az_ulib_ustream_forward_data_cb_tag
 /**
  * @brief   Structure for instance control block
  *
- * For any given ustream_forward that is created, there may be multiple `az_ulib_ustream_forward`'s
- *      pointing to the same `az_ulib_ustream_forward_data_cb`. Each instance control block serves to
- *      manage a given developer's usage of the memory pointed to inside the
- *      `az_ulib_ustream_forward_data_cb`. Each time an `az_ulib_ustream_forward` is cloned using
- *      az_ulib_ustream_forward_clone(), the `ref_count` inside the `az_ulib_ustream_forward_data_cb` is
- *      incremented to signal a reference to the memory has been acquired. Once the instance is
- *      done being used, az_ulib_ustream_forward_release() must be called to decrement `ref_count`.
+ * A reference to the #az_ulib)ustream_forward_data_cb* control_block with member variables to keep
+ *    track of the read offset while iterating over the ustream_forward `Data Source`.
  *
  * @note    This structure should be viewed and used as internal to the implementation of the
  *          ustream_forward. Users should therefore not act on it directly and only allocate the memory
@@ -146,9 +147,6 @@ struct az_ulib_ustream_forward_tag
   /** The #offset_t used to keep track of the current position (next returned position). */
   offset_t inner_current_position;
 
-  /** The #offset_t used to keep track of the earliest position to reset. */
-  offset_t inner_first_valid_position;
-
   /** The `size_t` with the length of the data in the control_block. */
   size_t length;
 };
@@ -159,7 +157,7 @@ struct az_ulib_ustream_forward_tag
  *  It will return true if the handle is valid and it is the same type of the API. It will
  *      return false if the handle is `NULL` or not the correct type.
  */
-#define AZ_ULIB_ustream_forward_IS_TYPE_OF(handle, type_api)                                             \
+#define AZ_ULIB_USTREAM_FORWARD_IS_TYPE_OF(handle, type_api)                                             \
   (!((handle == NULL) || (handle->control_block == NULL) || (handle->control_block->api == NULL) \
      || (handle->control_block->api != &type_api)))
 
@@ -168,7 +166,7 @@ struct az_ulib_ustream_forward_tag
  * 
  *  The `az_ulib_ustream_forward_flush` API will copy ALL of the contents of the data from the
  *    source (provider) directly to the destination buffer provided by the consumer in the 
- *    `#az_ulib_callback* push_callback`.
+ *    `#az_ulib_flush_callback* push_callback`.
  *  
  *  In the event that the source (provider) memory is not immediately available without a call
  *    to an external API (e.g. an HTTP connection to a blob storage provider), the flush operation
@@ -177,15 +175,10 @@ struct az_ulib_ustream_forward_tag
  *  
  *  The `az_ulib_ustream_forward_flush` API will provide the consumer a pointer to the memory to be
  *    copied in the form of a `const az_span* const` buffer, to be consumed in the `push_callback`
- *    function implemented by the consumer. The signature for the `push_callback` function is as
- *    follows:
+ *    function implemented by the consumer. 
  * 
- * @code
- *  my_push_callback(const az_span* const buffer, az_context* push_callback_context) 
- * @endcode
- * 
- * @note: It is the consumer's responsibility to increment any write offset in the consumer's
- *        context inside the push_callback.
+ * @note: It is the consumer's responsibility to increment any write offset referenced in the
+ *        context inside the push_callback implementation.
  * 
  *  The `az_ulib_ustream_forward_flush` API shall meet the following minimum requirements:
  *      - The flush operation create a `const az_span* const` from the `Data Source` and hand it
@@ -199,16 +192,16 @@ struct az_ulib_ustream_forward_tag
  * 
  * @param[in]       ustream_forward_instance    The #az_ulib_ustream_forward* with the interface of
  *                                              the ustream_forward.
- * @param[out]      push_callback               The #az_ulib_callback* for the consumer to handle
+ * @param[out]      push_callback               The #az_ulib_flush_callback* for the consumer to handle
  *                                              the incoming data.
  * @param[out]      push_callback_context       The #az_context* contract between the caller and
  *                                              push_callback.
  * 
  * @pre     \p ustream_forward_instance shall not be `NULL`.
- * @pre     \p push_callback shall not be `NULL`.
- * @pre     \p push_callback_context shall not be `NULL`.
  * @pre     \p ustream_forward_instance shall be a valid ustream that is the implemented ustream
  *             type.
+ * @pre     \p push_callback shall not be `NULL`.
+ * @pre     \p push_callback_context shall not be `NULL`.
  * 
  * @return The #az_result with the result of the flush operation
  *      @retval #AZ_OK                        If the flush operation succeeded in creating the
@@ -229,7 +222,7 @@ struct az_ulib_ustream_forward_tag
  */ 
 AZ_INLINE az_result az_ulib_ustream_forward_flush(
     az_ulib_ustream_forward* ustream_forward_instance,
-    az_ulib_callback* push_callback, 
+    az_ulib_flush_callback* push_callback, 
     az_context* push_callback_context)
 {
   return ustream_forward_instance->control_block->api->flush(
