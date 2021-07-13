@@ -455,6 +455,52 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
     az_span* model_out_span);
 
 /**
+ * @brief   Split the provided method full name.
+ *
+ * This function splits the provided method name between device, package, interface and capability
+ * using the following rules
+ *
+ * 1. The method full name shall be split by `.`.
+ * 2. The names and versions shall be extract from right to left.
+ * 3. The expected method full name shall looks like:
+ *      <device_name>.<package_name>.<package_version>.<interface_name>.<interface_version>.<capability_name>
+ * 4. The interface_name and interface_version are mandatory.
+ * 5. If a name is not provided, this function shall return #AZ_SPAN_EMPTY.
+ * 6. If a version is not provided, this function shall return #AZ_ULIB_VERSION_DEFAULT.
+ * 7. If the package_version is provided, the package_name shall be provided as well.
+ *
+ * @param[in]   full_name           The `az_span` with the method full name.
+ * @param[out]  device_name         The pointer to `az_span` to return the device name.
+ * @param[out]  package_name        The pointer to `az_span` to return the package name.
+ * @param[out]  package_version     The pointer to `uint32_t` to return the package version.
+ * @param[out]  interface_name      The pointer to `az_span` to return the interface name.
+ * @param[out]  interface_version   The pointer to `uint32_t` to return the interface version.
+ * @param[out]  capability_name     The pointer to `az_span` to return the capability name.
+ *
+ * @pre     IPC shall already be initialized.
+ * @pre     \p full_name shall not be #AZ_SPAN_EMPTY.
+ * @pre     \p device_name shall not be `NULL`.
+ * @pre     \p package_name shall not be `NULL`.
+ * @pre     \p package_version shall not be `NULL`.
+ * @pre     \p interface_name shall not be `NULL`.
+ * @pre     \p interface_version shall not be `NULL`.
+ * @pre     \p capability_name shall not be `NULL`.
+ *
+ * @return The #az_result with the result of the call.
+ *  @retval #AZ_OK                      If the method full name was split with success and can be
+ *                                      used.
+ *  @retval #AZ_ERROR_UNEXPECTED_CHAR   If there the method full name didn't fit the above rules.
+ */
+AZ_NODISCARD az_result az_ulib_ipc_split_method_name(
+    az_span full_name,
+    az_span* device_name,
+    az_span* package_name,
+    uint32_t* package_version,
+    az_span* interface_name,
+    uint32_t* interface_version,
+    az_span* capability_name);
+
+/**
  * @brief   Query IPC information.
  *
  * Creates a query for IPC. The query retrieves information from the IPC, depending on the content
