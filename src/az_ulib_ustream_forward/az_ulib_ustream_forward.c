@@ -35,7 +35,7 @@
 
 static az_result concrete_flush(
     az_ulib_ustream_forward* ustream_forward_instance,
-    az_ulib_flush_callback* push_callback, 
+    az_ulib_flush_callback push_callback, 
     az_context* push_callback_context);
 static az_result concrete_read(
     az_ulib_ustream_forward* ustream_forward_instance,
@@ -81,7 +81,7 @@ static void destroy_control_block(az_ulib_ustream_forward_data_cb* control_block
 
 static az_result concrete_flush(
     az_ulib_ustream_forward* ustream_forward_instance,
-    az_ulib_flush_callback* push_callback, 
+    az_ulib_flush_callback push_callback, 
     az_context* push_callback_context)
 {
   // precondition checks
