@@ -8,7 +8,7 @@
 #include "az_ulib_config.h"
 #include "az_ulib_pal_os.h"
 #include "az_ulib_result.h"
-#include "az_context.h"
+#include "azure/core/az_context.h"
 
 #ifdef __cplusplus
 #include <cstddef>
@@ -65,10 +65,13 @@ typedef struct az_ulib_ustream_forward_interface_tag
       size_t* const size);
 
   /** Concrete `get_remaining_size` implementation. */
-  az_result (*get_remaining_size)(az_ulib_ustream_forward* ustream_forward_instance, size_t* const size);
+  az_result (*get_remaining_size)(
+        az_ulib_ustream_forward* ustream_forward_instance, 
+        size_t* const size);
 
   /** Concrete `dispose` implementation. */
-  az_result (*dispose)(az_ulib_ustream_forward* ustream_forward_instance);
+  az_result (*dispose)(
+        az_ulib_ustream_forward* ustream_forward_instance);
 } az_ulib_ustream_forward_interface;
 
 /**

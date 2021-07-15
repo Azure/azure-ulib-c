@@ -9,7 +9,7 @@
 
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
-#include "az_span.h"
+#include "azure/core/az_span.h"
 #include "az_ulib_ustream_forward.h"
 
 #include <azure/core/internal/az_precondition_internal.h>
@@ -33,7 +33,7 @@
 #define RESUME_WARNINGS __pragma(warning(pop));
 #endif // __clang__
 
-static az_result concreted_flush(
+static az_result concrete_flush(
     az_ulib_ustream_forward* ustream_forward_instance,
     az_ulib_flush_callback* push_callback, 
     az_context* push_callback_context);
@@ -42,10 +42,13 @@ static az_result concrete_read(
     uint8_t* const buffer,
     size_t buffer_length,
     size_t* const size);
-static az_result concrete_get_remaining_size(az_ulib_ustream_forward* ustream_forward_instance, size_t* const size);
-static az_result concrete_dispose(az_ulib_ustream_forward* ustream_forward_instance);
+static az_result concrete_get_remaining_size(
+    az_ulib_ustream_forward* ustream_forward_instance, 
+    size_t* const size);
+static az_result concrete_dispose(
+    az_ulib_ustream_forward* ustream_forward_instance);
 static const az_ulib_ustream_forward_interface api
-    = { concrete_read,  concrete_get_remaining_size, concrete_dispose };
+    = { concrete_flush, concrete_read,  concrete_get_remaining_size, concrete_dispose };
 
 static void init_instance(
     az_ulib_ustream_forward* ustream_forward_instance,
@@ -55,7 +58,6 @@ static void init_instance(
     size_t data_buffer_length)
 {
   ustream_forward_instance->inner_current_position = inner_current_position;
-  ustream_forward_instance->inner_first_valid_position = inner_current_position;
   ustream_forward_instance->offset_diff = offset - inner_current_position;
   ustream_forward_instance->control_block = control_block;
   ustream_forward_instance->length = data_buffer_length;
@@ -77,7 +79,7 @@ static void destroy_control_block(az_ulib_ustream_forward_data_cb* control_block
   }
 }
 
-static az_result concreted_flush(
+static az_result concrete_flush(
     az_ulib_ustream_forward* ustream_forward_instance,
     az_ulib_flush_callback* push_callback, 
     az_context* push_callback_context)
@@ -92,12 +94,12 @@ static az_result concreted_flush(
   {
     // point to data from instance
     az_ulib_ustream_forward_data_cb* control_block = ustream_forward_instance->control_block;
-    size_t* buffer_size;
-    AZ_ULIB_THROW_IF_AZ_ERROR(concrete_get_remaining_size(ustream_forward_instance, buffer_size));
-    const az_span const buffer = az_span_create(control_block->ptr, *buffer_size);
+    size_t buffer_size;
+    AZ_ULIB_THROW_IF_AZ_ERROR(concrete_get_remaining_size(ustream_forward_instance, &buffer_size));
+    const az_span buffer = az_span_create((uint8_t*)control_block->ptr, (int32_t)buffer_size);
 
     // invoke callback
-    push_callback(&buffer, push_callback_context);
+    (*push_callback)(&buffer, push_callback_context);
   }
   AZ_ULIB_CATCH (...) {}
 
@@ -144,7 +146,7 @@ static az_result concrete_read(
 
 static az_result concrete_get_remaining_size(az_ulib_ustream_forward* ustream_forward_instance, size_t* const size)
 {
-  _az_PRECONDITION(AZ_ULIB_ustream_forward_IS_TYPE_OF(ustream_forward_instance, api));
+  _az_PRECONDITION(AZ_ULIB_USTREAM_FORWARD_IS_TYPE_OF(ustream_forward_instance, api));
   _az_PRECONDITION_NOT_NULL(size);
 
   *size = ustream_forward_instance->length - ustream_forward_instance->inner_current_position;
@@ -154,7 +156,7 @@ static az_result concrete_get_remaining_size(az_ulib_ustream_forward* ustream_fo
 
 static az_result concrete_dispose(az_ulib_ustream_forward* ustream_forward_instance)
 {
-  _az_PRECONDITION(AZ_ULIB_ustream_forward_IS_TYPE_OF(ustream_forward_instance, api));
+  _az_PRECONDITION(AZ_ULIB_USTREAM_FORWARD_IS_TYPE_OF(ustream_forward_instance, api));
 
   az_ulib_ustream_forward_data_cb* control_block = ustream_forward_instance->control_block;
 
