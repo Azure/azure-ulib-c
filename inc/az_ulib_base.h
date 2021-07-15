@@ -37,35 +37,15 @@
  */
 typedef uint32_t az_ulib_version;
 
-typedef enum az_ulib_version_match_criteria_tag
-{
-  /** Accept any version. */
-  AZ_ULIB_VERSION_ANY = 0x07, // 0b00000111
+/**
+ * @brief   Version 0 is reserved for ANY version.
+ */
+#define AZ_ULIB_VERSION_DEFAULT 0
 
-  /** Accept version greater than the provided one. */
-  AZ_ULIB_VERSION_GREATER_THAN = 0x04, // 0b00000100
-
-  /** Accept version equals to the provided one. */
-  AZ_ULIB_VERSION_EQUALS_TO = 0x02, // 0b00000010
-
-  /** Accept version lower than the provided one. */
-  AZ_ULIB_VERSION_LOWER_THAN = 0x01 // 0b00000001
-} az_ulib_version_match_criteria;
-
-static inline bool az_ulib_version_match(
-    az_ulib_version current_version,
-    az_ulib_version required_version,
-    az_ulib_version_match_criteria match_criteria)
-{
-  return (
-      (match_criteria == AZ_ULIB_VERSION_ANY)
-      || (AZ_ULIB_FLAGS_IS_SET(match_criteria, AZ_ULIB_VERSION_EQUALS_TO)
-          && (current_version == required_version))
-      || (AZ_ULIB_FLAGS_IS_SET(match_criteria, AZ_ULIB_VERSION_GREATER_THAN)
-          && (current_version > required_version))
-      || (AZ_ULIB_FLAGS_IS_SET(match_criteria, AZ_ULIB_VERSION_LOWER_THAN)
-          && (current_version < required_version)));
-}
+/**
+ * @brief   Maximum number of characters in a stringified version.
+ */
+#define AZ_ULIB_STRINGIFIED_VERSION_SIZE 12
 
 #include "azure/core/_az_cfg_suffix.h"
 

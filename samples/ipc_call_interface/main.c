@@ -38,19 +38,12 @@ int main(void)
 
     /* Consumer will use the cipher interface. */
     my_consumer_create();
+
+    /* Query current interfaces. */
+    my_consumer_query_interfaces();
     (void)printf("\r\n");
 
-    ///* My consumer try to use cipher to add numbers. */
-    my_consumer_do_cipher(0);
-    my_consumer_do_cipher(1);
-    (void)printf("\r\n");
-
-    /* Unpublish cipher v1. After this point, any call to cipher will return
-     * AZ_ERROR_ITEM_NOT_FOUND. */
-    cipher_v1i1_destroy();
-    (void)printf("\r\n");
-
-    ///* My consumer try to use cipher to add numbers. */
+    /* My consumer try to use cipher to add numbers. */
     my_consumer_do_cipher(0);
     my_consumer_do_cipher(1);
     (void)printf("\r\n");
@@ -60,10 +53,41 @@ int main(void)
     cipher_v2i1_create();
     (void)printf("\r\n");
 
-    ///* My consumer try to use cipher to add numbers. */
+    /* Query current interfaces. */
+    my_consumer_query_interfaces();
+    (void)printf("\r\n");
+
+    /* My consumer try to use cipher to add numbers. */
     my_consumer_do_cipher(0);
     my_consumer_do_cipher(1);
     (void)printf("\r\n");
+
+    /* Consumer will stop to use the cipher interface. */
+    my_consumer_destroy();
+    (void)printf("\r\n");
+
+    /* Move default to cipher v2. */
+    my_consumer_change_default();
+
+    /* Query current interfaces. */
+    my_consumer_query_interfaces();
+    (void)printf("\r\n");
+
+    /* Consumer will use the cipher interface. */
+    my_consumer_create();
+
+    /* My consumer try to use cipher to add numbers. */
+    my_consumer_do_cipher(0);
+    my_consumer_do_cipher(1);
+    (void)printf("\r\n");
+
+    /* Unpublish cipher v1. After this point, any call to cipher will return
+     * AZ_ERROR_ITEM_NOT_FOUND. */
+    cipher_v1i1_destroy();
+    (void)printf("\r\n");
+
+    /* Query current interfaces. */
+    my_consumer_query_interfaces();
 
     /* Unpublish cipher v2. After this point, any call to cipher will return
      * AZ_ERROR_ITEM_NOT_FOUND. */

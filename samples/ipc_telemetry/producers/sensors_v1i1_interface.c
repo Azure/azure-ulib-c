@@ -130,6 +130,8 @@ static const az_ulib_capability_descriptor SENSORS_1_CAPABILITIES[]
             NULL) };
 
 static const az_ulib_interface_descriptor SENSORS_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
+    SENSORS_1_PACKAGE_NAME,
+    SENSORS_1_PACKAGE_VERSION,
     SENSORS_1_INTERFACE_NAME,
     SENSORS_1_INTERFACE_VERSION,
     SENSORS_1_CAPABILITIES);

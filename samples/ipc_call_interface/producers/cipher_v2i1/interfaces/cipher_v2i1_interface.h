@@ -18,6 +18,9 @@ extern "C"
 #else
 #endif
 
+#define CIPHER_2_PACKAGE_NAME "cipher"
+#define CIPHER_2_PACKAGE_VERSION 2
+
   /*
    * Publish cipher interface.
    */
