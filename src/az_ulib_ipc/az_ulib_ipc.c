@@ -19,7 +19,7 @@
 
 #include <azure/core/internal/az_precondition_internal.h>
 
-#define MAX_SESSIONS_IN_METHOD_FULL_NAME 5
+#define MAX_FIELDS_IN_METHOD_FULL_NAME 5
 
 typedef union
 {
@@ -731,11 +731,11 @@ AZ_NODISCARD az_result az_ulib_ipc_split_method_name(
   AZ_ULIB_TRY
   {
     uint32_t package_version_temp;
-    int32_t interface_name_session;
+    int32_t interface_name_field;
     uint32_t interface_version_temp;
     bool has_capability_name;
-    int32_t count_session = 0;
-    az_span sessions[MAX_SESSIONS_IN_METHOD_FULL_NAME];
+    int32_t count_field = 0;
+    az_span fields[MAX_FIELDS_IN_METHOD_FULL_NAME];
     int32_t split_pos;
 
     do // Split the entire method full name using `.` as marker.
@@ -743,19 +743,19 @@ AZ_NODISCARD az_result az_ulib_ipc_split_method_name(
       split_pos = az_span_find(full_name, AZ_SPAN_FROM_STR("."));
       if (split_pos > 0)
       {
-        sessions[count_session] = az_span_slice(full_name, 0, split_pos);
+        fields[count_field] = az_span_slice(full_name, 0, split_pos);
         full_name = az_span_slice_to_end(full_name, split_pos + 1);
-        count_session++;
+        count_field++;
       }
-    } while ((split_pos > 0) && (count_session < MAX_SESSIONS_IN_METHOD_FULL_NAME));
-    count_session--;
+    } while ((split_pos > 0) && (count_field < MAX_FIELDS_IN_METHOD_FULL_NAME));
+    count_field--;
 
-    // Last session of full_name is the capability_name or interface_version and shall not be
+    // Last field of full_name is the capability_name or interface_version and shall not be
     // AZ_SPAN_EMPTY.
     AZ_ULIB_THROW_IF_ERROR((az_span_size(full_name) > 0), AZ_ERROR_UNEXPECTED_CHAR);
 
     // interface_name shall not be AZ_SPAN_EMPTY.
-    AZ_ULIB_THROW_IF_ERROR((count_session >= 0), AZ_ERROR_UNEXPECTED_CHAR);
+    AZ_ULIB_THROW_IF_ERROR((count_field >= 0), AZ_ERROR_UNEXPECTED_CHAR);
 
     // Does it started with a number, so it is the interface version.
     if (az_span_atou32(full_name, &interface_version_temp) == AZ_OK)
@@ -769,42 +769,42 @@ AZ_NODISCARD az_result az_ulib_ipc_split_method_name(
       // Get the capability name.
       has_capability_name = true;
       // Get the interface version.
-      AZ_ULIB_THROW_IF_AZ_ERROR(az_span_atou32(sessions[count_session], &interface_version_temp));
-      count_session--;
+      AZ_ULIB_THROW_IF_AZ_ERROR(az_span_atou32(fields[count_field], &interface_version_temp));
+      count_field--;
     }
 
     // The interface_name is mandatory.
-    AZ_ULIB_THROW_IF_ERROR((count_session >= 0), AZ_ERROR_UNEXPECTED_CHAR);
+    AZ_ULIB_THROW_IF_ERROR((count_field >= 0), AZ_ERROR_UNEXPECTED_CHAR);
 
     // Get the interface name.
-    interface_name_session = count_session;
-    count_session--;
+    interface_name_field = count_field;
+    count_field--;
 
-    if (count_session >= 0) // We do have package name.
+    if (count_field >= 0) // We do have package name.
     {
-      // If the next session is a number, it is the package version.
-      if (az_span_atou32(sessions[count_session], &package_version_temp) == AZ_OK)
+      // If the next field is a number, it is the package version.
+      if (az_span_atou32(fields[count_field], &package_version_temp) == AZ_OK)
       {
-        count_session--;
+        count_field--;
       }
-      else // If the next session is not a number, set package version as any and use it
+      else // If the next field is not a number, set package version as any and use it
            // as the package name.
       {
         package_version_temp = AZ_ULIB_VERSION_DEFAULT;
       }
 
       // If package_version was provided, package_name shall not be AZ_SPAN_EMPTY.
-      AZ_ULIB_THROW_IF_ERROR((count_session >= 0), AZ_ERROR_UNEXPECTED_CHAR);
+      AZ_ULIB_THROW_IF_ERROR((count_field >= 0), AZ_ERROR_UNEXPECTED_CHAR);
 
       // Get the package name.
-      *package_name = az_span_create(
-          az_span_ptr(sessions[count_session]), az_span_size(sessions[count_session]));
-      count_session--;
+      *package_name
+          = az_span_create(az_span_ptr(fields[count_field]), az_span_size(fields[count_field]));
+      count_field--;
 
-      if (count_session >= 0) // We do have device name.
+      if (count_field >= 0) // We do have device name.
       {
-        *device_name = az_span_create(
-            az_span_ptr(sessions[count_session]), az_span_size(sessions[count_session]));
+        *device_name
+            = az_span_create(az_span_ptr(fields[count_field]), az_span_size(fields[count_field]));
       }
       else
       {
@@ -821,8 +821,7 @@ AZ_NODISCARD az_result az_ulib_ipc_split_method_name(
     // There is no error, so return the parsed names and versions.
     *package_version = package_version_temp;
     *interface_name = az_span_create(
-        az_span_ptr(sessions[interface_name_session]),
-        az_span_size(sessions[interface_name_session]));
+        az_span_ptr(fields[interface_name_field]), az_span_size(fields[interface_name_field]));
     *interface_version = interface_version_temp;
     if (has_capability_name)
     {

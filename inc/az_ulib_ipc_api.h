@@ -462,11 +462,12 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
  *
  * 1. The method full name shall be split by `.`.
  * 2. The names and versions shall be extract from right to left.
- * 3. The expected method full name shall looks like:
+ * 3. The expected method full name shall look like:
  *      <device_name>.<package_name>.<package_version>.<interface_name>.<interface_version>.<capability_name>
  * 4. The interface_name and interface_version are mandatory.
- * 5. If a name is not provided, this function shall return #AZ_SPAN_EMPTY.
- * 6. If a version is not provided, this function shall return #AZ_ULIB_VERSION_DEFAULT.
+ * 5. If device_name, package_name, or capability_name is not provided, this function shall
+ *      return #AZ_SPAN_EMPTY.
+ * 6. If package_version is not provided, this function shall return #AZ_ULIB_VERSION_DEFAULT.
  * 7. If the package_version is provided, the package_name shall be provided as well.
  *
  * @param[in]   full_name           The `az_span` with the method full name.
@@ -489,7 +490,7 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
  * @return The #az_result with the result of the call.
  *  @retval #AZ_OK                      If the method full name was split with success and can be
  *                                      used.
- *  @retval #AZ_ERROR_UNEXPECTED_CHAR   If there the method full name didn't fit the above rules.
+ *  @retval #AZ_ERROR_UNEXPECTED_CHAR   If the method full name didn't fit the above rules.
  */
 AZ_NODISCARD az_result az_ulib_ipc_split_method_name(
     az_span full_name,
