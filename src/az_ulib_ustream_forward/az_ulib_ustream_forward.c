@@ -74,7 +74,7 @@ static void destroy_control_block(az_ulib_ustream_forward_data_cb* control_block
   {
     /* If `data_relese` was provided is because `ptr` is not `const`. So, we have an Warning
      * exception here to remove the `const` qualification of the `ptr`. */
-    IGNORE_CAST_QUALIFICATION
+    IGNORE_POINTER_TYPE_QUALIFICATION
     control_block->data_release(control_block->ptr);
     RESUME_WARNINGS
   }
@@ -101,7 +101,7 @@ static az_result concrete_flush(
     az_ulib_ustream_forward_data_cb* control_block = ustream_forward_instance->control_block;
     size_t buffer_size;
     AZ_ULIB_THROW_IF_AZ_ERROR(concrete_get_remaining_size(ustream_forward_instance, &buffer_size));
-    IGNORE_POINTER_TYPE_QUALIFICATION
+    IGNORE_CAST_QUALIFICATION
     const az_span buffer = az_span_create((uint8_t*)control_block->ptr, (int32_t)buffer_size);
     RESUME_WARNINGS
 
