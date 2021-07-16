@@ -32,7 +32,11 @@ static az_result interface_manager_1_set_default_span_wrapper(
   {
     // Unmarshalling JSON in model_in_span to interface_manager_model_in.
     az_json_reader jr;
-    interface_manager_1_set_default_model_in interface_manager_model_in = { 0 };
+    interface_manager_1_set_default_model_in interface_manager_model_in
+        = { .package_name = AZ_SPAN_EMPTY,
+            .package_version = AZ_ULIB_VERSION_DEFAULT,
+            .interface_name = AZ_SPAN_EMPTY,
+            .interface_version = AZ_ULIB_VERSION_DEFAULT };
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_init(&jr, model_in_span, NULL));
     AZ_ULIB_THROW_IF_AZ_ERROR(az_json_reader_next_token(&jr));
     while (jr.token.kind != AZ_JSON_TOKEN_END_OBJECT)
