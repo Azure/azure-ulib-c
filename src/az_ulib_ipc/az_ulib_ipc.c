@@ -5,7 +5,7 @@
 #include <memory.h>
 #include <stdint.h>
 
-#include "_az_ulib_ipc_query.h"
+#include "_az_ulib_interfaces.h"
 #include "az_ulib_base.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_config.h"
@@ -18,6 +18,8 @@
 #include "azure/az_core.h"
 
 #include <azure/core/internal/az_precondition_internal.h>
+
+#define MAX_FIELDS_IN_METHOD_FULL_NAME 5
 
 typedef union
 {
@@ -170,6 +172,28 @@ static az_result get_instance(_az_ulib_ipc_interface* ipc_interface)
   return result;
 }
 
+static az_result publish_ipc_interfaces(void)
+{
+  AZ_ULIB_TRY
+  {
+    AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_ipc_query_interface_publish());
+    AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_ipc_interface_manager_interface_publish());
+  }
+  AZ_ULIB_CATCH(...) {}
+  return AZ_ULIB_TRY_RESULT;
+}
+
+static az_result unpublish_ipc_interfaces(void)
+{
+  AZ_ULIB_TRY
+  {
+    AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_ipc_query_interface_unpublish());
+    AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_ipc_interface_manager_interface_unpublish());
+  }
+  AZ_ULIB_CATCH(...) {}
+  return AZ_ULIB_TRY_RESULT;
+}
+
 AZ_NODISCARD az_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle)
 {
   _az_PRECONDITION_IS_NULL(_az_ipc_cb);
@@ -190,7 +214,7 @@ AZ_NODISCARD az_result az_ulib_ipc_init(az_ulib_ipc* ipc_handle)
     _az_ipc_cb->_internal.interface_list[i].interface_descriptor = NULL;
   }
 
-  return _az_ulib_ipc_query_interface_publish();
+  return publish_ipc_interfaces();
 }
 
 AZ_NODISCARD az_result az_ulib_ipc_deinit(void)
@@ -199,7 +223,7 @@ AZ_NODISCARD az_result az_ulib_ipc_deinit(void)
 
   az_result result;
 
-  result = _az_ulib_ipc_query_interface_unpublish();
+  result = unpublish_ipc_interfaces();
 
   for (size_t i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE; i++)
   {
@@ -211,7 +235,7 @@ AZ_NODISCARD az_result az_ulib_ipc_deinit(void)
     )
     {
       // Do our best to publish IPC query the interface again.
-      (void)_az_ulib_ipc_query_interface_publish();
+      (void)publish_ipc_interfaces();
       result = AZ_ERROR_ULIB_BUSY;
       break;
     }
@@ -684,6 +708,132 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 
   return result;
+}
+
+AZ_NODISCARD az_result az_ulib_ipc_split_method_name(
+    az_span full_name,
+    az_span* device_name,
+    az_span* package_name,
+    uint32_t* package_version,
+    az_span* interface_name,
+    uint32_t* interface_version,
+    az_span* capability_name)
+{
+  _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
+  _az_PRECONDITION_VALID_SPAN(full_name, 1, false);
+  _az_PRECONDITION_NOT_NULL(device_name);
+  _az_PRECONDITION_NOT_NULL(package_name);
+  _az_PRECONDITION_NOT_NULL(package_version);
+  _az_PRECONDITION_NOT_NULL(interface_name);
+  _az_PRECONDITION_NOT_NULL(interface_version);
+  _az_PRECONDITION_NOT_NULL(capability_name);
+
+  AZ_ULIB_TRY
+  {
+    uint32_t package_version_temp;
+    int32_t interface_name_field;
+    uint32_t interface_version_temp;
+    bool has_capability_name;
+    int32_t count_field = 0;
+    az_span fields[MAX_FIELDS_IN_METHOD_FULL_NAME];
+    int32_t split_pos;
+
+    do // Split the entire method full name using `.` as marker.
+    {
+      split_pos = az_span_find(full_name, AZ_SPAN_FROM_STR("."));
+      if (split_pos > 0)
+      {
+        fields[count_field] = az_span_slice(full_name, 0, split_pos);
+        full_name = az_span_slice_to_end(full_name, split_pos + 1);
+        count_field++;
+      }
+    } while ((split_pos > 0) && (count_field < MAX_FIELDS_IN_METHOD_FULL_NAME));
+    count_field--;
+
+    // Last field of full_name is the capability_name or interface_version and shall not be
+    // AZ_SPAN_EMPTY.
+    AZ_ULIB_THROW_IF_ERROR((az_span_size(full_name) > 0), AZ_ERROR_UNEXPECTED_CHAR);
+
+    // interface_name shall not be AZ_SPAN_EMPTY.
+    AZ_ULIB_THROW_IF_ERROR((count_field >= 0), AZ_ERROR_UNEXPECTED_CHAR);
+
+    // Does it started with a number, so it is the interface version.
+    if (az_span_atou32(full_name, &interface_version_temp) == AZ_OK)
+    {
+      // Set capability as empty.
+      has_capability_name = false;
+    }
+    // It is not a number, so it shall be the capability name.
+    else
+    {
+      // Get the capability name.
+      has_capability_name = true;
+      // Get the interface version.
+      AZ_ULIB_THROW_IF_AZ_ERROR(az_span_atou32(fields[count_field], &interface_version_temp));
+      count_field--;
+    }
+
+    // The interface_name is mandatory.
+    AZ_ULIB_THROW_IF_ERROR((count_field >= 0), AZ_ERROR_UNEXPECTED_CHAR);
+
+    // Get the interface name.
+    interface_name_field = count_field;
+    count_field--;
+
+    if (count_field >= 0) // We do have package name.
+    {
+      // If the next field is a number, it is the package version.
+      if (az_span_atou32(fields[count_field], &package_version_temp) == AZ_OK)
+      {
+        count_field--;
+      }
+      else // If the next field is not a number, set package version as any and use it
+           // as the package name.
+      {
+        package_version_temp = AZ_ULIB_VERSION_DEFAULT;
+      }
+
+      // If package_version was provided, package_name shall not be AZ_SPAN_EMPTY.
+      AZ_ULIB_THROW_IF_ERROR((count_field >= 0), AZ_ERROR_UNEXPECTED_CHAR);
+
+      // Get the package name.
+      *package_name
+          = az_span_create(az_span_ptr(fields[count_field]), az_span_size(fields[count_field]));
+      count_field--;
+
+      if (count_field >= 0) // We do have device name.
+      {
+        *device_name
+            = az_span_create(az_span_ptr(fields[count_field]), az_span_size(fields[count_field]));
+      }
+      else
+      {
+        *device_name = AZ_SPAN_EMPTY;
+      }
+    }
+    else
+    {
+      *device_name = AZ_SPAN_EMPTY;
+      *package_name = AZ_SPAN_EMPTY;
+      package_version_temp = AZ_ULIB_VERSION_DEFAULT;
+    }
+
+    // There is no error, so return the parsed names and versions.
+    *package_version = package_version_temp;
+    *interface_name = az_span_create(
+        az_span_ptr(fields[interface_name_field]), az_span_size(fields[interface_name_field]));
+    *interface_version = interface_version_temp;
+    if (has_capability_name)
+    {
+      *capability_name = az_span_create(az_span_ptr(full_name), az_span_size(full_name));
+    }
+    else
+    {
+      *capability_name = AZ_SPAN_EMPTY;
+    }
+  }
+  AZ_ULIB_CATCH(...) {}
+  return AZ_ULIB_TRY_RESULT;
 }
 
 static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* next)
