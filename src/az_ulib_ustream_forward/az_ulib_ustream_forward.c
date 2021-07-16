@@ -96,7 +96,7 @@ static az_result concrete_flush(
     az_ulib_ustream_forward_data_cb* control_block = ustream_forward_instance->control_block;
     size_t buffer_size;
     AZ_ULIB_THROW_IF_AZ_ERROR(concrete_get_remaining_size(ustream_forward_instance, &buffer_size));
-    const az_span buffer = az_span_create((uint8_t*)control_block->ptr, (int32_t)buffer_size);
+    az_span buffer = az_span_create((uint8_t*)control_block->ptr, (int32_t)buffer_size);
 
     // invoke callback
     (*push_callback)(&buffer, push_callback_context);
