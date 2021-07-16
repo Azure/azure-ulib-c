@@ -19,17 +19,22 @@
   _Pragma("clang diagnostic push")        \
       _Pragma("clang diagnostic ignored \"-Wincompatible-pointer-types-discards-qualifiers\"")
 #define IGNORE_MEMCPY_TO_NULL _Pragma("GCC diagnostic push")
+#define IGNORE_CAST_QUALIFICATION \
+_Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wcast-qual\"")
 #define RESUME_WARNINGS _Pragma("clang diagnostic pop")
 #elif defined(__GNUC__)
 #define IGNORE_POINTER_TYPE_QUALIFICATION \
   _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wdiscarded-qualifiers\"")
 #define IGNORE_MEMCPY_TO_NULL _Pragma("GCC diagnostic push")
+#define IGNORE_CAST_QUALIFICATION \
+_Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wcast-qual\"")
 #define RESUME_WARNINGS _Pragma("GCC diagnostic pop")
 #else
 #define IGNORE_POINTER_TYPE_QUALIFICATION __pragma(warning(push));
 #define IGNORE_MEMCPY_TO_NULL \
   __pragma(warning(push));  \
   __pragma(warning(suppress: 6387));
+#define IGNORE_CAST_QUALIFICATION __pragma(warning(push));
 #define RESUME_WARNINGS __pragma(warning(pop));
 #endif // __clang__
 
@@ -69,7 +74,7 @@ static void destroy_control_block(az_ulib_ustream_forward_data_cb* control_block
   {
     /* If `data_relese` was provided is because `ptr` is not `const`. So, we have an Warning
      * exception here to remove the `const` qualification of the `ptr`. */
-    IGNORE_POINTER_TYPE_QUALIFICATION
+    IGNORE_CAST_QUALIFICATION
     control_block->data_release(control_block->ptr);
     RESUME_WARNINGS
   }
@@ -96,7 +101,9 @@ static az_result concrete_flush(
     az_ulib_ustream_forward_data_cb* control_block = ustream_forward_instance->control_block;
     size_t buffer_size;
     AZ_ULIB_THROW_IF_AZ_ERROR(concrete_get_remaining_size(ustream_forward_instance, &buffer_size));
-    az_span buffer = az_span_create((uint8_t* const)control_block->ptr, (int32_t)buffer_size);
+    IGNORE_POINTER_TYPE_QUALIFICATION
+    const az_span buffer = az_span_create((uint8_t*)control_block->ptr, (int32_t)buffer_size);
+    RESUME_WARNINGS
 
     // invoke callback
     (*push_callback)(&buffer, push_callback_context);
