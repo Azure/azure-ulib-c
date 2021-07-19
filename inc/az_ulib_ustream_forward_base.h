@@ -5,11 +5,11 @@
 #ifndef AZ_ULIB_ustream_forward_BASE_H
 #define AZ_ULIB_ustream_forward_BASE_H
 
+#include "az_ulib_base.h"
 #include "az_ulib_config.h"
 #include "az_ulib_pal_os.h"
 #include "az_ulib_result.h"
 #include "azure/core/az_span.h"
-#include "azure/core/az_context.h"
 
 #ifdef __cplusplus
 #include <cstddef>
@@ -40,7 +40,7 @@ typedef struct az_ulib_ustream_forward_tag az_ulib_ustream_forward;
  * @param[in]   push_callback_context   The #az_context* contract held between the owner of this
  *                                      callback and the `ustream_forward->flush` operation.
  */
-typedef void (*az_ulib_flush_callback)(const az_span* const buffer, az_context* push_callback_context);
+typedef void (*az_ulib_flush_callback)(const az_span* const buffer, az_ulib_callback_context push_callback_context);
 
 /**
  * @brief   vTable with the ustream_forward APIs.
@@ -56,7 +56,7 @@ typedef struct az_ulib_ustream_forward_interface_tag
   az_result (*flush)(
       az_ulib_ustream_forward* ustream_forward_instance, 
       az_ulib_flush_callback push_callback, 
-      az_context* push_callback_context);
+      az_ulib_callback_context push_callback_context);
 
   /** Concrete `read` implementation. */
   az_result (*read)(
@@ -227,7 +227,7 @@ struct az_ulib_ustream_forward_tag
 AZ_INLINE az_result az_ulib_ustream_forward_flush(
     az_ulib_ustream_forward* ustream_forward_instance,
     az_ulib_flush_callback push_callback, 
-    az_context* push_callback_context)
+    az_ulib_callback_context push_callback_context)
 {
   return ustream_forward_instance->control_block->api->flush(
             ustream_forward_instance, 

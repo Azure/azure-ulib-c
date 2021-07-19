@@ -11,22 +11,21 @@
 #include <string.h>
 
 #define START_MEMORY_OFFSET 0
-static char ustream_forward_consumer_buf[15];
-static const char* ustream_forward_producer_buf = "Hello World!\r\n";
+static char ustream_forward_consumer_buf[13] = { 0 };
+static const char* ustream_forward_producer_buf = "Hello World!";
 
-typedef struct ustream_forward_consumer_context
+typedef struct ustream_forward_basic_context
 {
-    uint8_t* offset;
+   offset_t offset;
 } consumer_context;
 
-void push_callback(const az_span* const buffer, az_context* push_callback_context)
+void push_callback(const az_span* const buffer, az_ulib_callback_context push_callback_context)
 {
     // handle buffer
     az_span_to_str(ustream_forward_consumer_buf, sizeof(ustream_forward_consumer_buf)/sizeof(char), *buffer);
-
     // adjust offset
-    consumer_context* push_context = (consumer_context*)push_callback_context->_internal.value;    
-    push_context->offset += az_span_size(*buffer);
+    consumer_context* push_context = (consumer_context*)push_callback_context;    
+    push_context->offset += (offset_t)az_span_size(*buffer);
 }
 
 az_result my_consumer(void)
@@ -47,30 +46,36 @@ az_result my_consumer(void)
         // initialize context
         consumer_context my_consumer_context;
         my_consumer_context.offset = START_MEMORY_OFFSET;
-        az_context my_az_context;
-        my_az_context._internal.value = (void*)&my_consumer_context;
-
+        az_ulib_callback_context callback_context;
+        callback_context = (void*)&my_consumer_context;
+        
+        (void)printf("ustream_forward_consumer_buf = %s\r\n", ustream_forward_consumer_buf);
+        (void)printf("my_consumer_context.offset = %zu\r\n", my_consumer_context.offset);
+        
         // flush from producer to consumer buffer
+        (void)printf("----- FLUSH ----\r\n");
         AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ustream_forward_flush(
             &ustream_forward_instance,
             push_callback,
-            &my_az_context));
+            callback_context));
+
+        consumer_context* result_consumer_context = (consumer_context*)callback_context;
         (void)printf("ustream_forward_consumer_buf = %s\r\n", ustream_forward_consumer_buf);
+        (void)printf("my_consumer_context.offset= %zu \r\n", result_consumer_context->offset);
     }
     AZ_ULIB_CATCH(...) {}
-
 
     return AZ_OK;
 }
 
 int main(void)
 {
+    az_result result;
 
-    AZ_ULIB_TRY
+    if ((result = my_consumer()) != AZ_OK)
     {
-        AZ_ULIB_THROW_IF_AZ_ERROR(my_consumer());
+      printf("my_consumer() failed\r\n");
     }
-    AZ_ULIB_CATCH(...) {}
 
-    return AZ_ULIB_TRY_RESULT;
+    return 0;
 }

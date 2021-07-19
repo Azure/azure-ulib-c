@@ -41,7 +41,7 @@ _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wcast-qual\"")
 static az_result concrete_flush(
     az_ulib_ustream_forward* ustream_forward_instance,
     az_ulib_flush_callback push_callback, 
-    az_context* push_callback_context);
+    az_ulib_callback_context push_callback_context);
 static az_result concrete_read(
     az_ulib_ustream_forward* ustream_forward_instance,
     uint8_t* const buffer,
@@ -87,7 +87,7 @@ static void destroy_control_block(az_ulib_ustream_forward_data_cb* control_block
 static az_result concrete_flush(
     az_ulib_ustream_forward* ustream_forward_instance,
     az_ulib_flush_callback push_callback, 
-    az_context* push_callback_context)
+    az_ulib_callback_context push_callback_context)
 {
   // precondition checks
   _az_PRECONDITION_NOT_NULL(ustream_forward_instance);
