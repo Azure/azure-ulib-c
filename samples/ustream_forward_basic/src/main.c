@@ -14,6 +14,9 @@
 static char ustream_forward_consumer_buf[13] = { 0 };
 static const char* ustream_forward_producer_buf = "Hello World!";
 
+void push_callback(const az_span* const buffer, az_ulib_callback_context push_callback_context);
+az_result my_consumer(void);
+
 typedef struct ustream_forward_basic_context
 {
    offset_t offset;
@@ -39,7 +42,7 @@ az_result my_consumer(void)
             &ustream_forward_instance,
             &ustream_forward_data_cb,
             NULL,
-            (uint8_t*)ustream_forward_producer_buf,
+            (const uint8_t*)ustream_forward_producer_buf,
             strlen(ustream_forward_producer_buf),
             NULL));
     

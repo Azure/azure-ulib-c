@@ -30,8 +30,7 @@
  *  This factory initializes a ustream_forward that handles the content of the provided buffer. As a
  *      result, it will return an #az_ulib_ustream_forward* with this content. The initialized 
  *      ustream_forward takes ownership of the passed memory and will release the memory with the passed
- *      #az_ulib_release_callback function when the ref count of the
- *      `ustream_forward_control_block` goes to zero.
+ *      #az_ulib_release_callback function when the caller goes out of scope.
  *
  * @param[out]      ustream_forward_instance        The pointer to the allocated #az_ulib_ustream_forward 
  *                                                  struct. This memory must be valid from the time
