@@ -32,10 +32,10 @@ void flush_callback(
 {
     // handle buffer
     consumer_context* flush_context = (consumer_context*)flush_callback_context;
-    snprintf(
+    (void)snprintf(
         flush_context->buffer + flush_context->offset, 
         sizeof(flush_context->buffer) / sizeof(char), 
-        (char*)buffer);
+        "%s", (const char*)buffer);
     
     // adjust offset
     flush_context->offset += size;
@@ -71,7 +71,7 @@ az_result my_consumer(void)
 
     consumer_context* result_consumer_context = (consumer_context*)callback_context;
     (void)printf("result_consumer_context->buffer = %s\r\n", result_consumer_context->buffer);
-    (void)printf("my_consumer_context.offset= %zu \r\n", result_consumer_context->offset);
+    (void)printf("result_consumer_context->offset = %zu \r\n", result_consumer_context->offset);
   }
   AZ_ULIB_CATCH(...) {}
 
