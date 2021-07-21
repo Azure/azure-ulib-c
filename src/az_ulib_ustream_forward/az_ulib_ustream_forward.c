@@ -40,8 +40,8 @@ _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wcast-qual\"")
 
 static az_result concrete_flush(
     az_ulib_ustream_forward* ustream_forward_instance,
-    az_ulib_flush_callback push_callback, 
-    az_ulib_callback_context push_callback_context);
+    az_ulib_flush_callback flush_callback, 
+    az_ulib_callback_context flush_callback_context);
 static az_result concrete_read(
     az_ulib_ustream_forward* ustream_forward_instance,
     uint8_t* const buffer,
@@ -66,7 +66,6 @@ static void init_instance(
   ustream_forward_instance->offset_diff = offset - inner_current_position;
   ustream_forward_instance->control_block = control_block;
   ustream_forward_instance->length = data_buffer_length;
-  AZ_ULIB_PORT_ATOMIC_INC_W(&(ustream_forward_instance->control_block->ref_count));
 }
 static void destroy_control_block(az_ulib_ustream_forward_data_cb* control_block)
 {
@@ -86,14 +85,14 @@ static void destroy_control_block(az_ulib_ustream_forward_data_cb* control_block
 
 static az_result concrete_flush(
     az_ulib_ustream_forward* ustream_forward_instance,
-    az_ulib_flush_callback push_callback, 
-    az_ulib_callback_context push_callback_context)
+    az_ulib_flush_callback flush_callback, 
+    az_ulib_callback_context flush_callback_context)
 {
   // precondition checks
   _az_PRECONDITION_NOT_NULL(ustream_forward_instance);
   _az_PRECONDITION(AZ_ULIB_USTREAM_FORWARD_IS_TYPE_OF(ustream_forward_instance, api));
-  _az_PRECONDITION_NOT_NULL(push_callback);
-  _az_PRECONDITION_NOT_NULL(push_callback_context);
+  _az_PRECONDITION_NOT_NULL(flush_callback);
+  _az_PRECONDITION_NOT_NULL(flush_callback_context);
 
   AZ_ULIB_TRY
   {
@@ -102,11 +101,11 @@ static az_result concrete_flush(
     size_t buffer_size;
     AZ_ULIB_THROW_IF_AZ_ERROR(concrete_get_remaining_size(ustream_forward_instance, &buffer_size));
     IGNORE_CAST_QUALIFICATION
-    const az_span buffer = az_span_create((uint8_t*)control_block->ptr, (int32_t)buffer_size);
+    const uint8_t* buffer = (uint8_t*)control_block->ptr;
     RESUME_WARNINGS
 
     // invoke callback
-    (*push_callback)(&buffer, push_callback_context);
+    (*flush_callback)(buffer, buffer_size, flush_callback_context);
   }
   AZ_ULIB_CATCH (...) {}
 
@@ -167,11 +166,7 @@ static az_result concrete_dispose(az_ulib_ustream_forward* ustream_forward_insta
 
   az_ulib_ustream_forward_data_cb* control_block = ustream_forward_instance->control_block;
 
-  AZ_ULIB_PORT_ATOMIC_DEC_W(&(control_block->ref_count));
-  if (control_block->ref_count == 0)
-  {
-    destroy_control_block(control_block);
-  }
+  destroy_control_block(control_block);
 
   return AZ_OK;
 }

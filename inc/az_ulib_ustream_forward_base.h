@@ -9,7 +9,7 @@
 #include "az_ulib_config.h"
 #include "az_ulib_pal_os.h"
 #include "az_ulib_result.h"
-#include "azure/core/az_span.h"
+#include "azure/az_core.h"
 
 #ifdef __cplusplus
 #include <cstddef>
@@ -35,12 +35,13 @@ typedef struct az_ulib_ustream_forward_tag az_ulib_ustream_forward;
  * @brief Signature of the function to be invoked by the `ustream_forward->flush` operation when the 
  *        `const az_span* const` buffer has been created.
  * 
- * @param[in]   buffer                  The `const az_span* const` buffer to be handled by the 
+ * @param[in]   buffer                  The `const uint8_t* const` buffer to be handled by the 
  *                                      implementation of this callback.
- * @param[in]   push_callback_context   The #az_context* contract held between the owner of this
+ * @param[in]   size                    The `size_t` size of the `const uint8_t* const` buffer.
+ * @param[in]   flush_callback_context  The #flush_callback_context contract held between the owner of this
  *                                      callback and the `ustream_forward->flush` operation.
  */
-typedef void (*az_ulib_flush_callback)(const az_span* const buffer, az_ulib_callback_context push_callback_context);
+typedef void (*az_ulib_flush_callback)(const uint8_t* const buffer, size_t size, az_ulib_callback_context flush_callback_context);
 
 /**
  * @brief   vTable with the ustream_forward APIs.
@@ -55,8 +56,8 @@ typedef struct az_ulib_ustream_forward_interface_tag
   /** Concrete `flush` implementation. */
   az_result (*flush)(
       az_ulib_ustream_forward* ustream_forward_instance, 
-      az_ulib_flush_callback push_callback, 
-      az_ulib_callback_context push_callback_context);
+      az_ulib_flush_callback flush_callback, 
+      az_ulib_callback_context flush_callback_context);
 
   /** Concrete `read` implementation. */
   az_result (*read)(
@@ -111,9 +112,6 @@ typedef struct az_ulib_ustream_forward_data_cb_tag
    * ustream_forward implementation needs to access the data, whether it be a memory address to a buffer,
    * another struct with more controls, etc */
   const az_ulib_ustream_forward_data* ptr;
-
-  /** The `volatile long` with the number of references taken for this memory. */
-  volatile long ref_count;
 
   /** The #az_ulib_release_callback to call to release `ptr` once the `ref_count` goes to zero. */
   az_ulib_release_callback data_release;
@@ -170,47 +168,49 @@ struct az_ulib_ustream_forward_tag
  * 
  *  The `az_ulib_ustream_forward_flush` API will copy ALL of the contents of the data from the
  *    source (provider) directly to the destination buffer provided by the consumer in the 
- *    `#az_ulib_flush_callback* push_callback`.
+ *    `#az_ulib_flush_callback* flush_callback`.
  *  
  *  In the event that the source (provider) memory is not immediately available without a call
  *    to an external API (e.g. an HTTP connection to a blob storage provider), the flush operation
  *    will call this external API (e.g. http_response_body_get) in a loop, invoking the
- *    `push_callback` each pass of the loop.
+ *    `flush_callback` each pass of the loop.
  *  
  *  The `az_ulib_ustream_forward_flush` API will provide the consumer a pointer to the memory to be
- *    copied in the form of a `const az_span* const` buffer, to be consumed in the `push_callback`
+ *    copied in the form of a `const az_span* const` buffer, to be consumed in the `flush_callback`
  *    function implemented by the consumer. 
  * 
  * @note: It is the consumer's responsibility to increment any write offset referenced in the
- *        context inside the push_callback implementation.
+ *        context inside the flush_callback implementation.
  * 
  *  The `az_ulib_ustream_forward_flush` API shall meet the following minimum requirements:
  *      - The flush operation create a `const az_span* const` from the `Data Source` and hand it
- *        off to the `push_callback`
+ *        off to the `flush_callback`
  *      - If the totality of `Data Source` is not available in the provided memory location,
  *        the API shall request the next portion of the data using the appropriate external API. 
  *        This process shall be repeated in a loop until the totality of the `Data Source` has been
  *        copied.
  *      - If there is no more data to return, the flush shall return #AZ_ULIB_EOF and an empty
- *        `const az_span* const` shall be created and passed to the `push_callback`.
+ *        `const az_span* const` shall be created and passed to the `flush_callback`.
+ *      - If the provided interface is `NULL`, the `flush` shall fail with precondition.
+ *      - If the provided interface is not the implemented ustream_forward type, the `flush` shall fail 
+ *        with precondition.
+ *      - If the provided flush_callback is `NULL`, the `flush` shall fail with precondition.
  * 
  * @param[in]       ustream_forward_instance    The #az_ulib_ustream_forward* with the interface of
  *                                              the ustream_forward.
- * @param[out]      push_callback               The #az_ulib_flush_callback* for the consumer to handle
+ * @param[out]      flush_callback              The #az_ulib_flush_callback* for the consumer to handle
  *                                              the incoming data.
- * @param[out]      push_callback_context       The #az_context* contract between the caller and
- *                                              push_callback.
+ * @param[out]      flush_callback_context      The #flush_callback_context contract between the caller and
+ *                                              flush_callback.
  * 
  * @pre     \p ustream_forward_instance shall not be `NULL`.
- * @pre     \p ustream_forward_instance shall be a valid ustream that is the implemented ustream
+ * @pre     \p ustream_forward_instance shall be a valid ustream_forward that is the implemented ustream
  *             type.
- * @pre     \p push_callback shall not be `NULL`.
- * @pre     \p push_callback_context shall not be `NULL`.
+ * @pre     \p flush_callback shall not be `NULL`.
  * 
  * @return The #az_result with the result of the flush operation
- *      @retval #AZ_OK                        If the flush operation succeeded in creating the
- *                                            `const az_span* const` buffer and calling the
- *                                            `push_callback`.
+ *      @retval #AZ_OK                        If the flush operation succeeded in pushing the entire
+ *                                            stream content to `flush_callback`.
  *      @retval #AZ_ULIB_EOF                  If the flush operation has no more data to grab and
  *                                            is ready to terminate.
  *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary to get the next portion of
@@ -226,13 +226,13 @@ struct az_ulib_ustream_forward_tag
  */ 
 AZ_INLINE az_result az_ulib_ustream_forward_flush(
     az_ulib_ustream_forward* ustream_forward_instance,
-    az_ulib_flush_callback push_callback, 
-    az_ulib_callback_context push_callback_context)
+    az_ulib_flush_callback flush_callback, 
+    az_ulib_callback_context flush_callback_context)
 {
   return ustream_forward_instance->control_block->api->flush(
             ustream_forward_instance, 
-            push_callback, 
-            push_callback_context);
+            flush_callback, 
+            flush_callback_context);
 }
 
 /**
@@ -342,10 +342,6 @@ az_ulib_ustream_forward_get_remaining_size(az_ulib_ustream_forward* ustream_forw
 
 /**
  * @brief   Release all the resources allocated to control the instance of the ustream_forward.
- *
- *  The dispose will release the instance of the ustream_forward and decrement the reference of the
- *      ustream_forward. If there are no more references to the ustream_forward, the dispose will release all
- *      resources allocated to control the ustream_forward.
  *
  *  The `az_ulib_ustream_forward_dispose` API shall follow the following minimum requirements:
  *      - The `dispose` shall free all allocated resources for the instance of the ustream_forward.
