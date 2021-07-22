@@ -32,51 +32,46 @@
  *      ustream_forward takes ownership of the passed memory and will release the memory with the passed
  *      #az_ulib_release_callback function when the caller goes out of scope.
  *
- * @param[out]      ustream_forward_instance        The pointer to the allocated #az_ulib_ustream_forward 
- *                                                  struct. This memory must be valid from the time
- *                                                  az_ulib_ustream_forward_init() is called through
- *                                                  az_ulib_ustream_forward_dispose(). The ustream_forward 
- *                                                  will not free this struct and it is the responsibility 
- *                                                  of the developer to make sure it is valid during the 
- *                                                  time frame described above. It cannot be `NULL`.
- * @param[in]       ustream_forward_control_block   The pointer to the allocated 
- *                                                  #az_ulib_ustream_forward_data_cb struct. This memory
- *                                                  should be allocated in such a way that it stays valid  
- *                                                  until the passed `control_block_release` is called at 
- *                                                  some (potentially) unknown time in the future. It 
- *                                                  cannot be `NULL`.
- * @param[in]       control_block_release           The #az_ulib_release_callback function that will be
- *                                                  called to release the control block (the passed
- *                                                  `ustream_forward_control_block` parameter) once all the
- *                                                  references to the ustream_forward are disposed. If `NULL`
- *                                                  is passed, the data is assumed to be constant with no
- *                                                  need to be freed. In other words, there is no need
- *                                                  for notification that the memory may be released.
- *                                                  As a default, developers may use the stdlib `free`
- *                                                  to release malloc'd memory.
- * @param[in]       data_buffer                     The `const uint8_t* const` that points to a memory
- *                                                  position where the buffer starts. It cannot be `NULL`.
- * @param[in]       data_buffer_length              The `size_t` with the number of `uint8_t` in the
- *                                                  provided buffer. It shall be larger than zero.
- * @param[in]       data_buffer_release             The #az_ulib_release_callback function that will be
- *                                                  called to release the data once all the references to
- *                                                  the ustream_forward are disposed. If `NULL` is passed, 
- *                                                  the data is assumed to be constant with no need to be
- *                                                  free'd. In other words, there is no need for
- *                                                  notification that the memory may be released. As a
- *                                                  default, developers may use the stdlib `free` to
- *                                                  release malloc'd memory.
- *
+ * @param[out]      ustream_forward             The pointer to the allocated #az_ulib_ustream_forward 
+ *                                              struct. This memory must be valid from the time
+ *                                              az_ulib_ustream_forward_init() is called through
+ *                                              az_ulib_ustream_forward_dispose(). The ustream_forward 
+ *                                              will not free this struct and it is the responsibility 
+ *                                              of the developer to make sure it is valid during the 
+ *                                              time frame described above. It cannot be `NULL`.
+ * @param[in]       ustream_forward_release     The #az_ulib_release_callback function that will be
+ *                                              called to release the ustream_forward block (the passed
+ *                                              `ustream_forward` parameter) once all the references
+ *                                              to the ustream_forward are disposed. If `NULL`
+ *                                              is passed, the data is assumed to be constant with no
+ *                                              need to be freed. In other words, there is no need
+ *                                              for notification that the memory may be released.
+ *                                              As a default, developers may use the stdlib `free`
+ *                                              to release malloc'd memory.
+ * @param[in]       data_buffer                 The `const uint8_t* const` that points to a memory
+ *                                              position where the buffer starts.
+ * @param[in]       data_buffer_length          The `size_t` with the number of `uint8_t` in the
+ *                                              provided buffer.
+ * @param[in]       data_buffer_release         The #az_ulib_release_callback function that will be
+ *                                              called to release the data once all the references to
+ *                                              the ustream_forward are disposed. If `NULL` is passed, 
+ *                                              the data is assumed to be constant with no need to be
+ *                                              free'd. In other words, there is no need for
+ *                                              notification that the memory may be released. As a
+ *                                              default, developers may use the stdlib `free` to
+ *                                              release malloc'd memory.
+ * 
+ * @pre \p          ustream_forward             shall not be `NULL`.
+ * @pre \p          data_buffer                 shall not be `NULL`.
+ * @pre \p          data_buffer_length          shall be greater than `0`.
+ * 
  * @return The #az_result with result of the initialization.
- *      @retval #AZ_OK                        If the #az_ulib_ustream_forward* is successfully
- *                                            initialized.
- *      @retval #AZ_ERROR_ARG                 If one of the provided parameters is
- *                                            invalid.
+ *      @retval #AZ_OK                          If the #az_ulib_ustream_forward* is successfully
+ *                                              initialized.
  */
 AZ_NODISCARD az_result az_ulib_ustream_forward_init(
-    az_ulib_ustream_forward* ustream_forward_instance,
-    az_ulib_ustream_forward_data_cb* ustream_forward_control_block,
-    az_ulib_release_callback control_block_release,
+    az_ulib_ustream_forward* ustream_forward,
+    az_ulib_release_callback ustream_forward_release,
     const uint8_t* const data_buffer,
     size_t data_buffer_length,
     az_ulib_release_callback data_buffer_release);

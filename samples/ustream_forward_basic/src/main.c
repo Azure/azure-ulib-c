@@ -47,10 +47,8 @@ az_result my_consumer(void)
   {
     // initialize ustream_forward with producer data
     az_ulib_ustream_forward ustream_forward_instance;
-    az_ulib_ustream_forward_data_cb ustream_forward_data_cb;
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ustream_forward_init(
         &ustream_forward_instance,
-        &ustream_forward_data_cb,
         NULL,
         (const uint8_t*)ustream_forward_producer_buf,
         sizeof(ustream_forward_producer_buf),
@@ -59,10 +57,9 @@ az_result my_consumer(void)
     // initialize context
     consumer_context my_consumer_context = { 0 };
     az_ulib_callback_context callback_context;
-    callback_context = (void*)&my_consumer_context;
+    callback_context = (az_ulib_callback_context)&my_consumer_context;
 
     (void)printf("my_consumer_context.buffer = %s\r\n", my_consumer_context.buffer);
-    (void)printf("my_consumer_context.offset = %zu\r\n", my_consumer_context.offset);
 
     // flush from producer to consumer buffer
     (void)printf("----- FLUSH ----\r\n");
@@ -71,7 +68,6 @@ az_result my_consumer(void)
 
     consumer_context* result_consumer_context = (consumer_context*)callback_context;
     (void)printf("result_consumer_context->buffer = %s\r\n", result_consumer_context->buffer);
-    (void)printf("result_consumer_context->offset = %zu \r\n", result_consumer_context->offset);
   }
   AZ_ULIB_CATCH(...) {}
 
