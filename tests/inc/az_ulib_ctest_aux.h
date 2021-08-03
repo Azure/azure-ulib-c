@@ -22,7 +22,6 @@
   _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wunused-function\"")
 #define RESUME_WARNINGS _Pragma("GCC diagnostic pop")
 #else
-#else
 #define IGNORE_UNUSED_FUNCTIONS __pragma(warning(push));
 #define RESUME_WARNINGS __pragma(warning(pop));
 #endif // __clang__
