@@ -17,6 +17,11 @@
   _Pragma("clang diagnostic push")        \
       _Pragma("clang diagnostic ignored \"-Wunused-function\"")
 #define RESUME_WARNINGS _Pragma("clang diagnostic pop")
+#elif defined(__GNUC__)
+#define IGNORE_UNUSED_FUNCTIONS \
+  _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wunused-function\"")
+#define RESUME_WARNINGS _Pragma("GCC diagnostic pop")
+#else
 #else
 #define IGNORE_UNUSED_FUNCTIONS __pragma(warning(push));
 #define RESUME_WARNINGS __pragma(warning(pop));
