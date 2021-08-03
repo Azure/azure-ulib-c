@@ -27,6 +27,7 @@
 
 static const uint8_t* const USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT
     = (const uint8_t* const)USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT;
+
 static az_ulib_ustream_forward test_ustream_forward;
 static void ustream_forward_factory(az_ulib_ustream_forward** ustream_forward)
 {

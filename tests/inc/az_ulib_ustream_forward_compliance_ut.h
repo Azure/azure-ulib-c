@@ -25,12 +25,32 @@
 #endif
 
 /* split the content in 4 parts. */
-#define USTREAM_FORWARD_COMPLIANCE_LENGTH_1 (USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH >> 2)
-#define USTREAM_FORWARD_COMPLIANCE_LENGTH_2 (USTREAM_FORWARD_COMPLIANCE_LENGTH_1 + USTREAM_FORWARD_COMPLIANCE_LENGTH_1)
-#define USTREAM_FORWARD_COMPLIANCE_LENGTH_3 (USTREAM_FORWARD_COMPLIANCE_LENGTH_2 + USTREAM_FORWARD_COMPLIANCE_LENGTH_1)
+#define USTREAM_FORWARD_COMPLIANCE_LENGTH_1 \
+  (USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH >> 2)
+#define USTREAM_FORWARD_COMPLIANCE_LENGTH_2 \
+  (USTREAM_FORWARD_COMPLIANCE_LENGTH_1 + USTREAM_FORWARD_COMPLIANCE_LENGTH_1)
+#define USTREAM_FORWARD_COMPLIANCE_LENGTH_3 \
+  (USTREAM_FORWARD_COMPLIANCE_LENGTH_2 + USTREAM_FORWARD_COMPLIANCE_LENGTH_1)
 
 /* create local buffer with enough size to handle the full content. */
-#define USTREAM_FORWARD_COMPLIANCE_TEMP_BUFFER_LENGTH (USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH + 2)
+#define USTREAM_FORWARD_COMPLIANCE_TEMP_BUFFER_LENGTH \
+  (USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH + 2)
+
+// flush callback global variables
+static uint8_t* flush_callback_buffer_check[USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
+static size_t flush_callback_size_check = 0;
+static az_ulib_callback_context flush_callback_context_check;
+
+// mock calback function
+static void mock_flush_callback(
+    const uint8_t* const buffer,
+    size_t size,
+    az_ulib_callback_context flush_callback_context)
+{
+  (void)memcpy(flush_callback_buffer_check, buffer, size);
+  flush_callback_size_check = size;
+  flush_callback_context_check = flush_callback_context;
+}
 
 /*
  * Start compliance tests:
@@ -55,7 +75,8 @@ static void az_ulib_ustream_forward_dispose_compliance_null_buffer_failed(void**
 
 /* If the provided handle is not the implemented buffer type, the dispose shall fail with
  * precondition. */
-static void az_ulib_ustream_forward_dispose_compliance_buffer_is_not_type_of_buffer_failed(void** state)
+static void az_ulib_ustream_forward_dispose_compliance_buffer_is_not_type_of_buffer_failed(
+    void** state)
 {
   /// arrange
   (void)state;
@@ -82,8 +103,7 @@ static void az_ulib_ustream_forward_get_size_compliance_null_buffer_failed(void*
 
   /// act
   /// assert
-  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
-      ustream_forward->_internal.api->get_size(NULL, &size));
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(ustream_forward->_internal.api->get_size(NULL, &size));
 
   /// cleanup
   (void)az_ulib_ustream_forward_dispose(ustream_forward);
@@ -124,8 +144,65 @@ static void az_ulib_ustream_forward_get_size_compliance_null_size_failed(void** 
   (void)az_ulib_ustream_forward_dispose(ustream_forward);
 }
 
+/* If the provided handle is NULL, the flush shall fail with precondition. */
+static void az_ulib_ustream_forward_flush_compliance_null_handle_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  az_ulib_ustream_forward* ustream_forward;
+  USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(&ustream_forward);
+  az_ulib_callback_context callback_context = { 0 };
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      ustream_forward->_internal.api->flush(NULL, mock_flush_callback, callback_context));
+
+  /// cleanup
+  (void)az_ulib_ustream_forward_dispose(ustream_forward);
+}
+
+/* If the provided handle is not the implemented ustream_forward type, the read shall fail with
+ *  precondition.
+ */
+static void az_ulib_ustream_forward_flush_compliance_non_type_of_ustream_forward_api_failed(
+    void** state)
+{
+  /// arrange
+  (void)state;
+  az_ulib_ustream_forward* ustream_forward;
+  USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(&ustream_forward);
+  az_ulib_callback_context callback_context = { 0 };
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(ustream_forward->_internal.api->flush(
+      ustream_forward_mock_create(), mock_flush_callback, callback_context));
+
+  /// cleanup
+  (void)az_ulib_ustream_forward_dispose(ustream_forward);
+}
+
+/* If the provided flush_callback is NULL, the flush shall fail with precondition. */
+static void az_ulib_ustream_forward_flush_compliance_null_flush_callback_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  az_ulib_ustream_forward* ustream_forward;
+  USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(&ustream_forward);
+  az_ulib_callback_context callback_context = { 0 };
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
+      ustream_forward->_internal.api->flush(ustream_forward, NULL, callback_context));
+
+  /// cleanup
+  (void)az_ulib_ustream_forward_dispose(ustream_forward);
+}
+
 /* If the provided handle is NULL, the read shall fail with precondition. */
-static void az_ulib_ustream_forward_read_compliance_null_buffer_failed(void** state)
+static void az_ulib_ustream_forward_read_compliance_null_handle_failed(void** state)
 {
   /// arrange
   (void)state;
@@ -136,10 +213,8 @@ static void az_ulib_ustream_forward_read_compliance_null_buffer_failed(void** st
 
   /// act
   /// assert
-  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(
-      ustream_forward
-          ->_internal.api->read(
-              NULL, buf_result, USTREAM_FORWARD_COMPLIANCE_TEMP_BUFFER_LENGTH, &size_result));
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(ustream_forward->_internal.api->read(
+      NULL, buf_result, USTREAM_FORWARD_COMPLIANCE_TEMP_BUFFER_LENGTH, &size_result));
 
   /// cleanup
   (void)az_ulib_ustream_forward_dispose(ustream_forward);
@@ -158,12 +233,11 @@ static void az_ulib_ustream_forward_read_compliance_non_type_of_buffer_api_faile
 
   /// act
   /// assert
-  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(ustream_forward
-                                          ->_internal.api->read(
-                                              ustream_forward_mock_create(),
-                                              buf_result,
-                                              USTREAM_FORWARD_COMPLIANCE_TEMP_BUFFER_LENGTH,
-                                              &size_result));
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(ustream_forward->_internal.api->read(
+      ustream_forward_mock_create(),
+      buf_result,
+      USTREAM_FORWARD_COMPLIANCE_TEMP_BUFFER_LENGTH,
+      &size_result));
 
   /// cleanup
   (void)az_ulib_ustream_forward_dispose(ustream_forward);
@@ -225,8 +299,7 @@ static void az_ulib_ustream_forward_read_compliance_null_return_size_failed(void
 }
 #endif // AZ_NO_PRECONDITION_CHECKING
 
-/* If there is no more instances of the buffer, the dispose shall release all allocated
- *          resources to control the buffer. */
+/* The dispose shall release all allocated resources to control the buffer. */
 static void az_ulib_ustream_forward_dispose_compliance_single_instance_succeed(void** state)
 {
   /// arrange
@@ -298,7 +371,8 @@ static void az_ulib_ustream_forward_read_compliance_get_from_original_buffer_suc
 
   assert_int_equal(result2, AZ_OK);
   assert_int_equal(
-      size_result2, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_FORWARD_COMPLIANCE_LENGTH_1);
+      size_result2,
+      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH - USTREAM_FORWARD_COMPLIANCE_LENGTH_1);
   assert_memory_equal(
       (const uint8_t* const)(
           USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_FORWARD_COMPLIANCE_LENGTH_1),
@@ -306,6 +380,36 @@ static void az_ulib_ustream_forward_read_compliance_get_from_original_buffer_suc
       size_result2);
 
   assert_int_equal(result3, AZ_ULIB_EOF);
+
+  /// cleanup
+  (void)az_ulib_ustream_forward_dispose(ustream_forward);
+}
+
+static void az_ulib_ustream_forward_flush_compliance_single_buffer_succeed(void** state)
+{
+  /// arrange
+  (void)state;
+  az_ulib_ustream_forward* ustream_forward;
+  USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(&ustream_forward);
+  struct _test_context
+  {
+      uint8_t test_value;
+  } test_context = { 0 };
+  
+  az_ulib_callback_context callback_context = (az_ulib_callback_context)&test_context;
+
+  /// act
+  az_result result
+      = az_ulib_ustream_forward_flush(ustream_forward, mock_flush_callback, callback_context);
+
+  /// assert
+  assert_int_equal(result, AZ_OK);
+  assert_int_equal(flush_callback_size_check, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+  assert_int_equal(flush_callback_context_check, callback_context);
+  assert_memory_equal(
+      USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
+      flush_callback_buffer_check,
+      flush_callback_size_check);
 
   /// cleanup
   (void)az_ulib_ustream_forward_dispose(ustream_forward);
@@ -344,7 +448,10 @@ static void az_ulib_ustream_forward_read_compliance_right_boundary_condition_suc
 
   /// act
   az_result result = az_ulib_ustream_forward_read(
-      ustream_forward, buf_result, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1, &size_result);
+      ustream_forward,
+      buf_result,
+      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1,
+      &size_result);
 
   /// assert
   assert_int_equal(result, AZ_OK);
@@ -358,8 +465,8 @@ static void az_ulib_ustream_forward_read_compliance_right_boundary_condition_suc
   assert_int_equal(size_result, 1);
   assert_memory_equal(
       (const uint8_t* const)(
-          USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH
-          - 1),
+          USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT
+          + USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH - 1),
       buf_result,
       size_result);
 
@@ -383,7 +490,10 @@ static void az_ulib_ustream_forward_read_compliance_boundary_condition_succeed(v
 
   /// act
   az_result result = az_ulib_ustream_forward_read(
-      ustream_forward, buf_result, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH, &size_result);
+      ustream_forward,
+      buf_result,
+      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
+      &size_result);
 
   /// assert
   assert_int_equal(result, AZ_OK);
@@ -410,7 +520,10 @@ static void az_ulib_ustream_forward_read_compliance_left_boundary_condition_succ
 
   /// act
   az_result result = az_ulib_ustream_forward_read(
-      ustream_forward, buf_result, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH + 1, &size_result);
+      ustream_forward,
+      buf_result,
+      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH + 1,
+      &size_result);
 
   /// assert
   assert_int_equal(result, AZ_OK);
@@ -453,35 +566,48 @@ static void az_ulib_ustream_forward_read_compliance_single_byte_succeed(void** s
   (void)az_ulib_ustream_forward_dispose(ustream_forward);
 }
 
-#define AZ_ULIB_USTREAM_FORWARD_PRECONDITION_COMPLIANCE_UT_LIST                                         \
-  cmocka_unit_test(az_ulib_ustream_forward_dispose_compliance_null_buffer_failed),                      \
-      cmocka_unit_test(az_ulib_ustream_forward_dispose_compliance_buffer_is_not_type_of_buffer_failed), \
-      cmocka_unit_test(az_ulib_ustream_forward_get_size_compliance_null_buffer_failed),       \
-      cmocka_unit_test(                                                                         \
-          az_ulib_ustream_forward_get_size_compliance_buffer_is_not_type_of_buffer_failed),   \
-      cmocka_unit_test(az_ulib_ustream_forward_get_size_compliance_null_size_failed),         \
-      cmocka_unit_test(az_ulib_ustream_forward_read_compliance_null_buffer_failed),                     \
-      cmocka_unit_test(az_ulib_ustream_forward_read_compliance_non_type_of_buffer_api_failed),          \
-      cmocka_unit_test(az_ulib_ustream_forward_read_compliance_buffer_with_zero_size_failed),           \
-      cmocka_unit_test(az_ulib_ustream_forward_read_compliance_null_return_buffer_failed),              \
-      cmocka_unit_test(az_ulib_ustream_forward_read_compliance_null_return_size_failed),                \
+#define AZ_ULIB_USTREAM_FORWARD_PRECONDITION_COMPLIANCE_UT_LIST                                \
+  cmocka_unit_test(az_ulib_ustream_forward_dispose_compliance_null_buffer_failed),             \
+      cmocka_unit_test(                                                                        \
+          az_ulib_ustream_forward_dispose_compliance_buffer_is_not_type_of_buffer_failed),     \
+      cmocka_unit_test(az_ulib_ustream_forward_get_size_compliance_null_buffer_failed),        \
+      cmocka_unit_test(                                                                        \
+          az_ulib_ustream_forward_get_size_compliance_buffer_is_not_type_of_buffer_failed),    \
+      cmocka_unit_test(az_ulib_ustream_forward_get_size_compliance_null_size_failed),          \
+      cmocka_unit_test(az_ulib_ustream_forward_flush_compliance_null_handle_failed),           \
+      cmocka_unit_test(                                                                        \
+          az_ulib_ustream_forward_flush_compliance_non_type_of_ustream_forward_api_failed),    \
+      cmocka_unit_test(az_ulib_ustream_forward_flush_compliance_null_flush_callback_failed),   \
+      cmocka_unit_test(az_ulib_ustream_forward_read_compliance_null_handle_failed),            \
+      cmocka_unit_test(az_ulib_ustream_forward_read_compliance_non_type_of_buffer_api_failed), \
+      cmocka_unit_test(az_ulib_ustream_forward_read_compliance_buffer_with_zero_size_failed),  \
+      cmocka_unit_test(az_ulib_ustream_forward_read_compliance_null_return_buffer_failed),     \
+      cmocka_unit_test(az_ulib_ustream_forward_read_compliance_null_return_size_failed),
 
-#define AZ_ULIB_USTREAM_FORWARD_COMPLIANCE_UT_LIST                                                                                              \
-      cmocka_unit_test_setup_teardown(                                                                                                  \
-          az_ulib_ustream_forward_dispose_compliance_single_instance_succeed, setup, teardown),                                                 \
-      cmocka_unit_test_setup_teardown(                                                                                                  \
-          az_ulib_ustream_forward_get_size_compliance_new_buffer_succeed, setup, teardown),                                           \
-      cmocka_unit_test_setup_teardown(                                                                                                  \
-          az_ulib_ustream_forward_read_compliance_get_from_original_buffer_succeed, setup, teardown),                                           \
-      cmocka_unit_test_setup_teardown(                                                                                                  \
-          az_ulib_ustream_forward_read_compliance_single_buffer_succeed, setup, teardown),                                                      \
-      cmocka_unit_test_setup_teardown(                                                                                                  \
-          az_ulib_ustream_forward_read_compliance_right_boundary_condition_succeed, setup, teardown),                                           \
-      cmocka_unit_test_setup_teardown(                                                                                                  \
-          az_ulib_ustream_forward_read_compliance_boundary_condition_succeed, setup, teardown),                                                 \
-      cmocka_unit_test_setup_teardown(                                                                                                  \
-          az_ulib_ustream_forward_read_compliance_left_boundary_condition_succeed, setup, teardown),                                            \
-      cmocka_unit_test_setup_teardown(                                                                                                  \
-          az_ulib_ustream_forward_read_compliance_single_byte_succeed, setup, teardown),                                                        \
+#define AZ_ULIB_USTREAM_FORWARD_COMPLIANCE_UT_LIST                                              \
+  cmocka_unit_test_setup_teardown(                                                              \
+      az_ulib_ustream_forward_flush_compliance_single_buffer_succeed, setup, teardown),         \
+      cmocka_unit_test_setup_teardown(                                                          \
+          az_ulib_ustream_forward_dispose_compliance_single_instance_succeed, setup, teardown), \
+      cmocka_unit_test_setup_teardown(                                                          \
+          az_ulib_ustream_forward_get_size_compliance_new_buffer_succeed, setup, teardown),     \
+      cmocka_unit_test_setup_teardown(                                                          \
+          az_ulib_ustream_forward_read_compliance_get_from_original_buffer_succeed,             \
+          setup,                                                                                \
+          teardown),                                                                            \
+      cmocka_unit_test_setup_teardown(                                                          \
+          az_ulib_ustream_forward_read_compliance_single_buffer_succeed, setup, teardown),      \
+      cmocka_unit_test_setup_teardown(                                                          \
+          az_ulib_ustream_forward_read_compliance_right_boundary_condition_succeed,             \
+          setup,                                                                                \
+          teardown),                                                                            \
+      cmocka_unit_test_setup_teardown(                                                          \
+          az_ulib_ustream_forward_read_compliance_boundary_condition_succeed, setup, teardown), \
+      cmocka_unit_test_setup_teardown(                                                          \
+          az_ulib_ustream_forward_read_compliance_left_boundary_condition_succeed,              \
+          setup,                                                                                \
+          teardown),                                                                            \
+      cmocka_unit_test_setup_teardown(                                                          \
+          az_ulib_ustream_forward_read_compliance_single_byte_succeed, setup, teardown),
 
 #endif /* AZ_ULIB_USTREAM_FORWARD_COMPLIANCE_UT_H */
