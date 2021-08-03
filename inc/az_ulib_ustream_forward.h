@@ -8,8 +8,8 @@
  * @brief ustream_forward implementation for local memory
  */
 
-#ifndef AZ_ULIB_ustream_forward_H
-#define AZ_ULIB_ustream_forward_H
+#ifndef AZ_ULIB_USTREAM_FORWARD_H
+#define AZ_ULIB_USTREAM_FORWARD_H
 
 #include "az_ulib_ustream_forward_base.h"
 
@@ -78,4 +78,4 @@ AZ_NODISCARD az_result az_ulib_ustream_forward_init(
 
 #include "azure/core/_az_cfg_suffix.h"
 
-#endif /* AZ_ULIB_ustream_forward_H */
+#endif /* AZ_ULIB_USTREAM_FORWARD_H */

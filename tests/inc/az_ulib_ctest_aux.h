@@ -12,6 +12,17 @@
 
 #include "cmocka.h"
 
+#ifdef __clang__
+#define IGNORE_UNUSED_FUNCTIONS \
+  _Pragma("clang diagnostic push")        \
+      _Pragma("clang diagnostic ignored \"-Wunused-function\"")
+#define RESUME_WARNINGS _Pragma("clang diagnostic pop")
+#else
+#define IGNORE_UNUSED_FUNCTIONS __pragma(warning(push));
+#define RESUME_WARNINGS __pragma(warning(pop));
+#endif // __clang__
+
+IGNORE_UNUSED_FUNCTIONS
 /**
  * Check buffer
  */
@@ -63,4 +74,5 @@ static void check_ustream_forward_buffer(
       az_ulib_ustream_forward_read(ustream_forward, buf_result, 256, &size_result), AZ_ULIB_EOF);
   assert_int_equal(size_result, 0);
 }
+RESUME_WARNINGS
 #endif /* AZ_ULIB_CTEST_AUX_H */

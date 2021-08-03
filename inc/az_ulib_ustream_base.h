@@ -340,10 +340,20 @@
 
 #include "azure/core/_az_cfg_prefix.h"
 
+#ifndef AZ_ULIB_USTREAM_FORWARD_BASE_H
 /**
  * @brief   Define offset_t with the same size as size_t.
  */
 typedef size_t offset_t;
+
+/**
+ * @brief   Signature of the function to release memory passed to the ustream
+ *
+ * @param[in]   release_pointer       void pointer to memory that needs to be free'd
+ *
+ */
+typedef void (*az_ulib_release_callback)(void* release_pointer);
+#endif /* AZ_ULIB_USTREAM_FORWARD_BASE_H */
 
 /**
  * @brief   Forward declaration of az_ulib_ustream. See #az_ulib_ustream_tag for struct members.
@@ -392,14 +402,6 @@ typedef struct az_ulib_ustream_interface_tag
   az_result (*dispose)(az_ulib_ustream* ustream_instance);
 
 } az_ulib_ustream_interface;
-
-/**
- * @brief   Signature of the function to release memory passed to the ustream
- *
- * @param[in]   release_pointer       void pointer to memory that needs to be free'd
- *
- */
-typedef void (*az_ulib_release_callback)(void* release_pointer);
 
 /**
  * @brief   Pointer to the data from which to read

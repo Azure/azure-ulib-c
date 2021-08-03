@@ -16,7 +16,7 @@ extern "C"
   az_ulib_ustream_forward* ustream_forward_mock_create(void);
 
   void reset_mock_buffer(void);
-  void set_concurrency_ustream(void);
+  void set_concurrency_ustream_forward(void);
   void set_delay_return_value(uint32_t delay);
 
   void set_flush_result(az_result result);
