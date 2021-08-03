@@ -62,9 +62,7 @@ else()
   message("  -- Testing OFF")
 endif()
 
-if(NOT ${USE_INSTALLED_DEPENDENCIES})
-  add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-core-c)
-endif()
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/azure-core-c)
 
 project(azure_ulib_c)
 enable_testing()

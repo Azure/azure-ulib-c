@@ -294,6 +294,7 @@ AZ_NODISCARD az_result az_ulib_ipc_publish(
               (const void*)interface_descriptor);
           new_interface->ref_count = 0;
           new_interface->flags = AZ_ULIB_IPC_FLAGS_NONE;
+          AZ_ULIB_PORT_GET_DATA_CONTEXT(&(new_interface->data_base_address));
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
           new_interface->running_count = 0;
           new_interface->running_count_low_watermark = 0;
@@ -632,6 +633,7 @@ AZ_NODISCARD az_result az_ulib_ipc_call(
     else
     {
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+      AZ_ULIB_PORT_SET_DATA_CONTEXT(ipc_interface->data_base_address);
       result = ipc_interface->interface_descriptor->_internal.capability_list[capability_index]
                    ._internal.capability_ptr(model_in, model_out);
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
@@ -678,13 +680,14 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
     else
     {
 #endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
+      az_ulib_capability_span_wrapper capability_span_wrapper
+          = ipc_interface->interface_descriptor->_internal.capability_list[capability_index]
+                ._internal.capability_span_wrapper;
 
-      if (ipc_interface->interface_descriptor->_internal.capability_list[capability_index]
-              ._internal.capability_span_wrapper
-          != NULL)
+      if (capability_span_wrapper != NULL)
       {
-        result = ipc_interface->interface_descriptor->_internal.capability_list[capability_index]
-                     ._internal.capability_span_wrapper(model_in_span, model_out_span);
+        AZ_ULIB_PORT_SET_DATA_CONTEXT(ipc_interface->data_base_address);
+        result = capability_span_wrapper(model_in_span, model_out_span);
       }
       else
       {

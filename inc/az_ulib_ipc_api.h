@@ -49,6 +49,7 @@ typedef struct
   volatile const az_ulib_interface_descriptor* interface_descriptor;
   volatile _az_ulib_ipc_flags flags;
   volatile long ref_count;
+  volatile void* data_base_address;
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
   volatile long running_count;
   volatile long running_count_low_watermark;
@@ -155,7 +156,6 @@ const az_ulib_ipc_table* az_ulib_ipc_get_table(void);
  *                                    interface handle.
  *
  * @pre     IPC shall already be initialized.
- * @pre     \p interface_handle shall not be `NULL`.
  *
  * @return The #az_result with the result of the interface publish.
  *  @retval #AZ_OK                              If the interface is published with success.
