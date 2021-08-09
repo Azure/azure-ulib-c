@@ -18,13 +18,18 @@
 #define IGNORE_POINTER_TYPE_QUALIFICATION \
   _Pragma("clang diagnostic push")        \
       _Pragma("clang diagnostic ignored \"-Wincompatible-pointer-types-discards-qualifiers\"")
+#define IGNORE_MEMCPY_TO_NULL _Pragma("GCC diagnostic push")
 #define RESUME_WARNINGS _Pragma("clang diagnostic pop")
 #elif defined(__GNUC__)
 #define IGNORE_POINTER_TYPE_QUALIFICATION \
   _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wdiscarded-qualifiers\"")
+#define IGNORE_MEMCPY_TO_NULL _Pragma("GCC diagnostic push")
 #define RESUME_WARNINGS _Pragma("GCC diagnostic pop")
 #else
 #define IGNORE_POINTER_TYPE_QUALIFICATION __pragma(warning(push));
+#define IGNORE_MEMCPY_TO_NULL \
+  __pragma(warning(push));  \
+  __pragma(warning(suppress: 6387));
 #define RESUME_WARNINGS __pragma(warning(pop));
 #endif // __clang__
 
@@ -89,10 +94,17 @@ static az_result concrete_read(
     size_t remain_size
         = ustream_forward->_internal.length - (size_t)ustream_forward->_internal.inner_current_position;
     *size = (buffer_length < remain_size) ? buffer_length : remain_size;
+
+    /**
+     * MSVC thinks `buffer` could be '0'. Because we make sure `buffer` is not `NULL` with a 
+     * precondition, this is not a concern. We thus ignore this compiler error.
+     */
+    IGNORE_MEMCPY_TO_NULL
     memcpy(
         buffer,
         (const uint8_t*)ustream_forward->_internal.ptr + ustream_forward->_internal.inner_current_position,
         *size);
+    RESUME_WARNINGS
     ustream_forward->_internal.inner_current_position += *size;
     result = AZ_OK;
   }
