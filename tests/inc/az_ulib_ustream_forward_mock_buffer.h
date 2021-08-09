@@ -5,7 +5,7 @@
 #ifndef AZ_ULIB_USTREAM_FORWARD_MOCK_BUFFER_H
 #define AZ_ULIB_USTREAM_FORWARD_MOCK_BUFFER_H
 
-#include "az_ulib_ustream_forward_base.h"
+#include "az_ulib_ustream_forward.h"
 #include <stdbool.h>
 
 #ifdef __cplusplus
@@ -21,7 +21,6 @@ extern "C"
 
   void set_flush_result(az_result result);
   void set_read_result(az_result result);
-  void set_get_size_result(az_result result);
   void set_dispose_result(az_result result);
 
 #ifdef __cplusplus

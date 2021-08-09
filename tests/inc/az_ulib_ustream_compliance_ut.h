@@ -5,7 +5,7 @@
 #ifndef AZ_ULIB_USTREAM_COMPLIANCE_UT_H
 #define AZ_ULIB_USTREAM_COMPLIANCE_UT_H
 
-#include "az_ulib_ctest_aux.h"
+#include "az_ulib_test_helpers.h"
 #include "az_ulib_test_precondition.h"
 #include "az_ulib_ustream_mock_buffer.h"
 

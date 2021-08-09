@@ -2,35 +2,11 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#ifndef AZ_ULIB_CTEST_AUX_H
-#define AZ_ULIB_CTEST_AUX_H
-
-#include <stdint.h>
-
-#include "az_ulib_ustream_base.h"
-#include "az_ulib_ustream_forward_base.h"
+#include "az_ulib_test_helpers.h"
 
 #include "cmocka.h"
 
-#ifdef __clang__
-#define IGNORE_UNUSED_FUNCTIONS \
-  _Pragma("clang diagnostic push")        \
-      _Pragma("clang diagnostic ignored \"-Wunused-function\"")
-#define RESUME_WARNINGS _Pragma("clang diagnostic pop")
-#elif defined(__GNUC__)
-#define IGNORE_UNUSED_FUNCTIONS \
-  _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wunused-function\"")
-#define RESUME_WARNINGS _Pragma("GCC diagnostic pop")
-#else
-#define IGNORE_UNUSED_FUNCTIONS __pragma(warning(push));
-#define RESUME_WARNINGS __pragma(warning(pop));
-#endif // __clang__
-
-IGNORE_UNUSED_FUNCTIONS
-/**
- * Check buffer
- */
-static void check_buffer(
+void check_buffer(
     az_ulib_ustream* ustream_instance,
     uint8_t offset,
     const uint8_t* const expected_content,
@@ -53,10 +29,7 @@ static void check_buffer(
   assert_int_equal(size_result, 0);
 }
 
-/**
- * Check buffer
- */
-static void check_ustream_forward_buffer(
+void check_ustream_forward_buffer(
     az_ulib_ustream_forward* ustream_forward,
     uint8_t offset,
     const uint8_t* const expected_content,
@@ -78,5 +51,3 @@ static void check_ustream_forward_buffer(
       az_ulib_ustream_forward_read(ustream_forward, buf_result, 256, &size_result), AZ_ULIB_EOF);
   assert_int_equal(size_result, 0);
 }
-RESUME_WARNINGS
-#endif /* AZ_ULIB_CTEST_AUX_H */

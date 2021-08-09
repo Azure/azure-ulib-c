@@ -13,19 +13,19 @@
 #define START_MEMORY_OFFSET 0
 static const char ustream_forward_producer_buf[] = "Hello World!\r\n";
 
-void flush_callback(
+static void flush_callback(
     const uint8_t* const buffer,
     size_t size,
     az_ulib_callback_context flush_callback_context);
-az_result my_consumer(void);
+static az_result my_consumer(void);
 
 typedef struct ustream_forward_basic_context
 {
   offset_t offset;
-  char buffer[16];
+  char buffer[100];
 } consumer_context;
 
-void flush_callback(
+static void flush_callback(
     const uint8_t* const buffer,
     size_t size,
     az_ulib_callback_context flush_callback_context)
@@ -41,7 +41,7 @@ void flush_callback(
     flush_context->offset += size;
 }
 
-az_result my_consumer(void)
+static az_result my_consumer(void)
 {
   AZ_ULIB_TRY
   {
@@ -56,22 +56,19 @@ az_result my_consumer(void)
 
     // initialize context
     consumer_context my_consumer_context = { 0 };
-    az_ulib_callback_context callback_context;
-    callback_context = (az_ulib_callback_context)&my_consumer_context;
 
     (void)printf("my_consumer_context.buffer = %s\r\n", my_consumer_context.buffer);
 
     // flush from producer to consumer buffer
     (void)printf("----- FLUSH ----\r\n");
     AZ_ULIB_THROW_IF_AZ_ERROR(
-        az_ulib_ustream_forward_flush(&ustream_forward_instance, flush_callback, callback_context));
+        az_ulib_ustream_forward_flush(&ustream_forward_instance, flush_callback, &my_consumer_context));
 
-    consumer_context* result_consumer_context = (consumer_context*)callback_context;
-    (void)printf("result_consumer_context->buffer = %s\r\n", result_consumer_context->buffer);
+    (void)printf("my_consumer_context.buffer = %s\r\n", my_consumer_context.buffer);
   }
   AZ_ULIB_CATCH(...) {}
 
-  return AZ_OK;
+  return AZ_ULIB_TRY_RESULT;
 }
 
 int main(void)

@@ -18,23 +18,13 @@
 #define IGNORE_POINTER_TYPE_QUALIFICATION \
   _Pragma("clang diagnostic push")        \
       _Pragma("clang diagnostic ignored \"-Wincompatible-pointer-types-discards-qualifiers\"")
-#define IGNORE_MEMCPY_TO_NULL _Pragma("GCC diagnostic push")
-#define IGNORE_CAST_QUALIFICATION \
-_Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wcast-qual\"")
 #define RESUME_WARNINGS _Pragma("clang diagnostic pop")
 #elif defined(__GNUC__)
 #define IGNORE_POINTER_TYPE_QUALIFICATION \
   _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wdiscarded-qualifiers\"")
-#define IGNORE_MEMCPY_TO_NULL _Pragma("GCC diagnostic push")
-#define IGNORE_CAST_QUALIFICATION \
-_Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wcast-qual\"")
 #define RESUME_WARNINGS _Pragma("GCC diagnostic pop")
 #else
 #define IGNORE_POINTER_TYPE_QUALIFICATION __pragma(warning(push));
-#define IGNORE_MEMCPY_TO_NULL \
-  __pragma(warning(push));  \
-  __pragma(warning(suppress: 6387));
-#define IGNORE_CAST_QUALIFICATION __pragma(warning(push));
 #define RESUME_WARNINGS __pragma(warning(pop));
 #endif // __clang__
 
@@ -47,9 +37,8 @@ static az_result concrete_read(
     uint8_t* const buffer,
     size_t buffer_length,
     size_t* const size);
-static az_result concrete_get_size(
-    az_ulib_ustream_forward* ustream_forward, 
-    size_t* const size);
+static size_t concrete_get_size(
+    az_ulib_ustream_forward* ustream_forward);
 static az_result concrete_dispose(
     az_ulib_ustream_forward* ustream_forward);
 static const az_ulib_ustream_forward_interface api
@@ -64,23 +53,17 @@ static az_result concrete_flush(
   _az_PRECONDITION_NOT_NULL(ustream_forward);
   _az_PRECONDITION(AZ_ULIB_USTREAM_FORWARD_IS_TYPE_OF(ustream_forward, api));
   _az_PRECONDITION_NOT_NULL(flush_callback);
-  _az_PRECONDITION_NOT_NULL(flush_callback_context);
 
-  AZ_ULIB_TRY
-  {
-    // point to data from instance
-    size_t buffer_size;
-    AZ_ULIB_THROW_IF_AZ_ERROR(concrete_get_size(ustream_forward, &buffer_size));
-    IGNORE_CAST_QUALIFICATION
-    const uint8_t* buffer = (uint8_t*)ustream_forward->_internal.ptr;
-    RESUME_WARNINGS
+  // get size of data
+  size_t buffer_size = concrete_get_size(ustream_forward);
 
-    // invoke callback
-    (*flush_callback)(buffer, buffer_size, flush_callback_context);
-  }
-  AZ_ULIB_CATCH (...) {}
+  // point to data
+  const uint8_t* buffer = (const uint8_t*)ustream_forward->_internal.ptr;
 
-  return AZ_ULIB_TRY_RESULT;
+  // invoke callback
+  (*flush_callback)(buffer, buffer_size, flush_callback_context);
+
+  return AZ_OK;
 }
 
 static az_result concrete_read(
@@ -106,12 +89,10 @@ static az_result concrete_read(
     size_t remain_size
         = ustream_forward->_internal.length - (size_t)ustream_forward->_internal.inner_current_position;
     *size = (buffer_length < remain_size) ? buffer_length : remain_size;
-    IGNORE_MEMCPY_TO_NULL
     memcpy(
         buffer,
         (const uint8_t*)ustream_forward->_internal.ptr + ustream_forward->_internal.inner_current_position,
         *size);
-    RESUME_WARNINGS
     ustream_forward->_internal.inner_current_position += *size;
     result = AZ_OK;
   }
@@ -119,14 +100,11 @@ static az_result concrete_read(
   return result;
 }
 
-static az_result concrete_get_size(az_ulib_ustream_forward* ustream_forward, size_t* const size)
+static size_t concrete_get_size(az_ulib_ustream_forward* ustream_forward)
 {
   _az_PRECONDITION(AZ_ULIB_USTREAM_FORWARD_IS_TYPE_OF(ustream_forward, api));
-  _az_PRECONDITION_NOT_NULL(size);
 
-  *size = ustream_forward->_internal.length - ustream_forward->_internal.inner_current_position;
-
-  return AZ_OK;
+  return ustream_forward->_internal.length - ustream_forward->_internal.inner_current_position;
 }
 
 static az_result concrete_dispose(az_ulib_ustream_forward* ustream_forward)

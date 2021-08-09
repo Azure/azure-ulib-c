@@ -12,7 +12,7 @@
 #include "az_ulib_ustream.h"
 #include "az_ulib_ustream_ut.h"
 
-#include "az_ulib_ctest_aux.h"
+#include "az_ulib_test_helpers.h"
 #include "az_ulib_ustream_mock_buffer.h"
 
 #include "az_ulib_test_precondition.h"

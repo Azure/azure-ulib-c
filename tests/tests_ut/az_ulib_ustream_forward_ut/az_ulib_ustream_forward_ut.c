@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include "az_ulib_ustream_forward.h"
-#include "az_ulib_ustream_forward_base.h"
 #include "az_ulib_ustream_forward_ut.h"
 
 #include "az_ulib_ustream_forward_mock_buffer.h"
@@ -153,7 +152,8 @@ static void az_ulib_ustream_forward_init_const_succeed(void** state)
   assert_int_equal(result, AZ_OK);
 
   /// cleanup
-  (void)az_ulib_ustream_forward_dispose(&ustream_forward);
+  result = az_ulib_ustream_forward_dispose(&ustream_forward);
+  (void)result;
 }
 
 /* az_ulib_ustream_forward_init shall create an instance of the ustream_forward and initialize the instance. */
@@ -179,7 +179,8 @@ static void az_ulib_ustream_forward_init_succeed(void** state)
   assert_int_equal(result, AZ_OK);
 
   /// cleanup
-  (void)az_ulib_ustream_forward_dispose(&ustream_forward);
+  result = az_ulib_ustream_forward_dispose(&ustream_forward);
+  (void)result;
 }
 
 #include "az_ulib_ustream_forward_compliance_ut.h"
