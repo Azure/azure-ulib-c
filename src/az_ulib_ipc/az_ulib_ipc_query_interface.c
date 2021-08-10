@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#include "_az_ulib_ipc_query.h"
+#include "_az_ulib_interfaces.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"

@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "_az_ulib_ipc_query.h"
+#include "_az_ulib_interfaces.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
@@ -707,6 +707,234 @@ static void az_ulib_ipc_call_with_str_with_null_interface_handle_failed(void** s
   unpublish_interfaces_and_deinit_ipc();
 }
 
+/* If the IPC is not initialized, the az_ulib_ipc_split_method_name shall fail with precondition. */
+static void az_ulib_ipc_split_method_name_with_ipc_not_initialized_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  az_span full_name = AZ_SPAN_LITERAL_FROM_STR("device.package.1.interface.2.capability");
+  az_span device_name = AZ_SPAN_EMPTY;
+  az_span package_name = AZ_SPAN_EMPTY;
+  uint32_t package_version = 0;
+  az_span interface_name = AZ_SPAN_EMPTY;
+  uint32_t interface_version = 0;
+  az_span capability_name = AZ_SPAN_EMPTY;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_split_method_name(
+      full_name,
+      &device_name,
+      &package_name,
+      &package_version,
+      &interface_name,
+      &interface_version,
+      &capability_name));
+
+  /// cleanup
+}
+
+/* If the method full name is AZ_SPAN_EMPTY, the az_ulib_ipc_split_method_name shall fail with
+ * precondition. */
+static void az_ulib_ipc_split_method_name_with_empty_method_full_name_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+  az_span full_name = AZ_SPAN_EMPTY;
+  az_span device_name = AZ_SPAN_EMPTY;
+  az_span package_name = AZ_SPAN_EMPTY;
+  uint32_t package_version = 0;
+  az_span interface_name = AZ_SPAN_EMPTY;
+  uint32_t interface_version = 0;
+  az_span capability_name = AZ_SPAN_EMPTY;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_split_method_name(
+      full_name,
+      &device_name,
+      &package_name,
+      &package_version,
+      &interface_name,
+      &interface_version,
+      &capability_name));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the device_name is NULL, the az_ulib_ipc_split_method_name shall fail with precondition. */
+static void az_ulib_ipc_split_method_name_with_null_device_name_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+  az_span full_name = AZ_SPAN_LITERAL_FROM_STR("device.package.1.interface.2.capability");
+  az_span package_name = AZ_SPAN_EMPTY;
+  uint32_t package_version = 0;
+  az_span interface_name = AZ_SPAN_EMPTY;
+  uint32_t interface_version = 0;
+  az_span capability_name = AZ_SPAN_EMPTY;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_split_method_name(
+      full_name,
+      NULL,
+      &package_name,
+      &package_version,
+      &interface_name,
+      &interface_version,
+      &capability_name));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the package_name is NULL, the az_ulib_ipc_split_method_name shall fail with precondition. */
+static void az_ulib_ipc_split_method_name_with_null_package_name_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+  az_span full_name = AZ_SPAN_LITERAL_FROM_STR("device.package.1.interface.2.capability");
+  az_span device_name = AZ_SPAN_EMPTY;
+  uint32_t package_version = 0;
+  az_span interface_name = AZ_SPAN_EMPTY;
+  uint32_t interface_version = 0;
+  az_span capability_name = AZ_SPAN_EMPTY;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_split_method_name(
+      full_name,
+      &device_name,
+      NULL,
+      &package_version,
+      &interface_name,
+      &interface_version,
+      &capability_name));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the package_version is NULL, the az_ulib_ipc_split_method_name shall fail with precondition.
+ */
+static void az_ulib_ipc_split_method_name_with_null_package_version_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+  az_span full_name = AZ_SPAN_LITERAL_FROM_STR("device.package.1.interface.2.capability");
+  az_span device_name = AZ_SPAN_EMPTY;
+  az_span package_name = AZ_SPAN_EMPTY;
+  az_span interface_name = AZ_SPAN_EMPTY;
+  uint32_t interface_version = 0;
+  az_span capability_name = AZ_SPAN_EMPTY;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_split_method_name(
+      full_name,
+      &device_name,
+      &package_name,
+      NULL,
+      &interface_name,
+      &interface_version,
+      &capability_name));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the interface_name is NULL, the az_ulib_ipc_split_method_name shall fail with precondition. */
+static void az_ulib_ipc_split_method_name_with_null_interface_name_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+  az_span full_name = AZ_SPAN_LITERAL_FROM_STR("device.package.1.interface.2.capability");
+  az_span device_name = AZ_SPAN_EMPTY;
+  az_span package_name = AZ_SPAN_EMPTY;
+  uint32_t package_version = 0;
+  uint32_t interface_version = 0;
+  az_span capability_name = AZ_SPAN_EMPTY;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_split_method_name(
+      full_name,
+      &device_name,
+      &package_name,
+      &package_version,
+      NULL,
+      &interface_version,
+      &capability_name));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the interface_version is NULL, the az_ulib_ipc_split_method_name shall fail with precondition.
+ */
+static void az_ulib_ipc_split_method_name_with_null_interface_version_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+  az_span full_name = AZ_SPAN_LITERAL_FROM_STR("device.package.1.interface.2.capability");
+  az_span device_name = AZ_SPAN_EMPTY;
+  az_span package_name = AZ_SPAN_EMPTY;
+  uint32_t package_version = 0;
+  az_span interface_name = AZ_SPAN_EMPTY;
+  az_span capability_name = AZ_SPAN_EMPTY;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_split_method_name(
+      full_name,
+      &device_name,
+      &package_name,
+      &package_version,
+      &interface_name,
+      NULL,
+      &capability_name));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the capability_name is NULL, the az_ulib_ipc_split_method_name shall fail with precondition.
+ */
+static void az_ulib_ipc_split_method_name_with_null_capability_name_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+  az_span full_name = AZ_SPAN_LITERAL_FROM_STR("device.package.1.interface.2.capability");
+  az_span device_name = AZ_SPAN_EMPTY;
+  az_span package_name = AZ_SPAN_EMPTY;
+  uint32_t package_version = 0;
+  az_span interface_name = AZ_SPAN_EMPTY;
+  uint32_t interface_version = 0;
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_split_method_name(
+      full_name,
+      &device_name,
+      &package_name,
+      &package_version,
+      &interface_name,
+      &interface_version,
+      NULL));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
 /* If the IPC is not initialized, the az_ulib_ipc_query shall fail with precondition. */
 static void az_ulib_ipc_query_with_ipc_not_initialized_failed(void** state)
 {
@@ -988,6 +1216,7 @@ static void az_ulib_ipc_publish_succeed(void** state)
   az_ulib_ipc_interface_handle interface_handle_p2;
   az_ulib_ipc_interface_handle default_interface_handle;
   assert_int_equal(az_ulib_ipc_init(&g_ipc), AZ_OK);
+  g_count_acquire = 0;
 
   /// act
   assert_int_equal(az_ulib_test_my_interface_a_1_1_123_publish(NULL), AZ_OK);
@@ -998,7 +1227,7 @@ static void az_ulib_ipc_publish_succeed(void** state)
 
   /// assert
   assert_int_equal(g_lock_diff, 0);
-  assert_int_equal(g_count_acquire, 6);
+  assert_int_equal(g_count_acquire, 5);
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
@@ -1048,6 +1277,7 @@ static void az_ulib_ipc_publish_return_handle_succeed(void** state)
   (void)state;
   assert_int_equal(az_ulib_ipc_init(&g_ipc), AZ_OK);
   az_ulib_ipc_interface_handle interface_handle[4];
+  g_count_acquire = 0;
 
   /// act
   assert_int_equal(az_ulib_test_my_interface_a_1_1_123_publish(&(interface_handle[0])), AZ_OK);
@@ -1057,7 +1287,7 @@ static void az_ulib_ipc_publish_return_handle_succeed(void** state)
 
   /// assert
   assert_int_equal(g_lock_diff, 0);
-  assert_int_equal(g_count_acquire, 5);
+  assert_int_equal(g_count_acquire, 4);
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_JUST_RETURN;
   in.return_result = AZ_OK;
@@ -1161,7 +1391,7 @@ static void az_ulib_ipc_publish_out_of_memory_failed(void** state)
   /// arrange
   (void)state;
   assert_int_equal(az_ulib_ipc_init(&g_ipc), AZ_OK);
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 1; i++)
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 2; i++)
   {
     assert_int_equal(az_ulib_test_my_interface_publish(i), AZ_OK);
   }
@@ -1176,7 +1406,7 @@ static void az_ulib_ipc_publish_out_of_memory_failed(void** state)
   assert_int_equal(g_count_acquire, 1);
 
   /// cleanup
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 1; i++)
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 2; i++)
   {
     assert_int_equal(az_ulib_test_my_interface_unpublish(i), AZ_OK);
   }
@@ -1605,11 +1835,11 @@ static void az_ulib_ipc_unpublish_release_resource_succeed(void** state)
   assert_int_equal(g_lock_diff, 0);
   assert_int_equal(g_count_acquire, 5);
 
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 3; i++)
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 4; i++)
   {
     assert_int_equal(az_ulib_test_my_interface_publish(i), AZ_OK);
   }
-  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 3; i++)
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INTERFACE - 4; i++)
   {
     assert_int_equal(az_ulib_test_my_interface_unpublish(i), AZ_OK);
   }
@@ -1627,6 +1857,7 @@ static void az_ulib_ipc_unpublish_with_unknown_descriptor_failed(void** state)
   /// arrange
   (void)state;
   assert_int_equal(az_ulib_ipc_init(&g_ipc), AZ_OK);
+  g_count_acquire = 0;
 
   /// act
   az_result result = az_ulib_test_my_interface_a_1_1_123_unpublish(AZ_ULIB_NO_WAIT);
@@ -1634,7 +1865,7 @@ static void az_ulib_ipc_unpublish_with_unknown_descriptor_failed(void** state)
   /// assert
   assert_int_equal(result, AZ_ERROR_ITEM_NOT_FOUND);
   assert_int_equal(g_lock_diff, 0);
-  assert_int_equal(g_count_acquire, 2);
+  assert_int_equal(g_count_acquire, 1);
 
   /// cleanup
   assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
@@ -1764,7 +1995,7 @@ static void az_ulib_ipc_unpublish_with_valid_interface_instance_succeed(void** s
 
 /* If one of the capability in the interface is running, the wait policy is different than
  * AZ_ULIB_NO_WAIT and the call ends before the timeout, the az_ulib_ipc_unpublish shall return
- * AZ_ULIB_SUCCEESS. */
+ * AZ_OK. */
 // TODO: implement the test when the code is ready.
 
 /* If one of the capability in the interface is running, the wait policy is different than
@@ -1823,8 +2054,8 @@ static void az_ulib_ipc_try_get_interface_default_name_and_version_succeed(void*
   (void)state;
   az_ulib_ipc_interface_handle package_1;
   az_ulib_ipc_interface_handle package_2;
-  az_ulib_ipc_interface_handle dafault_package_name;
-  az_ulib_ipc_interface_handle dafault_package_version;
+  az_ulib_ipc_interface_handle default_package_name;
+  az_ulib_ipc_interface_handle default_package_version;
   assert_int_equal(az_ulib_ipc_init(&g_ipc), AZ_OK);
   assert_int_equal(az_ulib_test_my_interface_d_1_1_123_publish(NULL), AZ_OK);
   assert_int_equal(az_ulib_test_my_interface_d_2_1_123_publish(NULL), AZ_OK);
@@ -1856,7 +2087,7 @@ static void az_ulib_ipc_try_get_interface_default_name_and_version_succeed(void*
           AZ_ULIB_VERSION_DEFAULT,
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
           MY_INTERFACE_123_VERSION,
-          &dafault_package_name),
+          &default_package_name),
       AZ_OK);
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
@@ -1865,21 +2096,21 @@ static void az_ulib_ipc_try_get_interface_default_name_and_version_succeed(void*
           AZ_ULIB_VERSION_DEFAULT,
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
           MY_INTERFACE_123_VERSION,
-          &dafault_package_version),
+          &default_package_version),
       AZ_OK);
 
   /// assert
   assert_int_equal(g_lock_diff, 0);
   assert_int_equal(g_count_acquire, 4);
-  assert_int_equal(package_1, dafault_package_name);
-  assert_int_equal(package_1, dafault_package_version);
+  assert_int_equal(package_1, default_package_name);
+  assert_int_equal(package_1, default_package_version);
   assert_int_not_equal(package_1, package_2);
 
   /// cleanup
   assert_int_equal(az_ulib_ipc_release_interface(package_1), AZ_OK);
   assert_int_equal(az_ulib_ipc_release_interface(package_2), AZ_OK);
-  assert_int_equal(az_ulib_ipc_release_interface(dafault_package_name), AZ_OK);
-  assert_int_equal(az_ulib_ipc_release_interface(dafault_package_version), AZ_OK);
+  assert_int_equal(az_ulib_ipc_release_interface(default_package_name), AZ_OK);
+  assert_int_equal(az_ulib_ipc_release_interface(default_package_version), AZ_OK);
   assert_int_equal(az_ulib_test_my_interface_d_1_1_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
   assert_int_equal(az_ulib_test_my_interface_d_2_1_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
   assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
@@ -1891,7 +2122,7 @@ static void az_ulib_ipc_try_get_interface_default_name_only_succeed(void** state
   (void)state;
   az_ulib_ipc_interface_handle package_1;
   az_ulib_ipc_interface_handle package_2;
-  az_ulib_ipc_interface_handle dafault_package_version;
+  az_ulib_ipc_interface_handle default_package_version;
   init_ipc_and_publish_interfaces();
 
   /// act
@@ -1920,27 +2151,27 @@ static void az_ulib_ipc_try_get_interface_default_name_only_succeed(void** state
           AZ_ULIB_VERSION_DEFAULT,
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
           MY_INTERFACE_123_VERSION,
-          &dafault_package_version),
+          &default_package_version),
       AZ_OK);
 
   /// assert
   assert_int_equal(g_lock_diff, 0);
   assert_int_equal(g_count_acquire, 3);
-  assert_int_equal(package_1, dafault_package_version);
+  assert_int_equal(package_1, default_package_version);
   assert_int_not_equal(package_1, package_2);
 
   /// cleanup
   assert_int_equal(az_ulib_ipc_release_interface(package_1), AZ_OK);
   assert_int_equal(az_ulib_ipc_release_interface(package_2), AZ_OK);
-  assert_int_equal(az_ulib_ipc_release_interface(dafault_package_version), AZ_OK);
+  assert_int_equal(az_ulib_ipc_release_interface(default_package_version), AZ_OK);
   unpublish_interfaces_and_deinit_ipc();
 }
 
-static void az_ulib_ipc_try_get_interface_default_anbiguous_name_failed(void** state)
+static void az_ulib_ipc_try_get_interface_default_ambiguous_name_failed(void** state)
 {
   /// arrange
   (void)state;
-  az_ulib_ipc_interface_handle dafault_package_version;
+  az_ulib_ipc_interface_handle default_package_version;
   init_ipc_and_publish_interfaces();
 
   /// act
@@ -1950,7 +2181,7 @@ static void az_ulib_ipc_try_get_interface_default_anbiguous_name_failed(void** s
       AZ_ULIB_VERSION_DEFAULT,
       AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
       MY_INTERFACE_123_VERSION,
-      &dafault_package_version);
+      &default_package_version);
 
   /// assert
   assert_int_equal(g_lock_diff, 0);
@@ -2643,6 +2874,184 @@ static void az_ulib_ipc_get_table_succeed(void** state)
   /// cleanup
 }
 
+/* The az_ulib_ipc_split_method_name shall split the method full name returning device, package,
+ * interface and capability information. */
+/* The az_ulib_ipc_split_method_name shall return AZ_OK. */
+typedef struct
+{
+  char* full_name;
+  char* device_name;
+  char* package_name;
+  uint32_t package_version;
+  char* interface_name;
+  uint32_t interface_version;
+  char* capability_name;
+} method_name_ut;
+
+static const method_name_ut method_name_ut_list[]
+    = { { .full_name = "deviceA.packageA.1.interfaceA.2.capabilityA",
+          .device_name = "deviceA",
+          .package_name = "packageA",
+          .package_version = 1,
+          .interface_name = "interfaceA",
+          .interface_version = 2,
+          .capability_name = "capabilityA" },
+        { .full_name = "deviceB.packageB.3.interfaceB.4",
+          .device_name = "deviceB",
+          .package_name = "packageB",
+          .package_version = 3,
+          .interface_name = "interfaceB",
+          .interface_version = 4,
+          .capability_name = NULL },
+        { .full_name = "deviceC.packageC.interfaceC.5.capabilityC",
+          .device_name = "deviceC",
+          .package_name = "packageC",
+          .package_version = AZ_ULIB_VERSION_DEFAULT,
+          .interface_name = "interfaceC",
+          .interface_version = 5,
+          .capability_name = "capabilityC" },
+        { .full_name = "packageD.6.interfaceD.7.capabilityD",
+          .device_name = NULL,
+          .package_name = "packageD",
+          .package_version = 6,
+          .interface_name = "interfaceD",
+          .interface_version = 7,
+          .capability_name = "capabilityD" },
+        { .full_name = "interfaceE.8.capabilityE",
+          .device_name = NULL,
+          .package_name = NULL,
+          .package_version = AZ_ULIB_VERSION_DEFAULT,
+          .interface_name = "interfaceE",
+          .interface_version = 8,
+          .capability_name = "capabilityE" },
+        { .full_name = "interfaceF.9",
+          .device_name = NULL,
+          .package_name = NULL,
+          .package_version = AZ_ULIB_VERSION_DEFAULT,
+          .interface_name = "interfaceF",
+          .interface_version = 9,
+          .capability_name = NULL } };
+static void az_ulib_ipc_split_method_name_succeed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+  az_span device_name = AZ_SPAN_EMPTY;
+  az_span package_name = AZ_SPAN_EMPTY;
+  uint32_t package_version = 0;
+  az_span interface_name = AZ_SPAN_EMPTY;
+  uint32_t interface_version = 0;
+  az_span capability_name = AZ_SPAN_EMPTY;
+
+  for (uint32_t i = 0; i < (sizeof(method_name_ut_list) / sizeof(method_name_ut)); i++)
+  {
+    /// act
+    az_result result = az_ulib_ipc_split_method_name(
+        az_span_create_from_str(method_name_ut_list[i].full_name),
+        &device_name,
+        &package_name,
+        &package_version,
+        &interface_name,
+        &interface_version,
+        &capability_name);
+
+    /// assert
+    assert_int_equal(result, AZ_OK);
+
+    if (method_name_ut_list[i].device_name == NULL)
+    {
+      assert_null(az_span_ptr(device_name));
+    }
+    else
+    {
+      assert_true(az_span_is_content_equal(
+          device_name, az_span_create_from_str(method_name_ut_list[i].device_name)));
+    }
+
+    if (method_name_ut_list[i].package_name == NULL)
+    {
+      assert_null(az_span_ptr(package_name));
+    }
+    else
+    {
+      assert_true(az_span_is_content_equal(
+          package_name, az_span_create_from_str(method_name_ut_list[i].package_name)));
+    }
+
+    assert_int_equal(package_version, method_name_ut_list[i].package_version);
+
+    assert_true(az_span_is_content_equal(
+        interface_name, az_span_create_from_str(method_name_ut_list[i].interface_name)));
+
+    assert_int_equal(interface_version, method_name_ut_list[i].interface_version);
+
+    if (method_name_ut_list[i].capability_name == NULL)
+    {
+      assert_null(az_span_ptr(capability_name));
+    }
+    else
+    {
+      assert_true(az_span_is_content_equal(
+          capability_name, az_span_create_from_str(method_name_ut_list[i].capability_name)));
+    }
+  }
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the provided method full name does not match the rules, the az_ulib_ipc_split_method_name
+ * shall return AZ_ERROR_UNEXPECTED_CHAR. */
+typedef struct
+{
+  char* full_name;
+} method_bad_name_ut;
+static const method_bad_name_ut method_bad_name_ut_list[]
+    = { { .full_name = "interface" },
+        { .full_name = "1.capability" },
+        { .full_name = ".2.capability" },
+        { .full_name = "interface.capability" },
+        { .full_name = "interface..capability" },
+        { .full_name = "2.interface.1.capability" },
+        { .full_name = "2.interface.1" } };
+static void az_ulib_ipc_split_bad_method_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  init_ipc_and_publish_interfaces();
+  az_span device_name = AZ_SPAN_EMPTY;
+  az_span package_name = AZ_SPAN_EMPTY;
+  uint32_t package_version = 0;
+  az_span interface_name = AZ_SPAN_EMPTY;
+  uint32_t interface_version = 0;
+  az_span capability_name = AZ_SPAN_EMPTY;
+
+  for (uint32_t i = 0; i < (sizeof(method_bad_name_ut_list) / sizeof(char*)); i++)
+  {
+    /// act
+    az_result result = az_ulib_ipc_split_method_name(
+        az_span_create_from_str(method_bad_name_ut_list[i].full_name),
+        &device_name,
+        &package_name,
+        &package_version,
+        &interface_name,
+        &interface_version,
+        &capability_name);
+
+    /// assert
+    assert_int_equal(result, AZ_ERROR_UNEXPECTED_CHAR);
+    assert_null(az_span_ptr(device_name));
+    assert_null(az_span_ptr(package_name));
+    assert_int_equal(package_version, 0);
+    assert_null(az_span_ptr(interface_name));
+    assert_int_equal(interface_version, 0);
+    assert_null(az_span_ptr(capability_name));
+  }
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
 /* If the query is empty, the az_ulib_ipc_query shall return a list of interfaces name and version,
  * separated by comma. */
 /* The az_ulib_ipc_query shall return AZ_OK. */
@@ -2651,7 +3060,7 @@ static void az_ulib_ipc_query_succeed(void** state)
   /// arrange
   (void)state;
   az_span query = AZ_SPAN_LITERAL_FROM_STR("");
-  uint8_t buf[300];
+  uint8_t buf[400];
   az_span query_result = AZ_SPAN_FROM_BUFFER(buf);
   uint32_t token = 0;
   init_ipc_and_publish_interfaces();
@@ -2664,10 +3073,10 @@ static void az_ulib_ipc_query_succeed(void** state)
   assert_true(az_span_is_content_equal(
       query_result,
       AZ_SPAN_FROM_STR(
-          "\"+ipc.1.query.1\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_B.1.MY_"
-          "INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_"
-          "1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_3.123\","
-          "\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
+          "\"+ipc.1.query.1\",\"+ipc.1.interface_manager.1\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1."
+          "123\",\"+MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"+"
+          "MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"+MY_"
+          "PACKAGE_A.1.MY_INTERFACE_3.123\",\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000a00FF);
   assert_int_equal(g_lock_diff, 0);
   assert_int_equal(g_count_acquire, 1);
@@ -2693,8 +3102,8 @@ static void az_ulib_ipc_query_small_buffer_succeed(void** state)
   assert_int_equal(result, AZ_OK);
   assert_true(az_span_is_content_equal(
       query_result,
-      AZ_SPAN_FROM_STR("\"+ipc.1.query.1\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_B."
-                       "1.MY_INTERFACE_1.123\"")));
+      AZ_SPAN_FROM_STR("\"+ipc.1.query.1\",\"+ipc.1.interface_manager.1\",\"+MY_PACKAGE_A.1.MY_"
+                       "INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000300FF);
   assert_int_equal(g_lock_diff, 0);
   assert_int_equal(g_count_acquire, 1);
@@ -2761,6 +3170,8 @@ static void az_ulib_ipc_query_eof_succeed(void** state)
   uint32_t token = 0;
   assert_int_equal(az_ulib_ipc_init(&g_ipc), AZ_OK);
   _az_ulib_ipc_query_interface_unpublish();
+  _az_ulib_ipc_interface_manager_interface_unpublish();
+  g_count_acquire = 0;
 
   /// act
   az_result result = az_ulib_ipc_query(query, &query_result, &token);
@@ -2768,10 +3179,11 @@ static void az_ulib_ipc_query_eof_succeed(void** state)
   /// assert
   assert_int_equal(result, AZ_ULIB_EOF);
   assert_int_equal(g_lock_diff, 0);
-  assert_int_equal(g_count_acquire, 3);
+  assert_int_equal(g_count_acquire, 1);
 
   /// cleanup
   _az_ulib_ipc_query_interface_publish();
+  _az_ulib_ipc_interface_manager_interface_publish();
   assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
 }
 
@@ -2797,19 +3209,21 @@ static void az_ulib_ipc_query_next_succeed(void** state)
   assert_true(az_span_is_content_equal(
       query_result,
       AZ_SPAN_FROM_STR(
-          "\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1.200\"")));
+          "\"+MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000500FF);
   query_result = AZ_SPAN_FROM_BUFFER(buf);
   assert_int_equal(az_ulib_ipc_query_next(&token, &query_result), AZ_OK);
   assert_true(az_span_is_content_equal(
       query_result,
       AZ_SPAN_FROM_STR(
-          "\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_3.123\"")));
+          "\"+MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\"")));
   assert_int_equal(token, 0x000700FF);
   query_result = AZ_SPAN_FROM_BUFFER(buf);
   assert_int_equal(az_ulib_ipc_query_next(&token, &query_result), AZ_OK);
   assert_true(az_span_is_content_equal(
-      query_result, AZ_SPAN_FROM_STR("\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
+      query_result,
+      AZ_SPAN_FROM_STR(
+          "\"+MY_PACKAGE_A.1.MY_INTERFACE_3.123\",\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000a00FF);
   query_result = AZ_SPAN_FROM_BUFFER(buf);
   assert_int_equal(az_ulib_ipc_query_next(&token, &query_result), AZ_ULIB_EOF);
@@ -2879,6 +3293,14 @@ int az_ulib_ipc_ut()
     cmocka_unit_test(az_ulib_ipc_call_with_null_interface_handle_failed),
     cmocka_unit_test(az_ulib_ipc_call_with_str_with_ipc_not_initialized_failed),
     cmocka_unit_test(az_ulib_ipc_call_with_str_with_null_interface_handle_failed),
+    cmocka_unit_test(az_ulib_ipc_split_method_name_with_ipc_not_initialized_failed),
+    cmocka_unit_test(az_ulib_ipc_split_method_name_with_empty_method_full_name_failed),
+    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_device_name_failed),
+    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_package_name_failed),
+    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_package_version_failed),
+    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_interface_name_failed),
+    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_interface_version_failed),
+    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_capability_name_failed),
     cmocka_unit_test(az_ulib_ipc_query_with_ipc_not_initialized_failed),
     cmocka_unit_test(az_ulib_ipc_query_with_null_result_failed),
     cmocka_unit_test(az_ulib_ipc_query_with_empty_result_failed),
@@ -2918,7 +3340,7 @@ int az_ulib_ipc_ut()
     cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_default_name_and_version_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_default_name_only_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_default_anbiguous_name_failed, setup),
+    cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_default_ambiguous_name_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_for_specific_device_failed, setup),
     cmocka_unit_test_setup(
         az_ulib_ipc_try_get_interface_with_max_interface_instances_failed, setup),
@@ -2943,6 +3365,8 @@ int az_ulib_ipc_ut()
     cmocka_unit_test_setup(az_ulib_ipc_call_with_str_calls_not_supporte_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_call_with_str_unpublished_interface_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_get_table_succeed, setup),
+    cmocka_unit_test_setup(az_ulib_ipc_split_method_name_succeed, setup),
+    cmocka_unit_test_setup(az_ulib_ipc_split_bad_method_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_query_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_query_small_buffer_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_query_buffer_too_small_failed, setup),

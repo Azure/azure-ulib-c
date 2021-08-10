@@ -544,7 +544,7 @@ static void az_ulib_ipc_query_query_all_interfaces_succeed(void** state)
       AZ_OK);
 
   az_span in = AZ_SPAN_FROM_STR("");
-  uint8_t buf[400];
+  uint8_t buf[500];
   az_span query_result = AZ_SPAN_FROM_BUFFER(buf);
   query_1_query_model_out out = { .result = &query_result, .continuation_token = 0 };
 
@@ -556,10 +556,10 @@ static void az_ulib_ipc_query_query_all_interfaces_succeed(void** state)
   assert_true(az_span_is_content_equal(
       *out.result,
       AZ_SPAN_FROM_STR(
-          "\"+ipc.1.query.1\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_B.1.MY_"
-          "INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_"
-          "1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_3.123\","
-          "\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
+          "\"+ipc.1.query.1\",\"+ipc.1.interface_manager.1\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1."
+          "123\",\"+MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"+"
+          "MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"+MY_"
+          "PACKAGE_A.1.MY_INTERFACE_3.123\",\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
   assert_int_equal(out.continuation_token, 0x000a00ff);
 
   /// cleanup
@@ -585,7 +585,7 @@ static void az_ulib_ipc_query_query_w_str_all_interfaces_succeed(void** state)
       AZ_OK);
 
   az_span in = AZ_SPAN_LITERAL_FROM_STR("{}");
-  uint8_t buf[400];
+  uint8_t buf[500];
   az_span out = AZ_SPAN_FROM_BUFFER(buf);
 
   /// act
@@ -596,10 +596,11 @@ static void az_ulib_ipc_query_query_w_str_all_interfaces_succeed(void** state)
   assert_true(az_span_is_content_equal(
       out,
       AZ_SPAN_FROM_STR(
-          "{\"result\":[\"+ipc.1.query.1\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_B."
-          "1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_A.1.MY_"
-          "INTERFACE_1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_"
-          "3.123\",\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"],\"continuation_token\":655615}")));
+          "{\"result\":[\"+ipc.1.query.1\",\"+ipc.1.interface_manager.1\",\"+MY_PACKAGE_A.1.MY_"
+          "INTERFACE_1.123\",\"+MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_"
+          "1.123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\","
+          "\"+MY_PACKAGE_A.1.MY_INTERFACE_3.123\",\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"],"
+          "\"continuation_token\":655615}")));
 
   /// cleanup
   assert_int_equal(az_ulib_ipc_release_interface(query_handle), AZ_OK);
@@ -634,8 +635,8 @@ static void az_ulib_ipc_query_query_next_succeed(void** state)
       az_ulib_ipc_call(query_handle, QUERY_1_QUERY_COMMAND, &query_in, &query_out), AZ_OK);
   assert_true(az_span_is_content_equal(
       *query_out.result,
-      AZ_SPAN_FROM_STR("\"+ipc.1.query.1\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_B."
-                       "1.MY_INTERFACE_1.123\"")));
+      AZ_SPAN_FROM_STR("\"+ipc.1.query.1\",\"+ipc.1.interface_manager.1\",\"+MY_PACKAGE_A.1.MY_"
+                       "INTERFACE_1.123\"")));
   assert_int_equal(query_out.continuation_token, 0x000300FF);
 
   query_1_next_model_in next_in = query_out.continuation_token;
@@ -646,7 +647,7 @@ static void az_ulib_ipc_query_query_next_succeed(void** state)
   assert_true(az_span_is_content_equal(
       *next_out.result,
       AZ_SPAN_FROM_STR(
-          "\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1.200\"")));
+          "\"+MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\"")));
   assert_int_equal(next_out.continuation_token, 0x000500FF);
 
   next_in = next_out.continuation_token;
@@ -656,7 +657,7 @@ static void az_ulib_ipc_query_query_next_succeed(void** state)
   assert_true(az_span_is_content_equal(
       *next_out.result,
       AZ_SPAN_FROM_STR(
-          "\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_3.123\"")));
+          "\"+MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\"")));
   assert_int_equal(next_out.continuation_token, 0x000700FF);
 
   next_in = next_out.continuation_token;
@@ -664,7 +665,9 @@ static void az_ulib_ipc_query_query_next_succeed(void** state)
   assert_int_equal(
       az_ulib_ipc_call(query_handle, QUERY_1_NEXT_COMMAND, &next_in, &next_out), AZ_OK);
   assert_true(az_span_is_content_equal(
-      *next_out.result, AZ_SPAN_FROM_STR("\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
+      *next_out.result,
+      AZ_SPAN_FROM_STR(
+          "\"+MY_PACKAGE_A.1.MY_INTERFACE_3.123\",\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
   assert_int_equal(next_out.continuation_token, 0x000a00FF);
 
   next_in = next_out.continuation_token;
@@ -704,8 +707,8 @@ static void az_ulib_ipc_query_query_next_w_str_succeed(void** state)
   assert_int_equal(az_ulib_ipc_call_with_str(query_handle, QUERY_1_QUERY_COMMAND, in, &out), AZ_OK);
   assert_true(az_span_is_content_equal(
       out,
-      AZ_SPAN_FROM_STR("{\"result\":[\"+ipc.1.query.1\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1.123\",\"+"
-                       "MY_PACKAGE_B.1.MY_INTERFACE_1.123\"],\"continuation_token\":196863}")));
+      AZ_SPAN_FROM_STR("{\"result\":[\"+ipc.1.query.1\",\"+ipc.1.interface_manager.1\",\"+MY_"
+                       "PACKAGE_A.1.MY_INTERFACE_1.123\"],\"continuation_token\":196863}")));
 
   az_span in_1 = AZ_SPAN_LITERAL_FROM_STR("{\"continuation_token\":196863}");
   az_span out_1 = AZ_SPAN_FROM_BUFFER(buf);
@@ -714,8 +717,8 @@ static void az_ulib_ipc_query_query_next_w_str_succeed(void** state)
   assert_true(az_span_is_content_equal(
       out_1,
       AZ_SPAN_FROM_STR(
-          "{\"result\":[\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1."
-          "200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\"],\"continuation_token\":393471}")));
+          "{\"result\":[\"+MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1."
+          "123\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1.200\"],\"continuation_token\":393471}")));
 
   az_span in_2 = AZ_SPAN_LITERAL_FROM_STR("{\"continuation_token\":393471}");
   az_span out_2 = AZ_SPAN_FROM_BUFFER(buf);
@@ -723,13 +726,14 @@ static void az_ulib_ipc_query_query_next_w_str_succeed(void** state)
       az_ulib_ipc_call_with_str(query_handle, QUERY_1_NEXT_COMMAND, in_2, &out_2), AZ_OK);
   assert_true(az_span_is_content_equal(
       out_2,
-      AZ_SPAN_FROM_STR("{\"result\":[\"+MY_PACKAGE_A.1.MY_INTERFACE_3.123\",\"-MY_PACKAGE_A.2.MY_"
-                       "INTERFACE_1.123\"],\"continuation_token\":655615}")));
+      AZ_SPAN_FROM_STR("{\"result\":[\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"+MY_PACKAGE_A.1.MY_"
+                       "INTERFACE_3.123\",\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"],\"continuation_"
+                       "token\":655615}")));
 
-  az_span in_3 = AZ_SPAN_LITERAL_FROM_STR("{\"continuation_token\":655615}");
-  az_span out_3 = AZ_SPAN_FROM_BUFFER(buf);
+  az_span in_4 = AZ_SPAN_LITERAL_FROM_STR("{\"continuation_token\":655615}");
+  az_span out_4 = AZ_SPAN_FROM_BUFFER(buf);
   assert_int_equal(
-      az_ulib_ipc_call_with_str(query_handle, QUERY_1_NEXT_COMMAND, in_3, &out_3), AZ_ULIB_EOF);
+      az_ulib_ipc_call_with_str(query_handle, QUERY_1_NEXT_COMMAND, in_4, &out_4), AZ_ULIB_EOF);
 
   /// cleanup
   assert_int_equal(az_ulib_ipc_release_interface(query_handle), AZ_OK);
