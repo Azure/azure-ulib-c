@@ -12,6 +12,7 @@ add_cmocka_test(az_ulib_ustream_ut SOURCES
                 main.c
                 az_ulib_ustream_ut.c
                 az_ulib_ustream_aux_ut.c
+                ${TEST_DIRECTORY}/src/az_ulib_test_helpers.c
                 ${TEST_DIRECTORY}/src/az_ulib_ustream_mock_buffer.c
                 ${TEST_DIRECTORY}/src/${ULIB_PAL_OS_DIRECTORY}/az_ulib_test_thread.c
                 COMPILE_OPTIONS ${DEFAULT_C_COMPILE_FLAGS} ${NO_CLOBBERED_WARNING}
