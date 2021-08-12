@@ -315,14 +315,13 @@ AZ_NODISCARD AZ_INLINE az_result az_ulib_ustream_forward_dispose(az_ulib_ustream
  *                                              #az_ulib_ustream_forward struct. 
  * @param[in]       ustream_forward_release     The #az_ulib_release_callback function that will be
  *                                              called to release the ustream_forward block (the 
- *                                              passed `ustream_forward` parameter) once all the 
- *                                              references to the ustream_forward are disposed. If 
- *                                              `NULL` is passed, the  
- *                                             `az_ulib_ustream_forward_dispose` will not release 
- *                                              the memory associated with `ustream_forward`, so
- *                                              it will be the caller's responsibility to do so.
- *                                              For example, developers may use the stdlib `free`
- *                                              to release malloc'd memory.
+ *                                              passed `ustream_forward` parameter). If `NULL` is 
+ *                                              passed, the `az_ulib_ustream_forward_dispose` will 
+ *                                              not release the memory associated with 
+ *                                              `ustream_forward`, so it will be the caller's 
+ *                                              responsibility to do so. For example, developers 
+ *                                              may use the stdlib `free` to release malloc'd 
+ *                                              memory.
  * @param[in]       data_buffer                 The `const uint8_t* const` that points to a memory
  *                                              position where the buffer starts.
  * @param[in]       data_buffer_length          The `size_t` with the number of `uint8_t` in the
