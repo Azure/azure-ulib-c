@@ -16,6 +16,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.inputs.commitRef }}
+      
+      - name: Establish Script Permissions
+        run:  chmod +rx .github/scripts/doxygen.sh
 
       - name: Install and Build Doxygen
         run: .github/scripts/doxygen.sh
