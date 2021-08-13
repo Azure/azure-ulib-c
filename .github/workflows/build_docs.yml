@@ -29,4 +29,3 @@ jobs:
           branch: gh-pages
           folder: docs
           clean: true
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
