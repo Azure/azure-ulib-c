@@ -24,7 +24,7 @@ phases:
       ./../../node_modules/.bin/check_submodules . master
     displayName: 'build'   
 - phase: windowsx86
-  queue:
+  pool:
     name: 'sdk-c--win-vs2017'
   steps:
   - script: |
@@ -92,7 +92,7 @@ phases:
     displayName: 'cleanup'
     condition: always() 
 - phase: windowsdynamic
-  queue:
+  pool:
     name: 'sdk-c--win-vs2017'
   steps:
   - script: |
@@ -106,7 +106,7 @@ phases:
 - phase: clang
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/ubuntu-clang"
-  queue: 
+  pool: 
     name: 'sdk-c--ubuntu-18'
   displayName: 'clang'
   steps:
@@ -124,7 +124,7 @@ phases:
 - phase: debian
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/c-debian"
-  queue: 
+  pool: 
     name: 'sdk-c--ubuntu-18'
   displayName: 'debian'
   steps:
@@ -140,7 +140,7 @@ phases:
     displayName: 'cleanup'
     condition: always()    
 - phase: windowsx64
-  queue:
+  pool:
     name: 'sdk-c--win-vs2017'
   displayName: 'windowsx64'
   steps:
