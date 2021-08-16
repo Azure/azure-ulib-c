@@ -25,7 +25,7 @@ phases:
     displayName: 'build'   
 - phase: windowsx86
   queue:
-    name: 'aziotbld-win03'
+    name: 'sdk-c--win-vs2017'
   steps:
   - script: |
      if exist build_all\windows_c.cmd (
@@ -93,7 +93,7 @@ phases:
     condition: always() 
 - phase: windowsdynamic
   queue:
-    name: 'aziotbld-win03'
+    name: 'sdk-c--win-vs2017'
   steps:
   - script: |
      if exist build_all\windows_c_build_as_dynamic.cmd (
@@ -106,7 +106,8 @@ phases:
 - phase: clang
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/ubuntu-clang"
-  queue: aziotbld-lin01
+  queue: 
+    name: 'sdk-c--ubuntu-18'
   displayName: 'clang'
   steps:
   - script: |
@@ -123,7 +124,8 @@ phases:
 - phase: debian
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/c-debian"
-  queue: c-df
+  queue: 
+    name: 'sdk-c--ubuntu-18'
   displayName: 'debian'
   steps:
   - script: |
@@ -139,7 +141,7 @@ phases:
     condition: always()    
 - phase: windowsx64
   queue:
-    name: 'aziotbld-win03'
+    name: 'sdk-c--win-vs2017'
   displayName: 'windowsx64'
   steps:
   - script: |

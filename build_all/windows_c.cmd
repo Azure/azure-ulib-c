@@ -4,6 +4,14 @@
 @setlocal EnableExtensions EnableDelayedExpansion
 @echo off
 
+echo ***checking msbuild***
+where /q msbuild
+IF ERRORLEVEL 1 (
+echo ***setting VC paths***
+    IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsMSBuildCmd.bat" call "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsMSBuildCmd.bat"
+)
+where msbuild
+
 set current-path=%~dp0
 rem // remove trailing slash
 set current-path=%current-path:~0,-1%
