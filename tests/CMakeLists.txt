@@ -12,5 +12,6 @@ if(${UNIT_TESTING})
     add_subdirectory(tests_ut/az_ulib_ustream_forward_ut)
     add_subdirectory(tests_e2e/az_ulib_ipc_e2e)
     add_subdirectory(tests_e2e/az_ulib_ustream_e2e)
+    add_subdirectory(tests_e2e/az_ulib_ustream_forward_e2e)
 endif()
 

@@ -76,7 +76,7 @@ static int teardown(void** state)
 }
 
 #ifndef AZ_NO_PRECONDITION_CHECKING
-/* az_ulib_ustream_forward_init shall fail with precondition if the provided constant buffer is NULL. */
+/* az_ulib_ustream_forward_init shall fail with precondition if the provided buffer is NULL. */
 static void az_ulib_ustream_forward_init_null_buffer_failed(void** state)
 {
   /// arrange
@@ -114,7 +114,8 @@ static void az_ulib_ustream_forward_init_zero_length_failed(void** state)
   /// cleanup
 }
 
-/* az_ulib_ustream_forward_init shall fail with precondition if the provided buffer length is zero. */
+/* az_ulib_ustream_forward_init shall fail with precondition if the provided ustream_forward 
+    is NULL. */
 static void az_ulib_ustream_forward_init_NULL_ustream_forward_instance_failed(void** state)
 {
   /// arrange

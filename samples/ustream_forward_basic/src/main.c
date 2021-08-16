@@ -13,12 +13,6 @@
 #define START_MEMORY_OFFSET 0
 static const char ustream_forward_producer_buf[] = "Hello World!\r\n";
 
-static void flush_callback(
-    const uint8_t* const buffer,
-    size_t size,
-    az_ulib_callback_context flush_callback_context);
-static az_result my_consumer(void);
-
 typedef struct ustream_forward_basic_context
 {
   offset_t offset;
@@ -35,7 +29,7 @@ static void flush_callback(
     (void)snprintf(
         flush_context->buffer + flush_context->offset, 
         sizeof(flush_context->buffer) / sizeof(char), 
-        "%s", (const char*)buffer);
+        "%s", buffer);
     
     // adjust offset
     flush_context->offset += size;

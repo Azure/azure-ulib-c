@@ -63,7 +63,8 @@ static az_result concrete_flush(
   size_t buffer_size = concrete_get_size(ustream_forward);
 
   // point to data
-  const uint8_t* buffer = (const uint8_t*)ustream_forward->_internal.ptr;
+  const uint8_t* buffer = (const uint8_t*)ustream_forward->_internal.ptr + \
+                          ustream_forward->_internal.inner_current_position;
 
   // invoke callback
   (*flush_callback)(buffer, buffer_size, flush_callback_context);

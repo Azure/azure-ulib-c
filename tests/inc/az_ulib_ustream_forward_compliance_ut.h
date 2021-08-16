@@ -37,7 +37,8 @@
   (USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH + 2)
 
 // flush callback global variables
-static uint8_t* flush_callback_buffer_check[USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH] = { 0 };
+static uint8_t* flush_callback_buffer_check[USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH]
+    = { 0 };
 static size_t flush_callback_size_check = 0;
 static az_ulib_callback_context flush_callback_context_check;
 
@@ -148,7 +149,7 @@ static void az_ulib_ustream_forward_flush_compliance_null_handle_failed(void** s
   (void)result;
 }
 
-/* If the provided handle is not the implemented ustream_forward type, the read shall fail with
+/* If the provided handle is not the implemented ustream_forward type, the flush shall fail with
  *  precondition.
  */
 static void az_ulib_ustream_forward_flush_compliance_non_type_of_ustream_forward_api_failed(
@@ -186,6 +187,37 @@ static void az_ulib_ustream_forward_flush_compliance_null_flush_callback_failed(
 
   /// cleanup
   az_result result = az_ulib_ustream_forward_dispose(ustream_forward);
+  (void)result;
+}
+
+static void az_ulib_ustream_forward_flush_compliance_single_buffer_succeed(void** state)
+{
+  /// arrange
+  (void)state;
+  az_ulib_ustream_forward* ustream_forward;
+  USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(&ustream_forward);
+  struct _test_context
+  {
+    uint8_t test_value;
+  } test_context = { 0 };
+
+  az_ulib_callback_context callback_context = (az_ulib_callback_context)&test_context;
+
+  /// act
+  az_result result
+      = az_ulib_ustream_forward_flush(ustream_forward, mock_flush_callback, callback_context);
+
+  /// assert
+  assert_int_equal(result, AZ_OK);
+  assert_int_equal(flush_callback_size_check, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+  assert_int_equal(flush_callback_context_check, callback_context);
+  assert_memory_equal(
+      USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
+      flush_callback_buffer_check,
+      flush_callback_size_check);
+
+  /// cleanup
+  result = az_ulib_ustream_forward_dispose(ustream_forward);
   (void)result;
 }
 
@@ -379,37 +411,6 @@ static void az_ulib_ustream_forward_read_compliance_get_from_original_buffer_suc
   (void)result;
 }
 
-static void az_ulib_ustream_forward_flush_compliance_single_buffer_succeed(void** state)
-{
-  /// arrange
-  (void)state;
-  az_ulib_ustream_forward* ustream_forward;
-  USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(&ustream_forward);
-  struct _test_context
-  {
-      uint8_t test_value;
-  } test_context = { 0 };
-  
-  az_ulib_callback_context callback_context = (az_ulib_callback_context)&test_context;
-
-  /// act
-  az_result result
-      = az_ulib_ustream_forward_flush(ustream_forward, mock_flush_callback, callback_context);
-
-  /// assert
-  assert_int_equal(result, AZ_OK);
-  assert_int_equal(flush_callback_size_check, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
-  assert_int_equal(flush_callback_context_check, callback_context);
-  assert_memory_equal(
-      USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
-      flush_callback_buffer_check,
-      flush_callback_size_check);
-
-  /// cleanup
-  result = az_ulib_ustream_forward_dispose(ustream_forward);
-  (void)result;
-}
-
 static void az_ulib_ustream_forward_read_compliance_single_buffer_succeed(void** state)
 {
   /// arrange
@@ -585,11 +586,11 @@ static void az_ulib_ustream_forward_read_compliance_single_byte_succeed(void** s
 
 #define AZ_ULIB_USTREAM_FORWARD_COMPLIANCE_UT_LIST                                              \
   cmocka_unit_test_setup_teardown(                                                              \
-      az_ulib_ustream_forward_flush_compliance_single_buffer_succeed, setup, teardown),         \
-      cmocka_unit_test_setup_teardown(                                                          \
-          az_ulib_ustream_forward_dispose_compliance_single_instance_succeed, setup, teardown), \
+      az_ulib_ustream_forward_dispose_compliance_single_instance_succeed, setup, teardown),     \
       cmocka_unit_test_setup_teardown(                                                          \
           az_ulib_ustream_forward_get_size_compliance_new_buffer_succeed, setup, teardown),     \
+      cmocka_unit_test_setup_teardown(                                                          \
+          az_ulib_ustream_forward_flush_compliance_single_buffer_succeed, setup, teardown),     \
       cmocka_unit_test_setup_teardown(                                                          \
           az_ulib_ustream_forward_read_compliance_get_from_original_buffer_succeed,             \
           setup,                                                                                \

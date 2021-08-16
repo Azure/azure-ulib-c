@@ -54,7 +54,7 @@ typedef uint32_t az_ulib_version;
 typedef size_t offset_t;
 
 /**
- * @brief       Context that uniquely identifies the callback.
+ * @brief   Context that uniquely identifies the callback.
  *
  * The callback context is the way that the capability's caller associates the call to its answer.
  * It can have any value that is meaningful for the caller.

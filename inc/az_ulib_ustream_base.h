@@ -326,10 +326,11 @@
  *      point. In this case, the consumer can call the API az_ulib_ustream_reset().
  */
 
+#include "az_ulib_base.h"
 #include "az_ulib_config.h"
 #include "az_ulib_pal_os.h"
 #include "az_ulib_result.h"
-#include "az_ulib_base.h"
+
 
 #ifdef __cplusplus
 #include <cstddef>
