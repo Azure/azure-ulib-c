@@ -24,8 +24,8 @@ phases:
       ./../../node_modules/.bin/check_submodules . master
     displayName: 'build'   
 - phase: windowsx86
-  pool:
-    name: 'sdk-c--win-vs2017'
+  queue:
+    name: 'aziotbld-win03'
   steps:
   - script: |
      if exist build_all\windows_c.cmd (
@@ -92,8 +92,8 @@ phases:
     displayName: 'cleanup'
     condition: always() 
 - phase: windowsdynamic
-  pool:
-    name: 'sdk-c--win-vs2017'
+  queue:
+    name: 'aziotbld-win03'
   steps:
   - script: |
      if exist build_all\windows_c_build_as_dynamic.cmd (
@@ -106,7 +106,7 @@ phases:
 - phase: clang
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/ubuntu-clang"
-  pool: 
+  queue:
     name: 'sdk-c--ubuntu-18'
   displayName: 'clang'
   steps:
@@ -124,8 +124,7 @@ phases:
 - phase: debian
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/c-debian"
-  pool: 
-    name: 'sdk-c--ubuntu-18'
+  queue: c-df
   displayName: 'debian'
   steps:
   - script: |
@@ -140,8 +139,8 @@ phases:
     displayName: 'cleanup'
     condition: always()    
 - phase: windowsx64
-  pool:
-    name: 'sdk-c--win-vs2017'
+  queue:
+    name: 'aziotbld-win03'
   displayName: 'windowsx64'
   steps:
   - script: |
