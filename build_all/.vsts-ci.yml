@@ -25,7 +25,7 @@ phases:
     displayName: 'build'   
 - phase: windowsx86
   queue:
-    name: 'aziotbld-win03'
+    name: 'vs2017-win2016'
   steps:
   - script: |
      if exist build_all\windows_c.cmd (
