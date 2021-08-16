@@ -29,7 +29,6 @@ jobs:
   steps:
   - script: |
      if exist build_all\windows_c.cmd (
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
       call build_all\windows_c.cmd)
     displayName: 'build'
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
@@ -93,11 +92,10 @@ jobs:
     condition: always() 
 - job: windowsdynamic
   pool:
-    name: 'aziotbld-win03'
+    vmImage: 'vs2017-win2016'
   steps:
   - script: |
      if exist build_all\windows_c_build_as_dynamic.cmd (
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
       call build_all\windows_c_build_as_dynamic.cmd)
     displayName: 'build'
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
@@ -139,12 +137,11 @@ jobs:
     condition: always()    
 - job: windowsx64
   pool:
-    name: 'aziotbld-win03'
+    vmImage: 'vs2017-win2016'
   displayName: 'windowsx64'
   steps:
   - script: |
      if exist build_all\windows_c.cmd (
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
       call build_all\windows_c.cmd --platform x64)
     displayName: 'build'
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
