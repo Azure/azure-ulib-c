@@ -31,9 +31,6 @@ jobs:
      if exist build_all\windows_c.cmd (
       call build_all\windows_c.cmd)
     displayName: 'build'
-  - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
-    displayName: 'cleanup'
-    condition: always()
 - job: raspberrypi
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/raspberrypi-c"
@@ -97,10 +94,7 @@ jobs:
   - script: |
      if exist build_all\windows_c_build_as_dynamic.cmd (
       call build_all\windows_c_build_as_dynamic.cmd)
-    displayName: 'build'
-  - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
-    displayName: 'cleanup'
-    condition: always()      
+    displayName: 'build'    
 - job: clang
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/ubuntu-clang"
@@ -144,6 +138,3 @@ jobs:
      if exist build_all\windows_c.cmd (
       call build_all\windows_c.cmd --platform x64)
     displayName: 'build'
-  - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
-    displayName: 'cleanup'
-    condition: always()    
