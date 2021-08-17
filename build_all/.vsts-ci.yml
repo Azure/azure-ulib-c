@@ -146,4 +146,4 @@ jobs:
     displayName: 'build'
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
     displayName: 'cleanup'
-    condition: always()    
+    condition: always()
