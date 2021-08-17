@@ -4,9 +4,9 @@ variables:
 resources:
 - repo: self
   clean: true
-phases:
-- phase: checksubmodule  
-  queue:
+jobs:
+- job: checksubmodule  
+  pool:
     name: Hosted Ubuntu 1604
   steps:
   - script: |
@@ -23,22 +23,21 @@ phases:
       npm install check_submodules
       ./../../node_modules/.bin/check_submodules . master
     displayName: 'build'   
-- phase: windowsx86
-  queue:
-    name: 'aziotbld-win03'
+- job: windowsx86
+  pool: 
+    vmImage: 'vs2017-win2016'
   steps:
   - script: |
      if exist build_all\windows_c.cmd (
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
       call build_all\windows_c.cmd)
     displayName: 'build'
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
     displayName: 'cleanup'
     condition: always()
-- phase: raspberrypi
+- job: raspberrypi
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/raspberrypi-c"
-  queue: Hosted Ubuntu 1604
+  pool: Hosted Ubuntu 1604
   displayName: raspberrypi
   steps:
   - script: |
@@ -49,10 +48,10 @@ phases:
     displayName: 'build'  
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
-- phase: ubuntu
+- job: ubuntu
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/linux-c-ubuntu:cmake3.19"
-  queue: Hosted Ubuntu 1604
+  pool: Hosted Ubuntu 1604
   displayName: 'ubuntu'
   steps:
   - script: |
@@ -65,10 +64,10 @@ phases:
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
     condition: always()
-- phase: linuxoptions
+- job: linuxoptions
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/vsts-linux-c-ubuntu"
-  queue: Hosted Ubuntu 1604
+  pool: Hosted Ubuntu 1604
   displayName: 'linux-options'
   steps:
   - script: | 
@@ -81,8 +80,8 @@ phases:
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
     condition: always()    
-- phase: OSX
-  queue:
+- job: OSX
+  pool:
     name: Hosted macOS
   steps:
   - script: |
@@ -91,22 +90,21 @@ phases:
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
     condition: always() 
-- phase: windowsdynamic
-  queue:
-    name: 'aziotbld-win03'
+- job: windowsdynamic
+  pool:
+    vmImage: 'vs2017-win2016'
   steps:
   - script: |
      if exist build_all\windows_c_build_as_dynamic.cmd (
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
       call build_all\windows_c_build_as_dynamic.cmd)
     displayName: 'build'
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
     displayName: 'cleanup'
     condition: always()      
-- phase: clang
+- job: clang
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/ubuntu-clang"
-  queue: aziotbld-lin01
+  pool: Hosted Ubuntu 1604
   displayName: 'clang'
   steps:
   - script: |
@@ -120,10 +118,10 @@ phases:
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
     condition: always()    
-- phase: debian
+- job: debian
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/c-debian"
-  queue: c-df
+  pool: Hosted Ubuntu 1604
   displayName: 'debian'
   steps:
   - script: |
@@ -137,16 +135,15 @@ phases:
   - script: sudo rm -rf $(Agent.BuildDirectory)/*
     displayName: 'cleanup'
     condition: always()    
-- phase: windowsx64
-  queue:
-    name: 'aziotbld-win03'
+- job: windowsx64
+  pool:
+    vmImage: 'vs2017-win2016'
   displayName: 'windowsx64'
   steps:
   - script: |
      if exist build_all\windows_c.cmd (
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
       call build_all\windows_c.cmd --platform x64)
     displayName: 'build'
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
     displayName: 'cleanup'
-    condition: always()    
+    condition: always()
