@@ -9,8 +9,9 @@
 
 #include "az_ulib_port.h"
 #include "az_ulib_result.h"
-#include "azure/core/az_span.h"
 #include "az_ulib_ustream_forward.h"
+#include "azure/core/az_span.h"
+
 
 #include <azure/core/internal/az_precondition_internal.h>
 
@@ -28,30 +29,28 @@
 #else
 #define IGNORE_POINTER_TYPE_QUALIFICATION __pragma(warning(push));
 #define IGNORE_MEMCPY_TO_NULL \
-  __pragma(warning(push));  \
-  __pragma(warning(suppress: 6387));
+  __pragma(warning(push));    \
+  __pragma(warning(suppress : 6387));
 #define RESUME_WARNINGS __pragma(warning(pop));
 #endif // __clang__
 
 static az_result concrete_flush(
     az_ulib_ustream_forward* ustream_forward,
-    az_ulib_flush_callback flush_callback, 
+    az_ulib_flush_callback flush_callback,
     az_ulib_callback_context flush_callback_context);
 static az_result concrete_read(
     az_ulib_ustream_forward* ustream_forward,
     uint8_t* const buffer,
     size_t buffer_length,
     size_t* const size);
-static size_t concrete_get_size(
-    az_ulib_ustream_forward* ustream_forward);
-static az_result concrete_dispose(
-    az_ulib_ustream_forward* ustream_forward);
+static size_t concrete_get_size(az_ulib_ustream_forward* ustream_forward);
+static az_result concrete_dispose(az_ulib_ustream_forward* ustream_forward);
 static const az_ulib_ustream_forward_interface api
-    = { concrete_flush, concrete_read,  concrete_get_size, concrete_dispose };
+    = { concrete_flush, concrete_read, concrete_get_size, concrete_dispose };
 
 static az_result concrete_flush(
     az_ulib_ustream_forward* ustream_forward,
-    az_ulib_flush_callback flush_callback, 
+    az_ulib_flush_callback flush_callback,
     az_ulib_callback_context flush_callback_context)
 {
   // precondition checks
@@ -63,8 +62,8 @@ static az_result concrete_flush(
   size_t buffer_size = concrete_get_size(ustream_forward);
 
   // point to data
-  const uint8_t* buffer = (const uint8_t*)ustream_forward->_internal.ptr + \
-                          ustream_forward->_internal.inner_current_position;
+  const uint8_t* buffer = (const uint8_t*)ustream_forward->_internal.ptr
+      + ustream_forward->_internal.inner_current_position;
 
   // invoke callback
   (*flush_callback)(buffer, buffer_size, flush_callback_context);
@@ -92,18 +91,22 @@ static az_result concrete_read(
   }
   else
   {
-    size_t remain_size
-        = ustream_forward->_internal.length - (size_t)ustream_forward->_internal.inner_current_position;
+    size_t remain_size = ustream_forward->_internal.length
+        - (size_t)ustream_forward->_internal.inner_current_position;
     *size = (buffer_length < remain_size) ? buffer_length : remain_size;
 
     /**
-     * MSVC thinks `buffer` could be '0'. Because we make sure `buffer` is not `NULL` with a 
-     * precondition, this is not a concern. We thus ignore this compiler error.
+     * Since pre-conditions can be disabled by the user, compilers throw a warning for a potential
+     * memcpy to `NULL`. We disable this warning knowing that it is the user's responsibility to
+     * assure `buffer` is a valid pointer when pre-conditions are disabled for release mode.
+     * See \ref Pre-conditions "https://azure.github.io/azure-sdk/clang_design.html#pre-conditions"
+     * for more details.
      */
     IGNORE_MEMCPY_TO_NULL
     memcpy(
         buffer,
-        (const uint8_t*)ustream_forward->_internal.ptr + ustream_forward->_internal.inner_current_position,
+        (const uint8_t*)ustream_forward->_internal.ptr
+            + ustream_forward->_internal.inner_current_position,
         *size);
     RESUME_WARNINGS
     ustream_forward->_internal.inner_current_position += *size;
