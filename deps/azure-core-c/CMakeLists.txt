@@ -107,7 +107,7 @@ target_include_directories (az_core_pic
 
 target_compile_options(az_core_pic
     PRIVATE
-        -fpie -fno-plt -fno-jump-tables ${PIC_FLAGS})
+        -fpie -fno-jump-tables ${PIC_FLAGS})
 
 # include test internal headers
 target_include_directories(az_core_pic
