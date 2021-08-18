@@ -12,6 +12,7 @@
 #define AZ_ULIB_BASE_H
 
 #ifndef __cplusplus
+#include <stddef.h>
 #include <stdbool.h>
 #include <stdint.h>
 #else
@@ -46,6 +47,27 @@ typedef uint32_t az_ulib_version;
  * @brief   Maximum number of characters in a stringified version.
  */
 #define AZ_ULIB_STRINGIFIED_VERSION_SIZE 12
+
+/**
+ * @brief   Define offset_t with the same size as size_t.
+ */
+typedef size_t offset_t;
+
+/**
+ * @brief   Context that uniquely identifies the callback.
+ *
+ * The callback context is the way that the capability's caller associates the call to its answer.
+ * It can have any value that is meaningful for the caller.
+ */
+typedef void* az_ulib_callback_context;
+
+/**
+ * @brief   Signature of the function to release memory passed to the ustream
+ *
+ * @param[in]   release_pointer       void pointer to memory that needs to be free'd
+ *
+ */
+typedef void (*az_ulib_release_callback)(void* release_pointer);
 
 #include "azure/core/_az_cfg_suffix.h"
 

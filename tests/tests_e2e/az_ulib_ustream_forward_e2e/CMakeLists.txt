@@ -4,17 +4,14 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-project(az_ulib_ustream_ut)
+project(az_ulib_ustream_forward_e2e)
 
 include(AddCMockaTest)
 
-add_cmocka_test(az_ulib_ustream_ut SOURCES
+add_cmocka_test(az_ulib_ustream_forward_e2e SOURCES
                 main.c
-                az_ulib_ustream_ut.c
-                az_ulib_ustream_aux_ut.c
-                ${TEST_DIRECTORY}/src/az_ulib_test_helpers.c
-                ${TEST_DIRECTORY}/src/az_ulib_ustream_mock_buffer.c
-                ${TEST_DIRECTORY}/src/${ULIB_PAL_OS_DIRECTORY}/az_ulib_test_thread.c
+                az_ulib_ustream_forward_e2e.c
+                ${TEST_DIRECTORY}/src/az_ulib_ustream_forward_mock_buffer.c
                 COMPILE_OPTIONS ${DEFAULT_C_COMPILE_FLAGS} ${NO_CLOBBERED_WARNING}
                 LINK_LIBRARIES ${CMOCKA_LIBRARIES} azure_ulib_c ${PAL} az::cmocka
                 LINK_OPTIONS ${WRAP_FUNCTIONS}  
@@ -22,4 +19,4 @@ add_cmocka_test(az_ulib_ustream_ut SOURCES
                 INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/deps/cmocka/include ${CMAKE_SOURCE_DIR}/inc/ ${CMAKE_SOURCE_DIR}/tests/inc/
                 )
 
-add_cmocka_test_environment(az_ulib_ustream_ut)
+add_cmocka_test_environment(az_ulib_ustream_forward_e2e)

@@ -102,14 +102,6 @@ typedef az_result (
     *az_ulib_capability_span_wrapper)(az_span model_in_span, az_span* model_out_span);
 
 /**
- * @brief       Context that uniquely identifies the callback.
- *
- * The callback context is the way that the capability's caller associates the call to its answer.
- * It can have any value that is meaningful for the caller.
- */
-typedef void* az_ulib_callback_context;
-
-/**
  * @brief       Telemetry callback signature.
  *
  * This type defines the signature of a callback for telemetry notification. This is the callback

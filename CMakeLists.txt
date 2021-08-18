@@ -98,6 +98,7 @@ ulib_add_standards()
 add_library(azure_ulib_c
     ${CMAKE_CURRENT_LIST_DIR}/src/az_ulib_ustream/az_ulib_ustream_aux.c
     ${CMAKE_CURRENT_LIST_DIR}/src/az_ulib_ustream/az_ulib_ustream.c
+    ${CMAKE_CURRENT_LIST_DIR}/src/az_ulib_ustream_forward/az_ulib_ustream_forward.c
     ${CMAKE_CURRENT_LIST_DIR}/src/az_ulib_ipc/az_ulib_ipc.c
     ${CMAKE_CURRENT_LIST_DIR}/src/az_ulib_ipc/az_ulib_ipc_query_interface.c
     ${CMAKE_CURRENT_LIST_DIR}/src/az_ulib_ipc/az_ulib_ipc_interface_manager_interface.c
