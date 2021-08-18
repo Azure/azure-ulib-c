@@ -6,7 +6,7 @@
 #define AZ_ULIB_USTREAM_FORWARD_MOCK_BUFFER_H
 
 #include "az_ulib_ustream_forward.h"
-#include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C"

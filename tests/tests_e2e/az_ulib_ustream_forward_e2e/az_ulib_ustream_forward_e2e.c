@@ -4,7 +4,6 @@
 
 #include <setjmp.h>
 #include <stdarg.h>
-#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,22 +25,21 @@ static const uint8_t* const USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT
 
 static void ustream_forward_factory(az_ulib_ustream_forward** ustream_forward)
 {
-  *ustream_forward
-      = (az_ulib_ustream_forward*)malloc(sizeof(az_ulib_ustream_forward));
-  uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t) * USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+  *ustream_forward = (az_ulib_ustream_forward*)malloc(sizeof(az_ulib_ustream_forward));
+  uint8_t* buf
+      = (uint8_t*)malloc(sizeof(uint8_t) * USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
   assert_non_null(buf);
   (void)memcpy(
-      buf, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+      buf,
+      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT,
+      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
   assert_int_equal(
       az_ulib_ustream_forward_init(
-          *ustream_forward,
-          free,
-          buf,
-          USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
-          free),
+          *ustream_forward, free, buf, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free),
       AZ_OK);
 }
-#define USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(ustream_forward) ustream_forward_factory(ustream_forward)
+#define USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(ustream_forward) \
+  ustream_forward_factory(ustream_forward)
 
 #define TEST_CONST_BUFFER_LENGTH (USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH + 2)
 #define TEST_CONST_MAX_BUFFER_SIZE (TEST_CONST_BUFFER_LENGTH - 1)

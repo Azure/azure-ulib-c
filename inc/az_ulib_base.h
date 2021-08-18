@@ -16,7 +16,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #else
-#include <cstdint>
+#include <cstdint>F
 #endif
 
 #include "azure/core/_az_cfg_prefix.h"

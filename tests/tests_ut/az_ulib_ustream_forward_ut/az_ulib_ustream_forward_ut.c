@@ -30,22 +30,21 @@ static const uint8_t* const USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT
 static az_ulib_ustream_forward test_ustream_forward;
 static void ustream_forward_factory(az_ulib_ustream_forward** ustream_forward)
 {
-  *ustream_forward
-      = (az_ulib_ustream_forward*)malloc(sizeof(az_ulib_ustream_forward));
-  uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t) * USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+  *ustream_forward = (az_ulib_ustream_forward*)malloc(sizeof(az_ulib_ustream_forward));
+  uint8_t* buf
+      = (uint8_t*)malloc(sizeof(uint8_t) * USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
   assert_non_null(buf);
   (void)memcpy(
-      buf, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+      buf,
+      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT,
+      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
   assert_int_equal(
       az_ulib_ustream_forward_init(
-          *ustream_forward,
-          free,
-          buf,
-          USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
-          free),
+          *ustream_forward, free, buf, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free),
       AZ_OK);
 }
-#define USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(ustream_forward) ustream_forward_factory(ustream_forward)
+#define USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(ustream_forward) \
+  ustream_forward_factory(ustream_forward)
 
 #define TEST_CONST_BUFFER_LENGTH (USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH + 2)
 #define TEST_CONST_MAX_BUFFER_SIZE (TEST_CONST_BUFFER_LENGTH - 1)
@@ -86,16 +85,13 @@ static void az_ulib_ustream_forward_init_null_buffer_failed(void** state)
   /// act
   /// assert
   AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ustream_forward_init(
-      &ustream_forward,
-      NULL,
-      NULL,
-      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
-      NULL));
+      &ustream_forward, NULL, NULL, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH, NULL));
 
   /// cleanup
 }
 
-/* az_ulib_ustream_forward_init shall fail with precondition if the provided buffer length is zero. */
+/* az_ulib_ustream_forward_init shall fail with precondition if the provided buffer length is zero.
+ */
 static void az_ulib_ustream_forward_init_zero_length_failed(void** state)
 {
   /// arrange
@@ -105,16 +101,12 @@ static void az_ulib_ustream_forward_init_zero_length_failed(void** state)
   /// act
   /// assert
   AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ustream_forward_init(
-      &ustream_forward, 
-      NULL, 
-      USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 
-      0, 
-      NULL));
+      &ustream_forward, NULL, USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT, 0, NULL));
 
   /// cleanup
 }
 
-/* az_ulib_ustream_forward_init shall fail with precondition if the provided ustream_forward 
+/* az_ulib_ustream_forward_init shall fail with precondition if the provided ustream_forward
     is NULL. */
 static void az_ulib_ustream_forward_init_NULL_ustream_forward_instance_failed(void** state)
 {
@@ -134,7 +126,8 @@ static void az_ulib_ustream_forward_init_NULL_ustream_forward_instance_failed(vo
 }
 #endif // AZ_NO_PRECONDITION_CHECKING
 
-/* az_ulib_ustream_forward_init shall create an instance of the ustream_forward and initialize the instance. */
+/* az_ulib_ustream_forward_init shall create an instance of the ustream_forward and initialize the
+ * instance. */
 static void az_ulib_ustream_forward_init_const_succeed(void** state)
 {
   /// arrange
@@ -157,24 +150,24 @@ static void az_ulib_ustream_forward_init_const_succeed(void** state)
   (void)result;
 }
 
-/* az_ulib_ustream_forward_init shall create an instance of the ustream_forward and initialize the instance. */
+/* az_ulib_ustream_forward_init shall create an instance of the ustream_forward and initialize the
+ * instance. */
 static void az_ulib_ustream_forward_init_succeed(void** state)
 {
   /// arrange
   (void)state;
-  uint8_t* buf = (uint8_t*)malloc(sizeof(uint8_t) * USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+  uint8_t* buf
+      = (uint8_t*)malloc(sizeof(uint8_t) * USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
   assert_non_null(buf);
   (void)memcpy(
-      buf, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
+      buf,
+      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT,
+      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH);
   az_ulib_ustream_forward ustream_forward;
 
   /// act
   az_result result = az_ulib_ustream_forward_init(
-      &ustream_forward,
-      NULL,
-      buf,
-      USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH,
-      free);
+      &ustream_forward, NULL, buf, USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH, free);
 
   /// assert
   assert_int_equal(result, AZ_OK);

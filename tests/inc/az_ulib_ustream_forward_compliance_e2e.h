@@ -92,8 +92,11 @@ static void az_ulib_ustream_forward_e2e_compliance_read_flush_succeed(void** sta
 
   assert_int_equal(result_flush, AZ_OK);
   assert_int_equal(test_consumer_context.offset, USTREAM_FORWARD_COMPLIANCE_LENGTH_2);
-  assert_memory_equal((const uint8_t* const)(
-          USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_FORWARD_COMPLIANCE_LENGTH_1), test_consumer_context.buffer, size_result);
+  assert_memory_equal(
+      (const uint8_t* const)(
+          USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_FORWARD_COMPLIANCE_LENGTH_1),
+      test_consumer_context.buffer,
+      size_result);
 
   /// cleanup
   az_result result = az_ulib_ustream_forward_dispose(ustream_forward);

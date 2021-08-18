@@ -42,7 +42,7 @@ static uint8_t* flush_callback_buffer_check[USTREAM_FORWARD_COMPLIANCE_EXPECTED_
 static size_t flush_callback_size_check = 0;
 static az_ulib_callback_context flush_callback_context_check;
 
-// mock calback function
+// mock callback function
 static void mock_flush_callback(
     const uint8_t* const buffer,
     size_t size,
@@ -112,6 +112,7 @@ static void az_ulib_ustream_forward_get_size_compliance_null_buffer_failed(void*
   (void)result;
 }
 
+/* If the provided handle is not properly initialized, the get_size shall fail with precondition. */
 static void az_ulib_ustream_forward_get_size_compliance_buffer_is_not_type_of_buffer_failed(
     void** state)
 {

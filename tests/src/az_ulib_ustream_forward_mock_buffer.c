@@ -2,9 +2,10 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#include "az_ulib_ustream_forward_mock_buffer.h"
+#include "az_ulib_result.h"
 #include "az_ulib_test_thread.h"
 #include "az_ulib_ustream_base.h"
+#include "az_ulib_ustream_forward_mock_buffer.h"
 #include <stdbool.h>
 
 static az_result _concrete_flush_result = AZ_OK;
@@ -28,8 +29,8 @@ void set_concurrency_ustream_forward(void) { concurrency_ustream_forward = true;
 void set_delay_return_value(uint32_t delay) { delay_return_value = delay; }
 
 static az_result concrete_flush(
-    az_ulib_ustream_forward* ustream_forward, 
-    az_ulib_flush_callback flush_callback, 
+    az_ulib_ustream_forward* ustream_forward,
+    az_ulib_flush_callback flush_callback,
     az_ulib_callback_context flush_callback_context)
 {
   (void)ustream_forward;
@@ -78,14 +79,13 @@ static az_result concrete_dispose(az_ulib_ustream_forward* ustream_forward)
 }
 
 static const az_ulib_ustream_forward_interface api
-    = { concrete_flush, concrete_read,  
-        concrete_get_size, concrete_dispose };
+    = { concrete_flush, concrete_read, concrete_get_size, concrete_dispose };
 
 static az_ulib_ustream_forward USTREAM_FORWARD_COMPLIANCE_MOCK_BUFFER
     = { ._internal.api = (const az_ulib_ustream_forward_interface*)&api,
         ._internal.ptr = NULL,
         ._internal.data_release = NULL,
-        ._internal.ustream_forward_release = NULL, 
+        ._internal.ustream_forward_release = NULL,
         ._internal.inner_current_position = 0,
         ._internal.length = 10 };
 
@@ -97,7 +97,6 @@ az_ulib_ustream_forward* ustream_forward_mock_create(void)
 
   return &USTREAM_FORWARD_COMPLIANCE_MOCK_BUFFER;
 }
-
 
 void set_flush_result(az_result result) { _concrete_flush_result = result; }
 

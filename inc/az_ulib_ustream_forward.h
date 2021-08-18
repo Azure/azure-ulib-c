@@ -15,7 +15,6 @@
 #include "az_ulib_result.h"
 #include "azure/az_core.h"
 
-
 #ifdef __cplusplus
 #include <cstddef>
 #include <cstdint>
@@ -38,10 +37,11 @@ typedef struct az_ulib_ustream_forward_tag az_ulib_ustream_forward;
  *
  * @param[in]   buffer                  The `const uint8_t* const` buffer to be handled by the
  *                                      implementation of this callback.
- * @param[in]   size                    The the number of `uint8_t` bytes in the
+ * @param[in]   size                    The number of `uint8_t` bytes in the
  *                                      `const uint8_t* const` buffer.
  * @param[in]   flush_callback_context  The #az_ulib_callback_context contract held between the
- * owner of this callback and the caller of `az_ulib_ustream_forward_flush`.
+ *                                      owner of this callback and the caller of
+ *                                      `az_ulib_ustream_forward_flush`.
  */
 typedef void (*az_ulib_flush_callback)(
     const uint8_t* const buffer,
