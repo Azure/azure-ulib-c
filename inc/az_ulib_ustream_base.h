@@ -331,7 +331,6 @@
 #include "az_ulib_pal_os.h"
 #include "az_ulib_result.h"
 
-
 #ifdef __cplusplus
 #include <cstddef>
 #include <cstdint>

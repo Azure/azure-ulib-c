@@ -5,11 +5,17 @@
 #ifndef AZ_ULIB_USTREAM_FORWARD_COMPLIANCE_E2E_H
 #define AZ_ULIB_USTREAM_FORWARD_COMPLIANCE_E2E_H
 
-#include <stdio.h>
-
 #include "az_ulib_ustream_mock_buffer.h"
 
 #include "cmocka.h"
+
+#ifdef __cplusplus
+#include <cstdio>
+extern "C"
+{
+#else
+#include <stdio.h>
+#endif /* __cplusplus */
 
 /* check for test artifacts. */
 #ifndef USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH
@@ -105,5 +111,9 @@ static void az_ulib_ustream_forward_e2e_compliance_read_flush_succeed(void** sta
 
 #define AZ_ULIB_USTREAM_FORWARD_COMPLIANCE_E2E_LIST \
   cmocka_unit_test(az_ulib_ustream_forward_e2e_compliance_read_flush_succeed)
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* AZ_ULIB_USTREAM_FORWARD_COMPLIANCE_E2E_H */

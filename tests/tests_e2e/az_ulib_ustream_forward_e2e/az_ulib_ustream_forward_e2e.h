@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
+
 #ifndef AZ_ULIB_USTREAM_FORWARD_E2E_H
 #define AZ_ULIB_USTREAM_FORWARD_E2E_H
 

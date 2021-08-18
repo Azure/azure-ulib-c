@@ -6,11 +6,13 @@
 #define AZ_ULIB_USTREAM_MOCK_BUFFER_H
 
 #include "az_ulib_ustream_base.h"
-#include <stdint.h>
 
 #ifdef __cplusplus
+#include <cstdint>
 extern "C"
 {
+#else
+#include <stdint.h>
 #endif /* __cplusplus */
 
   az_ulib_ustream* ustream_mock_create(void);
