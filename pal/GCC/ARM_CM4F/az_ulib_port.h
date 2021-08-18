@@ -87,6 +87,18 @@ extern "C"
     return result;
   }
 
+  __attribute__((always_inline)) static inline void AZ_ULIB_PORT_GET_DATA_CONTEXT(
+      volatile void** data_address)
+  {
+    __asm inline("       str     r9, [%0]                " : "=&r"(data_address) : : "memory");
+  }
+
+  __attribute__((always_inline)) static inline void AZ_ULIB_PORT_SET_DATA_CONTEXT(
+      volatile void* data_address)
+  {
+    __asm inline("       ldr     r9, [%0]                " : : "r"(&data_address) : "r9");
+  }
+
 #define AZ_ULIB_PORT_THROW_HARD_FAULT (*(char*)NULL = 0)
 
 #ifdef __cplusplus

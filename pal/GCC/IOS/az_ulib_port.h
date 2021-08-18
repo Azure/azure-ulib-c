@@ -87,6 +87,9 @@ static inline long AZ_ULIB_PORT_ATOMIC_DEC_W(volatile long* addr)
 
 #define AZ_ULIB_PORT_THROW_HARD_FAULT (*(char*)NULL = 0)
 
+#define AZ_ULIB_PORT_GET_DATA_CONTEXT(data_address)
+#define AZ_ULIB_PORT_SET_DATA_CONTEXT(data_address)
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
