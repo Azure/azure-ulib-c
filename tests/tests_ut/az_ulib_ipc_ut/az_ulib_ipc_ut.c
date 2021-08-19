@@ -2889,48 +2889,34 @@ typedef struct
 } method_name_ut;
 
 static const method_name_ut method_name_ut_list[]
-    = { { .full_name = "deviceA.packageA.1.interfaceA.2.capabilityA",
+    = { { .full_name = "deviceA@packageA.1.interfaceA.2!capabilityA",
           .device_name = "deviceA",
           .package_name = "packageA",
           .package_version = 1,
           .interface_name = "interfaceA",
           .interface_version = 2,
           .capability_name = "capabilityA" },
-        { .full_name = "deviceB.packageB.3.interfaceB.4",
+        { .full_name = "deviceB@packageB.3.interfaceB.4",
           .device_name = "deviceB",
           .package_name = "packageB",
           .package_version = 3,
           .interface_name = "interfaceB",
           .interface_version = 4,
           .capability_name = NULL },
-        { .full_name = "deviceC.packageC.interfaceC.5.capabilityC",
+        { .full_name = "deviceC@packageC.*.interfaceC.5!capabilityC",
           .device_name = "deviceC",
           .package_name = "packageC",
           .package_version = AZ_ULIB_VERSION_DEFAULT,
           .interface_name = "interfaceC",
           .interface_version = 5,
           .capability_name = "capabilityC" },
-        { .full_name = "packageD.6.interfaceD.7.capabilityD",
+        { .full_name = "packageD.6.interfaceD.7!capabilityD",
           .device_name = NULL,
           .package_name = "packageD",
           .package_version = 6,
           .interface_name = "interfaceD",
           .interface_version = 7,
-          .capability_name = "capabilityD" },
-        { .full_name = "interfaceE.8.capabilityE",
-          .device_name = NULL,
-          .package_name = NULL,
-          .package_version = AZ_ULIB_VERSION_DEFAULT,
-          .interface_name = "interfaceE",
-          .interface_version = 8,
-          .capability_name = "capabilityE" },
-        { .full_name = "interfaceF.9",
-          .device_name = NULL,
-          .package_name = NULL,
-          .package_version = AZ_ULIB_VERSION_DEFAULT,
-          .interface_name = "interfaceF",
-          .interface_version = 9,
-          .capability_name = NULL } };
+          .capability_name = "capabilityD" } };
 static void az_ulib_ipc_split_method_name_succeed(void** state)
 {
   /// arrange
@@ -3010,10 +2996,16 @@ static const method_bad_name_ut method_bad_name_ut_list[]
     = { { .full_name = "interface" },
         { .full_name = "1.capability" },
         { .full_name = ".2.capability" },
-        { .full_name = "interface.capability" },
-        { .full_name = "interface..capability" },
-        { .full_name = "2.interface.1.capability" },
-        { .full_name = "2.interface.1" } };
+        { .full_name = "interface!capability" },
+        { .full_name = "interface.!capability" },
+        { .full_name = "2.interface.1!capability" },
+        { .full_name = "2.interface.1" },
+        { .full_name = "interface.8!capability" },
+        { .full_name = "package.interface.8!capability" },
+        { .full_name = "package..interface.8!capability" },
+        { .full_name = "package.*1.interface.8!capability" },
+        { .full_name = "package.1.interface.*!capability" },
+        { .full_name = "interface.9" } };
 static void az_ulib_ipc_split_bad_method_failed(void** state)
 {
   /// arrange
@@ -3073,10 +3065,10 @@ static void az_ulib_ipc_query_succeed(void** state)
   assert_true(az_span_is_content_equal(
       query_result,
       AZ_SPAN_FROM_STR(
-          "\"+ipc.1.query.1\",\"+ipc.1.interface_manager.1\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1."
-          "123\",\"+MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"+"
-          "MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"+MY_"
-          "PACKAGE_A.1.MY_INTERFACE_3.123\",\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
+          "\"*ipc.1.query.1\",\"*ipc.1.interface_manager.1\",\"*MY_PACKAGE_A.1.MY_INTERFACE_1."
+          "123\",\"*MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"*MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"*"
+          "MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"*MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"*MY_"
+          "PACKAGE_A.1.MY_INTERFACE_3.123\",\" MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000a00FF);
   assert_int_equal(g_lock_diff, 0);
   assert_int_equal(g_count_acquire, 1);
@@ -3102,7 +3094,7 @@ static void az_ulib_ipc_query_small_buffer_succeed(void** state)
   assert_int_equal(result, AZ_OK);
   assert_true(az_span_is_content_equal(
       query_result,
-      AZ_SPAN_FROM_STR("\"+ipc.1.query.1\",\"+ipc.1.interface_manager.1\",\"+MY_PACKAGE_A.1.MY_"
+      AZ_SPAN_FROM_STR("\"*ipc.1.query.1\",\"*ipc.1.interface_manager.1\",\"*MY_PACKAGE_A.1.MY_"
                        "INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000300FF);
   assert_int_equal(g_lock_diff, 0);
@@ -3209,21 +3201,21 @@ static void az_ulib_ipc_query_next_succeed(void** state)
   assert_true(az_span_is_content_equal(
       query_result,
       AZ_SPAN_FROM_STR(
-          "\"+MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\"")));
+          "\"*MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"*MY_PACKAGE_C.1.MY_INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000500FF);
   query_result = AZ_SPAN_FROM_BUFFER(buf);
   assert_int_equal(az_ulib_ipc_query_next(&token, &query_result), AZ_OK);
   assert_true(az_span_is_content_equal(
       query_result,
       AZ_SPAN_FROM_STR(
-          "\"+MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\"")));
+          "\"*MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"*MY_PACKAGE_A.1.MY_INTERFACE_2.123\"")));
   assert_int_equal(token, 0x000700FF);
   query_result = AZ_SPAN_FROM_BUFFER(buf);
   assert_int_equal(az_ulib_ipc_query_next(&token, &query_result), AZ_OK);
   assert_true(az_span_is_content_equal(
       query_result,
       AZ_SPAN_FROM_STR(
-          "\"+MY_PACKAGE_A.1.MY_INTERFACE_3.123\",\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
+          "\"*MY_PACKAGE_A.1.MY_INTERFACE_3.123\",\" MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000a00FF);
   query_result = AZ_SPAN_FROM_BUFFER(buf);
   assert_int_equal(az_ulib_ipc_query_next(&token, &query_result), AZ_ULIB_EOF);

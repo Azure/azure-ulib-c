@@ -19,8 +19,6 @@
 
 #include <azure/core/internal/az_precondition_internal.h>
 
-#define MAX_FIELDS_IN_METHOD_FULL_NAME 5
-
 typedef union
 {
   struct
@@ -734,101 +732,85 @@ AZ_NODISCARD az_result az_ulib_ipc_split_method_name(
   AZ_ULIB_TRY
   {
     uint32_t package_version_temp;
-    int32_t interface_name_field;
     uint32_t interface_version_temp;
-    bool has_capability_name;
-    int32_t count_field = 0;
-    az_span fields[MAX_FIELDS_IN_METHOD_FULL_NAME];
+    az_span device_name_temp;
+    az_span package_name_temp;
+    az_span interface_name_temp;
+    az_span capability_name_temp;
     int32_t split_pos;
 
-    do // Split the entire method full name using `.` as marker.
+    // Extract the device name, if provided.
+    split_pos = az_span_find(full_name, AZ_SPAN_FROM_STR("@"));
+    if (split_pos > 0)
     {
-      split_pos = az_span_find(full_name, AZ_SPAN_FROM_STR("."));
-      if (split_pos > 0)
-      {
-        fields[count_field] = az_span_slice(full_name, 0, split_pos);
-        full_name = az_span_slice_to_end(full_name, split_pos + 1);
-        count_field++;
-      }
-    } while ((split_pos > 0) && (count_field < MAX_FIELDS_IN_METHOD_FULL_NAME));
-    count_field--;
-
-    // Last field of full_name is the capability_name or interface_version and shall not be
-    // AZ_SPAN_EMPTY.
-    AZ_ULIB_THROW_IF_ERROR((az_span_size(full_name) > 0), AZ_ERROR_UNEXPECTED_CHAR);
-
-    // interface_name shall not be AZ_SPAN_EMPTY.
-    AZ_ULIB_THROW_IF_ERROR((count_field >= 0), AZ_ERROR_UNEXPECTED_CHAR);
-
-    // Does it started with a number, so it is the interface version.
-    if (az_span_atou32(full_name, &interface_version_temp) == AZ_OK)
-    {
-      // Set capability as empty.
-      has_capability_name = false;
+      device_name_temp = az_span_slice(full_name, 0, split_pos);
+      full_name = az_span_slice_to_end(full_name, split_pos + 1);
     }
-    // It is not a number, so it shall be the capability name.
     else
     {
-      // Get the capability name.
-      has_capability_name = true;
-      // Get the interface version.
-      AZ_ULIB_THROW_IF_AZ_ERROR(az_span_atou32(fields[count_field], &interface_version_temp));
-      count_field--;
+      device_name_temp = AZ_SPAN_EMPTY;
     }
 
-    // The interface_name is mandatory.
-    AZ_ULIB_THROW_IF_ERROR((count_field >= 0), AZ_ERROR_UNEXPECTED_CHAR);
-
-    // Get the interface name.
-    interface_name_field = count_field;
-    count_field--;
-
-    if (count_field >= 0) // We do have package name.
+    // Extract the capability name, if provided.
+    split_pos = az_span_find(full_name, AZ_SPAN_FROM_STR("!"));
+    if (split_pos > 0)
     {
-      // If the next field is a number, it is the package version.
-      if (az_span_atou32(fields[count_field], &package_version_temp) == AZ_OK)
-      {
-        count_field--;
-      }
-      else // If the next field is not a number, set package version as any and use it
-           // as the package name.
-      {
-        package_version_temp = AZ_ULIB_VERSION_DEFAULT;
-      }
+      capability_name_temp = az_span_slice_to_end(full_name, split_pos + 1);
+      full_name = az_span_slice(full_name, 0, split_pos);
+    }
+    else
+    {
+      capability_name_temp = AZ_SPAN_EMPTY;
+    }
 
-      // If package_version was provided, package_name shall not be AZ_SPAN_EMPTY.
-      AZ_ULIB_THROW_IF_ERROR((count_field >= 0), AZ_ERROR_UNEXPECTED_CHAR);
+    // Extract the package name
+    split_pos = az_span_find(full_name, AZ_SPAN_FROM_STR("."));
+    AZ_ULIB_THROW_IF_ERROR((split_pos > 0), AZ_ERROR_UNEXPECTED_CHAR);
+    package_name_temp = az_span_slice(full_name, 0, split_pos);
+    full_name = az_span_slice_to_end(full_name, split_pos + 1);
 
-      // Get the package name.
-      *package_name
-          = az_span_create(az_span_ptr(fields[count_field]), az_span_size(fields[count_field]));
-      count_field--;
+    // Extract the package version
+    split_pos = az_span_find(full_name, AZ_SPAN_FROM_STR("."));
+    AZ_ULIB_THROW_IF_ERROR((split_pos > 0), AZ_ERROR_UNEXPECTED_CHAR);
+    if (*az_span_ptr(full_name) == '*')
+    {
+      AZ_ULIB_THROW_IF_ERROR((split_pos == 1), AZ_ERROR_UNEXPECTED_CHAR);
+      package_version_temp = AZ_ULIB_VERSION_DEFAULT;
+    }
+    else
+    {
+      AZ_ULIB_THROW_IF_AZ_ERROR(
+          az_span_atou32(az_span_slice(full_name, 0, split_pos), &package_version_temp));
+    }
+    full_name = az_span_slice_to_end(full_name, split_pos + 1);
 
-      if (count_field >= 0) // We do have device name.
-      {
-        *device_name
-            = az_span_create(az_span_ptr(fields[count_field]), az_span_size(fields[count_field]));
-      }
-      else
-      {
-        *device_name = AZ_SPAN_EMPTY;
-      }
+    // Extract the interface name
+    split_pos = az_span_find(full_name, AZ_SPAN_FROM_STR("."));
+    AZ_ULIB_THROW_IF_ERROR((split_pos > 0), AZ_ERROR_UNEXPECTED_CHAR);
+    interface_name_temp = az_span_slice(full_name, 0, split_pos);
+    full_name = az_span_slice_to_end(full_name, split_pos + 1);
+
+    // Extract the interface version
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_span_atou32(full_name, &interface_version_temp));
+
+    // Transfer the parser data to the output variables.
+    if (az_span_size(device_name_temp) > 0)
+    {
+      *device_name = az_span_create(az_span_ptr(device_name_temp), az_span_size(device_name_temp));
     }
     else
     {
       *device_name = AZ_SPAN_EMPTY;
-      *package_name = AZ_SPAN_EMPTY;
-      package_version_temp = AZ_ULIB_VERSION_DEFAULT;
     }
-
-    // There is no error, so return the parsed names and versions.
+    *package_name = az_span_create(az_span_ptr(package_name_temp), az_span_size(package_name_temp));
     *package_version = package_version_temp;
-    *interface_name = az_span_create(
-        az_span_ptr(fields[interface_name_field]), az_span_size(fields[interface_name_field]));
+    *interface_name
+        = az_span_create(az_span_ptr(interface_name_temp), az_span_size(interface_name_temp));
     *interface_version = interface_version_temp;
-    if (has_capability_name)
+    if (az_span_size(capability_name_temp) > 0)
     {
-      *capability_name = az_span_create(az_span_ptr(full_name), az_span_size(full_name));
+      *capability_name
+          = az_span_create(az_span_ptr(capability_name_temp), az_span_size(capability_name_temp));
     }
     else
     {
@@ -907,12 +889,12 @@ static az_result report_interfaces(uint16_t start, az_span* result, uint16_t* ne
                   _az_ipc_cb->_internal.interface_list[interface_index].flags,
                   AZ_ULIB_IPC_FLAGS_DEFAULT))
           {
-            result_str[pos++] = '+';
+            result_str[pos++] = '*';
           }
           else
           {
 
-            result_str[pos++] = '-';
+            result_str[pos++] = ' ';
           }
           memcpy(
               &(result_str[pos]),

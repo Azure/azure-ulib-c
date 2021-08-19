@@ -458,17 +458,16 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
  * @brief   Split the provided method full name.
  *
  * This function splits the provided method name between device, package, interface and capability
- * using the following rules
+ * using the following positional rules
  *
- * 1. The method full name shall be split by `.`.
- * 2. The names and versions shall be extract from right to left.
- * 3. The expected method full name shall look like:
- *      <device_name>.<package_name>.<package_version>.<interface_name>.<interface_version>.<capability_name>
- * 4. The interface_name and interface_version are mandatory.
- * 5. If device_name, package_name, or capability_name is not provided, this function shall
- *      return #AZ_SPAN_EMPTY.
- * 6. If package_version is not provided, this function shall return #AZ_ULIB_VERSION_DEFAULT.
- * 7. If the package_version is provided, the package_name shall be provided as well.
+ * 1. The expected method full name shall look like:
+ *      <device_name>@<package_name>.<package_version>.<interface_name>.<interface_version>!<capability_name>
+ * 2. The package_name, interface_name and interface_version are mandatory. They shall always
+ *      match the published name and version.
+ * 3. The names are case sensitive.
+ * 4. If device_name or capability_name is not provided, this function shall return #AZ_SPAN_EMPTY.
+ * 5. The package_version can be a number or a wildcard character `*`, this function shall return 
+ *      `package_version` = #AZ_ULIB_VERSION_DEFAULT for a wildcard character.
  *
  * @param[in]   full_name           The `az_span` with the method full name.
  * @param[out]  device_name         The pointer to `az_span` to return the device name.
