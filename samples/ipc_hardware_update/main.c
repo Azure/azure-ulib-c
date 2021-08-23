@@ -5,7 +5,7 @@
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
 #include "contoso_display_20x4_1.h"
-#include "fabrikan_display_48x4_1.h"
+#include "contoso_display_48x4_1.h"
 #include "my_consumer.h"
 #include <inttypes.h>
 #include <stdio.h>
@@ -56,9 +56,9 @@ int main(void)
     my_consumer_do_display(); // It will fail because there is not display interface in IPC.
     (void)printf("\r\n");
 
-    /* Fabrikan publish display interface.
+    /* Contoso publish display interface.
      * After this point anybody can call the display commands through IPC. */
-    fabrikan_display_48x4_1_create();
+    contoso_display_48x4_1_create();
     (void)printf("\r\n");
 
     /* My consumer try to use display to add numbers. */
@@ -69,7 +69,7 @@ int main(void)
 
     /* Unpublish display interface. After this point, any call to display will return
      * AZ_ERROR_ITEM_NOT_FOUND. */
-    fabrikan_display_48x4_1_destroy();
+    contoso_display_48x4_1_destroy();
     (void)printf("\r\n");
 
     /* Contoso publish display interface again.
@@ -78,7 +78,7 @@ int main(void)
     (void)printf("\r\n");
 
     /* My consumer try to use display to add numbers. */
-    my_consumer_do_display(); // It will fail because the handle is still from Fabrikan interface.
+    my_consumer_do_display(); // It will fail because the handle is still from Contoso interface.
     my_consumer_do_display();
     my_consumer_do_display();
     my_consumer_do_display();

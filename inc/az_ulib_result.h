@@ -67,9 +67,6 @@ enum az_result_ulib
 
   /** Timeout. */
   AZ_ERROR_ULIB_TIMEOUT = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 11),
-
-  /** The symbol identifies more than one element and need to be better qualified. */
-  AZ_ERROR_ULIB_AMBIGUOUS = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 12),
 };
 
 /**

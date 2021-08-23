@@ -61,54 +61,28 @@ static az_result get_interface(
         // Does the interface name matches.
         && az_span_is_content_equal(descriptor->_internal.intf_name, interface_name)
         // Does the interface version matches.
-        && (interface_version == descriptor->_internal.intf_version))
+        && (interface_version == descriptor->_internal.intf_version)
+        // Does the package name matches.
+        && az_span_is_content_equal(descriptor->_internal.pkg_name, package_name))
     {
-
-      // Check package name.
-      if (az_span_size(package_name) == 0) // No package name was provided, use default instead.
+      if (package_version == AZ_ULIB_VERSION_DEFAULT) // Use default package version.
       {
+        // Is this the default version for this package.
         if (AZ_ULIB_FLAGS_IS_SET(
                 _az_ipc_cb->_internal.interface_list[i].flags, AZ_ULIB_IPC_FLAGS_DEFAULT))
         {
-          // There is no other default package for the same interface.
-          if (interface_handle == NULL)
-          {
-            // Use this interface, but keep looking to make sure that there is no ambiguous
-            // interface qualification.
-            result = AZ_OK;
-            interface_handle = &(_az_ipc_cb->_internal.interface_list[i]);
-          }
-          else
-          {
-            // More than one default package for this interface. The package shall be specified.
-            result = AZ_ERROR_ULIB_AMBIGUOUS;
-            break;
-          }
-        }
-      }
-      // Does the package name matches.
-      else if (az_span_is_content_equal(descriptor->_internal.pkg_name, package_name))
-      {
-        if (package_version
-            == AZ_ULIB_VERSION_DEFAULT) // No package version was provided, use default instead.
-        {
-          // Is this the default version for this package.
-          if (AZ_ULIB_FLAGS_IS_SET(
-                  _az_ipc_cb->_internal.interface_list[i].flags, AZ_ULIB_IPC_FLAGS_DEFAULT))
-          {
-            // Use this interface.
-            result = AZ_OK;
-            interface_handle = &(_az_ipc_cb->_internal.interface_list[i]);
-            break;
-          }
-        }
-        // Package version matches.
-        else if (package_version == descriptor->_internal.pkg_version)
-        {
+          // Use this interface.
           result = AZ_OK;
           interface_handle = &(_az_ipc_cb->_internal.interface_list[i]);
           break;
         }
+      }
+      // Package version matches.
+      else if (package_version == descriptor->_internal.pkg_version)
+      {
+        result = AZ_OK;
+        interface_handle = &(_az_ipc_cb->_internal.interface_list[i]);
+        break;
       }
     }
   }
@@ -484,6 +458,7 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
     az_ulib_ipc_interface_handle* interface_handle)
 {
   _az_PRECONDITION_NOT_NULL(_az_ipc_cb);
+  _az_PRECONDITION_VALID_SPAN(package_name, 1, false);
   _az_PRECONDITION_VALID_SPAN(interface_name, 1, false);
   _az_PRECONDITION(interface_version != AZ_ULIB_VERSION_DEFAULT);
   _az_PRECONDITION_NOT_NULL(interface_handle);
@@ -752,7 +727,7 @@ AZ_NODISCARD az_result az_ulib_ipc_split_method_name(
     }
 
     // Extract the capability name, if provided.
-    split_pos = az_span_find(full_name, AZ_SPAN_FROM_STR("!"));
+    split_pos = az_span_find(full_name, AZ_SPAN_FROM_STR(":"));
     if (split_pos > 0)
     {
       capability_name_temp = az_span_slice_to_end(full_name, split_pos + 1);

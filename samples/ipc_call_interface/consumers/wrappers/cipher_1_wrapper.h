@@ -23,6 +23,8 @@ extern "C"
 #include <stdint.h>
 #endif
 
+#define CIPHER_1_PACKAGE_NAME "cipher"
+
   /*
    * cipher class constructor.
    */
@@ -30,7 +32,7 @@ extern "C"
   {
     return az_ulib_ipc_try_get_interface(
         AZ_SPAN_EMPTY,
-        AZ_SPAN_EMPTY,
+        AZ_SPAN_FROM_STR(CIPHER_1_PACKAGE_NAME),
         AZ_ULIB_VERSION_DEFAULT,
         AZ_SPAN_FROM_STR(CIPHER_1_INTERFACE_NAME),
         CIPHER_1_INTERFACE_VERSION,
