@@ -24,15 +24,16 @@ static void flush_callback(
     size_t size,
     az_ulib_callback_context flush_callback_context)
 {
-    // handle buffer
-    consumer_context* flush_context = (consumer_context*)flush_callback_context;
-    (void)snprintf(
-        flush_context->buffer + flush_context->offset, 
-        sizeof(flush_context->buffer) / sizeof(char), 
-        "%s", buffer);
-    
-    // adjust offset
-    flush_context->offset += size;
+  // handle buffer
+  consumer_context* flush_context = (consumer_context*)flush_callback_context;
+  (void)snprintf(
+      flush_context->buffer + flush_context->offset,
+      sizeof(flush_context->buffer) / sizeof(char),
+      "%s",
+      buffer);
+
+  // adjust offset
+  flush_context->offset += size;
 }
 
 static az_result my_consumer(void)
@@ -55,8 +56,8 @@ static az_result my_consumer(void)
 
     // flush from producer to consumer buffer
     (void)printf("----- FLUSH ----\r\n");
-    AZ_ULIB_THROW_IF_AZ_ERROR(
-        az_ulib_ustream_forward_flush(&ustream_forward_instance, flush_callback, &my_consumer_context));
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ustream_forward_flush(
+        &ustream_forward_instance, flush_callback, &my_consumer_context));
 
     (void)printf("my_consumer_context.buffer = %s\r\n", my_consumer_context.buffer);
   }

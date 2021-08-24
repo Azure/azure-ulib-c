@@ -2,10 +2,10 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+#include "az_ulib_ustream_forward_mock_buffer.h"
 #include "az_ulib_result.h"
 #include "az_ulib_test_thread.h"
 #include "az_ulib_ustream_base.h"
-#include "az_ulib_ustream_forward_mock_buffer.h"
 #include <stdbool.h>
 
 static az_result _concrete_flush_result = AZ_OK;
