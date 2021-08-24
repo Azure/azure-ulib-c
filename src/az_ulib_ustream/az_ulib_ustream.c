@@ -27,8 +27,8 @@
 #else
 #define IGNORE_POINTER_TYPE_QUALIFICATION __pragma(warning(push));
 #define IGNORE_MEMCPY_TO_NULL \
-  __pragma(warning(push));  \
-  __pragma(warning(suppress: 6387));
+  __pragma(warning(push));    \
+  __pragma(warning(suppress : 6387));
 #define RESUME_WARNINGS __pragma(warning(pop));
 #endif // __clang__
 

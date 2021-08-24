@@ -12,9 +12,10 @@
 #define AZ_ULIB_BASE_H
 
 #ifndef __cplusplus
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
+
 #else
 #include <cstdint>
 #endif

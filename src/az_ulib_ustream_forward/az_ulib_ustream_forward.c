@@ -12,7 +12,6 @@
 #include "az_ulib_ustream_forward.h"
 #include "azure/core/az_span.h"
 
-
 #include <azure/core/internal/az_precondition_internal.h>
 
 #ifdef __clang__

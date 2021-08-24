@@ -2,8 +2,9 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#include "az_ulib_test_my_interface.h"
 #include "az_ulib_ipc_api.h"
+#include "az_ulib_test_my_interface.h"
+
 
 static my_property_model my_property = 0;
 

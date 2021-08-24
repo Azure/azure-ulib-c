@@ -24,16 +24,16 @@ void check_buffer(
 
   if (offset < expected_content_length)
   {
-     assert_int_equal(az_ulib_ustream_read(ustream_instance, buf_result, 256, &size_result), AZ_OK);
+    assert_int_equal(az_ulib_ustream_read(ustream_instance, buf_result, 256, &size_result), AZ_OK);
 
-     assert_int_equal(size_result, expected_content_length - offset);
-     assert_memory_equal((const uint8_t* const)(expected_content + offset), buf_result, size_result);
+    assert_int_equal(size_result, expected_content_length - offset);
+    assert_memory_equal((const uint8_t* const)(expected_content + offset), buf_result, size_result);
   }
 
   size_result = 10;
-   assert_int_equal(
-       az_ulib_ustream_read(ustream_instance, buf_result, 256, &size_result), AZ_ULIB_EOF);
-   assert_int_equal(size_result, 0);
+  assert_int_equal(
+      az_ulib_ustream_read(ustream_instance, buf_result, 256, &size_result), AZ_ULIB_EOF);
+  assert_int_equal(size_result, 0);
 }
 
 void check_ustream_forward_buffer(
@@ -42,19 +42,20 @@ void check_ustream_forward_buffer(
     const uint8_t* const expected_content,
     uint8_t expected_content_length)
 {
-   uint8_t buf_result[256];
+  uint8_t buf_result[256];
   size_t size_result;
 
   if (offset < expected_content_length)
   {
-     assert_int_equal(az_ulib_ustream_forward_read(ustream_forward, buf_result, 256, &size_result), AZ_OK);
+    assert_int_equal(
+        az_ulib_ustream_forward_read(ustream_forward, buf_result, 256, &size_result), AZ_OK);
 
-     assert_int_equal(size_result, expected_content_length - offset);
-     assert_memory_equal((const uint8_t* const)(expected_content + offset), buf_result, size_result);
+    assert_int_equal(size_result, expected_content_length - offset);
+    assert_memory_equal((const uint8_t* const)(expected_content + offset), buf_result, size_result);
   }
 
   size_result = 10;
-   assert_int_equal(
-       az_ulib_ustream_forward_read(ustream_forward, buf_result, 256, &size_result), AZ_ULIB_EOF);
-   assert_int_equal(size_result, 0);
+  assert_int_equal(
+      az_ulib_ustream_forward_read(ustream_forward, buf_result, 256, &size_result), AZ_ULIB_EOF);
+  assert_int_equal(size_result, 0);
 }
