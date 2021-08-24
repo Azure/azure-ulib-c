@@ -147,7 +147,7 @@ jobs:
   - script: cd .. && rd /Q /S $(Agent.BuildDirectory)\s
     displayName: 'cleanup'
     condition: always()
-- job: validate_clang-format
+- job: validate_clang_format
   pool: Hosted Ubuntu 1604
   displayName: 'Validate Clang Format'
   steps:
