@@ -346,9 +346,9 @@ static void az_ulib_ipc_unpublish_with_null_descriptor_failed(void** state)
   assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
 }
 
-/* If the provided interface name is NULL, the az_ulib_ipc_try_get_interface shall fail with
- * precondition. */
-static void az_ulib_ipc_try_get_interface_with_null_name_failed(void** state)
+/* If the provided interface name is AZ_SPAN_EMPTY, the az_ulib_ipc_try_get_interface shall fail
+ * with precondition. */
+static void az_ulib_ipc_try_get_interface_with_empty_interface_name_failed(void** state)
 {
   /// arrange
   (void)state;
@@ -371,7 +371,7 @@ static void az_ulib_ipc_try_get_interface_with_null_name_failed(void** state)
 
 /* If the provided interface version is AZ_ULIB_VERSION_DEFAULT, the az_ulib_ipc_try_get_interface
  * shall fail with precondition. */
-static void az_ulib_ipc_try_get_interface_with_defult_version_failed(void** state)
+static void az_ulib_ipc_try_get_interface_with_defult_interface_version_failed(void** state)
 {
   /// arrange
   (void)state;
@@ -386,6 +386,29 @@ static void az_ulib_ipc_try_get_interface_with_defult_version_failed(void** stat
       MY_PACKAGE_1_VERSION,
       AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
       AZ_ULIB_VERSION_DEFAULT,
+      &interface_handle));
+
+  /// cleanup
+  unpublish_interfaces_and_deinit_ipc();
+}
+
+/* If the provided package name is AZ_SPAN_EMPTY, the az_ulib_ipc_try_get_interface shall fail
+ * with precondition. */
+static void az_ulib_ipc_try_get_interface_with_empty_package_name_failed(void** state)
+{
+  /// arrange
+  (void)state;
+  az_ulib_ipc_interface_handle interface_handle;
+  init_ipc_and_publish_interfaces();
+
+  /// act
+  /// assert
+  AZ_ULIB_ASSERT_PRECONDITION_CHECKED(az_ulib_ipc_try_get_interface(
+      AZ_SPAN_EMPTY,
+      AZ_SPAN_EMPTY,
+      MY_PACKAGE_1_VERSION,
+      AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
+      MY_INTERFACE_123_VERSION,
       &interface_handle));
 
   /// cleanup
@@ -1249,7 +1272,7 @@ static void az_ulib_ipc_publish_succeed(void** state)
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
-          AZ_SPAN_EMPTY,
+          AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME),
           AZ_ULIB_VERSION_DEFAULT,
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
           MY_INTERFACE_123_VERSION,
@@ -1429,7 +1452,7 @@ static void az_ulib_ipc_set_default_succeed(void** state)
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
-          AZ_SPAN_EMPTY,
+          AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME),
           AZ_ULIB_VERSION_DEFAULT,
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
           MY_INTERFACE_123_VERSION,
@@ -1460,7 +1483,7 @@ static void az_ulib_ipc_set_default_succeed(void** state)
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
-          AZ_SPAN_EMPTY,
+          AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME),
           AZ_ULIB_VERSION_DEFAULT,
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
           MY_INTERFACE_123_VERSION,
@@ -2054,7 +2077,6 @@ static void az_ulib_ipc_try_get_interface_default_name_and_version_succeed(void*
   (void)state;
   az_ulib_ipc_interface_handle package_1;
   az_ulib_ipc_interface_handle package_2;
-  az_ulib_ipc_interface_handle default_package_name;
   az_ulib_ipc_interface_handle default_package_version;
   assert_int_equal(az_ulib_ipc_init(&g_ipc), AZ_OK);
   assert_int_equal(az_ulib_test_my_interface_d_1_1_123_publish(NULL), AZ_OK);
@@ -2083,15 +2105,6 @@ static void az_ulib_ipc_try_get_interface_default_name_and_version_succeed(void*
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
-          AZ_SPAN_EMPTY,
-          AZ_ULIB_VERSION_DEFAULT,
-          AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
-          MY_INTERFACE_123_VERSION,
-          &default_package_name),
-      AZ_OK);
-  assert_int_equal(
-      az_ulib_ipc_try_get_interface(
-          AZ_SPAN_EMPTY,
           AZ_SPAN_FROM_STR(MY_PACKAGE_D_NAME),
           AZ_ULIB_VERSION_DEFAULT,
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
@@ -2101,15 +2114,13 @@ static void az_ulib_ipc_try_get_interface_default_name_and_version_succeed(void*
 
   /// assert
   assert_int_equal(g_lock_diff, 0);
-  assert_int_equal(g_count_acquire, 4);
-  assert_int_equal(package_1, default_package_name);
+  assert_int_equal(g_count_acquire, 3);
   assert_int_equal(package_1, default_package_version);
   assert_int_not_equal(package_1, package_2);
 
   /// cleanup
   assert_int_equal(az_ulib_ipc_release_interface(package_1), AZ_OK);
   assert_int_equal(az_ulib_ipc_release_interface(package_2), AZ_OK);
-  assert_int_equal(az_ulib_ipc_release_interface(default_package_name), AZ_OK);
   assert_int_equal(az_ulib_ipc_release_interface(default_package_version), AZ_OK);
   assert_int_equal(az_ulib_test_my_interface_d_1_1_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
   assert_int_equal(az_ulib_test_my_interface_d_2_1_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
@@ -2164,31 +2175,6 @@ static void az_ulib_ipc_try_get_interface_default_name_only_succeed(void** state
   assert_int_equal(az_ulib_ipc_release_interface(package_1), AZ_OK);
   assert_int_equal(az_ulib_ipc_release_interface(package_2), AZ_OK);
   assert_int_equal(az_ulib_ipc_release_interface(default_package_version), AZ_OK);
-  unpublish_interfaces_and_deinit_ipc();
-}
-
-static void az_ulib_ipc_try_get_interface_default_ambiguous_name_failed(void** state)
-{
-  /// arrange
-  (void)state;
-  az_ulib_ipc_interface_handle default_package_version;
-  init_ipc_and_publish_interfaces();
-
-  /// act
-  az_result result = az_ulib_ipc_try_get_interface(
-      AZ_SPAN_EMPTY,
-      AZ_SPAN_EMPTY,
-      AZ_ULIB_VERSION_DEFAULT,
-      AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
-      MY_INTERFACE_123_VERSION,
-      &default_package_version);
-
-  /// assert
-  assert_int_equal(g_lock_diff, 0);
-  assert_int_equal(g_count_acquire, 1);
-  assert_int_equal(result, AZ_ERROR_ULIB_AMBIGUOUS);
-
-  /// cleanup
   unpublish_interfaces_and_deinit_ipc();
 }
 
@@ -2889,48 +2875,34 @@ typedef struct
 } method_name_ut;
 
 static const method_name_ut method_name_ut_list[]
-    = { { .full_name = "deviceA.packageA.1.interfaceA.2.capabilityA",
+    = { { .full_name = "deviceA@packageA.1.interfaceA.2:capabilityA",
           .device_name = "deviceA",
           .package_name = "packageA",
           .package_version = 1,
           .interface_name = "interfaceA",
           .interface_version = 2,
           .capability_name = "capabilityA" },
-        { .full_name = "deviceB.packageB.3.interfaceB.4",
+        { .full_name = "deviceB@packageB.3.interfaceB.4",
           .device_name = "deviceB",
           .package_name = "packageB",
           .package_version = 3,
           .interface_name = "interfaceB",
           .interface_version = 4,
           .capability_name = NULL },
-        { .full_name = "deviceC.packageC.interfaceC.5.capabilityC",
+        { .full_name = "deviceC@packageC.*.interfaceC.5:capabilityC",
           .device_name = "deviceC",
           .package_name = "packageC",
           .package_version = AZ_ULIB_VERSION_DEFAULT,
           .interface_name = "interfaceC",
           .interface_version = 5,
           .capability_name = "capabilityC" },
-        { .full_name = "packageD.6.interfaceD.7.capabilityD",
+        { .full_name = "packageD.6.interfaceD.7:capabilityD",
           .device_name = NULL,
           .package_name = "packageD",
           .package_version = 6,
           .interface_name = "interfaceD",
           .interface_version = 7,
-          .capability_name = "capabilityD" },
-        { .full_name = "interfaceE.8.capabilityE",
-          .device_name = NULL,
-          .package_name = NULL,
-          .package_version = AZ_ULIB_VERSION_DEFAULT,
-          .interface_name = "interfaceE",
-          .interface_version = 8,
-          .capability_name = "capabilityE" },
-        { .full_name = "interfaceF.9",
-          .device_name = NULL,
-          .package_name = NULL,
-          .package_version = AZ_ULIB_VERSION_DEFAULT,
-          .interface_name = "interfaceF",
-          .interface_version = 9,
-          .capability_name = NULL } };
+          .capability_name = "capabilityD" } };
 static void az_ulib_ipc_split_method_name_succeed(void** state)
 {
   /// arrange
@@ -3010,10 +2982,16 @@ static const method_bad_name_ut method_bad_name_ut_list[]
     = { { .full_name = "interface" },
         { .full_name = "1.capability" },
         { .full_name = ".2.capability" },
-        { .full_name = "interface.capability" },
-        { .full_name = "interface..capability" },
-        { .full_name = "2.interface.1.capability" },
-        { .full_name = "2.interface.1" } };
+        { .full_name = "interface:capability" },
+        { .full_name = "interface.:capability" },
+        { .full_name = "2.interface.1:capability" },
+        { .full_name = "2.interface.1" },
+        { .full_name = "interface.8:capability" },
+        { .full_name = "package.interface.8:capability" },
+        { .full_name = "package..interface.8:capability" },
+        { .full_name = "package.*1.interface.8:capability" },
+        { .full_name = "package.1.interface.*:capability" },
+        { .full_name = "interface.9" } };
 static void az_ulib_ipc_split_bad_method_failed(void** state)
 {
   /// arrange
@@ -3073,10 +3051,10 @@ static void az_ulib_ipc_query_succeed(void** state)
   assert_true(az_span_is_content_equal(
       query_result,
       AZ_SPAN_FROM_STR(
-          "\"+ipc.1.query.1\",\"+ipc.1.interface_manager.1\",\"+MY_PACKAGE_A.1.MY_INTERFACE_1."
-          "123\",\"+MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"+"
-          "MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"+MY_"
-          "PACKAGE_A.1.MY_INTERFACE_3.123\",\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
+          "\"*ipc.1.query.1\",\"*ipc.1.interface_manager.1\",\"*MY_PACKAGE_A.1.MY_INTERFACE_1."
+          "123\",\"*MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"*MY_PACKAGE_C.1.MY_INTERFACE_1.123\",\"*"
+          "MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"*MY_PACKAGE_A.1.MY_INTERFACE_2.123\",\"*MY_"
+          "PACKAGE_A.1.MY_INTERFACE_3.123\",\" MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000a00FF);
   assert_int_equal(g_lock_diff, 0);
   assert_int_equal(g_count_acquire, 1);
@@ -3102,7 +3080,7 @@ static void az_ulib_ipc_query_small_buffer_succeed(void** state)
   assert_int_equal(result, AZ_OK);
   assert_true(az_span_is_content_equal(
       query_result,
-      AZ_SPAN_FROM_STR("\"+ipc.1.query.1\",\"+ipc.1.interface_manager.1\",\"+MY_PACKAGE_A.1.MY_"
+      AZ_SPAN_FROM_STR("\"*ipc.1.query.1\",\"*ipc.1.interface_manager.1\",\"*MY_PACKAGE_A.1.MY_"
                        "INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000300FF);
   assert_int_equal(g_lock_diff, 0);
@@ -3209,21 +3187,21 @@ static void az_ulib_ipc_query_next_succeed(void** state)
   assert_true(az_span_is_content_equal(
       query_result,
       AZ_SPAN_FROM_STR(
-          "\"+MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"+MY_PACKAGE_C.1.MY_INTERFACE_1.123\"")));
+          "\"*MY_PACKAGE_B.1.MY_INTERFACE_1.123\",\"*MY_PACKAGE_C.1.MY_INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000500FF);
   query_result = AZ_SPAN_FROM_BUFFER(buf);
   assert_int_equal(az_ulib_ipc_query_next(&token, &query_result), AZ_OK);
   assert_true(az_span_is_content_equal(
       query_result,
       AZ_SPAN_FROM_STR(
-          "\"+MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"+MY_PACKAGE_A.1.MY_INTERFACE_2.123\"")));
+          "\"*MY_PACKAGE_A.1.MY_INTERFACE_1.200\",\"*MY_PACKAGE_A.1.MY_INTERFACE_2.123\"")));
   assert_int_equal(token, 0x000700FF);
   query_result = AZ_SPAN_FROM_BUFFER(buf);
   assert_int_equal(az_ulib_ipc_query_next(&token, &query_result), AZ_OK);
   assert_true(az_span_is_content_equal(
       query_result,
       AZ_SPAN_FROM_STR(
-          "\"+MY_PACKAGE_A.1.MY_INTERFACE_3.123\",\"-MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
+          "\"*MY_PACKAGE_A.1.MY_INTERFACE_3.123\",\" MY_PACKAGE_A.2.MY_INTERFACE_1.123\"")));
   assert_int_equal(token, 0x000a00FF);
   query_result = AZ_SPAN_FROM_BUFFER(buf);
   assert_int_equal(az_ulib_ipc_query_next(&token, &query_result), AZ_ULIB_EOF);
@@ -3276,8 +3254,9 @@ int az_ulib_ipc_ut()
     cmocka_unit_test(az_ulib_ipc_set_default_with_empty_interface_name_failed),
     cmocka_unit_test(az_ulib_ipc_unpublish_with_ipc_not_initialized_failed),
     cmocka_unit_test(az_ulib_ipc_unpublish_with_null_descriptor_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_null_name_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_defult_version_failed),
+    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_empty_interface_name_failed),
+    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_defult_interface_version_failed),
+    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_empty_package_name_failed),
     cmocka_unit_test(az_ulib_ipc_try_get_interface_with_null_handle_failed),
     cmocka_unit_test(az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed),
     cmocka_unit_test(az_ulib_ipc_try_get_capability_with_null_interface_handle_failed),
@@ -3340,15 +3319,10 @@ int az_ulib_ipc_ut()
     cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_default_name_and_version_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_default_name_only_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_default_ambiguous_name_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_for_specific_device_failed, setup),
     cmocka_unit_test_setup(
         az_ulib_ipc_try_get_interface_with_max_interface_instances_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_with_unknown_name_failed, setup),
-    cmocka_unit_test_setup(
-        az_ulib_ipc_try_get_interface_with_max_interface_instances_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_with_unknown_name_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_with_unknown_version_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_with_unknown_version_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_try_get_capability_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_try_get_capability_with_interface_unpublished_failed, setup),

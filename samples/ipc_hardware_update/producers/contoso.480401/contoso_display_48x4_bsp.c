@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#include "fabrikan_display_48x4_bsp.h"
+#include "contoso_display_48x4_bsp.h"
 #include "az_ulib_result.h"
 
 #include <memory.h>
@@ -12,8 +12,8 @@
 #define MAX_X (size_t)48
 #define MAX_Y (size_t)4
 
-int32_t fabrikan_display_48x4_bsp_get_max_x(void) { return MAX_X; }
-int32_t fabrikan_display_48x4_bsp_get_max_y(void) { return MAX_Y; }
+int32_t contoso_display_48x4_bsp_get_max_x(void) { return MAX_X; }
+int32_t contoso_display_48x4_bsp_get_max_y(void) { return MAX_Y; }
 
 typedef struct display_cb_tag
 {
@@ -33,9 +33,9 @@ static void print_line(uint32_t line_number)
   (void)printf("        |%s|\r\n", line);
 }
 
-void fabrikan_display_48x4_bsp_invalidate()
+void contoso_display_48x4_bsp_invalidate()
 {
-  (void)printf("        +Fabrikan display emulator-----------------------+\r\n");
+  (void)printf("        +Contoso display emulator------------------------+\r\n");
   for (uint32_t i = 0; i < MAX_Y; i++)
   {
     print_line(i);
@@ -43,7 +43,7 @@ void fabrikan_display_48x4_bsp_invalidate()
   (void)printf("        +------------------------------------------------+\r\n");
 }
 
-void fabrikan_display_48x4_bsp_cls(void)
+void contoso_display_48x4_bsp_cls(void)
 {
   for (uint32_t line_number = 0; line_number < MAX_Y; line_number++)
   {
@@ -51,13 +51,13 @@ void fabrikan_display_48x4_bsp_cls(void)
   }
 }
 
-void fabrikan_display_48x4_bsp_goto(int32_t x, int32_t y)
+void contoso_display_48x4_bsp_goto(int32_t x, int32_t y)
 {
   cb.x = x;
   cb.y = y;
 }
 
-void fabrikan_display_48x4_bsp_print(const char* buf, size_t size)
+void contoso_display_48x4_bsp_print(const char* buf, size_t size)
 {
   uint32_t pos_x;
   uint32_t pos_y;
@@ -100,10 +100,10 @@ void fabrikan_display_48x4_bsp_print(const char* buf, size_t size)
   }
 }
 
-void fabrikan_display_48x4_bsp_create(void)
+void contoso_display_48x4_bsp_create(void)
 {
   cb.x = 0;
   cb.y = 0;
 }
 
-void fabrikan_display_48x4_bsp_destroy(void) {}
+void contoso_display_48x4_bsp_destroy(void) {}

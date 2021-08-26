@@ -258,17 +258,12 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *
  *  - interface_name is mandatory and shall match exactly.
  *  - interface_version is mandatory and shall match exactly.
- *  - package_name
- *      - If provided, this function will look up the interface in the packages with
- *          package_name.
- *      - If #AZ_SPAN_EMPTY, this function will look up the interface only in the default
- *          package. In this case, package_version will be ignored. To set a package as default
- *          use the API az_ulib_ipc_set_default().
+ *  - package_name is mandatory and shall match exactly.
  *  - package_version
- *      - If package name and version are provided, this function will look up the interface
- *          only in the package_name.package_version.
- *      - If package name is provided and version is #AZ_ULIB_VERSION_DEFAULT (0), this function
- *          will look up the interface in the default package that matches the package_name.
+ *      - If package version is provided, this function will look up the interface only in the
+ *          package_name.package_version.
+ *      - If package version is #AZ_ULIB_VERSION_DEFAULT (0), this function will look up the
+ *          interface in the default package that matches the package_name.
  * - device_name
  *      - If provided, this function will send the request for the Gateways that has the
  *          communication with the leaf devices. The Gateway will look up the interface
@@ -277,16 +272,17 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *          device.
  *
  * @param[in]   device_name       The `az_span` with the device name. It can be #AZ_SPAN_EMPTY.
- * @param[in]   package_name      The `az_span` with the package name. It can be #AZ_SPAN_EMPTY.
+ * @param[in]   package_name      The `az_span` with the package name.
  * @param[in]   package_version   The #az_ulib_version with the package version.
- * @param[in]   interface_name    The `az_span` with the interface name. It cannot be
- *                                #AZ_SPAN_EMPTY.
+ * @param[in]   interface_name    The `az_span` with the interface name.
  * @param[in]   interface_version The #az_ulib_version with the interface version.
  * @param[out]  interface_handle  The #az_ulib_ipc_interface_handle* with the memory to store
- *                                the interface handle. It cannot be `NULL`.
+ *                                the interface handle.
  *
  * @pre     IPC shall already be initialized.
+ * @pre     \p package_name shall not be #AZ_SPAN_EMPTY.
  * @pre     \p interface_name shall not be #AZ_SPAN_EMPTY.
+ * @pre     \p interface_version shall not be #AZ_ULIB_VERSION_DEFAULT (0).
  * @pre     \p interface_handle shall not be `NULL`.
  *
  * @return The #az_result with the result of the get handle.
@@ -298,10 +294,6 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *                                              number of instances.
  *  @retval #AZ_ERROR_NOT_IMPLEMENTED           If the device name is not #AZ_SPAN_EMPTY. Complex
  *                                              device is not supported yet.
- *  @retval #AZ_ERROR_ULIB_AMBIGUOUS            If more than one interface matches the provided
- *                                              name. Caller shall provide package_name and/or
- *                                              package_version, or alternatively define the
- *                                              default package for this interface.
  */
 AZ_NODISCARD az_result az_ulib_ipc_try_get_interface(
     az_span device_name,
@@ -458,17 +450,16 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
  * @brief   Split the provided method full name.
  *
  * This function splits the provided method name between device, package, interface and capability
- * using the following rules
+ * using the following positional rules
  *
- * 1. The method full name shall be split by `.`.
- * 2. The names and versions shall be extract from right to left.
- * 3. The expected method full name shall look like:
- *      <device_name>.<package_name>.<package_version>.<interface_name>.<interface_version>.<capability_name>
- * 4. The interface_name and interface_version are mandatory.
- * 5. If device_name, package_name, or capability_name is not provided, this function shall
- *      return #AZ_SPAN_EMPTY.
- * 6. If package_version is not provided, this function shall return #AZ_ULIB_VERSION_DEFAULT.
- * 7. If the package_version is provided, the package_name shall be provided as well.
+ * 1. The expected method full name shall look like:
+ *      <device_name>@<package_name>.<package_version>.<interface_name>.<interface_version>:<capability_name>
+ * 2. The package_name, interface_name and interface_version are mandatory. They shall always
+ *      match the published name and version.
+ * 3. The names are case sensitive.
+ * 4. If device_name or capability_name is not provided, this function shall return #AZ_SPAN_EMPTY.
+ * 5. The package_version can be a number or a wildcard character `*`, this function shall return
+ *      `package_version` = #AZ_ULIB_VERSION_DEFAULT for a wildcard character.
  *
  * @param[in]   full_name           The `az_span` with the method full name.
  * @param[out]  device_name         The pointer to `az_span` to return the device name.

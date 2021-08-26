@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define SENSORS_1_PACKAGE_NAME "sensors"
 static az_ulib_ipc_interface_handle _sensors_1 = NULL;
 
 static void temperature_callback(
@@ -37,7 +38,7 @@ void my_consumer_create(void)
     (void)printf("Try get sensors interface.\r\n");
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_try_get_interface(
         AZ_SPAN_EMPTY,
-        AZ_SPAN_EMPTY,
+        AZ_SPAN_FROM_STR(SENSORS_1_PACKAGE_NAME),
         AZ_ULIB_VERSION_DEFAULT,
         AZ_SPAN_FROM_STR(SENSORS_1_INTERFACE_NAME),
         SENSORS_1_INTERFACE_VERSION,

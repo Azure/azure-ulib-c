@@ -7,8 +7,8 @@
  * modified.
  ********************************************************************/
 
-#ifndef FABRIKAN_DISPLAY_48X4_1_INTERFACE_H
-#define FABRIKAN_DISPLAY_48X4_1_INTERFACE_H
+#ifndef CONTOSO_DISPLAY_20X4_1_INTERFACE_H
+#define CONTOSO_DISPLAY_20X4_1_INTERFACE_H
 
 #include "az_ulib_result.h"
 
@@ -18,21 +18,21 @@ extern "C"
 #else
 #endif
 
-#define FABRIKAN_PACKAGE_NAME "fabrikan"
-#define FABRIKAN_PACKAGE_VERSION 1
+#define CONTOSO_PACKAGE_NAME "contoso"
+#define CONTOSO_PACKAGE_VERSION 200401
 
   /*
    * Publish display interface.
    */
-  az_result publish_fabrikan_display_48x4_1_interface(void);
+  az_result publish_contoso_display_20x4_1_interface(void);
 
   /*
    * Unpublish display interface.
    */
-  az_result unpublish_fabrikan_display_48x4_1_interface(void);
+  az_result unpublish_contoso_display_20x4_1_interface(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* FABRIKAN_DISPLAY_48X4_1_INTERFACE_H */
+#endif /* CONTOSO_DISPLAY_20X4_1_INTERFACE_H */

@@ -7,13 +7,13 @@
  * modified.
  ********************************************************************/
 
-#include "fabrikan_display_48x4_1_interface.h"
+#include "contoso_display_48x4_1_interface.h"
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
+#include "contoso_display_48x4_bsp.h"
 #include "display_1_model.h"
-#include "fabrikan_display_48x4_bsp.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -34,7 +34,7 @@ static az_result cls_concrete(const display_1_cls_model_in* const in, display_1_
   (void)in;
   (void)out;
 
-  fabrikan_display_48x4_bsp_cls();
+  contoso_display_48x4_bsp_cls();
 
   /*
    * The user code ends here.
@@ -54,8 +54,8 @@ static az_result print_concrete(
    */
   (void)out;
 
-  fabrikan_display_48x4_bsp_goto(in->x, in->y);
-  fabrikan_display_48x4_bsp_print(in->buffer, in->size);
+  contoso_display_48x4_bsp_goto(in->x, in->y);
+  contoso_display_48x4_bsp_print(in->buffer, in->size);
 
   /*
    * The user code ends here.
@@ -76,7 +76,7 @@ static az_result invalidate_concrete(
   (void)in;
   (void)out;
 
-  fabrikan_display_48x4_bsp_invalidate();
+  contoso_display_48x4_bsp_invalidate();
 
   /*
    * The user code ends here.
@@ -96,7 +96,7 @@ static az_result get_max_x_concrete(
    */
   (void)in;
 
-  *out = fabrikan_display_48x4_bsp_get_max_x();
+  *out = contoso_display_48x4_bsp_get_max_x();
 
   /*
    * The user code ends here.
@@ -116,7 +116,7 @@ static az_result get_max_y_concrete(
    */
   (void)in;
 
-  *out = fabrikan_display_48x4_bsp_get_max_y();
+  *out = contoso_display_48x4_bsp_get_max_y();
 
   /*
    * The user code ends here.
@@ -135,18 +135,18 @@ static const az_ulib_capability_descriptor DISPLAY_1_CAPABILITIES[] = {
 };
 
 static const az_ulib_interface_descriptor DISPLAY_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
-    FABRIKAN_PACKAGE_NAME,
-    FABRIKAN_PACKAGE_VERSION,
+    CONTOSO_PACKAGE_NAME,
+    CONTOSO_PACKAGE_VERSION,
     DISPLAY_1_INTERFACE_NAME,
     DISPLAY_1_INTERFACE_VERSION,
     DISPLAY_1_CAPABILITIES);
 
-az_result publish_fabrikan_display_48x4_1_interface(void)
+az_result publish_contoso_display_48x4_1_interface(void)
 {
   return az_ulib_ipc_publish(&DISPLAY_1_DESCRIPTOR, NULL);
 }
 
-az_result unpublish_fabrikan_display_48x4_1_interface(void)
+az_result unpublish_contoso_display_48x4_1_interface(void)
 {
 #ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
   return az_ulib_ipc_unpublish(&DISPLAY_1_DESCRIPTOR, AZ_ULIB_NO_WAIT);
