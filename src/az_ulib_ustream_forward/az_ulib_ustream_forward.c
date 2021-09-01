@@ -58,6 +58,8 @@ static az_result concrete_flush(
   _az_PRECONDITION(AZ_ULIB_USTREAM_FORWARD_IS_TYPE_OF(ustream_forward, api));
   _az_PRECONDITION_NOT_NULL(flush_callback);
 
+  az_result result;
+
   // get size of data
   size_t buffer_size = concrete_get_size(ustream_forward);
 
@@ -66,9 +68,9 @@ static az_result concrete_flush(
       + ustream_forward->_internal.inner_current_position;
 
   // invoke callback
-  (*flush_callback)(buffer, buffer_size, flush_callback_context);
+  result = (*flush_callback)(buffer, buffer_size, flush_callback_context);
 
-  return AZ_OK;
+  return result;
 }
 
 static az_result concrete_read(

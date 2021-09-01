@@ -19,7 +19,7 @@ typedef struct ustream_forward_basic_context
   char buffer[100];
 } consumer_context;
 
-static void flush_callback(
+static az_result flush_callback(
     const uint8_t* const buffer,
     size_t size,
     az_ulib_callback_context flush_callback_context)
@@ -33,6 +33,8 @@ static void flush_callback(
     
     // adjust offset
     flush_context->offset += size;
+
+    return AZ_OK;
 }
 
 static az_result my_consumer(void)
