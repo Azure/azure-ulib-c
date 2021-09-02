@@ -34,7 +34,7 @@ typedef struct az_ulib_ustream_forward_tag az_ulib_ustream_forward;
 /**
  * @brief   Signature of the function to be invoked by the `az_ulib_ustream_forward_flush`
  *          operation when the `const uint8_t* const` to the buffer has been created.
- * 
+ *
  * @param[in]   buffer                  The `const uint8_t* const` buffer to be handled by the
  *                                      implementation of this callback.
  * @param[in]   size                    The number of `uint8_t` bytes in the
@@ -42,10 +42,10 @@ typedef struct az_ulib_ustream_forward_tag az_ulib_ustream_forward;
  * @param[in]   flush_callback_context  The #az_ulib_callback_context contract held between the
  *                                      owner of this callback and the caller of
  *                                      `az_ulib_ustream_forward_flush`.
- * 
+ *
  * @returns     The #az_result with the result of the flush_callback.
  *      @retval #AZ_OK                        If the callback operation succeeded.
- *      @retval #AZ_ERROR_ULIB_BUSY           If the resource being accessed in the callback 
+ *      @retval #AZ_ERROR_ULIB_BUSY           If the resource being accessed in the callback
  *                                            operation is busy.
  *      @retval #AZ_ERROR_CANCELED            If any one of the callback's dependent external
  *                                            calls is canceled.
@@ -55,7 +55,7 @@ typedef struct az_ulib_ustream_forward_tag az_ulib_ustream_forward;
  *                                            external calls returns an error for security reasons.
  *      @retval #AZ_ERROR_ULIB_SYSTEM         If any one of the callback's dependencies
  *                                            fails at the system level.
- *              
+ *
  */
 typedef az_result (*az_ulib_flush_callback)(
     const uint8_t* const buffer,
