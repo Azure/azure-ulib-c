@@ -43,7 +43,7 @@ static size_t flush_callback_size_check = 0;
 static az_ulib_callback_context flush_callback_context_check;
 
 // mock callback function
-static void mock_flush_callback(
+static az_result mock_flush_callback(
     const uint8_t* const buffer,
     size_t size,
     az_ulib_callback_context flush_callback_context)
@@ -51,6 +51,8 @@ static void mock_flush_callback(
   (void)memcpy(flush_callback_buffer_check, buffer, size);
   flush_callback_size_check = size;
   flush_callback_context_check = flush_callback_context;
+
+  return AZ_OK;
 }
 
 /*
