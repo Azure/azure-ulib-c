@@ -42,8 +42,22 @@ typedef struct az_ulib_ustream_forward_tag az_ulib_ustream_forward;
  * @param[in]   flush_callback_context  The #az_ulib_callback_context contract held between the
  *                                      owner of this callback and the caller of
  *                                      `az_ulib_ustream_forward_flush`.
+ *
+ * @returns     The #az_result with the result of the flush_callback.
+ *      @retval #AZ_OK                        If the callback operation succeeded.
+ *      @retval #AZ_ERROR_ULIB_BUSY           If the resource being accessed in the callback
+ *                                            operation is busy.
+ *      @retval #AZ_ERROR_CANCELED            If any one of the callback's dependent external
+ *                                            calls is canceled.
+ *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to to finish the
+ *                                            callback operation.
+ *      @retval #AZ_ERROR_ULIB_SECURITY       If any one of the callbacks's dependent
+ *                                            external calls returns an error for security reasons.
+ *      @retval #AZ_ERROR_ULIB_SYSTEM         If any one of the callback's dependencies
+ *                                            fails at the system level.
+ *
  */
-typedef void (*az_ulib_flush_callback)(
+typedef az_result (*az_ulib_flush_callback)(
     const uint8_t* const buffer,
     size_t size,
     az_ulib_callback_context flush_callback_context);
@@ -180,7 +194,7 @@ struct az_ulib_ustream_forward_tag
  *                                            data from source to destination.
  *      @retval #AZ_ERROR_ULIB_SECURITY       If any one of the flush operation's dependent
  *                                            external calls returns an error for security reasons.
- *      @retval #AZ_ERROR_ULIB_SYSTEM         If any one of the flush operation's dependent
+ *      @retval #AZ_ERROR_ULIB_SYSTEM         If any one of the flush operation's dependencies
  *                                            fails at the system level.
  */
 AZ_NODISCARD AZ_INLINE az_result az_ulib_ustream_forward_flush(
