@@ -2,52 +2,41 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#include "cipher_v1i1.h"
+#include "key_vault_1.h"
 #include "az_ulib_result.h"
 #include "azure/az_core.h"
-#include "interfaces/cipher_v1i1_interface.h"
+#include "cipher_1_capabilities.h"
+#include "cipher_1_model.h"
 #include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 
 #define NUMBER_OF_KEYS 1
 #define KEY_SIZE 21
+
+#define KEY_VAULT_PACKAGE_NAME "key_vault"
+#define KEY_VAULT_PACKAGE_VERSION 1
+
+static const az_ulib_interface_descriptor CIPHER_1_DESCRIPTOR = AZ_ULIB_DESCRIPTOR_CREATE(
+    KEY_VAULT_PACKAGE_NAME,
+    KEY_VAULT_PACKAGE_VERSION,
+    CIPHER_1_INTERFACE_NAME,
+    CIPHER_1_INTERFACE_VERSION,
+    CIPHER_1_CAPABILITIES);
+
 static const char key[NUMBER_OF_KEYS][KEY_SIZE] = { "12345678912345678901" };
 
 #define splitInt(intVal, bytePos) (char)((intVal >> (bytePos << 3)) & 0xFF)
 #define joinChars(a, b, c, d) \
   (uint32_t)((uint32_t)a + ((uint32_t)b << 8) + ((uint32_t)c << 16) + ((uint32_t)d << 24))
 
-static int8_t alpha = 0;
-int8_t cipher_v1i1_get_alpha(void) { return alpha; }
-void cipher_v1i1_set_alpha(const int8_t val) { alpha = val; }
-
-static uint32_t delta = 0;
-uint32_t cipher_v1i1_get_delta(void) { return delta; }
-void cipher_v1i1_set_delta(const uint32_t val) { delta = val; }
-
-void cipher_v1i1_create(void)
+typedef struct
 {
-  az_result result;
+  int8_t alpha;
+  uint32_t delta;
+} key_vault_cb;
 
-  (void)printf("Create producer for cipher v1i1...\r\n");
-
-  if ((result = publish_cipher_v1i1_interface()) != AZ_OK)
-  {
-    (void)printf("Publish interface cipher 1 failed with error %" PRIi32 "\r\n", result);
-  }
-  else
-  {
-    (void)printf("Interface cipher 1 published with success\r\n");
-  }
-}
-
-void cipher_v1i1_destroy(void)
-{
-  (void)printf("Destroy producer for cipher 1.\r\n");
-
-  unpublish_cipher_v1i1_interface();
-}
+static key_vault_cb cb = { 0 };
 
 static inline uint32_t next_key_pos(uint32_t cur)
 {
@@ -185,31 +174,33 @@ static size_t numberOfBase64Characters(const char* encodedString)
  * The first char in the encrypted data represent the algorithm, which is, at the end
  * the key used in the encryption process.
  */
-az_result cipher_v1i1_encrypt(uint32_t algorithm, az_span src, az_span* dest)
+static az_result cipher_1_encrypt_concrete(
+    const cipher_1_encrypt_model_in* const in,
+    cipher_1_encrypt_model_out* out)
 {
   AZ_ULIB_TRY
   {
-    AZ_ULIB_THROW_IF_ERROR((algorithm < NUMBER_OF_KEYS), AZ_ERROR_NOT_SUPPORTED);
-    AZ_ULIB_THROW_IF_ERROR((encoded_len(src) <= az_span_size(*dest)), AZ_ERROR_NOT_ENOUGH_SPACE);
+    AZ_ULIB_THROW_IF_ERROR((in->algorithm < NUMBER_OF_KEYS), AZ_ERROR_NOT_SUPPORTED);
+    AZ_ULIB_THROW_IF_ERROR((encoded_len(in->src) <= az_span_size(*out)), AZ_ERROR_NOT_ENOUGH_SPACE);
 
     uint32_t key_pos = 0;
-    char* dest_str = (char*)az_span_ptr(*dest);
+    char* dest_str = (char*)az_span_ptr(*out);
 
-    int32_t src_size = az_span_size(src);
-    char* src_str = (char*)az_span_ptr(src);
+    int32_t src_size = az_span_size(in->src);
+    char* src_str = (char*)az_span_ptr(in->src);
 
-    dest_str[0] = (char)(algorithm + '0');
+    dest_str[0] = (char)(in->algorithm + '0');
 
     int32_t destinationPosition = 1;
     int32_t currentPosition = 0;
     char src_char[3];
     while (src_size - currentPosition >= 3)
     {
-      src_char[0] = src_str[currentPosition] ^ key[algorithm][key_pos];
+      src_char[0] = src_str[currentPosition] ^ key[in->algorithm][key_pos];
       key_pos = next_key_pos(key_pos);
-      src_char[1] = src_str[currentPosition + 1] ^ key[algorithm][key_pos];
+      src_char[1] = src_str[currentPosition + 1] ^ key[in->algorithm][key_pos];
       key_pos = next_key_pos(key_pos);
-      src_char[2] = src_str[currentPosition + 2] ^ key[algorithm][key_pos];
+      src_char[2] = src_str[currentPosition + 2] ^ key[in->algorithm][key_pos];
       key_pos = next_key_pos(key_pos);
 
       char c1 = base64char((unsigned char)(src_char[0] >> 2));
@@ -224,9 +215,9 @@ az_result cipher_v1i1_encrypt(uint32_t algorithm, az_span src, az_span* dest)
     }
     if (src_size - currentPosition == 2)
     {
-      src_char[0] = src_str[currentPosition] ^ key[algorithm][key_pos];
+      src_char[0] = src_str[currentPosition] ^ key[in->algorithm][key_pos];
       key_pos = next_key_pos(key_pos);
-      src_char[1] = src_str[currentPosition + 1] ^ key[algorithm][key_pos];
+      src_char[1] = src_str[currentPosition + 1] ^ key[in->algorithm][key_pos];
       char c1 = base64char((unsigned char)(src_char[0] >> 2));
       char c2 = base64char((unsigned char)(((src_char[0] & 0x03) << 4) | (src_char[1] >> 4)));
       char c3 = base64b16(src_char[1] & 0x0F);
@@ -237,7 +228,7 @@ az_result cipher_v1i1_encrypt(uint32_t algorithm, az_span src, az_span* dest)
     }
     else if (src_size - currentPosition == 1)
     {
-      src_char[0] = src_str[currentPosition] ^ key[algorithm][key_pos];
+      src_char[0] = src_str[currentPosition] ^ key[in->algorithm][key_pos];
       char c1 = base64char((unsigned char)(src_char[0] >> 2));
       char c2 = base64b8(src_char[0] & 0x03);
       dest_str[destinationPosition++] = c1;
@@ -248,22 +239,24 @@ az_result cipher_v1i1_encrypt(uint32_t algorithm, az_span src, az_span* dest)
 
     dest_str[destinationPosition] = '\0';
 
-    *dest = az_span_create((uint8_t*)dest_str, destinationPosition);
+    *out = az_span_create((uint8_t*)dest_str, destinationPosition);
   }
   AZ_ULIB_CATCH(...) { return AZ_ULIB_TRY_RESULT; }
 
   return AZ_OK;
 }
 
-az_result cipher_v1i1_decrypt(az_span src, az_span* dest)
+static az_result cipher_1_decrypt_concrete(
+    const cipher_1_decrypt_model_in* const in,
+    cipher_1_decrypt_model_out* out)
 {
   AZ_ULIB_TRY
   {
-    char* src_str = (char*)az_span_ptr(src);
-    int32_t src_size = az_span_size(src);
+    char* src_str = (char*)az_span_ptr(*in);
+    int32_t src_size = az_span_size(*in);
 
-    char* dest_str = (char*)az_span_ptr(*dest);
-    int32_t dest_size = az_span_size(*dest);
+    char* dest_str = (char*)az_span_ptr(*out);
+    int32_t dest_size = az_span_size(*out);
 
     AZ_ULIB_THROW_IF_ERROR((src_size > 1), AZ_ERROR_ARG);
 
@@ -328,9 +321,74 @@ az_result cipher_v1i1_decrypt(az_span src, az_span* dest)
 
     dest_str[decodedIndex] = '\0';
 
-    *dest = az_span_create((uint8_t*)dest_str, decodedIndex);
+    *out = az_span_create((uint8_t*)dest_str, decodedIndex);
   }
   AZ_ULIB_CATCH(...) { return AZ_ULIB_TRY_RESULT; }
 
   return AZ_OK;
+}
+
+static az_result cipher_1_alpha_concrete(
+    const cipher_1_alpha_model* const in,
+    cipher_1_alpha_model* out)
+{
+  if (in != NULL)
+  {
+    cb.alpha = *in;
+  }
+
+  if (out != NULL)
+  {
+    *out = cb.alpha;
+  }
+
+  return AZ_OK;
+}
+
+static az_result cipher_1_delta_concrete(
+    const cipher_1_delta_model* const in,
+    cipher_1_delta_model* out)
+{
+  if (in != NULL)
+  {
+    cb.delta = *in;
+  }
+
+  if (out != NULL)
+  {
+    *out = cb.delta;
+  }
+
+  return AZ_OK;
+}
+
+void key_vault_1_create(void)
+{
+  az_result result;
+
+  (void)printf("Create producer for key_vault.1...\r\n");
+
+  if ((result = az_ulib_ipc_publish(&CIPHER_1_DESCRIPTOR)) != AZ_OK)
+  {
+    (void)printf("Publish interface cipher.1 failed with error %" PRIi32 "\r\n", result);
+  }
+  else
+  {
+    (void)printf("Interface cipher.1 published with success\r\n");
+  }
+}
+
+void key_vault_1_destroy(void)
+{
+  az_result result;
+
+  if ((result = az_ulib_ipc_unpublish(&CIPHER_1_DESCRIPTOR, AZ_ULIB_NO_WAIT)) != AZ_OK)
+  {
+    (void)printf(
+        "Unpublish interface cipher.1 in key_vault.1 failed with error %" PRIi32 "\r\n", result);
+  }
+  else
+  {
+    (void)printf("Destroy producer for key_vault.1.\r\n");
+  }
 }

@@ -130,14 +130,10 @@ static const az_ulib_interface_descriptor INTERFACE_MANAGER_1_DESCRIPTOR
 
 az_result _az_ulib_ipc_interface_manager_interface_publish(void)
 {
-  return az_ulib_ipc_publish(&INTERFACE_MANAGER_1_DESCRIPTOR, NULL);
+  return az_ulib_ipc_publish(&INTERFACE_MANAGER_1_DESCRIPTOR);
 }
 
 az_result _az_ulib_ipc_interface_manager_interface_unpublish(void)
 {
-#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
   return az_ulib_ipc_unpublish(&INTERFACE_MANAGER_1_DESCRIPTOR, AZ_ULIB_NO_WAIT);
-#else
-  return AZ_OK;
-#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 }

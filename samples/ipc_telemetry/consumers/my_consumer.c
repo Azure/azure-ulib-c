@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 #define SENSORS_1_PACKAGE_NAME "sensors"
-static az_ulib_ipc_interface_handle _sensors_1 = NULL;
+static az_ulib_ipc_interface_handle _sensors_1 = { 0 };
 
 static void temperature_callback(
     az_ulib_callback_context context,
@@ -67,13 +67,13 @@ void my_consumer_destroy(void)
   (void)printf("Destroy my consumer\r\n");
   AZ_ULIB_TRY
   {
-    (void)printf("unsubscribe from temperature.\r\n");
+    (void)printf("Unsubscribe from temperature.\r\n");
     az_ulib_telemetry_subscribe_model temperature_in
         = { .context = NULL, .callback = (az_ulib_telemetry_callback)temperature_callback };
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call(
         _sensors_1, SENSORS_1_UNSUBSCRIBE_TEMPERATURE_TELEMETRY, &temperature_in, NULL));
 
-    (void)printf("unsubscribe from accelerometer.\r\n");
+    (void)printf("Unsubscribe from accelerometer.\r\n");
     az_ulib_telemetry_subscribe_model accelerometer_in
         = { .context = NULL, .callback = (az_ulib_telemetry_callback)accelerometer_callback };
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_call(
@@ -81,7 +81,6 @@ void my_consumer_destroy(void)
 
     (void)printf("Release sensors interface.\r\n");
     AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_ipc_release_interface(_sensors_1));
-    _sensors_1 = NULL;
   }
   AZ_ULIB_CATCH(...)
   {

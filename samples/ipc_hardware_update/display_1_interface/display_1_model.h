@@ -30,7 +30,7 @@ extern "C"
 /*
  * Define cls (clear screen) command on display interface.
  */
-#define DISPLAY_1_CLS_COMMAND (az_ulib_capability_index)0
+#define DISPLAY_1_CLS_COMMAND ((az_ulib_capability_index)0)
 #define DISPLAY_1_CLS_COMMAND_NAME "cls"
   typedef void display_1_cls_model_in;
   typedef void display_1_cls_model_out;
@@ -38,13 +38,13 @@ extern "C"
 /*
  * Define print command on display interface.
  */
-#define DISPLAY_1_PRINT_COMMAND (az_ulib_capability_index)1
+#define DISPLAY_1_PRINT_COMMAND ((az_ulib_capability_index)1)
 #define DISPLAY_1_PRINT_COMMAND_NAME "print"
 #define DISPLAY_1_PRINT_X_NAME "x"
 #define DISPLAY_1_PRINT_Y_NAME "y"
 #define DISPLAY_1_PRINT_BUFFER_NAME "buffer"
 #define DISPLAY_1_PRINT_SIZE_NAME "size"
-  typedef struct display_1_print_model_in_tag
+  typedef struct
   {
     int32_t x;
     int32_t y;
@@ -56,7 +56,7 @@ extern "C"
 /*
  * Define invalidate (refresh display) command on display interface.
  */
-#define DISPLAY_1_INVALIDATE_COMMAND (az_ulib_capability_index)2
+#define DISPLAY_1_INVALIDATE_COMMAND ((az_ulib_capability_index)2)
 #define DISPLAY_1_INVALIDATE_COMMAND_NAME "invalidate"
   typedef void display_1_invalidate_model_in;
   typedef void display_1_invalidate_model_out;
@@ -64,15 +64,15 @@ extern "C"
 /*
  * Define display maximum X dimensions property on display interface.
  */
-#define DISPLAY_1_GET_MAX_X_PROPERTY (az_ulib_capability_index)3
-#define DISPLAY_1_GET_MAX_X_PROPERTY_NAME "get_max_x"
+#define DISPLAY_1_MAX_X_PROPERTY ((az_ulib_capability_index)3)
+#define DISPLAY_1_MAX_X_PROPERTY_NAME "max_x"
   typedef int32_t display_1_max_x_model;
 
 /*
  * Define display maximum Y dimensions property on display interface.
  */
-#define DISPLAY_1_GET_MAX_Y_PROPERTY (az_ulib_capability_index)4
-#define DISPLAY_1_GET_MAX_Y_PROPERTY_NAME "get_max_y"
+#define DISPLAY_1_MAX_Y_PROPERTY ((az_ulib_capability_index)4)
+#define DISPLAY_1_MAX_Y_PROPERTY_NAME "max_y"
   typedef int32_t display_1_max_y_model;
 
 #ifdef __cplusplus

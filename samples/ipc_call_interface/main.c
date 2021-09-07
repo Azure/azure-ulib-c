@@ -4,13 +4,13 @@
 
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_result.h"
-#include "cipher_v1i1.h"
-#include "cipher_v2i1.h"
+#include "key_vault_1.h"
+#include "key_vault_2.h"
 #include "my_consumer.h"
 #include <inttypes.h>
 #include <stdio.h>
 
-static az_ulib_ipc ipc_handle;
+static az_ulib_ipc_control_block ipc_control_block;
 
 /*
  * OS code.
@@ -25,7 +25,7 @@ int main(void)
    * Create the IPC. It shall be called at the very beginning of the application.
    * The IPC will prepare itself to receive interfaces.
    */
-  if ((result = az_ulib_ipc_init(&ipc_handle)) != AZ_OK)
+  if ((result = az_ulib_ipc_init(&ipc_control_block)) != AZ_OK)
   {
     (void)printf("Initialize IPC failed with code %" PRIi32 ".\r\n", result);
   }
@@ -33,7 +33,7 @@ int main(void)
   {
     /* Publish cipher v1 with 1 key.
      * After this point anybody can call the cipher commands through IPC. */
-    cipher_v1i1_create();
+    key_vault_1_create();
     (void)printf("\r\n");
 
     /* Consumer will use the cipher interface. */
@@ -50,7 +50,7 @@ int main(void)
 
     /* Publish cipher v2 with 2 key.
      * After this point anybody can call the cipher commands through IPC. */
-    cipher_v2i1_create();
+    key_vault_2_create();
     (void)printf("\r\n");
 
     /* Query current interfaces. */
@@ -83,7 +83,7 @@ int main(void)
 
     /* Unpublish cipher v1. After this point, any call to cipher will return
      * AZ_ERROR_ITEM_NOT_FOUND. */
-    cipher_v1i1_destroy();
+    key_vault_1_destroy();
     (void)printf("\r\n");
 
     /* Query current interfaces. */
@@ -91,7 +91,7 @@ int main(void)
 
     /* Unpublish cipher v2. After this point, any call to cipher will return
      * AZ_ERROR_ITEM_NOT_FOUND. */
-    cipher_v2i1_destroy();
+    key_vault_2_destroy();
     (void)printf("\r\n");
 
     /* Consumer will stop to use the cipher interface. */

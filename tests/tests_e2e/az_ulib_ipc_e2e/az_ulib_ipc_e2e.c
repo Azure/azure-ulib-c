@@ -23,7 +23,7 @@
 
 #include "cmocka.h"
 
-static az_ulib_ipc g_ipc;
+static az_ulib_ipc_control_block g_ipc;
 
 static void init_ipc_and_publish_interfaces(bool shall_initialize)
 {
@@ -31,13 +31,13 @@ static void init_ipc_and_publish_interfaces(bool shall_initialize)
   {
     assert_int_equal(az_ulib_ipc_init(&g_ipc), AZ_OK);
   }
-  assert_int_equal(az_ulib_test_my_interface_a_1_1_123_publish(NULL), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_b_1_1_123_publish(NULL), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_c_1_1_123_publish(NULL), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_1_1_200_publish(NULL), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_1_2_123_publish(NULL), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_1_3_123_publish(NULL), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_2_1_123_publish(NULL), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_a_1_1_123_publish(), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_b_1_1_123_publish(), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_c_1_1_123_publish(), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_a_1_1_200_publish(), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_a_1_2_123_publish(), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_a_1_3_123_publish(), AZ_OK);
+  assert_int_equal(az_ulib_test_my_interface_a_2_1_123_publish(), AZ_OK);
 }
 
 static void unpublish_interfaces_and_deinit_ipc(void)
@@ -54,63 +54,53 @@ static void unpublish_interfaces_and_deinit_ipc(void)
 
 #define NUMBER_CALLS_IN_THREAD 1000
 #define MAX_THREAD (AZ_ULIB_CONFIG_MAX_IPC_INSTANCES - 1)
-#define SMALL_NUMBER_THREAD (AZ_ULIB_CONFIG_MAX_IPC_INSTANCES >> 1)
 
 static uint32_t g_thread_max_sum;
 
 static int call_sync_thread(void* arg)
 {
+  (void)arg;
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_SUM;
   in.max_sum = g_thread_max_sum;
   in.return_result = AZ_OK;
 
-  az_ulib_ipc_interface_handle local_handle;
+  az_ulib_ipc_interface_handle interface_handle = { 0 };
+  assert_int_equal(
+      az_ulib_ipc_try_get_interface(
+          AZ_SPAN_EMPTY,
+          AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME),
+          MY_PACKAGE_1_VERSION,
+          AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
+          MY_INTERFACE_123_VERSION,
+          &interface_handle),
+      AZ_ULIB_RENEW);
 
-  az_result result = az_ulib_ipc_get_interface((az_ulib_ipc_interface_handle)arg, &local_handle);
+  az_result result = AZ_OK;
 
-  if (result != AZ_OK)
+  for (int i = 0; i < NUMBER_CALLS_IN_THREAD; i++)
   {
-    if (result != AZ_ERROR_ITEM_NOT_FOUND)
+    az_result out = AZ_ULIB_PENDING;
+    az_result local_result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_MY_COMMAND, &in, &out);
+    if (result == AZ_OK)
     {
-      (void)printf("get interface returned: %" PRIi32 "\r\n", result);
-    }
-  }
-  else
-  {
-    for (int i = 0; i < NUMBER_CALLS_IN_THREAD; i++)
-    {
-      az_result out = AZ_ULIB_PENDING;
-      az_result local_result
-          = az_ulib_ipc_call((az_ulib_ipc_interface_handle)arg, MY_INTERFACE_MY_COMMAND, &in, &out);
-      if (result == AZ_OK)
+      if (local_result != AZ_OK)
       {
-        if (local_result != AZ_OK)
+        result = local_result;
+        if (result != AZ_ERROR_ITEM_NOT_FOUND)
         {
-          result = local_result;
-          if (result != AZ_ERROR_ITEM_NOT_FOUND)
-          {
-            (void)printf("ipc call returned: %" PRIi32 "\r\n", result);
-          }
-        }
-        else if (out != AZ_OK)
-        {
-          result = local_result;
-          (void)printf("command returned: %" PRIi32 "\r\n", result);
+          (void)printf("ipc call returned: %" PRIi32 "\r\n", result);
         }
       }
-    }
-
-    az_result release_result;
-    if ((release_result = az_ulib_ipc_release_interface(local_handle)) != AZ_OK)
-    {
-      (void)printf("release interface returned: %" PRIi32 "\r\n", release_result);
-      if (result == AZ_OK)
+      else if (out != AZ_OK)
       {
-        result = release_result;
+        result = local_result;
+        (void)printf("command returned: %" PRIi32 "\r\n", result);
       }
     }
   }
+
+  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
 
   return (int)result;
 }
@@ -134,7 +124,7 @@ static void az_ulib_ipc_e2e_call_sync_command_succeed(void** state)
   (void)state;
   init_ipc_and_publish_interfaces(true);
 
-  az_ulib_ipc_interface_handle interface_handle;
+  az_ulib_ipc_interface_handle interface_handle = { 0 };
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
@@ -143,7 +133,7 @@ static void az_ulib_ipc_e2e_call_sync_command_succeed(void** state)
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
           MY_INTERFACE_123_VERSION,
           &interface_handle),
-      AZ_OK);
+      AZ_ULIB_RENEW);
 
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_SUM;
@@ -169,7 +159,7 @@ static void az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed(void** state)
   (void)state;
   init_ipc_and_publish_interfaces(true);
 
-  az_ulib_ipc_interface_handle interface_handle;
+  az_ulib_ipc_interface_handle interface_handle = { 0 };
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
@@ -178,7 +168,7 @@ static void az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed(void** state)
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
           MY_INTERFACE_123_VERSION,
           &interface_handle),
-      AZ_OK);
+      AZ_ULIB_RENEW);
 
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_UNPUBLISH;
@@ -198,46 +188,13 @@ static void az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed(void** state)
   unpublish_interfaces_and_deinit_ipc();
 }
 
-static void az_ulib_ipc_e2e_release_interface_in_the_call_succeed(void** state)
-{
-  /// arrange
-  (void)state;
-  init_ipc_and_publish_interfaces(true);
-
-  az_ulib_ipc_interface_handle interface_handle;
-  assert_int_equal(
-      az_ulib_ipc_try_get_interface(
-          AZ_SPAN_EMPTY,
-          AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME),
-          MY_PACKAGE_1_VERSION,
-          AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
-          MY_INTERFACE_123_VERSION,
-          &interface_handle),
-      AZ_OK);
-
-  my_command_model_in in;
-  in.capability = MY_COMMAND_CAPABILITY_RELEASE_INTERFACE;
-  in.handle = interface_handle;
-  az_result out = AZ_ULIB_PENDING;
-
-  /// act
-  az_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_MY_COMMAND, &in, &out);
-
-  /// assert
-  assert_int_equal(result, AZ_OK);
-  assert_int_equal(out, AZ_OK);
-
-  /// cleanup
-  unpublish_interfaces_and_deinit_ipc();
-}
-
 static void az_ulib_ipc_e2e_deinit_ipc_in_the_call_failed(void** state)
 {
   /// arrange
   (void)state;
   init_ipc_and_publish_interfaces(true);
 
-  az_ulib_ipc_interface_handle interface_handle;
+  az_ulib_ipc_interface_handle interface_handle = { 0 };
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
@@ -246,7 +203,7 @@ static void az_ulib_ipc_e2e_deinit_ipc_in_the_call_failed(void** state)
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
           MY_INTERFACE_123_VERSION,
           &interface_handle),
-      AZ_OK);
+      AZ_ULIB_RENEW);
 
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_DEINIT;
@@ -270,7 +227,7 @@ static void az_ulib_ipc_e2e_call_recursive_in_the_call_succeed(void** state)
   (void)state;
   init_ipc_and_publish_interfaces(true);
 
-  az_ulib_ipc_interface_handle interface_handle;
+  az_ulib_ipc_interface_handle interface_handle = { 0 };
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
@@ -279,7 +236,7 @@ static void az_ulib_ipc_e2e_call_recursive_in_the_call_succeed(void** state)
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
           MY_INTERFACE_123_VERSION,
           &interface_handle),
-      AZ_OK);
+      AZ_ULIB_RENEW);
 
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_CALL_AGAIN;
@@ -299,55 +256,13 @@ static void az_ulib_ipc_e2e_call_recursive_in_the_call_succeed(void** state)
   unpublish_interfaces_and_deinit_ipc();
 }
 
-static void az_ulib_ipc_e2e_unpublish_interface_before_call_succeed(void** state)
-{
-  /// arrange
-  (void)state;
-  init_ipc_and_publish_interfaces(true);
-
-  az_ulib_ipc_interface_handle interface_handle;
-  assert_int_equal(
-      az_ulib_ipc_try_get_interface(
-          AZ_SPAN_EMPTY,
-          AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME),
-          MY_PACKAGE_1_VERSION,
-          AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
-          MY_INTERFACE_123_VERSION,
-          &interface_handle),
-      AZ_OK);
-
-  my_command_model_in in;
-  in.capability = MY_COMMAND_CAPABILITY_UNPUBLISH;
-  in.wait_policy_ms = AZ_ULIB_NO_WAIT;
-  in.descriptor = &MY_INTERFACE_A_1_1_123;
-  az_result out = AZ_ULIB_PENDING;
-
-  /// act
-  assert_int_equal(az_ulib_ipc_unpublish(&MY_INTERFACE_A_1_1_123, AZ_ULIB_NO_WAIT), AZ_OK);
-  az_result result = az_ulib_ipc_call(interface_handle, MY_INTERFACE_MY_COMMAND, &in, &out);
-
-  /// assert
-  assert_int_equal(result, AZ_ERROR_ITEM_NOT_FOUND);
-  assert_int_equal(out, AZ_ULIB_PENDING);
-
-  /// cleanup
-  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_1_2_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_b_1_1_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_c_1_1_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_2_1_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_1_1_200_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_1_3_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
-}
-
 static void az_ulib_ipc_e2e_release_after_unpublish_succeed(void** state)
 {
   /// arrange
   (void)state;
   init_ipc_and_publish_interfaces(true);
 
-  az_ulib_ipc_interface_handle interface_handle;
+  az_ulib_ipc_interface_handle interface_handle = { 0 };
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
@@ -356,30 +271,23 @@ static void az_ulib_ipc_e2e_release_after_unpublish_succeed(void** state)
           AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
           MY_INTERFACE_123_VERSION,
           &interface_handle),
-      AZ_OK);
+      AZ_ULIB_RENEW);
 
   my_command_model_in in;
   in.capability = MY_COMMAND_CAPABILITY_JUST_RETURN;
   in.return_result = AZ_OK;
   az_result out = AZ_ULIB_PENDING;
+  assert_int_equal(az_ulib_ipc_call(interface_handle, MY_INTERFACE_MY_COMMAND, &in, &out), AZ_OK);
 
   /// act
-  assert_int_equal(az_ulib_ipc_call(interface_handle, MY_INTERFACE_MY_COMMAND, &in, &out), AZ_OK);
-  assert_int_equal(az_ulib_ipc_unpublish(&MY_INTERFACE_A_1_1_123, AZ_ULIB_NO_WAIT), AZ_OK);
-  az_result result = az_ulib_ipc_release_interface(interface_handle);
+  az_result result = az_ulib_ipc_unpublish(&MY_INTERFACE_A_1_1_123, AZ_ULIB_NO_WAIT);
 
   /// assert
-  assert_int_equal(result, AZ_OK);
-  assert_int_equal(out, AZ_OK);
+  assert_int_equal(result, AZ_ERROR_ULIB_BUSY);
 
   /// cleanup
-  assert_int_equal(az_ulib_test_my_interface_a_1_2_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_b_1_1_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_c_1_1_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_2_1_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_1_1_200_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_1_3_123_unpublish(AZ_ULIB_NO_WAIT), AZ_OK);
-  assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
+  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
+  unpublish_interfaces_and_deinit_ipc();
 }
 
 static void az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_succeed(void** state)
@@ -389,24 +297,12 @@ static void az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_succeed(void**
   g_thread_max_sum = 10;
   init_ipc_and_publish_interfaces(true);
 
-  az_ulib_ipc_interface_handle interface_handle;
-  assert_int_equal(
-      az_ulib_ipc_try_get_interface(
-          AZ_SPAN_EMPTY,
-          AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME),
-          MY_PACKAGE_1_VERSION,
-          AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
-          MY_INTERFACE_123_VERSION,
-          &interface_handle),
-      AZ_OK);
-
   /// act
   THREAD_HANDLE thread_handle[MAX_THREAD];
   for (int i = 0; i < MAX_THREAD; i++)
   {
-    (void)test_thread_create(&thread_handle[i], &call_sync_thread, interface_handle);
+    (void)test_thread_create(&thread_handle[i], &call_sync_thread, NULL);
   }
-  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
 
   /// assert
   for (int i = 0; i < MAX_THREAD; i++)
@@ -428,16 +324,6 @@ static void az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_time
   g_thread_max_sum = 100;
   init_ipc_and_publish_interfaces(true);
 
-  az_ulib_ipc_interface_handle interface_handle;
-  assert_int_equal(
-      az_ulib_ipc_try_get_interface(
-          AZ_SPAN_EMPTY,
-          AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME),
-          MY_PACKAGE_1_VERSION,
-          AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
-          MY_INTERFACE_123_VERSION,
-          &interface_handle),
-      AZ_OK);
   THREAD_HANDLE thread_handle;
 
   g_is_running = 0; // Assume that the command is not running in the thread.
@@ -448,7 +334,7 @@ static void az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_time
 
   /// act
   // Create the thread to call the command.
-  (void)test_thread_create(&thread_handle, &call_sync_thread, interface_handle);
+  (void)test_thread_create(&thread_handle, &call_sync_thread, NULL);
 
   // Wait for the command start to work.
   while (g_is_running == 0)
@@ -460,7 +346,6 @@ static void az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_time
 
   // As soon as the unpublish failed, release the command to end its execution.
   (void)AZ_ULIB_PORT_ATOMIC_DEC_W(&g_lock_thread);
-  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
 
   /// assert
   int res;
@@ -472,67 +357,13 @@ static void az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_time
   unpublish_interfaces_and_deinit_ipc();
 }
 
-static void az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_and_unpublish_succeed(
-    void** state)
-{
-  /// arrange
-  (void)state;
-  g_thread_max_sum = 30;
-  g_sum_sleep = 10;
-  init_ipc_and_publish_interfaces(true);
-
-  az_ulib_ipc_interface_handle interface_handle;
-  assert_int_equal(
-      az_ulib_ipc_try_get_interface(
-          AZ_SPAN_EMPTY,
-          AZ_SPAN_FROM_STR(MY_PACKAGE_A_NAME),
-          MY_PACKAGE_1_VERSION,
-          AZ_SPAN_FROM_STR(MY_INTERFACE_1_NAME),
-          MY_INTERFACE_123_VERSION,
-          &interface_handle),
-      AZ_OK);
-
-  g_is_running = 0; // Assume that the command is not running in the thread.
-
-  (void)AZ_ULIB_PORT_ATOMIC_EXCHANGE_W(
-      &g_lock_thread, 0); // Lock the command that will run in the thread to do not finish until we
-                          // complete the test.
-
-  /// act
-  THREAD_HANDLE thread_handle[SMALL_NUMBER_THREAD];
-  for (int count_thread = 0; count_thread < SMALL_NUMBER_THREAD; count_thread++)
-  {
-    az_pal_os_sleep(100);
-    (void)test_thread_create(&thread_handle[count_thread], &call_sync_thread, interface_handle);
-  }
-  assert_int_equal(az_ulib_test_my_interface_a_1_1_123_unpublish(10000), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_1_2_123_unpublish(10000), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_b_1_1_123_unpublish(10000), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_c_1_1_123_unpublish(10000), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_2_1_123_unpublish(10000), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_1_1_200_unpublish(10000), AZ_OK);
-  assert_int_equal(az_ulib_test_my_interface_a_1_3_123_unpublish(10000), AZ_OK);
-  assert_int_equal(az_ulib_ipc_release_interface(interface_handle), AZ_OK);
-
-  /// assert
-  for (int i = 0; i < SMALL_NUMBER_THREAD; i++)
-  {
-    int res;
-    test_thread_join(thread_handle[i], &res);
-    assert_int_equal(res, AZ_ERROR_ITEM_NOT_FOUND);
-  }
-
-  /// cleanup
-  assert_int_equal(az_ulib_ipc_deinit(), AZ_OK);
-}
-
 static void az_ulib_ipc_query_query_all_interfaces_succeed(void** state)
 {
   /// arrange
   (void)state;
   init_ipc_and_publish_interfaces(true);
 
-  az_ulib_ipc_interface_handle query_handle;
+  az_ulib_ipc_interface_handle query_handle = { 0 };
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
@@ -541,7 +372,7 @@ static void az_ulib_ipc_query_query_all_interfaces_succeed(void** state)
           AZ_SPAN_FROM_STR(QUERY_1_INTERFACE_NAME),
           QUERY_1_INTERFACE_VERSION,
           &query_handle),
-      AZ_OK);
+      AZ_ULIB_RENEW);
 
   az_span in = AZ_SPAN_FROM_STR("");
   uint8_t buf[500];
@@ -573,7 +404,7 @@ static void az_ulib_ipc_query_query_w_str_all_interfaces_succeed(void** state)
   (void)state;
   init_ipc_and_publish_interfaces(true);
 
-  az_ulib_ipc_interface_handle query_handle;
+  az_ulib_ipc_interface_handle query_handle = { 0 };
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
@@ -582,7 +413,7 @@ static void az_ulib_ipc_query_query_w_str_all_interfaces_succeed(void** state)
           AZ_SPAN_FROM_STR(QUERY_1_INTERFACE_NAME),
           QUERY_1_INTERFACE_VERSION,
           &query_handle),
-      AZ_OK);
+      AZ_ULIB_RENEW);
 
   az_span in = AZ_SPAN_LITERAL_FROM_STR("{}");
   uint8_t buf[500];
@@ -613,7 +444,7 @@ static void az_ulib_ipc_query_query_next_succeed(void** state)
   (void)state;
   init_ipc_and_publish_interfaces(true);
 
-  az_ulib_ipc_interface_handle query_handle;
+  az_ulib_ipc_interface_handle query_handle = { 0 };
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
@@ -622,7 +453,7 @@ static void az_ulib_ipc_query_query_next_succeed(void** state)
           AZ_SPAN_FROM_STR(QUERY_1_INTERFACE_NAME),
           QUERY_1_INTERFACE_VERSION,
           &query_handle),
-      AZ_OK);
+      AZ_ULIB_RENEW);
 
   az_span query_in = AZ_SPAN_FROM_STR("");
   uint8_t buf[90];
@@ -686,7 +517,7 @@ static void az_ulib_ipc_query_query_next_w_str_succeed(void** state)
   (void)state;
   init_ipc_and_publish_interfaces(true);
 
-  az_ulib_ipc_interface_handle query_handle;
+  az_ulib_ipc_interface_handle query_handle = { 0 };
   assert_int_equal(
       az_ulib_ipc_try_get_interface(
           AZ_SPAN_EMPTY,
@@ -695,7 +526,7 @@ static void az_ulib_ipc_query_query_next_w_str_succeed(void** state)
           AZ_SPAN_FROM_STR(QUERY_1_INTERFACE_NAME),
           QUERY_1_INTERFACE_VERSION,
           &query_handle),
-      AZ_OK);
+      AZ_ULIB_RENEW);
 
   uint8_t buf[230]; // This buffer shall fit the JSON with 3 interfaces, so query next will have
                     // some more interfaces to report.
@@ -745,16 +576,12 @@ int az_ulib_ipc_e2e()
   const struct CMUnitTest tests[] = {
     cmocka_unit_test_setup(az_ulib_ipc_e2e_call_sync_command_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_e2e_release_interface_in_the_call_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_e2e_deinit_ipc_in_the_call_failed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_e2e_call_recursive_in_the_call_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_e2e_unpublish_interface_before_call_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_e2e_release_after_unpublish_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_succeed, setup),
     cmocka_unit_test_setup(
         az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_timeout_failed, setup),
-    cmocka_unit_test_setup(
-        az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_and_unpublish_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_query_query_all_interfaces_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_query_query_w_str_all_interfaces_succeed, setup),
     cmocka_unit_test_setup(az_ulib_ipc_query_query_next_succeed, setup),

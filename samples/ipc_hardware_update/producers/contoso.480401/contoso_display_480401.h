@@ -2,19 +2,19 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#ifndef MY_CONSUMER_H
-#define MY_CONSUMER_H
+#ifndef CONTOSO_DISPLAY_480401_H
+#define CONTOSO_DISPLAY_480401_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-  void my_consumer_create(void);
-  void my_consumer_destroy(void);
+  void contoso_display_480401_create(void);
+  void contoso_display_480401_destroy(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* MY_CONSUMER_H */
+#endif /* CONTOSO_DISPLAY_480401_H */

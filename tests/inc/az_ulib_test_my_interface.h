@@ -80,7 +80,6 @@ extern "C"
     MY_COMMAND_CAPABILITY_JUST_RETURN = 0,
     MY_COMMAND_CAPABILITY_SUM,
     MY_COMMAND_CAPABILITY_UNPUBLISH,
-    MY_COMMAND_CAPABILITY_RELEASE_INTERFACE,
     MY_COMMAND_CAPABILITY_DEINIT,
     MY_COMMAND_CAPABILITY_CALL_AGAIN,
     MY_COMMAND_CAPABILITY_RETURN_ERROR
@@ -103,32 +102,23 @@ extern "C"
    * Publish interfaces.
    */
   extern const az_ulib_interface_descriptor MY_INTERFACE_A_1_1_123;
-  az_result az_ulib_test_my_interface_a_1_1_123_publish(
-      az_ulib_ipc_interface_handle* interface_handle);
+  az_result az_ulib_test_my_interface_a_1_1_123_publish(void);
   az_result az_ulib_test_my_interface_a_1_1_123_unpublish(uint32_t wait_ms);
-  az_result az_ulib_test_my_interface_b_1_1_123_publish(
-      az_ulib_ipc_interface_handle* interface_handle);
+  az_result az_ulib_test_my_interface_b_1_1_123_publish(void);
   az_result az_ulib_test_my_interface_b_1_1_123_unpublish(uint32_t wait_ms);
-  az_result az_ulib_test_my_interface_c_1_1_123_publish(
-      az_ulib_ipc_interface_handle* interface_handle);
+  az_result az_ulib_test_my_interface_c_1_1_123_publish(void);
   az_result az_ulib_test_my_interface_c_1_1_123_unpublish(uint32_t wait_ms);
-  az_result az_ulib_test_my_interface_a_2_1_123_publish(
-      az_ulib_ipc_interface_handle* interface_handle);
+  az_result az_ulib_test_my_interface_a_2_1_123_publish(void);
   az_result az_ulib_test_my_interface_a_2_1_123_unpublish(uint32_t wait_ms);
-  az_result az_ulib_test_my_interface_d_1_1_123_publish(
-      az_ulib_ipc_interface_handle* interface_handle);
+  az_result az_ulib_test_my_interface_d_1_1_123_publish(void);
   az_result az_ulib_test_my_interface_d_1_1_123_unpublish(uint32_t wait_ms);
-  az_result az_ulib_test_my_interface_d_2_1_123_publish(
-      az_ulib_ipc_interface_handle* interface_handle);
+  az_result az_ulib_test_my_interface_d_2_1_123_publish(void);
   az_result az_ulib_test_my_interface_d_2_1_123_unpublish(uint32_t wait_ms);
-  az_result az_ulib_test_my_interface_a_1_1_200_publish(
-      az_ulib_ipc_interface_handle* interface_handle);
+  az_result az_ulib_test_my_interface_a_1_1_200_publish(void);
   az_result az_ulib_test_my_interface_a_1_1_200_unpublish(uint32_t wait_ms);
-  az_result az_ulib_test_my_interface_a_1_2_123_publish(
-      az_ulib_ipc_interface_handle* interface_handle);
+  az_result az_ulib_test_my_interface_a_1_2_123_publish(void);
   az_result az_ulib_test_my_interface_a_1_2_123_unpublish(uint32_t wait_ms);
-  az_result az_ulib_test_my_interface_a_1_3_123_publish(
-      az_ulib_ipc_interface_handle* interface_handle);
+  az_result az_ulib_test_my_interface_a_1_3_123_publish(void);
   az_result az_ulib_test_my_interface_a_1_3_123_unpublish(uint32_t wait_ms);
   az_result az_ulib_test_my_interface_publish(int index);
   az_result az_ulib_test_my_interface_unpublish(int index);

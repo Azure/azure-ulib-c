@@ -14,7 +14,6 @@ option(SKIP_SAMPLES "Skip building samples (default is OFF)[if possible, they ar
 option(USE_INSTALLED_DEPENDENCIES "Use installed packages instead of building dependencies from submodules" OFF)
 option(VALIDATE_DOCUMENTATION "set to enable the -Wdocumentation flag on clang to validate documentation.
                                 If not using clang this will have no effect." OFF)
-option(REMOVE_IPC_UNPUBLISH "Remove the ipc unpublish and all the extra code required to handle it." OFF)
 
 message("CONFIGURATIONS:")
 if (NOT PRECONDITIONS)
@@ -41,12 +40,6 @@ if (NOT VALIDATE_DOCUMENTATION)
   message("  -- Validate documentation OFF")
 else()
   message("  -- Validate documentation ON")
-endif()
-
-if (REMOVE_IPC_UNPUBLISH)
-  message("  -- Unpublish in IPC OFF")
-else()
-  message("  -- Unpublish in IPC ON")
 endif()
 
 if (SKIP_SAMPLES)
@@ -127,13 +120,6 @@ if(${VALIDATE_DOCUMENTATION})
     target_compile_options(azure_ulib_c
         PRIVATE
             $<$<C_COMPILER_ID:Clang>:-Wdocumentation>
-    )
-endif()
-
-if(${REMOVE_IPC_UNPUBLISH})
-    target_compile_definitions(azure_ulib_c
-        PUBLIC
-            AZ_ULIB_CONFIG_REMOVE_UNPUBLISH
     )
 endif()
 

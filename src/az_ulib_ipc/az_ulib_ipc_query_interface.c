@@ -178,14 +178,10 @@ static const az_ulib_interface_descriptor QUERY_1_DESCRIPTOR = AZ_ULIB_DESCRIPTO
 
 az_result _az_ulib_ipc_query_interface_publish(void)
 {
-  return az_ulib_ipc_publish(&QUERY_1_DESCRIPTOR, NULL);
+  return az_ulib_ipc_publish(&QUERY_1_DESCRIPTOR);
 }
 
 az_result _az_ulib_ipc_query_interface_unpublish(void)
 {
-#ifdef AZ_ULIB_CONFIG_IPC_UNPUBLISH
   return az_ulib_ipc_unpublish(&QUERY_1_DESCRIPTOR, AZ_ULIB_NO_WAIT);
-#else
-  return AZ_OK;
-#endif // AZ_ULIB_CONFIG_IPC_UNPUBLISH
 }
