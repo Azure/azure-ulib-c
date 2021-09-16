@@ -32,37 +32,6 @@
 typedef struct az_ulib_ustream_forward_tag az_ulib_ustream_forward;
 
 /**
- * @brief   Signature of the function to be invoked by the `az_ulib_ustream_forward_flush`
- *          operation when the `const uint8_t* const` to the buffer has been created.
- *
- * @param[in]   buffer                  The `const uint8_t* const` buffer to be handled by the
- *                                      implementation of this callback.
- * @param[in]   size                    The number of `uint8_t` bytes in the
- *                                      `const uint8_t* const` buffer.
- * @param[in]   flush_callback_context  The #az_ulib_callback_context contract held between the
- *                                      owner of this callback and the caller of
- *                                      `az_ulib_ustream_forward_flush`.
- *
- * @returns     The #az_result with the result of the flush_callback.
- *      @retval #AZ_OK                        If the callback operation succeeded.
- *      @retval #AZ_ERROR_ULIB_BUSY           If the resource being accessed in the callback
- *                                            operation is busy.
- *      @retval #AZ_ERROR_CANCELED            If any one of the callback's dependent external
- *                                            calls is canceled.
- *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to to finish the
- *                                            callback operation.
- *      @retval #AZ_ERROR_ULIB_SECURITY       If any one of the callbacks's dependent
- *                                            external calls returns an error for security reasons.
- *      @retval #AZ_ERROR_ULIB_SYSTEM         If any one of the callback's dependencies
- *                                            fails at the system level.
- *
- */
-typedef az_result (*az_ulib_flush_callback)(
-    const uint8_t* const buffer,
-    size_t size,
-    az_ulib_callback_context flush_callback_context);
-
-/**
  * @brief   vTable with the ustream_forward APIs.
  *
  *  Any module that exposes the ustream_forward shall implement the functions on this vTable.
@@ -72,17 +41,11 @@ typedef az_result (*az_ulib_flush_callback)(
  */
 typedef struct az_ulib_ustream_forward_interface_tag
 {
-  /** Concrete `flush` implementation. */
-  az_result (*flush)(
-      az_ulib_ustream_forward* ustream_forward,
-      az_ulib_flush_callback flush_callback,
-      az_ulib_callback_context flush_callback_context);
 
   /** Concrete `read` implementation. */
   az_result (*read)(
       az_ulib_ustream_forward* ustream_forward,
-      uint8_t* const buffer,
-      size_t buffer_length,
+      az_span* buffer,
       size_t* const size);
 
   /** Concrete `get_size` implementation. */
@@ -147,94 +110,63 @@ struct az_ulib_ustream_forward_tag
   (!((handle == NULL) || (handle->_internal.api == NULL) || (handle->_internal.api != &type_api)))
 
 /**
- * @brief Provide data from the source to the #az_ulib_flush_callback.
- *
- *  The `az_ulib_ustream_forward_flush` API will forward the data directly from the
- *    source (provider) to be handled by the `#az_ulib_flush_callback* flush_callback`.
- *
- *  In the event that the source (provider) memory is not immediately available without a call
- *    to an external API (e.g. an HTTP connection to a blob storage provider), the flush operation
- *    will call this external API (e.g. http_response_body_get) in a loop, invoking the
- *    `flush_callback` each pass of the loop.
- *
- *  The `az_ulib_ustream_forward_flush` API will provide the consumer a pointer to the memory
- *    associated with the ustream_forward in the form of a `const uint8_t* const` buffer,
- *    to be handled in the `#az_ulib_flush_callback* flush_callback` function implemented by the
- *    consumer.
- *
- *  The `az_ulib_ustream_forward_flush` API shall meet the following minimum requirements:
- *      - The flush operation creates a `const uint8_t* const` from the `Data Source` and hands it
- *        off to the `flush_callback`
- *      - If the totality of `Data Source` is not available in the provided memory location,
- *        the API shall request the next portion of the data using the appropriate external API.
- *        This process shall be repeated in a loop until the totality of the `Data Source` has been
- *        copied.
- *      - The API shall satisfy all of the precondition requirements laid forth below.
- *
- * @param[in]       ustream_forward             The #az_ulib_ustream_forward* with the interface of
- *                                              the ustream_forward.
- * @param[out]      flush_callback              The #az_ulib_flush_callback* for the consumer to
- *                                              handle the incoming data.
- * @param[out]      flush_callback_context      The #az_ulib_callback_context contract between the
- *                                              caller and flush_callback.
- *
- * @pre     \p ustream_forward                  shall not be `NULL`.
- * @pre     \p ustream_forward                  shall be a valid ustream_forward that is the
- *                                              implemented ustream_forward type.
- * @pre     \p flush_callback                   shall not be `NULL`.
- *
- * @return The #az_result with the result of the flush operation
- *      @retval #AZ_OK                        If the flush operation succeeded in pushing the
- *                                            entire stream content to `flush_callback`.
- *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary to get the next portion of
- *                                            data is busy.
- *      @retval #AZ_ERROR_CANCELED            If any one of the flush operation's dependent
- *                                            external calls is canceled.
- *      @retval #AZ_ERROR_NOT_ENOUGH_SPACE    If there is not enough memory to finish copying the
- *                                            data from source to destination.
- *      @retval #AZ_ERROR_ULIB_SECURITY       If any one of the flush operation's dependent
- *                                            external calls returns an error for security reasons.
- *      @retval #AZ_ERROR_ULIB_SYSTEM         If any one of the flush operation's dependencies
- *                                            fails at the system level.
- */
-AZ_NODISCARD AZ_INLINE az_result az_ulib_ustream_forward_flush(
-    az_ulib_ustream_forward* ustream_forward,
-    az_ulib_flush_callback flush_callback,
-    az_ulib_callback_context flush_callback_context)
-{
-  return ustream_forward->_internal.api->flush(
-      ustream_forward, flush_callback, flush_callback_context);
-}
-
-/**
  * @brief   Gets the next portion of the ustream_forward.
  *
- * The `az_ulib_ustream_forward_read` API will copy the contents of the `Data Source` to the local
- *      buffer starting at the offset set by the previous call to `az_ulib_ustream_forward_read`.
- *      This position will be the beginning of the stream (offset of 0) the first time this API is
- *      called. The local buffer is the one referenced by the parameter `buffer`, and with the
- *      maximum size `buffer_length`.
+ * The `az_ulib_ustream_forward_read` serves 2 scenarios depending on the input parameters:
+ * 
+ *      Scenario (1): Copy memory to caller-provided local buffer
+ *      If the provided local #az_span `buffer` is NOT #AZ_SPAN_EMPTY, the API will  
+ *      copy the contents of the ustream_forward to the provided #az_span `buffer` starting at   
+ *      the offset set by the previous call to `az_ulib_ustream_forward_read` and ending at   
+ *      either the end of the provided #az_span `buffer` or the end of the ustream_forward. The   
+ *      starting position will be the beginning of the stream (offset of 0) the first time this 
+ *      API is called. The size of the content copied in the local buffer will be returned in the
+ *      parameter `size`. 
  *
- *  The buffer is defined as a `uint8_t*` and can represent any sequence of data. Pay
- *      special attention, if the data is a string, the buffer will still copy it as a sequence of
- *      `uint8_t`, and will <b>NOT</b> put any terminator at the end of the string. The size of
- *      the content copied in the local buffer will be returned in the parameter `size`.
+ *      Scenario (2): Give caller direct access to memory
+ *      If the provided local #az_span `buffer` is #AZ_SPAN_EMPTY, the API will point   
+ *      this `buffer` directly to the contents of the ustream_forward. The size of the   
+ *      ustream_forward will be returned in the parameter `size`. In the event that ustream_forward  
+ *      is associated with a data stream, requiring multiple calls to an external API to grab all  
+ *      the data, `size` will be set to the number of bytes returned by the most recent call to this  
+ *      external API. 
+ * 
+ * The data associated with the #az_span `buffer` is defined as a `uint8_t*` and can represent any
+ *      sequence of data. Pay special attention, if the data is a string, the buffer will still 
+ *      refer to it as a sequence of `uint8_t`, and will <b>NOT</b> put any terminator at the end   
+ *      of the string. 
+ * 
+ *  In the event that the ustream_forward is associated with a data stream and the source (provider) 
+ *      memory is not immediately available without a call to an external API, the read operation 
+ *      will call this external API, grabbing the returned bytes (often referred to
+ *      as the "inner buffer") to handle them in accordance with the 2 scenarios outlined above. 
+ *      Subsequent calls to the `az_ulib_ustream_forward_read` will only make additional calls to  
+ *      this external API once the inner buffer from the previous call has been completely iterated 
+ *      over. 
  *
  *  The `az_ulib_ustream_forward_read` API shall follow the following minimum requirements:
+ *  
+ * Scenario (1)
  *      - The read shall copy the contents of the `Data Source` to the provided local buffer.
- *      - If the contents of the `Data Source` is bigger than the `buffer_length`, the read shall
- *          limit the copy size up to the buffer_length.
+ *      - If the contents of the `Data Source` is bigger than the #az_span_size(`buffer`), the read
+ *        shall limit the copy size up to the size of the #az_span.
  *      - The read shall return the number of valid `uint8_t` values in the local buffer in
- *          the provided `size`.
- *      - If there is no more content to return, the read shall return
- *          #AZ_ULIB_EOF, size shall be set to 0, and will not change the contents
- *          of the local buffer.
+ *        the provided `size`.
+ *      - If there is no more content to return, the read shall return #AZ_ULIB_EOF, size shall be 
+ *        set to 0, and will not change the contents of the local buffer.
+ * 
+ * Scenario (2)
+ *      - The read operation shall create an #az_span from the `Data Source` and shall return it
+ *        along with the `size_t` size.
+ * 
+ * Both Scenarios
+ *      - If the totality of `Data Source` is not available in the provided memory location,
+ *        the API shall request the next portion of the data using the appropriate external API.
  *      - The API shall satisfy all of the precondition requirements laid forth below.
  *
  * @param[in]       ustream_forward     The #az_ulib_ustream_forward* with the interface of the
  *                                      ustream_forward.
- * @param[out]      buffer              The `uint8_t* const` that points to the local buffer.
- * @param[in]       buffer_length       The `size_t` with the size of the local buffer.
+ * @param[out]      buffer              The #az_span* that points to the local buffer.
  * @param[out]      size                The `size_t* const` that points to the place where the
  *                                      read shall store the number of valid `uint8_t` values
  *                                      returned in the local buffer.
@@ -243,12 +175,11 @@ AZ_NODISCARD AZ_INLINE az_result az_ulib_ustream_forward_flush(
  * @pre     \p ustream_forward          shall be a valid ustream_forward that is the implemented
  *                                      ustream_forward type.
  * @pre     \p buffer                   shall not be `NULL`.
- * @pre     \p buffer_length            shall not be bigger than 0.
  * @pre     \p size                     shall not be `NULL`.
  *
  * @return The #az_result with the result of the read operation.
- *      @retval #AZ_OK                        If the ustream_forward copied the content of the
- *                                            `Data Source` to the local buffer with success.
+ *      @retval #AZ_OK                        If the ustream_forward executed scenario (1) or (2)
+ *                                            successfully.
  *      @retval #AZ_ERROR_ULIB_BUSY           If the resource necessary to read the ustream_forward
  *                                            content is busy.
  *      @retval #AZ_ERROR_CANCELED            If the read of the content was cancelled.
@@ -260,11 +191,10 @@ AZ_NODISCARD AZ_INLINE az_result az_ulib_ustream_forward_flush(
  */
 AZ_NODISCARD AZ_INLINE az_result az_ulib_ustream_forward_read(
     az_ulib_ustream_forward* ustream_forward,
-    uint8_t* const buffer,
-    size_t buffer_length,
+    az_span* buffer,
     size_t* const size)
 {
-  return ustream_forward->_internal.api->read(ustream_forward, buffer, buffer_length, size);
+  return ustream_forward->_internal.api->read(ustream_forward, buffer, size);
 }
 
 /**

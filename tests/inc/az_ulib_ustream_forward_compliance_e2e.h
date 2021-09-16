@@ -6,6 +6,7 @@
 #define AZ_ULIB_USTREAM_FORWARD_COMPLIANCE_E2E_H
 
 #include "az_ulib_ustream_mock_buffer.h"
+#include "azure/core/az_span.h"
 
 #include "cmocka.h"
 
@@ -39,77 +40,56 @@ extern "C"
 #define USTREAM_FORWARD_COMPLIANCE_TEMP_BUFFER_LENGTH \
   (USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT_LENGTH / 2)
 
-static const uint8_t* const compliance_expected_content
-    = (const uint8_t*)USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT;
+  static const uint8_t* const compliance_expected_content
+      = (const uint8_t*)USTREAM_FORWARD_COMPLIANCE_EXPECTED_CONTENT;
 
-/**
- * @brief E2e test flush callback.
- */
-typedef struct ustream_forward_basic_context
-{
-  offset_t offset;
-  char buffer[100];
-} consumer_context;
+  /**
+   * Start compliance tests.
+   */
 
-static az_result flush_callback(
-    const uint8_t* const buffer,
-    size_t size,
-    az_ulib_callback_context flush_callback_context)
-{
-  // handle buffer
-  consumer_context* flush_context = (consumer_context*)flush_callback_context;
-  (void)snprintf(
-      flush_context->buffer + flush_context->offset,
-      sizeof(flush_context->buffer) / sizeof(char),
-      "%s",
-      buffer);
+  /**
+   * In the event that read does not completely traverse the buffer, flush shall pick up where read
+   * left off and successfully hand off the remaining buffer to the flush callback.
+   */
+  static void az_ulib_ustream_forward_e2e_compliance_read_flush_succeed(void** state)
+  {
+    /// arrange
+    (void)state;
+    az_ulib_ustream_forward* ustream_forward;
+    USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(&ustream_forward);
+    uint8_t buf_result[USTREAM_FORWARD_COMPLIANCE_TEMP_BUFFER_LENGTH];
+    az_span span_read_copy = AZ_SPAN_FROM_BUFFER(buf_result);
+    size_t size_result_read_copy;
+    az_span span_read_direct = AZ_SPAN_EMPTY;
+    size_t size_result_read_direct;
 
-  // adjust offset
-  flush_context->offset += size;
+    /// act
+    az_result result_read_copy
+        = az_ulib_ustream_forward_read(ustream_forward, &span_read_copy, &size_result_read_copy);
+    az_result result_read_direct = az_ulib_ustream_forward_read(
+        ustream_forward, &span_read_direct, &size_result_read_direct);
 
-  return AZ_OK;
-}
-/**
- * Start compliance tests.
- */
+    /// assert
+    assert_int_equal(result_read_copy, AZ_OK);
+    assert_int_equal(size_result_read_copy, USTREAM_FORWARD_COMPLIANCE_LENGTH_1);
+    assert_memory_equal(
+        USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT,
+        az_span_ptr(span_read_copy),
+        size_result_read_copy);
 
-/**
- * In the event that read does not completely traverse the buffer, flush shall pick up where read
- * left off and successfully hand off the remaining buffer to the flush callback.
- */
-static void az_ulib_ustream_forward_e2e_compliance_read_flush_succeed(void** state)
-{
-  /// arrange
-  (void)state;
-  az_ulib_ustream_forward* ustream_forward;
-  USTREAM_FORWARD_COMPLIANCE_TARGET_FACTORY(&ustream_forward);
-  uint8_t buf_result[USTREAM_FORWARD_COMPLIANCE_TEMP_BUFFER_LENGTH];
-  size_t size_result;
-  consumer_context test_consumer_context = { 0 };
+    assert_int_equal(result_read_direct, AZ_OK);
+    assert_int_equal(size_result_read_direct, USTREAM_FORWARD_COMPLIANCE_LENGTH_2);
+    assert_memory_equal(
+        (const uint8_t* const)(
+            USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT
+            + USTREAM_FORWARD_COMPLIANCE_LENGTH_1),
+        az_span_ptr(span_read_direct),
+        size_result_read_direct);
 
-  /// act
-  az_result result_read = az_ulib_ustream_forward_read(
-      ustream_forward, buf_result, USTREAM_FORWARD_COMPLIANCE_TEMP_BUFFER_LENGTH, &size_result);
-  az_result result_flush
-      = az_ulib_ustream_forward_flush(ustream_forward, flush_callback, &test_consumer_context);
-
-  /// assert
-  assert_int_equal(result_read, AZ_OK);
-  assert_int_equal(size_result, USTREAM_FORWARD_COMPLIANCE_LENGTH_1);
-  assert_memory_equal(USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT, buf_result, size_result);
-
-  assert_int_equal(result_flush, AZ_OK);
-  assert_int_equal(test_consumer_context.offset, USTREAM_FORWARD_COMPLIANCE_LENGTH_2);
-  assert_memory_equal(
-      (const uint8_t* const)(
-          USTREAM_FORWARD_COMPLIANCE_LOCAL_EXPECTED_CONTENT + USTREAM_FORWARD_COMPLIANCE_LENGTH_1),
-      test_consumer_context.buffer,
-      size_result);
-
-  /// cleanup
-  az_result result = az_ulib_ustream_forward_dispose(ustream_forward);
-  (void)result;
-}
+    /// cleanup
+    az_result result = az_ulib_ustream_forward_dispose(ustream_forward);
+    (void)result;
+  }
 
 #define AZ_ULIB_USTREAM_FORWARD_COMPLIANCE_E2E_LIST \
   cmocka_unit_test(az_ulib_ustream_forward_e2e_compliance_read_flush_succeed)

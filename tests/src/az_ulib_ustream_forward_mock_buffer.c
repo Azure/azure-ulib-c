@@ -6,9 +6,9 @@
 #include "az_ulib_test_thread.h"
 #include "az_ulib_ustream_base.h"
 #include "az_ulib_ustream_forward_mock_buffer.h"
+#include "azure/core/az_span.h"
 #include <stdbool.h>
 
-static az_result _concrete_flush_result = AZ_OK;
 static az_result _concrete_read_result = AZ_OK;
 static az_result _concrete_dispose_result = AZ_OK;
 
@@ -28,45 +28,38 @@ void set_concurrency_ustream_forward(void) { concurrency_ustream_forward = true;
 
 void set_delay_return_value(uint32_t delay) { delay_return_value = delay; }
 
-static az_result concrete_flush(
-    az_ulib_ustream_forward* ustream_forward,
-    az_ulib_flush_callback flush_callback,
-    az_ulib_callback_context flush_callback_context)
+static size_t concrete_get_size(az_ulib_ustream_forward* ustream_forward)
 {
   (void)ustream_forward;
-  (void)flush_callback;
-  (void)flush_callback_context;
 
-  az_result result = _concrete_flush_result;
-  _concrete_flush_result = AZ_OK;
-
-  return result;
+  return 10;
 }
 
 static az_result concrete_read(
     az_ulib_ustream_forward* ustream_forward,
-    uint8_t* const buffer,
-    size_t buffer_length,
+    az_span* buffer,
     size_t* const size)
 {
   (void)ustream_forward;
   (void)buffer;
   (void)size;
 
-  current_position += buffer_length;
-
-  *size = buffer_length;
-
+  if (!az_span_is_content_equal(*buffer, AZ_SPAN_EMPTY))
+  {
+    current_position += az_span_size(*buffer);
+    *size = az_span_size(*buffer);
+  }
+  
+  else
+  {
+    current_position += concrete_get_size(ustream_forward);
+    *size = concrete_get_size(ustream_forward);
+  }
+  
   az_result result = _concrete_read_result;
   _concrete_read_result = AZ_OK;
+
   return result;
-}
-
-static size_t concrete_get_size(az_ulib_ustream_forward* ustream_forward)
-{
-  (void)ustream_forward;
-
-  return 10;
 }
 
 static az_result concrete_dispose(az_ulib_ustream_forward* ustream_forward)
@@ -79,7 +72,7 @@ static az_result concrete_dispose(az_ulib_ustream_forward* ustream_forward)
 }
 
 static const az_ulib_ustream_forward_interface api
-    = { concrete_flush, concrete_read, concrete_get_size, concrete_dispose };
+    = { concrete_read, concrete_get_size, concrete_dispose };
 
 static az_ulib_ustream_forward USTREAM_FORWARD_COMPLIANCE_MOCK_BUFFER
     = { ._internal.api = (const az_ulib_ustream_forward_interface*)&api,
@@ -91,14 +84,11 @@ static az_ulib_ustream_forward USTREAM_FORWARD_COMPLIANCE_MOCK_BUFFER
 
 az_ulib_ustream_forward* ustream_forward_mock_create(void)
 {
-  _concrete_flush_result = AZ_OK;
   _concrete_read_result = AZ_OK;
   _concrete_dispose_result = AZ_OK;
 
   return &USTREAM_FORWARD_COMPLIANCE_MOCK_BUFFER;
 }
-
-void set_flush_result(az_result result) { _concrete_flush_result = result; }
 
 void set_read_result(az_result result) { _concrete_read_result = result; }
 

@@ -13,29 +13,11 @@
 #define START_MEMORY_OFFSET 0
 static const char ustream_forward_producer_buf[] = "Hello World!\r\n";
 
-typedef struct ustream_forward_basic_context
+typedef struct 
 {
   offset_t offset;
   char buffer[100];
-} consumer_context;
-
-static az_result flush_callback(
-    const uint8_t* const buffer,
-    size_t size,
-    az_ulib_callback_context flush_callback_context)
-{
-    // handle buffer
-    consumer_context* flush_context = (consumer_context*)flush_callback_context;
-    (void)snprintf(
-        flush_context->buffer + flush_context->offset, 
-        sizeof(flush_context->buffer) / sizeof(char), 
-        "%s", buffer);
-    
-    // adjust offset
-    flush_context->offset += size;
-
-    return AZ_OK;
-}
+} consumer_data_cb;
 
 static az_result my_consumer(void)
 {
@@ -51,16 +33,28 @@ static az_result my_consumer(void)
         NULL));
 
     // initialize context
-    consumer_context my_consumer_context = { 0 };
+    consumer_data_cb consumer_data = { 0 };
+    (void)printf("consumer_data.buffer = %s\r\n", consumer_data.buffer);
 
-    (void)printf("my_consumer_context.buffer = %s\r\n", my_consumer_context.buffer);
+    // read direct (without memcpy) from producer to consumer buffer
+    (void)printf("----- READ DIRECT ----\r\n");
 
-    // flush from producer to consumer buffer
-    (void)printf("----- FLUSH ----\r\n");
+    // grab az_span pointing to producer data
+    az_span span = AZ_SPAN_EMPTY;
+    size_t size = 0;
     AZ_ULIB_THROW_IF_AZ_ERROR(
-        az_ulib_ustream_forward_flush(&ustream_forward_instance, flush_callback, &my_consumer_context));
+        az_ulib_ustream_forward_read(&ustream_forward_instance, &span, &size));
+    
+    // write producer data to consumer buffer
+    (void)snprintf(
+        consumer_data.buffer + consumer_data.offset, 
+        size, 
+        "%s", az_span_ptr(span));
 
-    (void)printf("my_consumer_context.buffer = %s\r\n", my_consumer_context.buffer);
+    // increase offset
+    consumer_data.offset += size;
+
+    (void)printf("consumer_data.buffer = %s\r\n", consumer_data.buffer);
   }
   AZ_ULIB_CATCH(...) {}
 

@@ -33,84 +33,69 @@
 #define RESUME_WARNINGS __pragma(warning(pop));
 #endif // __clang__
 
-static az_result concrete_flush(
-    az_ulib_ustream_forward* ustream_forward,
-    az_ulib_flush_callback flush_callback,
-    az_ulib_callback_context flush_callback_context);
 static az_result concrete_read(
     az_ulib_ustream_forward* ustream_forward,
-    uint8_t* const buffer,
-    size_t buffer_length,
+    az_span* buffer,
     size_t* const size);
 static size_t concrete_get_size(az_ulib_ustream_forward* ustream_forward);
 static az_result concrete_dispose(az_ulib_ustream_forward* ustream_forward);
 static const az_ulib_ustream_forward_interface api
-    = { concrete_flush, concrete_read, concrete_get_size, concrete_dispose };
-
-static az_result concrete_flush(
-    az_ulib_ustream_forward* ustream_forward,
-    az_ulib_flush_callback flush_callback,
-    az_ulib_callback_context flush_callback_context)
-{
-  // precondition checks
-  _az_PRECONDITION_NOT_NULL(ustream_forward);
-  _az_PRECONDITION(AZ_ULIB_USTREAM_FORWARD_IS_TYPE_OF(ustream_forward, api));
-  _az_PRECONDITION_NOT_NULL(flush_callback);
-
-  az_result result;
-
-  // get size of data
-  size_t buffer_size = concrete_get_size(ustream_forward);
-
-  // point to data
-  const uint8_t* buffer = (const uint8_t*)ustream_forward->_internal.ptr
-      + ustream_forward->_internal.inner_current_position;
-
-  // invoke callback
-  result = (*flush_callback)(buffer, buffer_size, flush_callback_context);
-
-  return result;
-}
+    = { concrete_read, concrete_get_size, concrete_dispose };
 
 static az_result concrete_read(
     az_ulib_ustream_forward* ustream_forward,
-    uint8_t* const buffer,
-    size_t buffer_length,
+    az_span* buffer,
     size_t* const size)
 {
   _az_PRECONDITION(AZ_ULIB_USTREAM_FORWARD_IS_TYPE_OF(ustream_forward, api));
-  _az_PRECONDITION_NOT_NULL(buffer);
-  _az_PRECONDITION(buffer_length > 0);
   _az_PRECONDITION_NOT_NULL(size);
 
   az_result result;
 
-  if (ustream_forward->_internal.inner_current_position >= ustream_forward->_internal.length)
+  /* if the provided buffer length is greater than 0, then we perform a memcpy to the provided buffer*/
+  if (!az_span_is_content_equal(*buffer, AZ_SPAN_EMPTY))
   {
-    *size = 0;
-    result = AZ_ULIB_EOF;
+    if (ustream_forward->_internal.inner_current_position >= ustream_forward->_internal.length)
+    {
+      *size = 0;
+      result = AZ_ULIB_EOF;
+    }
+    else
+    {
+      size_t remain_size = ustream_forward->_internal.length
+          - (size_t)ustream_forward->_internal.inner_current_position;
+      *size = (az_span_size(*buffer) < remain_size) ? az_span_size(*buffer) : remain_size;
+
+      /**
+       * Since pre-conditions can be disabled by the user, compilers throw a warning for a potential
+       * memcpy to `NULL`. We disable this warning knowing that it is the user's responsibility to
+       * assure `buffer` is a valid pointer when pre-conditions are disabled for release mode.
+       * See \ref Pre-conditions "https://azure.github.io/azure-sdk/clang_design.html#pre-conditions"
+       * for more details.
+       */
+      IGNORE_MEMCPY_TO_NULL
+      memcpy(
+          buffer,
+          (const uint8_t*)ustream_forward->_internal.ptr
+              + ustream_forward->_internal.inner_current_position,
+          *size);
+      RESUME_WARNINGS
+      ustream_forward->_internal.inner_current_position += *size;
+
+      result = AZ_OK;
+    }
   }
+
+  /* if the provided buffer length is 0, then we point the buffer directly to the data including any offset from previous reads and set buffer_length as the size of the data*/
   else
   {
-    size_t remain_size = ustream_forward->_internal.length
-        - (size_t)ustream_forward->_internal.inner_current_position;
-    *size = (buffer_length < remain_size) ? buffer_length : remain_size;
+    // get size of data
+    *size = concrete_get_size(ustream_forward);
 
-    /**
-     * Since pre-conditions can be disabled by the user, compilers throw a warning for a potential
-     * memcpy to `NULL`. We disable this warning knowing that it is the user's responsibility to
-     * assure `buffer` is a valid pointer when pre-conditions are disabled for release mode.
-     * See \ref Pre-conditions "https://azure.github.io/azure-sdk/clang_design.html#pre-conditions"
-     * for more details.
-     */
-    IGNORE_MEMCPY_TO_NULL
-    memcpy(
-        buffer,
-        (const uint8_t*)ustream_forward->_internal.ptr
-            + ustream_forward->_internal.inner_current_position,
-        *size);
-    RESUME_WARNINGS
-    ustream_forward->_internal.inner_current_position += *size;
+    // point to data
+    *buffer = az_span_create((uint8_t* const)ustream_forward->_internal.ptr
+        + ustream_forward->_internal.inner_current_position, (uint32_t)(*size));
+
     result = AZ_OK;
   }
 
