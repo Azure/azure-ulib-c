@@ -61,6 +61,30 @@ static az_result my_consumer(void)
   return AZ_ULIB_TRY_RESULT;
 }
 
+    // // start ustream data transfer from blob client
+    // az_span user_buffer = az_span_create(buffer[100], 100)
+    // az_span output_buffer;
+    // else
+    // {
+    //   do
+    //   {
+    //     // grab next buffer-full from ustream_instance
+    //     if ((result = az_ulib_ustream_forward_read(&ustream_forward_instance, user_buffer, &output_buffer)))
+    //         == AZ_OK) // should not use EOF
+    //     {
+    //       // write to flash if we have not reached the end of this chunk of data
+    //       if ((hal_status = internal_flash_write((uint8_t*)address, az_span_ptr(output_buffer), az_span_size(output_buffer)))
+    //           != HAL_OK)
+    //       {
+    //         result = result_from_hal_status(hal_status);
+    //       }
+    //       // increment the write address by the last write-size
+    //       address += returned_size;
+    //     }
+    //   } while (result == AZ_OK);
+    // }
+
+
 int main(void)
 {
   az_result result;

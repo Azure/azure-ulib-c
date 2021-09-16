@@ -52,7 +52,8 @@ static az_result concrete_read(
 
   az_result result;
 
-  /* if the provided buffer length is greater than 0, then we perform a memcpy to the provided buffer*/
+  /* if the provided buffer length is greater than 0, then we perform a memcpy to the provided
+   * buffer*/
   if (!az_span_is_content_equal(*buffer, AZ_SPAN_EMPTY))
   {
     if (ustream_forward->_internal.inner_current_position >= ustream_forward->_internal.length)
@@ -70,8 +71,8 @@ static az_result concrete_read(
        * Since pre-conditions can be disabled by the user, compilers throw a warning for a potential
        * memcpy to `NULL`. We disable this warning knowing that it is the user's responsibility to
        * assure `buffer` is a valid pointer when pre-conditions are disabled for release mode.
-       * See \ref Pre-conditions "https://azure.github.io/azure-sdk/clang_design.html#pre-conditions"
-       * for more details.
+       * See \ref Pre-conditions
+       * "https://azure.github.io/azure-sdk/clang_design.html#pre-conditions" for more details.
        */
       IGNORE_MEMCPY_TO_NULL
       memcpy(
@@ -86,15 +87,18 @@ static az_result concrete_read(
     }
   }
 
-  /* if the provided buffer length is 0, then we point the buffer directly to the data including any offset from previous reads and set buffer_length as the size of the data*/
+  /* if the provided buffer is AZ_SPAN_EMPTY, then we point the buffer directly to the data
+   * including any offset from previous reads and set buffer_length as the size of the data*/
   else
   {
     // get size of data
     *size = concrete_get_size(ustream_forward);
 
     // point to data
-    *buffer = az_span_create((uint8_t* const)ustream_forward->_internal.ptr
-        + ustream_forward->_internal.inner_current_position, (uint32_t)(*size));
+    *buffer = az_span_create(
+        (uint8_t* const)ustream_forward->_internal.ptr
+            + ustream_forward->_internal.inner_current_position,
+        (uint32_t)(*size));
 
     result = AZ_OK;
   }

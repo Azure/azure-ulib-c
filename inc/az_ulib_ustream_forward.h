@@ -39,10 +39,19 @@ typedef struct az_ulib_ustream_forward_tag az_ulib_ustream_forward;
  *  Any code that will use an exposed ustream_forward shall call the APIs using the
  *      `az_ulib_ustream_forward_...` inline functions.
  */
+
+// buffer passed in by value
 typedef struct az_ulib_ustream_forward_interface_tag
 {
 
   /** Concrete `read` implementation. */
+  /**
+   * Change to:
+   * az_result (*read)(
+      az_ulib_ustream_forward* ustream_forward,
+      az_span user_buffer,
+      az_span* output_buffer);
+   * */
   az_result (*read)(
       az_ulib_ustream_forward* ustream_forward,
       az_span* buffer,
@@ -51,7 +60,12 @@ typedef struct az_ulib_ustream_forward_interface_tag
   /** Concrete `get_size` implementation. */
   size_t (*get_size)(az_ulib_ustream_forward* ustream_forward);
 
-  /** Concrete `dispose` implementation. */
+  /** Concrete `dispose` implementation. */ 
+  /**
+   * Change to:
+  az_result (*close)(az_ulib_ustream_forward* ustream_forward);
+   * 
+  */
   az_result (*dispose)(az_ulib_ustream_forward* ustream_forward);
 } az_ulib_ustream_forward_interface;
 
@@ -144,7 +158,7 @@ struct az_ulib_ustream_forward_tag
  *      this external API once the inner buffer from the previous call has been completely iterated 
  *      over. 
  *
- *  The `az_ulib_ustream_forward_read` API shall follow the following minimum requirements:
+ * The `az_ulib_ustream_forward_read` API shall follow the following minimum requirements:
  *  
  * Scenario (1)
  *      - The read shall copy the contents of the `Data Source` to the provided local buffer.
