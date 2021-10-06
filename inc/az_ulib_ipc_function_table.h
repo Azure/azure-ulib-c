@@ -2,11 +2,12 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#ifndef AZ_ULIB_IPC_INTERFACE_H
-#define AZ_ULIB_IPC_INTERFACE_H
+#ifndef AZ_ULIB_IPC_FUNCTION_TABLE_H
+#define AZ_ULIB_IPC_FUNCTION_TABLE_H
 
 #include "az_ulib_capability_api.h"
 #include "az_ulib_descriptor_api.h"
+#include "az_ulib_interface_api.h"
 #include "az_ulib_result.h"
 #include "azure/az_core.h"
 
@@ -21,16 +22,14 @@
 #include "azure/core/_az_cfg_prefix.h"
 
 /**
- * @brief Vtable to IPC APIs.
+ * @brief Function table of IPC APIs.
  *
  * Set of pointers to the IPC APIs uses to expose the IPC APIs to Modules that cannot be statically
  * linked to the IPC APIs.
  */
 typedef struct
 {
-  az_result (*publish)(
-      const az_ulib_interface_descriptor* const interface_descriptor,
-      az_ulib_ipc_interface_handle* interface_handle);
+  az_result (*publish)(const az_ulib_interface_descriptor* const interface_descriptor);
 
   az_result (*set_default)(
       az_span package_name,
@@ -55,10 +54,6 @@ typedef struct
       az_span name,
       az_ulib_capability_index* capability_index);
 
-  az_result (*get_interface)(
-      az_ulib_ipc_interface_handle original_interface_handle,
-      az_ulib_ipc_interface_handle* interface_handle);
-
   az_result (*release_interface)(az_ulib_ipc_interface_handle interface_handle);
 
   az_result (*call)(
@@ -73,12 +68,21 @@ typedef struct
       az_span model_in_span,
       az_span* model_out_span);
 
+  az_result (*split_method_name)(
+      az_span full_name,
+      az_span* device_name,
+      az_span* package_name,
+      uint32_t* package_version,
+      az_span* interface_name,
+      uint32_t* interface_version,
+      az_span* capability_name);
+
   az_result (*query)(az_span query, az_span* result, uint32_t* continuation_token);
 
   az_result (*query_next)(uint32_t* continuation_token, az_span* result);
 
-} az_ulib_ipc_table;
+} az_ulib_ipc_function_table;
 
 #include "azure/core/_az_cfg_suffix.h"
 
-#endif /* AZ_ULIB_IPC_INTERFACE_H */
+#endif /* AZ_ULIB_IPC_FUNCTION_TABLE_H */

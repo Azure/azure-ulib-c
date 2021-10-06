@@ -2,19 +2,19 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#ifndef MY_CONSUMER_H
-#define MY_CONSUMER_H
+#ifndef KEY_VAULT_1_H
+#define KEY_VAULT_1_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-  void my_consumer_create(void);
-  void my_consumer_destroy(void);
+  void key_vault_1_create(void);
+  void key_vault_1_destroy(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* MY_CONSUMER_H */
+#endif /* KEY_VAULT_1_H */

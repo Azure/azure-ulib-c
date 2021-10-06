@@ -6,11 +6,11 @@
 #include "az_ulib_pal_os_api.h"
 #include "az_ulib_result.h"
 #include "my_consumer.h"
-#include "sensors_v1i1.h"
+#include "sensors_1.h"
 #include <inttypes.h>
 #include <stdio.h>
 
-static az_ulib_ipc ipc_handle;
+static az_ulib_ipc_control_block ipc_control_block;
 
 /*
  * OS code.
@@ -25,7 +25,7 @@ int main(void)
    * Create the IPC. It shall be called at the very beginning of the application.
    * The IPC will prepare itself to receive interfaces.
    */
-  if ((result = az_ulib_ipc_init(&ipc_handle)) != AZ_OK)
+  if ((result = az_ulib_ipc_init(&ipc_control_block)) != AZ_OK)
   {
     (void)printf("Initialize IPC failed with code %" PRIi32 ".\r\n", result);
   }
@@ -35,7 +35,7 @@ int main(void)
      * After this point anybody can subscribe for telemetries in sensors.1.
      * To simulate sensors reading, sensor_v1i1 will spin a thread.
      */
-    sensors_v1i1_create();
+    sensors_1_create();
     (void)printf("\r\n");
 
     /* Consumer will use the sensors.1 interface. */
@@ -65,7 +65,7 @@ int main(void)
 
     /* Unpublish sensors.1. After this point, any call to sensors.1 will return
      * AZ_ERROR_ITEM_NOT_FOUND and the telemetry will stop.*/
-    sensors_v1i1_destroy();
+    sensors_1_destroy();
     (void)printf("\r\n");
   }
 

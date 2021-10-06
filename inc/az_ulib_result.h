@@ -34,6 +34,9 @@ enum az_result_ulib
   /** Intermediate state waiting for the end of the job. */
   AZ_ULIB_PENDING = _az_RESULT_MAKE_SUCCESS(_az_FACILITY_ULIB, 2),
 
+  /** Handle renewed with success, equivalent to AZ_OK, but with a new handle. */
+  AZ_ULIB_RENEW = _az_RESULT_MAKE_SUCCESS(_az_FACILITY_ULIB, 3),
+
   // === uLib: Error result ===
   /** Security error. */
   AZ_ERROR_ULIB_SECURITY = _az_RESULT_MAKE_ERROR(_az_FACILITY_ULIB, 1),
@@ -117,9 +120,14 @@ enum az_result_ulib
   for (int _az_i = 0; _az_i < 1; _az_i++)
 
 /**
+ * @brief   Evaluate if the result represents an error.
+ */
+#define AZ_ULIB_IS_AZ_ERROR(x) ((x & _az_ERROR_FLAG) == _az_ERROR_FLAG)
+
+/**
  * @brief   Catch command in a try catch structure.
  */
-#define AZ_ULIB_CATCH(x) if ((AZ_ULIB_TRY_RESULT & _az_ERROR_FLAG) == _az_ERROR_FLAG)
+#define AZ_ULIB_CATCH(x) if (AZ_ULIB_IS_AZ_ERROR(AZ_ULIB_TRY_RESULT))
 
 /**
  * @brief   Throw an error in a try catch structure.
@@ -147,10 +155,10 @@ enum az_result_ulib
  * Call the `command` and evaluate the az_result returned from it. If command return any error,
  * mostly something different than #AZ_OK, this macro will throw the error.
  */
-#define AZ_ULIB_THROW_IF_AZ_ERROR(command)                                 \
-  if (((AZ_ULIB_TRY_RESULT = command) & _az_ERROR_FLAG) == _az_ERROR_FLAG) \
-  {                                                                        \
-    break;                                                                 \
+#define AZ_ULIB_THROW_IF_AZ_ERROR(command)                 \
+  if (AZ_ULIB_IS_AZ_ERROR((AZ_ULIB_TRY_RESULT = command))) \
+  {                                                        \
+    break;                                                 \
   }
 
 #include "azure/core/_az_cfg_suffix.h"

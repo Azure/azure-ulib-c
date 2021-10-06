@@ -2,19 +2,19 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
-#ifndef CONTOSO_DISPLAY_48x4_1_H
-#define CONTOSO_DISPLAY_48x4_1_H
+#ifndef SENSORS_1_H
+#define SENSORS_1_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-  void contoso_display_48x4_1_create(void);
-  void contoso_display_48x4_1_destroy(void);
+  void sensors_1_create(void);
+  void sensors_1_destroy(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* CONTOSO_DISPLAY_48x4_1_H */
+#endif /* SENSORS_1_H */

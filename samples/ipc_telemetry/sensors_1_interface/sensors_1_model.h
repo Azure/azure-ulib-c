@@ -31,9 +31,9 @@ extern "C"
  * Define temperature telemetry on sensors interface.
  */
 #define SENSORS_1_TEMPERATURE_TELEMETRY_NAME "temperature"
-#define SENSORS_1_SUBSCRIBE_TEMPERATURE_TELEMETRY (az_ulib_capability_index)0
+#define SENSORS_1_SUBSCRIBE_TEMPERATURE_TELEMETRY ((az_ulib_capability_index)0)
 #define SENSORS_1_SUBSCRIBE_TEMPERATURE_TELEMETRY_NAME "subscribe_temperature"
-#define SENSORS_1_UNSUBSCRIBE_TEMPERATURE_TELEMETRY (az_ulib_capability_index)1
+#define SENSORS_1_UNSUBSCRIBE_TEMPERATURE_TELEMETRY ((az_ulib_capability_index)1)
 #define SENSORS_1_UNSUBSCRIBE_TEMPERATURE_TELEMETRY_NAME "unsubscribe_temperature"
 #define SENSORS_1_TEMPERATURE_CELSIUS_NAME "t_c"
   typedef struct
@@ -45,9 +45,9 @@ extern "C"
  * Define accelerometer telemetry on sensors interface.
  */
 #define SENSORS_1_ACCELEROMETER_TELEMETRY_NAME "accelerometer"
-#define SENSORS_1_SUBSCRIBE_ACCELEROMETER_TELEMETRY (az_ulib_capability_index)2
+#define SENSORS_1_SUBSCRIBE_ACCELEROMETER_TELEMETRY ((az_ulib_capability_index)2)
 #define SENSORS_1_SUBSCRIBE_ACCELEROMETER_TELEMETRY_NAME "subscribe_accelerometer"
-#define SENSORS_1_UNSUBSCRIBE_ACCELEROMETER_TELEMETRY (az_ulib_capability_index)3
+#define SENSORS_1_UNSUBSCRIBE_ACCELEROMETER_TELEMETRY ((az_ulib_capability_index)3)
 #define SENSORS_1_UNSUBSCRIBE_ACCELEROMETER_TELEMETRY_NAME "unsubscribe_accelerometer"
 #define SENSORS_1_ACCELEROMETER_X_NAME "x"
 #define SENSORS_1_ACCELEROMETER_Y_NAME "y"
@@ -62,19 +62,15 @@ extern "C"
 /*
  * Define reading temperature interval property on sensors interface.
  */
-#define SENSORS_1_GET_TEMPERATURE_INTERVAL_PROPERTY (az_ulib_capability_index)4
-#define SENSORS_1_GET_TEMPERATURE_INTERVAL_PROPERTY_NAME "get_temperature_interval"
-#define SENSORS_1_SET_TEMPERATURE_INTERVAL_PROPERTY (az_ulib_capability_index)5
-#define SENSORS_1_SET_TEMPERATURE_INTERVAL_PROPERTY_NAME "set_temperature_interval"
+#define SENSORS_1_TEMPERATURE_INTERVAL_PROPERTY ((az_ulib_capability_index)4)
+#define SENSORS_1_TEMPERATURE_INTERVAL_PROPERTY_NAME "temperature_interval"
   typedef uint32_t sensors_1_temperature_interval_model;
 
 /*
  * Define reading accelerometer interval property on sensors interface.
  */
-#define SENSORS_1_GET_ACCELEROMETER_INTERVAL_PROPERTY (az_ulib_capability_index)6
-#define SENSORS_1_GET_ACCELEROMETER_INTERVAL_PROPERTY_NAME "get_accelerometer_interval"
-#define SENSORS_1_SET_ACCELEROMETER_INTERVAL_PROPERTY (az_ulib_capability_index)7
-#define SENSORS_1_SET_ACCELEROMETER_INTERVAL_PROPERTY_NAME "set_accelerometer_interval"
+#define SENSORS_1_ACCELEROMETER_INTERVAL_PROPERTY ((az_ulib_capability_index)5)
+#define SENSORS_1_ACCELEROMETER_INTERVAL_PROPERTY_NAME "accelerometer_interval"
   typedef uint32_t sensors_1_accelerometer_interval_model;
 
 #ifdef __cplusplus
