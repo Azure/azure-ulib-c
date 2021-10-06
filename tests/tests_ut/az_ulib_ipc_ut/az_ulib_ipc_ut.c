@@ -2088,8 +2088,13 @@ static void az_ulib_ipc_try_get_interface_with_max_interface_instances_failed(vo
 {
   /// arrange
   (void)state;
-  az_ulib_ipc_interface_handle interface_handle[AZ_ULIB_CONFIG_MAX_IPC_INSTANCES] = { 0 };
+  az_ulib_ipc_interface_handle interface_handle[AZ_ULIB_CONFIG_MAX_IPC_INSTANCES];
   az_ulib_ipc_interface_handle interface_handle_plus_one = { 0 };
+  for (int i = 0; i < AZ_ULIB_CONFIG_MAX_IPC_INSTANCES; i++)
+  {
+    interface_handle[i]._internal.ipc_interface = NULL;
+    interface_handle[i]._internal.interface_hash = 0;
+  }
 
   init_ipc_and_publish_interfaces();
 

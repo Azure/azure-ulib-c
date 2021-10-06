@@ -36,7 +36,7 @@ typedef enum
   /** None flag set. */
   AZ_ULIB_IPC_FLAGS_NONE = 0x00,
 
-  /** Set that this package is the default for this interface. */
+  /** Set that this package as the default for this interface. */
   AZ_ULIB_IPC_FLAGS_DEFAULT = 0x01,
 
   /** Put this interface on hold so it can be unpublished. */
@@ -51,7 +51,7 @@ typedef struct
   /** Pointer to the interface descriptor. */
   volatile const az_ulib_interface_descriptor* interface_descriptor;
 
-  /** Number that uniquely identify this interface in the current life-cycle of the device. */
+  /** Number that uniquely identify this interface in the current power cycle of the device. */
   uint32_t hash;
 
   /** Set of interface flags. */
@@ -72,8 +72,13 @@ typedef struct
 {
   struct
   {
+    /** Lock to make IPC operations thread safe. */
     az_ulib_pal_os_lock lock;
+
+    /** Reserved memory space to store the interfaces control block. */
     _az_ulib_ipc_interface interface_list[AZ_ULIB_CONFIG_MAX_IPC_INTERFACE];
+
+    /** Counter to unique identify the interface in the device. It is incremented by one for each interface installation. */
     uint32_t publish_count;
   } _internal;
 } az_ulib_ipc_control_block;

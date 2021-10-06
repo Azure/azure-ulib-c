@@ -224,7 +224,7 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  *
  * The returned handle can be used as many times as the caller needs. After released, the handle
  * shall not be used anymore unless you call this API again. This API will try to reuse the released
- * handle by checking the hash. This check is faster than look up for the interface by name.
+ * handle by checking the hash. This check is faster than looking up the interface by name.
  *
  * Because the interface handle is a input/output parameter, it shall be initialized with `0`.
  * ```c
@@ -302,8 +302,8 @@ AZ_NODISCARD az_result az_ulib_ipc_try_get_capability(
  * is necessary to decrease the reference counter. IPC will only free any memory related to the
  * interface when all components that got this interface releases it.
  *
- * @note    **Do not release an interface will cause memory leak and block the interface to be
- *          released.**
+ * @note    **Not release an interface will cause memory leak and will block the interface to be
+ *          unpublished and consequently updated.**
  *
  * @note    **This API cannot be called in parallel with az_ulib_ipc_cal() or
  *          az_ulib_ipc_try_get_capability(). Call it in parallel may result in the CPU to
@@ -384,8 +384,8 @@ AZ_NODISCARD az_result az_ulib_ipc_call_with_str(
  *      match the published name and version.
  * 3. The names are case sensitive.
  * 4. If device_name or capability_name is not provided, this function shall return #AZ_SPAN_EMPTY.
- * 5. The package_version can be a number or a wild-card character `*`, this function shall return
- *      `package_version` = #AZ_ULIB_VERSION_DEFAULT for a wild-card character.
+ * 5. The package_version can be a number or a wildcard character `*`. This function shall return
+ *      `package_version` = #AZ_ULIB_VERSION_DEFAULT for a wildcard character.
  *
  * @param[in]   full_name           The `az_span` with the method full name.
  * @param[out]  device_name         The pointer to `az_span` to return the device name.

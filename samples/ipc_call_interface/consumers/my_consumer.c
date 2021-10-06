@@ -232,14 +232,13 @@ void my_consumer_do_cipher(uint32_t algorithm)
     }
     AZ_ULIB_CATCH(...)
     {
-      switch (AZ_ULIB_TRY_RESULT)
+      if (AZ_ULIB_TRY_RESULT == AZ_ERROR_NOT_SUPPORTED)
       {
-        case AZ_ERROR_NOT_SUPPORTED:
-          (void)printf("cipher.1 does not support algorithm %" PRIu32 ".\r\n", algorithm);
-          break;
-        default:
-          (void)printf("cipher.1 failed with error 0x%" PRIx32 ".\r\n", AZ_ULIB_TRY_RESULT);
-          break;
+        (void)printf("cipher.1 does not support algorithm %" PRIu32 ".\r\n", algorithm);
+      }
+      else
+      {
+        (void)printf("cipher.1 failed with error 0x%" PRIx32 ".\r\n", AZ_ULIB_TRY_RESULT);
       }
     }
 
@@ -248,10 +247,10 @@ void my_consumer_do_cipher(uint32_t algorithm)
   }
   else if (result == AZ_ERROR_ITEM_NOT_FOUND)
   {
-    (void)printf("cypher.1 is not available.\r\n");
+    (void)printf("cipher.1 is not available.\r\n");
   }
   else
   {
-    (void)printf("Get cypher.1 interface failed with code %" PRIi32 "\r\n", result);
+    (void)printf("Get cipher.1 interface failed with code %" PRIi32 "\r\n", result);
   }
 }
