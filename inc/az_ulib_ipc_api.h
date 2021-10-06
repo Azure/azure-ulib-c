@@ -195,8 +195,8 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
  * need this interface anymore, it shall release the handle by calling
  * az_ulib_ipc_release_interface().
  *
- * @note    **Do not release an interface will cause memory leak and block the interface to be
- *          released.**
+ * @note    **Not release an interface will cause memory leak and will block the interface to be
+ *          unpublished and consequently updated.**
  *
  * An interface is identified by 3 characteristics.
  *  1. device:      Identifies **where** the interface is on a complex device that is composed by

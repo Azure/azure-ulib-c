@@ -345,7 +345,7 @@ static void az_ulib_ipc_try_get_interface_with_empty_interface_name_failed(void*
 
 /* If the provided interface version is AZ_ULIB_VERSION_DEFAULT, the az_ulib_ipc_try_get_interface
  * shall fail with precondition. */
-static void az_ulib_ipc_try_get_interface_with_defult_interface_version_failed(void** state)
+static void az_ulib_ipc_try_get_interface_with_default_interface_version_failed(void** state)
 {
   /// arrange
   (void)state;
@@ -2824,7 +2824,7 @@ int az_ulib_ipc_ut()
     cmocka_unit_test(az_ulib_ipc_unpublish_with_ipc_not_initialized_failed),
     cmocka_unit_test(az_ulib_ipc_unpublish_with_null_descriptor_failed),
     cmocka_unit_test(az_ulib_ipc_try_get_interface_with_empty_interface_name_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_defult_interface_version_failed),
+    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_default_interface_version_failed),
     cmocka_unit_test(az_ulib_ipc_try_get_interface_with_empty_package_name_failed),
     cmocka_unit_test(az_ulib_ipc_try_get_interface_with_null_handle_failed),
     cmocka_unit_test(az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed),
