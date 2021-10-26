@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "az_ulib_port.h"
+#include "az_ulib_pal_api.h"
 #include "az_ulib_result.h"
 #include "az_ulib_ustream.h"
 

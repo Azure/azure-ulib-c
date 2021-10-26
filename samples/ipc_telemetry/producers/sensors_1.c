@@ -3,7 +3,7 @@
 // See LICENSE file in the project root for full license information.
 
 #include "sensors_1.h"
-#include "az_ulib_pal_os_api.h"
+#include "az_ulib_pal_api.h"
 #include "az_ulib_result.h"
 #include "sensors_1_capabilities.h"
 #include "sensors_1_model.h"

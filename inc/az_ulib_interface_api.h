@@ -16,8 +16,7 @@
 #include "az_ulib_capability_api.h"
 #include "az_ulib_config.h"
 #include "az_ulib_descriptor_api.h"
-#include "az_ulib_pal_os_api.h"
-#include "az_ulib_port.h"
+#include "az_ulib_pal_api.h"
 #include "az_ulib_result.h"
 
 #ifndef __cplusplus

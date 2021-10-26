@@ -3,7 +3,8 @@
 // See LICENSE file in the project root for full license information.
 
 #include "az_ulib_ipc_api.h"
-#include "az_ulib_pal_os_api.h"
+#include "az_ulib_pal_api.h"
+#include "az_ulib_registry_api.h"
 #include "az_ulib_result.h"
 #include "my_consumer.h"
 #include "sensors_1.h"
@@ -11,6 +12,24 @@
 #include <stdio.h>
 
 static az_ulib_ipc_control_block ipc_control_block;
+
+#define REGISTRY_PAGE_SIZE 0x800
+
+/* Static memory to store registry information. */
+static uint8_t registry_buffer[REGISTRY_PAGE_SIZE * 2];
+static uint8_t registry_informarmation_buffer[REGISTRY_PAGE_SIZE];
+
+#define __REGISTRY_START (registry_buffer[0])
+#define __REGISTRY_END (registry_buffer[(REGISTRY_PAGE_SIZE * 2) - 1])
+#define __REGISTRYINFO_START (registry_informarmation_buffer[0])
+#define __REGISTRYINFO_END (registry_informarmation_buffer[REGISTRY_PAGE_SIZE - 1])
+
+static const az_ulib_registry_control_block registry_cb
+    = { .registry_start = (void*)(&__REGISTRY_START),
+        .registry_end = (void*)(&__REGISTRY_END),
+        .registry_info_start = (void*)(&__REGISTRYINFO_START),
+        .registry_info_end = (void*)(&__REGISTRYINFO_END),
+        .page_size = REGISTRY_PAGE_SIZE };
 
 /*
  * OS code.
@@ -20,6 +39,10 @@ int main(void)
   az_result result;
 
   (void)printf("Start ipc_telemetry sample.\r\n\r\n");
+
+  /* Start Registry. */
+  az_ulib_registry_init(&registry_cb);
+  az_ulib_registry_clean_all();
 
   /*
    * Create the IPC. It shall be called at the very beginning of the application.
@@ -68,6 +91,8 @@ int main(void)
     sensors_1_destroy();
     (void)printf("\r\n");
   }
+
+  az_ulib_registry_deinit();
 
   return 0;
 }

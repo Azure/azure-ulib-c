@@ -328,7 +328,7 @@
 
 #include "az_ulib_base.h"
 #include "az_ulib_config.h"
-#include "az_ulib_pal_os.h"
+#include "az_ulib_pal_api.h"
 #include "az_ulib_result.h"
 
 #ifdef __cplusplus
