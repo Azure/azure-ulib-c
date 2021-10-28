@@ -7,7 +7,7 @@ resources:
 jobs:
 - job: checksubmodule  
   pool:
-    name: Hosted Ubuntu 1604
+    vmImage: 'ubuntu-18.04'
   steps:
   - script: |
       sudo apt-get update && apt-get install -y \
@@ -25,7 +25,7 @@ jobs:
     displayName: 'build'   
 - job: windowsx86
   pool: 
-    vmImage: 'vs2017-win2016'
+    vmImage: 'windows-2019'
   steps:
   - script: |
      if exist build_all\windows_c.cmd (
@@ -37,7 +37,8 @@ jobs:
 - job: raspberrypi
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/raspberrypi-c"
-  pool: Hosted Ubuntu 1604
+  pool:
+    vmImage: 'ubuntu-18.04'
   displayName: raspberrypi
   steps:
   - script: |
@@ -51,7 +52,8 @@ jobs:
 - job: ubuntu
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/linux-c-ubuntu:cmake3.19"
-  pool: Hosted Ubuntu 1604
+  pool:
+    vmImage: 'ubuntu-18.04'
   displayName: 'ubuntu'
   steps:
   - script: |
@@ -67,7 +69,8 @@ jobs:
 - job: linuxoptions
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/vsts-linux-c-ubuntu"
-  pool: Hosted Ubuntu 1604
+  pool:
+    vmImage: 'ubuntu-18.04'
   displayName: 'linux-options'
   steps:
   - script: | 
@@ -92,7 +95,7 @@ jobs:
     condition: always() 
 - job: windowsdynamic
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: 'windows-2019'
   steps:
   - script: |
      if exist build_all\windows_c_build_as_dynamic.cmd (
@@ -104,7 +107,8 @@ jobs:
 - job: clang
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/ubuntu-clang"
-  pool: Hosted Ubuntu 1604
+  pool:
+    vmImage: 'ubuntu-18.04'
   displayName: 'clang'
   steps:
   - script: |
@@ -121,7 +125,8 @@ jobs:
 - job: debian
   variables:
     _PREVIEW_VSTS_DOCKER_IMAGE: "aziotbld/c-debian"
-  pool: Hosted Ubuntu 1604
+  pool:
+    vmImage: 'ubuntu-18.04'
   displayName: 'debian'
   steps:
   - script: |
@@ -137,7 +142,7 @@ jobs:
     condition: always()    
 - job: windowsx64
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: 'windows-2019'
   displayName: 'windowsx64'
   steps:
   - script: |
