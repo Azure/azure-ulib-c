@@ -8,7 +8,7 @@
 #ifndef AZ_ULIB_PAL_API_H
 #define AZ_ULIB_PAL_API_H
 
-#include "az_ulib_pal_flash_driver.h"
+#include "_az_ulib_pal_flash_driver.h"
 #include "az_ulib_pal_os_api.h"
 #include "az_ulib_port.h"
 

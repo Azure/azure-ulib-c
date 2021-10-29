@@ -1,6 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-// See LICENSE file in the project root for full license information.
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_registry_api.h"
@@ -21,9 +20,9 @@ static uint8_t registry_buffer[REGISTRY_PAGE_SIZE * 2];
 static uint8_t registry_informarmation_buffer[REGISTRY_PAGE_SIZE];
 
 #define __REGISTRY_START (registry_buffer[0])
-#define __REGISTRY_END (registry_buffer[(REGISTRY_PAGE_SIZE * 2) - 1])
+#define __REGISTRY_END (registry_buffer[(REGISTRY_PAGE_SIZE * 2)])
 #define __REGISTRYINFO_START (registry_informarmation_buffer[0])
-#define __REGISTRYINFO_END (registry_informarmation_buffer[REGISTRY_PAGE_SIZE - 1])
+#define __REGISTRYINFO_END (registry_informarmation_buffer[REGISTRY_PAGE_SIZE])
 
 static const az_ulib_registry_control_block registry_cb
     = { .registry_start = (void*)(&__REGISTRY_START),

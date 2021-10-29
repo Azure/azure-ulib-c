@@ -16,8 +16,8 @@
  * and they are subject to change in future versions of the DCF which would break your code.
  */
 
-#ifndef AZ_ULIB_PAL_FLASH_DRIVER_H
-#define AZ_ULIB_PAL_FLASH_DRIVER_H
+#ifndef _az_ULIB_PAL_FLASH_DRIVER_H
+#define _az_ULIB_PAL_FLASH_DRIVER_H
 
 #include "az_ulib_result.h"
 
@@ -51,7 +51,7 @@ extern "C"
 
     /** Flash address to write the data. */
     uint64_t* destination_ptr;
-  } az_ulib_pal_flash_driver_control_block;
+  } _az_ulib_pal_flash_driver_control_block;
 
   /**
    * @brief [**INTERNAL ONLY**]Write 64 bits in the flash.
@@ -59,8 +59,8 @@ extern "C"
    * This is a standalone function to write 64 bits, or a doubleword, into the internal MCU flash.
    * This function assumes that the flash is already erased.
    *
-   * @param[in]     destination_ptr       The pointer to #uint64_t to write the 64 bits.
-   * @param[in]     value                 The #uint64_t with the value to write.
+   * @param[in]     destination_ptr       The pointer to `uint64_t` to write the 64 bits.
+   * @param[in]     value                 The `uint64_t` with the value to write.
    *
    * @return The #az_result with the result of the write in the flash.
    *      @retval #AZ_OK                        If write in the flash was successful.
@@ -68,7 +68,7 @@ extern "C"
    *      @retval #AZ_ERROR_ULIB_BUSY           If the HAL layer is busy.
    *      @retval #AZ_ERROR_ULIB_TIMEOUT        If the HAL layer is throw a timeout error.
    */
-  az_result az_ulib_pal_flash_driver_write_64(uint64_t* destination_ptr, uint64_t value);
+  az_result _az_ulib_pal_flash_driver_write_64(uint64_t* destination_ptr, uint64_t value);
 
   /**
    * @brief [**INTERNAL ONLY**]Erase multiple bytes in the flash.
@@ -80,8 +80,8 @@ extern "C"
    * To keep the page alignment, this API may erase bytes before `destination_ptr` and the amount of
    * bytes may be bigger than `size`.
    *
-   * @param[in]     destination_ptr       The pointer to #uint64_t to erase.
-   * @param[in]     size                  The #uint32_t with the number of bytes to erase.
+   * @param[in]     destination_ptr       The pointer to `uint64_t` to erase.
+   * @param[in]     size                  The `uint32_t` with the number of bytes to erase.
    *
    * @return The #az_result with the result of the erase flash.
    *      @retval #AZ_OK                        If erase flash was successful.
@@ -89,37 +89,37 @@ extern "C"
    *      @retval #AZ_ERROR_ULIB_BUSY           If the HAL layer is busy.
    *      @retval #AZ_ERROR_ULIB_TIMEOUT        If the HAL layer is throw a timeout error.
    */
-  az_result az_ulib_pal_flash_driver_erase(uint64_t* destination_ptr, uint32_t size);
+  az_result _az_ulib_pal_flash_driver_erase(uint64_t* destination_ptr, uint32_t size);
 
   /**
    * @brief [**INTERNAL ONLY**]Open flash to write on it.
    *
    * This function initialize the flash_cb, preparing the flash to write a buffer larger than 64
-   * bits. For buffers smaller than 64 bits, refer to az_ulib_pal_flash_driver_write_64(). This
-   * function *assumes* that the flash is already erased. See az_ulib_pal_flash_driver_erase() to
+   * bits. For buffers smaller than 64 bits, refer to _az_ulib_pal_flash_driver_write_64(). This
+   * function *assumes* that the flash is already erased. See _az_ulib_pal_flash_driver_erase() to
    * erase the flash.
    *
-   * @param[in,out] flash_cb              The pointer to #az_ulib_pal_flash_driver_control_block
-   * with the flash driver control block. It cannot be NULL.
-   * @param[in]     destination_ptr       The pointer to #uint64_t to write the data.
+   * @param[in,out] flash_cb              The pointer to #_az_ulib_pal_flash_driver_control_block
+   *                                      with the flash driver control block. It cannot be NULL.
+   * @param[in]     destination_ptr       The pointer to `uint64_t` to write the data.
    *
    * @return The #az_result with the result of the open flash.
    *      @retval #AZ_OK                        If open flash was successful.
    */
-  az_result az_ulib_pal_flash_driver_open(
-      az_ulib_pal_flash_driver_control_block* flash_cb,
+  az_result _az_ulib_pal_flash_driver_open(
+      _az_ulib_pal_flash_driver_control_block* flash_cb,
       uint64_t* destination_ptr);
 
   /**
    * @brief [**INTERNAL ONLY**]Write data to flash.
    *
    * This function write data in the flash controlled by the flash_cb. See
-   * az_ulib_pal_flash_driver_open() to initialize the flash_cb.
+   * _az_ulib_pal_flash_driver_open() to initialize the flash_cb.
    *
-   * @param[in,out] flash_cb              The pointer to #az_ulib_pal_flash_driver_control_block
-   * with the flash driver control block. It cannot be NULL.
-   * @param[in]     source_ptr            The pointer to #uint8_t to with the source data to write.
-   * @param[in]     size                  The #uint32_t to with the number of bytes to write.
+   * @param[in,out] flash_cb              The pointer to #_az_ulib_pal_flash_driver_control_block
+   *                                      with the flash driver control block. It cannot be NULL.
+   * @param[in]     source_ptr            The pointer to `uint8_t` to with the source data to write.
+   * @param[in]     size                  The `uint32_t` to with the number of bytes to write.
    *
    * @return The #az_result with the result of the write to flash.
    *      @retval #AZ_OK                        If write to flash was successful.
@@ -127,8 +127,8 @@ extern "C"
    *      @retval #AZ_ERROR_ULIB_BUSY           If the HAL layer is busy.
    *      @retval #AZ_ERROR_ULIB_TIMEOUT        If the HAL layer is throw a timeout error.
    */
-  az_result az_ulib_pal_flash_driver_write(
-      az_ulib_pal_flash_driver_control_block* flash_cb,
+  az_result _az_ulib_pal_flash_driver_write(
+      _az_ulib_pal_flash_driver_control_block* flash_cb,
       uint8_t* source_ptr,
       uint32_t size);
 
@@ -138,9 +138,9 @@ extern "C"
    * This function write any pending data in the flash controlled by the flash_cb and close the
    * flash_cb.
    *
-   * @param[in,out] flash_cb              The pointer to #az_ulib_pal_flash_driver_control_block
-   * with the flash driver control block. It cannot be NULL.
-   * @param[in]     pad                   The #uint8_t to pad the end of the memory.
+   * @param[in,out] flash_cb              The pointer to #_az_ulib_pal_flash_driver_control_block
+   *                                      with the flash driver control block. It cannot be NULL.
+   * @param[in]     pad                   The `uint8_t` to pad the end of the memory.
    *
    * @return The #az_result with the result of the close flash.
    *      @retval #AZ_OK                        If close flash was successful.
@@ -148,12 +148,12 @@ extern "C"
    *      @retval #AZ_ERROR_ULIB_BUSY           If the HAL layer is busy.
    *      @retval #AZ_ERROR_ULIB_TIMEOUT        If the HAL layer is throw a timeout error.
    */
-  az_result az_ulib_pal_flash_driver_close(
-      az_ulib_pal_flash_driver_control_block* flash_cb,
+  az_result _az_ulib_pal_flash_driver_close(
+      _az_ulib_pal_flash_driver_control_block* flash_cb,
       uint8_t pad);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* AZ_ULIB_PAL_FLASH_DRIVER_H */
+#endif /* _az_ULIB_PAL_FLASH_DRIVER_H */

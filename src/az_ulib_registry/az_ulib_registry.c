@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+#include "_az_ulib_pal_flash_driver.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_ipc_function_table.h"
-#include "az_ulib_pal_flash_driver.h"
 #include "az_ulib_registry_api.h"
 #include "az_ulib_result.h"
 #include <azure/core/internal/az_precondition_internal.h>
@@ -12,16 +12,24 @@
 #include <stdint.h>
 #include <string.h>
 
-/*
+/**
+ * @brief   Registry single instance.
+ *
  * Registry shall be singleton, so we need a static variable to handle the
  * single instance. This variable is initialized in the az_ulib_registry_init() function.
  */
 static const az_ulib_registry_control_block* _az_ulib_registry_cb = NULL;
+
+/**
+ * @brief   Registry lock to make APIs thread safe.
+ */
 static az_ulib_pal_os_lock registry_lock;
 
 /**
- * @brief Struct including two #az_span that each contains a pointer and a size for each key and
- * value to be stored in the flash. Used exclusively in az_ulib_registry_node structs.
+ * @brief   Key value pair.
+ *
+ * Structure including two #az_span that each contains a pointer and a size for each key and
+ * value to be stored in the flash. Used exclusively in #registry_node.
  */
 typedef struct
 {
@@ -34,31 +42,31 @@ typedef struct
   az_span value;
 } registry_key_value_ptrs;
 
-/*
- * Structure for the registry control node.
+/**
+ * @brief   Structure for the registry control node.
  *
  * Every entry into the registry of the device will have a registry control node that contains
  * relevant information to restore the state of the registry after device power cycle.
  */
 typedef struct
 {
-  /* Two flags that shows the status of a node in the registry (ready, deleted). If both flags
+  /** Two flags that shows the status of a node in the registry (ready, deleted). If both flags
    * are set, the node is deleted and cannot be used again. */
   uint64_t ready_flag;
 
-  /* Flag that shows the status of a node in the registry. If this flag is 0xFFFFFFFFFFFFFFFF, the
+  /** Flag that shows the status of a node in the registry. If this flag is 0xFFFFFFFFFFFFFFFF, the
    * data was not deleted anything else represents a deleted data. */
   uint64_t delete_flag;
 
-  /* The #az_span that contains a pointer to a location in flash storing the key and value chars and
-   * size.*/
+  /** The #az_span that contains a pointer to a location in flash storing the key and value chars
+   * and size.*/
   registry_key_value_ptrs key_value;
 
 } registry_node;
 
 #define AZ_ULIB_REGISTRY_FLAG_SIZE 8 // in bytes
 
-#define ROUND_UP_TO_NUMBER_OF_64BITS(x) (x >> 3) + (((x & 0x7) == 0) ? 0 : 1)
+#define NUMBER_OF_64BITS(x) (x >> 3) + (((x & 0x7) == 0) ? 0 : 1)
 #define ROUND_UP_TO_64BITS(x) (((x & 0x7) == 0) ? x : ((x & (~0x7)) + 0x8))
 
 /* registry_node status flags */
@@ -68,12 +76,12 @@ typedef struct
 
 static inline az_result set_registry_node_ready_flag(registry_node* address)
 {
-  return az_ulib_pal_flash_driver_write_64(&(address->ready_flag), REGISTRY_READY);
+  return _az_ulib_pal_flash_driver_write_64(&(address->ready_flag), REGISTRY_READY);
 }
 
 static inline az_result set_registry_node_delete_flag(registry_node* address)
 {
-  return az_ulib_pal_flash_driver_write_64(&(address->delete_flag), REGISTRY_DELETED);
+  return _az_ulib_pal_flash_driver_write_64(&(address->delete_flag), REGISTRY_DELETED);
 }
 
 static bool is_empty_buf(uint8_t* test_buf, int32_t buf_size)
@@ -122,12 +130,12 @@ static az_result store_registry_node(registry_node node, registry_node** node_pt
         AZ_ERROR_NOT_ENOUGH_SPACE);
 
     /* Store az_span (pointer + size) to key value pair into flash. */
-    az_ulib_pal_flash_driver_control_block key_value_cb;
+    _az_ulib_pal_flash_driver_control_block key_value_cb;
     AZ_ULIB_THROW_IF_AZ_ERROR(
-        az_ulib_pal_flash_driver_open(&key_value_cb, (uint64_t*)&(runner->key_value)));
-    AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_pal_flash_driver_write(
+        _az_ulib_pal_flash_driver_open(&key_value_cb, (uint64_t*)&(runner->key_value)));
+    AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_pal_flash_driver_write(
         &key_value_cb, (uint8_t*)&(node.key_value), (uint32_t)sizeof(registry_key_value_ptrs)));
-    AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_pal_flash_driver_close(&key_value_cb, 0x00));
+    AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_pal_flash_driver_close(&key_value_cb, 0x00));
 
     /* Return pointer to this node for setting flags later */
     *node_ptr = runner;
@@ -273,8 +281,8 @@ AZ_NODISCARD az_result az_ulib_registry_add(az_span key, az_span value)
       /* Validate for duplicates before adding new entry */
       AZ_ULIB_THROW_IF_ERROR((find_node_in_registry(key) == NULL), AZ_ERROR_ULIB_ELEMENT_DUPLICATE);
 
-      int32_t size_of_key_in_64_bits = ROUND_UP_TO_NUMBER_OF_64BITS(az_span_size(key));
-      int32_t size_of_value_in_64_bits = ROUND_UP_TO_NUMBER_OF_64BITS(az_span_size(value));
+      int32_t size_of_key_in_64_bits = NUMBER_OF_64BITS(az_span_size(key));
+      int32_t size_of_value_in_64_bits = NUMBER_OF_64BITS(az_span_size(value));
 
       /* Find destination in flash buffer */
       key_dest_ptr = get_start_registry_data_free_space();
@@ -294,18 +302,18 @@ AZ_NODISCARD az_result az_ulib_registry_add(az_span key, az_span value)
       AZ_ULIB_THROW_IF_AZ_ERROR(store_registry_node(new_node, &new_node_ptr));
 
       /* Write key to flash */
-      az_ulib_pal_flash_driver_control_block key_flash_cb;
-      AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_pal_flash_driver_open(&key_flash_cb, key_dest_ptr));
-      AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_pal_flash_driver_write(
+      _az_ulib_pal_flash_driver_control_block key_flash_cb;
+      AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_pal_flash_driver_open(&key_flash_cb, key_dest_ptr));
+      AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_pal_flash_driver_write(
           &key_flash_cb, az_span_ptr(key), (uint32_t)az_span_size(key)));
-      AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_pal_flash_driver_close(&key_flash_cb, 0x00));
+      AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_pal_flash_driver_close(&key_flash_cb, 0x00));
 
       /* Write value to flash */
-      az_ulib_pal_flash_driver_control_block value_flash_cb;
-      AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_pal_flash_driver_open(&value_flash_cb, value_dest_ptr));
-      AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_pal_flash_driver_write(
+      _az_ulib_pal_flash_driver_control_block value_flash_cb;
+      AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_pal_flash_driver_open(&value_flash_cb, value_dest_ptr));
+      AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_pal_flash_driver_write(
           &value_flash_cb, az_span_ptr(value), (uint32_t)az_span_size(value)));
-      AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_pal_flash_driver_close(&value_flash_cb, 0x00));
+      AZ_ULIB_THROW_IF_AZ_ERROR(_az_ulib_pal_flash_driver_close(&value_flash_cb, 0x00));
 
       /* After successful storage of registry node and actual key value pair, set flag in node to
       indicate the entry is now ready to use.  */
@@ -325,11 +333,11 @@ void az_ulib_registry_clean_all(void)
 
   az_pal_os_lock_acquire(&registry_lock);
   {
-    az_ulib_pal_flash_driver_erase(
+    _az_ulib_pal_flash_driver_erase(
       (uint64_t*)(_az_ulib_registry_cb->registry_info_start),
       (uint32_t)((uint8_t*)(_az_ulib_registry_cb->registry_info_end) - (uint8_t*)(_az_ulib_registry_cb->registry_info_start)));
 
-    az_ulib_pal_flash_driver_erase(
+    _az_ulib_pal_flash_driver_erase(
         (uint64_t*)(_az_ulib_registry_cb->registry_start),
         (uint32_t)((uint8_t*)(_az_ulib_registry_cb->registry_end) - (uint8_t*)(_az_ulib_registry_cb->registry_start)));
   }

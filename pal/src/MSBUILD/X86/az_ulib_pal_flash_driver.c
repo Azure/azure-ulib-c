@@ -1,18 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-#include "az_ulib_pal_flash_driver.h"
+#include "_az_ulib_pal_flash_driver.h"
 #include "az_ulib_result.h"
 
 #include <stdint.h>
 
-az_result az_ulib_pal_flash_driver_write_64(uint64_t* destination_ptr, uint64_t source)
+az_result _az_ulib_pal_flash_driver_write_64(uint64_t* destination_ptr, uint64_t source)
 {
   *destination_ptr = source;
   return AZ_OK;
 }
 
-az_result az_ulib_pal_flash_driver_erase(uint64_t* destination_ptr, uint32_t size)
+az_result _az_ulib_pal_flash_driver_erase(uint64_t* destination_ptr, uint32_t size)
 {
   for (uint8_t* runner = (uint8_t*)destination_ptr; runner < ((uint8_t*)destination_ptr + size);
        runner++)
@@ -22,8 +22,8 @@ az_result az_ulib_pal_flash_driver_erase(uint64_t* destination_ptr, uint32_t siz
   return AZ_OK;
 }
 
-az_result az_ulib_pal_flash_driver_open(
-    az_ulib_pal_flash_driver_control_block* flash_cb,
+az_result _az_ulib_pal_flash_driver_open(
+    _az_ulib_pal_flash_driver_control_block* flash_cb,
     uint64_t* destination_ptr)
 {
   flash_cb->destination_ptr = destination_ptr;
@@ -31,8 +31,8 @@ az_result az_ulib_pal_flash_driver_open(
   return AZ_OK;
 }
 
-az_result az_ulib_pal_flash_driver_write(
-    az_ulib_pal_flash_driver_control_block* flash_cb,
+az_result _az_ulib_pal_flash_driver_write(
+    _az_ulib_pal_flash_driver_control_block* flash_cb,
     uint8_t* source_ptr,
     uint32_t size)
 {
@@ -48,8 +48,8 @@ az_result az_ulib_pal_flash_driver_write(
   return AZ_OK;
 }
 
-az_result az_ulib_pal_flash_driver_close(
-    az_ulib_pal_flash_driver_control_block* flash_cb,
+az_result _az_ulib_pal_flash_driver_close(
+    _az_ulib_pal_flash_driver_control_block* flash_cb,
     uint8_t pad)
 {
   if (flash_cb->remainder_count != 0)

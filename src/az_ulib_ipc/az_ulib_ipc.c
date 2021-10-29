@@ -1,6 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-// See LICENSE file in the project root for full license information.
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 #include <memory.h>
 #include <stdint.h>
@@ -20,6 +19,12 @@
 
 #include <azure/core/internal/az_precondition_internal.h>
 
+/**
+ * @brief   IPC query continuation token.
+ *
+ * Structure to represent the continuation token in the IPC query. This is an internal structure,
+ * developers shall not try to parse it.
+ */
 typedef union
 {
   struct
@@ -31,12 +36,22 @@ typedef union
   uint32_t val;
 } ipc_continuation_token;
 
+/**
+ * @brief   Data stored in the Registry to recover IPC state after a device reset.
+ */
 typedef struct
 {
-  /*_az_ulib_ipc_flags*/ uint32_t flags;
+  /** Interface flags following the #_az_ulib_ipc_flags. */
+  uint32_t flags;
+
 } ipc_registry_data;
 
-/*
+#define MAX_INTERFACE_KEY_SIZE \
+  (AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME_VERSION + AZ_ULIB_CONFIG_MAX_DM_PACKAGE_NAME_VERSION + 1)
+
+/**
+ * @brief   IPC single instance.
+ *
  * IPC is a singleton component, and shall be initialized only once.
  *
  * Make it volatile to avoid any compilation optimization.
@@ -263,13 +278,8 @@ static az_result get_interface_information_in_register(
 {
   AZ_ULIB_TRY
   {
-    uint8_t interface_buf
-        [AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME_VERSION + AZ_ULIB_CONFIG_MAX_DM_PACKAGE_NAME_VERSION
-         + 1];
-    az_span interface_span = az_span_create(
-        interface_buf,
-        AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME_VERSION + AZ_ULIB_CONFIG_MAX_DM_PACKAGE_NAME_VERSION
-            + 1);
+    uint8_t interface_full_name[MAX_INTERFACE_KEY_SIZE];
+    az_span interface_span = az_span_create(interface_full_name, sizeof(interface_full_name));
     AZ_ULIB_THROW_IF_AZ_ERROR(concat_full_name(
         interface_span,
         ipc_interface->interface_descriptor->_internal.pkg_name,
@@ -296,13 +306,8 @@ static az_result delete_interface_information_in_register(_az_ulib_ipc_interface
 {
   AZ_ULIB_TRY
   {
-    uint8_t interface_buf
-        [AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME_VERSION + AZ_ULIB_CONFIG_MAX_DM_PACKAGE_NAME_VERSION
-         + 1];
-    az_span interface_span = az_span_create(
-        interface_buf,
-        AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME_VERSION + AZ_ULIB_CONFIG_MAX_DM_PACKAGE_NAME_VERSION
-            + 1);
+    uint8_t interface_full_name[MAX_INTERFACE_KEY_SIZE];
+    az_span interface_span = az_span_create(interface_full_name, sizeof(interface_full_name));
     AZ_ULIB_THROW_IF_AZ_ERROR(concat_full_name(
         interface_span,
         ipc_interface->interface_descriptor->_internal.pkg_name,
@@ -322,13 +327,8 @@ static az_result update_interface_information_in_register(_az_ulib_ipc_interface
 {
   AZ_ULIB_TRY
   {
-    uint8_t interface_buf
-        [AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME_VERSION + AZ_ULIB_CONFIG_MAX_DM_PACKAGE_NAME_VERSION
-         + 1];
-    az_span interface_span = az_span_create(
-        interface_buf,
-        AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME_VERSION + AZ_ULIB_CONFIG_MAX_DM_PACKAGE_NAME_VERSION
-            + 1);
+    uint8_t interface_full_name[MAX_INTERFACE_KEY_SIZE];
+    az_span interface_span = az_span_create(interface_full_name, sizeof(interface_full_name));
     AZ_ULIB_THROW_IF_AZ_ERROR(concat_full_name(
         interface_span,
         ipc_interface->interface_descriptor->_internal.pkg_name,
@@ -428,8 +428,8 @@ az_ulib_ipc_publish(const az_ulib_interface_descriptor* const interface_descript
               interface_descriptor->_internal.intf_version)
           != NULL)
       {
-        // IPC shall not accept interfaces with same name and version because it cannot decided
-        // each one to retrieve when someone uses az_ulib_ipc_try_get_interface().
+        // IPC shall not accept interfaces with same name and version because it cannot
+        // decided each one to retrieve when someone uses az_ulib_ipc_try_get_interface().
         result = AZ_ERROR_ULIB_ELEMENT_DUPLICATE;
       }
       else
@@ -565,9 +565,9 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
 
   az_result result;
 
-  // We are using a retry loop to wait for the interface to be free. A semaphore would probably be a
-  // better solution, however, our PAL does not support it yet. So, we will implement it in a
-  // separated Feature [10869774].
+  // We are using a retry loop to wait for the interface to be free. A semaphore would
+  // probably be a better solution, however, our PAL does not support it yet. So, we will
+  // implement it in a separated Feature [10869774].
   uint32_t retry_interval;
   uint32_t retry_total_time = 0;
   if (wait_option_ms == AZ_ULIB_WAIT_FOREVER)
@@ -620,8 +620,8 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
               // It will not wait forever, so increment the waiting time.
               retry_total_time += retry_interval;
             }
-            // Put this interface on hold, so try_get_interface will fail, it will give this
-            // interface chance to be unpublished.
+            // Put this interface on hold, so try_get_interface will fail, it will give
+            // this interface chance to be unpublished.
             release_interface->flags |= AZ_ULIB_IPC_FLAGS_ON_HOLD;
             result = AZ_ULIB_PENDING;
           }
@@ -637,7 +637,8 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
 
       if (result == AZ_ULIB_PENDING)
       {
-        // Give other threads chance to release this interface. It shall be outside of the "lock".
+        // Give other threads chance to release this interface. It shall be outside of the
+        // "lock".
         az_pal_os_sleep(retry_interval);
       }
 
