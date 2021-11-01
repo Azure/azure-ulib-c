@@ -142,6 +142,8 @@ AZ_NODISCARD az_result az_ulib_registry_add(az_span key, az_span value);
  *                                                on the system level.
  *      @retval #AZ_ERROR_ULIB_BUSY               If the resources necessary for the
  *                                                `az_ulib_registry_delete` operation are busy.
+ *      @retval #AZ_ERROR_ITEM_NOT_FOUND          If there are no registry that correspond to the
+ *                                                given key.
  */
 AZ_NODISCARD az_result az_ulib_registry_delete(az_span key);
 

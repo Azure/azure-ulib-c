@@ -15,7 +15,8 @@ static az_ulib_ipc_control_block ipc_control_block;
 
 #define REGISTRY_PAGE_SIZE 0x800
 
-/* Static memory to store registry information. */
+/* Static memory to store registry information. Because we run this samples in Linux and Windows,
+ * instead of store the Registry in a Flash, we store it in the RAM. */
 static uint8_t registry_buffer[REGISTRY_PAGE_SIZE * 2];
 static uint8_t registry_informarmation_buffer[REGISTRY_PAGE_SIZE];
 

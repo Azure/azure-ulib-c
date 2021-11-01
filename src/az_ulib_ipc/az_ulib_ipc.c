@@ -272,7 +272,7 @@ static az_result concat_full_name(
   return AZ_ULIB_TRY_RESULT;
 }
 
-static az_result get_interface_information_in_register(
+static az_result get_interface_information_in_registry(
     _az_ulib_ipc_interface* ipc_interface,
     ipc_registry_data* registry_data)
 {
@@ -302,7 +302,7 @@ static az_result get_interface_information_in_register(
   return AZ_ULIB_TRY_RESULT;
 }
 
-static az_result delete_interface_information_in_register(_az_ulib_ipc_interface* ipc_interface)
+static az_result delete_interface_information_in_registry(_az_ulib_ipc_interface* ipc_interface)
 {
   AZ_ULIB_TRY
   {
@@ -323,7 +323,7 @@ static az_result delete_interface_information_in_register(_az_ulib_ipc_interface
   return AZ_ULIB_TRY_RESULT;
 }
 
-static az_result update_interface_information_in_register(_az_ulib_ipc_interface* ipc_interface)
+static az_result update_interface_information_in_registry(_az_ulib_ipc_interface* ipc_interface)
 {
   AZ_ULIB_TRY
   {
@@ -429,7 +429,7 @@ az_ulib_ipc_publish(const az_ulib_interface_descriptor* const interface_descript
           != NULL)
       {
         // IPC shall not accept interfaces with same name and version because it cannot
-        // decided each one to retrieve when someone uses az_ulib_ipc_try_get_interface().
+        // decided each one to retrieve when az_ulib_ipc_try_get_interface() is called.
         result = AZ_ERROR_ULIB_ELEMENT_DUPLICATE;
       }
       else
@@ -448,7 +448,7 @@ az_ulib_ipc_publish(const az_ulib_interface_descriptor* const interface_descript
           AZ_ULIB_PORT_GET_DATA_CONTEXT(&(new_interface->data_base_address));
 
           ipc_registry_data registry_data;
-          if (get_interface_information_in_register(new_interface, &registry_data) == AZ_OK)
+          if (get_interface_information_in_registry(new_interface, &registry_data) == AZ_OK)
           {
             if (AZ_ULIB_FLAGS_IS_SET(registry_data.flags, AZ_ULIB_IPC_FLAGS_DEFAULT))
             {
@@ -467,7 +467,7 @@ az_ulib_ipc_publish(const az_ulib_interface_descriptor* const interface_descript
             {
               // No other package exposes this interface, so make it default.
               new_interface->flags = AZ_ULIB_IPC_FLAGS_DEFAULT;
-              result = update_interface_information_in_register(new_interface);
+              result = update_interface_information_in_registry(new_interface);
             }
           }
 
@@ -536,7 +536,7 @@ AZ_NODISCARD az_result az_ulib_ipc_set_default(
             old_default_interface->hash = (_az_ipc_control_block->_internal.publish_count++);
 
             // Change default in registry.
-            result = update_interface_information_in_register(old_default_interface);
+            result = update_interface_information_in_registry(old_default_interface);
           }
         }
 
@@ -546,7 +546,7 @@ AZ_NODISCARD az_result az_ulib_ipc_set_default(
           new_default_interface->flags |= AZ_ULIB_IPC_FLAGS_DEFAULT;
 
           // Change default in registry.
-          result = update_interface_information_in_register(new_default_interface);
+          result = update_interface_information_in_registry(new_default_interface);
         }
       }
     }
@@ -604,7 +604,7 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
           if (release_interface->ref_count == 1)
           {
             // Nobody is using this interface, just unpublish.
-            result = delete_interface_information_in_register(release_interface);
+            result = delete_interface_information_in_registry(release_interface);
             if ((result == AZ_OK) || (result == AZ_ERROR_ITEM_NOT_FOUND))
             {
               release_interface->interface_descriptor = NULL;
