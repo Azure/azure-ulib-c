@@ -402,88 +402,6 @@ AZ_NODISCARD az_result az_ulib_ipc_deinit(void)
   return result;
 }
 
-AZ_NODISCARD az_result
-az_ulib_ipc_publish(const az_ulib_interface_descriptor* const interface_descriptor)
-{
-  _az_PRECONDITION_NOT_NULL(_az_ipc_control_block);
-  _az_PRECONDITION_NOT_NULL(interface_descriptor);
-
-  az_result result;
-  _az_ulib_ipc_interface* new_interface;
-
-  if ((interface_descriptor->_internal.pkg_version == AZ_ULIB_VERSION_DEFAULT)
-      || (interface_descriptor->_internal.intf_version == AZ_ULIB_VERSION_DEFAULT))
-  {
-    // IPC shall not allow publish an interface using the default version.
-    result = AZ_ERROR_ARG;
-  }
-  else
-  {
-    az_pal_os_lock_acquire(&(_az_ipc_control_block->_internal.lock));
-    {
-      if (lookup_interface(
-              interface_descriptor->_internal.pkg_name,
-              interface_descriptor->_internal.pkg_version,
-              interface_descriptor->_internal.intf_name,
-              interface_descriptor->_internal.intf_version)
-          != NULL)
-      {
-        // IPC shall not accept interfaces with same name and version because it cannot
-        // decided each one to retrieve when az_ulib_ipc_try_get_interface() is called.
-        result = AZ_ERROR_ULIB_ELEMENT_DUPLICATE;
-      }
-      else
-      {
-        if (((new_interface = get_first_free()) == NULL) || // interface with ref_count == 0.
-            (az_span_size(interface_descriptor->_internal.intf_name)
-             >= AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME))
-        {
-          result = AZ_ERROR_NOT_ENOUGH_SPACE;
-        }
-        else
-        {
-          new_interface->interface_descriptor = interface_descriptor;
-          new_interface->flags = AZ_ULIB_IPC_FLAGS_NONE;
-          new_interface->hash = (_az_ipc_control_block->_internal.publish_count++);
-          AZ_ULIB_PORT_GET_DATA_CONTEXT(&(new_interface->data_base_address));
-
-          ipc_registry_data registry_data;
-          if (get_interface_information_in_registry(new_interface, &registry_data) == AZ_OK)
-          {
-            if (AZ_ULIB_FLAGS_IS_SET(registry_data.flags, AZ_ULIB_IPC_FLAGS_DEFAULT))
-            {
-              new_interface->flags = AZ_ULIB_IPC_FLAGS_DEFAULT;
-            }
-          }
-          else
-          {
-            // Look up for default.
-            if (lookup_interface(
-                    interface_descriptor->_internal.pkg_name,
-                    AZ_ULIB_VERSION_DEFAULT,
-                    interface_descriptor->_internal.intf_name,
-                    interface_descriptor->_internal.intf_version)
-                == NULL)
-            {
-              // No other package exposes this interface, so make it default.
-              new_interface->flags = AZ_ULIB_IPC_FLAGS_DEFAULT;
-              result = update_interface_information_in_registry(new_interface);
-            }
-          }
-
-          // ref_count >= 1 means that this is a valid interface.
-          new_interface->ref_count = 1;
-
-          result = AZ_OK;
-        }
-      }
-    }
-    az_pal_os_lock_release(&(_az_ipc_control_block->_internal.lock));
-  }
-
-  return result;
-}
-
 AZ_NODISCARD az_result az_ulib_ipc_set_default(
     az_span package_name,
     az_ulib_version package_version,
@@ -547,6 +465,92 @@ AZ_NODISCARD az_result az_ulib_ipc_set_default(
 
           // Change default in registry.
           result = update_interface_information_in_registry(new_default_interface);
+        }
+      }
+    }
+    az_pal_os_lock_release(&(_az_ipc_control_block->_internal.lock));
+  }
+
+  return result;
+}
+
+AZ_NODISCARD az_result
+az_ulib_ipc_publish(const az_ulib_interface_descriptor* const interface_descriptor)
+{
+  _az_PRECONDITION_NOT_NULL(_az_ipc_control_block);
+  _az_PRECONDITION_NOT_NULL(interface_descriptor);
+
+  az_result result;
+  _az_ulib_ipc_interface* new_interface;
+
+  if ((interface_descriptor->_internal.pkg_version == AZ_ULIB_VERSION_DEFAULT)
+      || (interface_descriptor->_internal.intf_version == AZ_ULIB_VERSION_DEFAULT))
+  {
+    // IPC shall not allow publish an interface using the default version.
+    result = AZ_ERROR_ARG;
+  }
+  else
+  {
+    az_pal_os_lock_acquire(&(_az_ipc_control_block->_internal.lock));
+    {
+      if (lookup_interface(
+              interface_descriptor->_internal.pkg_name,
+              interface_descriptor->_internal.pkg_version,
+              interface_descriptor->_internal.intf_name,
+              interface_descriptor->_internal.intf_version)
+          != NULL)
+      {
+        // IPC shall not accept interfaces with same name and version because it cannot
+        // decided each one to retrieve when az_ulib_ipc_try_get_interface() is called.
+        result = AZ_ERROR_ULIB_ELEMENT_DUPLICATE;
+      }
+      else
+      {
+        if (((new_interface = get_first_free()) == NULL) || // interface with ref_count == 0.
+            (az_span_size(interface_descriptor->_internal.intf_name)
+             >= AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME))
+        {
+          result = AZ_ERROR_NOT_ENOUGH_SPACE;
+        }
+        else
+        {
+          new_interface->interface_descriptor = interface_descriptor;
+          new_interface->flags = AZ_ULIB_IPC_FLAGS_NONE;
+          new_interface->hash = (_az_ipc_control_block->_internal.publish_count++);
+          AZ_ULIB_PORT_GET_DATA_CONTEXT(&(new_interface->data_base_address));
+
+          ipc_registry_data registry_data;
+          if (get_interface_information_in_registry(new_interface, &registry_data) == AZ_OK)
+          {
+            if (AZ_ULIB_FLAGS_IS_SET(registry_data.flags, AZ_ULIB_IPC_FLAGS_DEFAULT))
+            {
+              result = az_ulib_ipc_set_default(
+                  interface_descriptor->_internal.pkg_name,
+                  interface_descriptor->_internal.pkg_version,
+                  interface_descriptor->_internal.intf_name,
+                  interface_descriptor->_internal.intf_version);
+            }
+          }
+          else
+          {
+            // Look up for default.
+            if (lookup_interface(
+                    interface_descriptor->_internal.pkg_name,
+                    AZ_ULIB_VERSION_DEFAULT,
+                    interface_descriptor->_internal.intf_name,
+                    interface_descriptor->_internal.intf_version)
+                == NULL)
+            {
+              // No other package exposes this interface, so make it default.
+              new_interface->flags = AZ_ULIB_IPC_FLAGS_DEFAULT;
+              result = update_interface_information_in_registry(new_interface);
+            }
+          }
+
+          // ref_count >= 1 means that this is a valid interface.
+          new_interface->ref_count = 1;
+
+          result = AZ_OK;
         }
       }
     }
