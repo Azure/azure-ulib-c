@@ -57,13 +57,13 @@ typedef struct
  */
 typedef struct
 {
-  /** Total number of registry info that can be stored in the Registry. In number of registries. */
+  /** Total number of entries available in the Registry. */
   size_t total_registry_info;
 
-  /** Current number of registries stored in the Registry. In number of registries. */
+  /** Current number of entries already stored in the Registry. */
   size_t in_use_registry_info;
 
-  /** Number of free registry info positions. In number of registries. */
+  /** Total number of entries free to be used in the Registry. */
   size_t free_registry_info;
 
   /** Total memory reserved to store registry data in bytes. */
@@ -153,6 +153,12 @@ AZ_NODISCARD az_result az_ulib_registry_delete(az_span key);
  * This function initializes components that the registry needs upon reboot. This function is not
  * thread safe and all other APIs shall only be invoked after the initialization ends.
  *
+ * @note    This API **is not** thread safe. The other Registry APIs shall only be called after the
+ *          initialization process is complete.
+ *
+ * @note    Double initialization of this singleton component shall result in a unpredictable
+ *          behavior.
+ *
  * @param[in]   registry_cb         The pointer to #az_ulib_registry_control_block with the control
  *                                  block that contains the registry memory.
  *
@@ -166,6 +172,10 @@ void az_ulib_registry_init(const az_ulib_registry_control_block* registry_cb);
  * This function deinitializes components that the registry used. The registry can be reinitialized.
  * This function is not thread safe and all other APIs shall release the resource before calling
  * the deinit() function.
+ *
+ * @note    This API **is not** thread safe, no other Registry API may be called during the
+ *          execution of this deinit and no other Registry API shall be running during the
+ *          execution of this API.
  *
  * @pre         Registry shall already be initialized.
  */
