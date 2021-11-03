@@ -1,6 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-// See LICENSE file in the project root for full license information.
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 #include <inttypes.h>
 #include <setjmp.h>
@@ -15,8 +14,9 @@
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_ipc_e2e.h"
-#include "az_ulib_pal_os_api.h"
+#include "az_ulib_pal_api.h"
 #include "az_ulib_query_1_model.h"
+#include "az_ulib_registry_api.h"
 #include "az_ulib_result.h"
 #include "az_ulib_test_my_interface.h"
 #include "az_ulib_test_thread.h"
@@ -105,13 +105,43 @@ static int call_sync_thread(void* arg)
   return (int)result;
 }
 
+#define REGISTRY_PAGE_SIZE 0x800
+
+/* Static memory to store registry information. */
+static uint8_t registry_buffer[REGISTRY_PAGE_SIZE * 2];
+static uint8_t registry_informarmation_buffer[REGISTRY_PAGE_SIZE];
+
+#define __REGISTRY_START (registry_buffer[0])
+#define __REGISTRY_END (registry_buffer[(REGISTRY_PAGE_SIZE * 2)])
+#define __REGISTRYINFO_START (registry_informarmation_buffer[0])
+#define __REGISTRYINFO_END (registry_informarmation_buffer[REGISTRY_PAGE_SIZE])
+
+static const az_ulib_registry_control_block registry_cb
+    = { .registry_start = (void*)(&__REGISTRY_START),
+        .registry_end = (void*)(&__REGISTRY_END),
+        .registry_info_start = (void*)(&__REGISTRYINFO_START),
+        .registry_info_end = (void*)(&__REGISTRYINFO_END),
+        .page_size = REGISTRY_PAGE_SIZE };
+
 static int setup(void** state)
 {
   (void)state;
 
+  /* Start Registry. */
+  az_ulib_registry_init(&registry_cb);
+  az_ulib_registry_clean_all();
+
   g_sum_sleep = 0;
   g_lock_thread = 0;
 
+  return 0;
+}
+
+static int teardown(void** state)
+{
+  (void)state;
+
+  az_ulib_registry_deinit();
   return 0;
 }
 
@@ -574,18 +604,26 @@ static void az_ulib_ipc_query_query_next_w_str_succeed(void** state)
 int az_ulib_ipc_e2e()
 {
   const struct CMUnitTest tests[] = {
-    cmocka_unit_test_setup(az_ulib_ipc_e2e_call_sync_command_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_e2e_deinit_ipc_in_the_call_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_e2e_call_recursive_in_the_call_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_e2e_release_after_unpublish_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_succeed, setup),
-    cmocka_unit_test_setup(
-        az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_timeout_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_query_query_all_interfaces_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_query_query_w_str_all_interfaces_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_query_query_next_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_query_query_next_w_str_succeed, setup),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_e2e_call_sync_command_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_e2e_unpublish_interface_in_the_call_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_e2e_deinit_ipc_in_the_call_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_e2e_call_recursive_in_the_call_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_e2e_release_after_unpublish_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_e2e_call_sync_command_in_multiple_threads_unpublish_timeout_failed,
+        setup,
+        teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_query_query_all_interfaces_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_query_query_w_str_all_interfaces_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_query_query_next_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_query_query_next_w_str_succeed, setup, teardown),
   };
 
   return cmocka_run_group_tests_name("az_ulib_ipc_e2e", tests, NULL, NULL);

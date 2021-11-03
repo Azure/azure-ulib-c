@@ -1,6 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-// See LICENSE file in the project root for full license information.
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 #include <setjmp.h>
 #include <stdarg.h>
@@ -15,8 +14,9 @@
 #include "az_ulib_interface_manager_1_model.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_ipc_ut.h"
-#include "az_ulib_pal_os_api.h"
+#include "az_ulib_pal_api.h"
 #include "az_ulib_query_1_model.h"
+#include "az_ulib_registry_api.h"
 #include "az_ulib_result.h"
 #include "azure/az_core.h"
 
@@ -102,15 +102,45 @@ static void unpublish_interfaces_and_deinit_ipc(void)
 AZ_ULIB_ENABLE_PRECONDITION_CHECK_TESTS()
 #endif // AZ_NO_PRECONDITION_CHECKING
 
+#define REGISTRY_PAGE_SIZE 0x800
+
+/* Static memory to store registry information. */
+static uint8_t registry_buffer[REGISTRY_PAGE_SIZE * 2];
+static uint8_t registry_informarmation_buffer[REGISTRY_PAGE_SIZE];
+
+#define __REGISTRY_START (registry_buffer[0])
+#define __REGISTRY_END (registry_buffer[(REGISTRY_PAGE_SIZE * 2)])
+#define __REGISTRYINFO_START (registry_informarmation_buffer[0])
+#define __REGISTRYINFO_END (registry_informarmation_buffer[REGISTRY_PAGE_SIZE])
+
+static const az_ulib_registry_control_block registry_cb
+    = { .registry_start = (void*)(&__REGISTRY_START),
+        .registry_end = (void*)(&__REGISTRY_END),
+        .registry_info_start = (void*)(&__REGISTRYINFO_START),
+        .registry_info_end = (void*)(&__REGISTRYINFO_END),
+        .page_size = REGISTRY_PAGE_SIZE };
+
 static int setup(void** state)
 {
   (void)state;
+
+  /* Start Registry. */
+  az_ulib_registry_init(&registry_cb);
+  az_ulib_registry_clean_all();
 
   g_lock = NULL;
   g_lock_diff = 0;
   g_count_acquire = 0;
   g_count_sleep = 0;
 
+  return 0;
+}
+
+static int teardown(void** state)
+{
+  (void)state;
+
+  az_ulib_registry_deinit();
   return 0;
 }
 
@@ -2813,96 +2843,153 @@ int az_ulib_ipc_ut()
 
   const struct CMUnitTest tests[] = {
 #ifndef AZ_NO_PRECONDITION_CHECKING
-    cmocka_unit_test(az_ulib_ipc_init_with_null_handle_failed),
-    cmocka_unit_test(az_ulib_ipc_init_double_initialization_failed),
-    cmocka_unit_test(az_ulib_ipc_deinit_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_publish_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_publish_with_null_descriptor_failed),
-    cmocka_unit_test(az_ulib_ipc_set_default_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_set_default_with_empty_package_name_failed),
-    cmocka_unit_test(az_ulib_ipc_set_default_with_empty_interface_name_failed),
-    cmocka_unit_test(az_ulib_ipc_unpublish_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_unpublish_with_null_descriptor_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_empty_interface_name_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_default_interface_version_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_empty_package_name_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_null_handle_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_capability_with_null_return_capability_handle_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_capability_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_try_get_capability_with_invalid_name_failed),
-    cmocka_unit_test(az_ulib_ipc_release_interface_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_call_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_call_with_str_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_split_method_name_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_split_method_name_with_empty_method_full_name_failed),
-    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_device_name_failed),
-    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_package_name_failed),
-    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_package_version_failed),
-    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_interface_name_failed),
-    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_interface_version_failed),
-    cmocka_unit_test(az_ulib_ipc_split_method_name_with_null_capability_name_failed),
-    cmocka_unit_test(az_ulib_ipc_query_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_query_with_null_result_failed),
-    cmocka_unit_test(az_ulib_ipc_query_with_empty_result_failed),
-    cmocka_unit_test(az_ulib_ipc_query_with_null_continuation_token_failed),
-    cmocka_unit_test(az_ulib_ipc_query_next_with_ipc_not_initialized_failed),
-    cmocka_unit_test(az_ulib_ipc_query_next_with_null_result_failed),
-    cmocka_unit_test(az_ulib_ipc_query_next_with_empty_result_failed),
-    cmocka_unit_test(az_ulib_ipc_query_next_with_null_continuation_token_failed),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_init_with_null_handle_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_init_double_initialization_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_deinit_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_publish_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_publish_with_null_descriptor_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_set_default_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_set_default_with_empty_package_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_set_default_with_empty_interface_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_unpublish_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_unpublish_with_null_descriptor_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_interface_with_empty_interface_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_interface_with_default_interface_version_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_interface_with_empty_package_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_interface_with_null_handle_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_interface_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_capability_with_null_return_capability_handle_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_capability_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_capability_with_invalid_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_release_interface_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_call_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_call_with_str_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_split_method_name_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_split_method_name_with_empty_method_full_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_split_method_name_with_null_device_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_split_method_name_with_null_package_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_split_method_name_with_null_package_version_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_split_method_name_with_null_interface_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_split_method_name_with_null_interface_version_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_split_method_name_with_null_capability_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_query_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_query_with_null_result_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_query_with_empty_result_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_query_with_null_continuation_token_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_query_next_with_ipc_not_initialized_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_query_next_with_null_result_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_query_next_with_empty_result_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_query_next_with_null_continuation_token_failed, setup, teardown),
 #endif // AZ_NO_PRECONDITION_CHECKING
-    cmocka_unit_test_setup(az_ulib_ipc_init_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_deinit_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_deinit_with_published_interface_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_deinit_with_instace_of_ipc_query_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_deinit_with_instace_of_ipc_interface_manager_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_publish_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_publish_new_hash_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_publish_with_any_package_version_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_publish_with_any_interface_version_failed, setup),
-    cmocka_unit_test_setup(
-        az_ulib_ipc_publish_with_descriptor_with_same_name_and_version_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_publish_out_of_memory_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_set_default_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_set_default_move_default_version_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_set_default_unknown_interface_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_set_default_any_interface_version_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_set_default_unknown_interface_version_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_set_default_unknown_package_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_set_default_any_package_version_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_set_default_unknown_package_version_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_unpublish_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_unpublish_random_order_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_unpublish_release_resource_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_unpublish_with_unknown_descriptor_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_unpublish_with_capability_running_failed, setup),
-    cmocka_unit_test_setup(
-        az_ulib_ipc_unpublish_with_capability_running_with_small_timeout_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_unpublish_with_valid_interface_instance_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_default_name_and_version_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_default_name_only_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_for_specific_device_failed, setup),
-    cmocka_unit_test_setup(
-        az_ulib_ipc_try_get_interface_with_max_interface_instances_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_with_unknown_name_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_interface_with_unknown_version_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_capability_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_try_get_capability_with_not_capability_name_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_release_interface_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_call_calls_the_capability_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_call_with_str_calls_the_capability_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_call_with_str_calls_not_supporte_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_get_table_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_split_method_name_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_split_bad_method_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_query_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_query_small_buffer_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_query_buffer_too_small_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_query_not_supported_failed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_query_eof_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_query_next_succeed, setup),
-    cmocka_unit_test_setup(az_ulib_ipc_query_next_not_supported_failed, setup),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_init_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_deinit_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_deinit_with_published_interface_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_deinit_with_instace_of_ipc_query_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_deinit_with_instace_of_ipc_interface_manager_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_publish_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_publish_new_hash_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_publish_with_any_package_version_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_publish_with_any_interface_version_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_publish_with_descriptor_with_same_name_and_version_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_publish_out_of_memory_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_set_default_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_set_default_move_default_version_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_set_default_unknown_interface_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_set_default_any_interface_version_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_set_default_unknown_interface_version_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_set_default_unknown_package_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_set_default_any_package_version_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_set_default_unknown_package_version_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_unpublish_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_unpublish_random_order_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_unpublish_release_resource_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_unpublish_with_unknown_descriptor_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_unpublish_with_capability_running_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_unpublish_with_capability_running_with_small_timeout_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_unpublish_with_valid_interface_instance_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_try_get_interface_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_interface_default_name_and_version_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_interface_default_name_only_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_interface_for_specific_device_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_interface_with_max_interface_instances_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_interface_with_unknown_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_interface_with_unknown_version_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_try_get_capability_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_try_get_capability_with_not_capability_name_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_release_interface_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_call_calls_the_capability_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_call_with_str_calls_the_capability_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(
+        az_ulib_ipc_call_with_str_calls_not_supporte_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_get_table_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_split_method_name_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_split_bad_method_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_query_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_query_small_buffer_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_query_buffer_too_small_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_query_not_supported_failed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_query_eof_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_query_next_succeed, setup, teardown),
+    cmocka_unit_test_setup_teardown(az_ulib_ipc_query_next_not_supported_failed, setup, teardown),
   };
 
   return cmocka_run_group_tests_name("az_ulib_ipc_ut", tests, NULL, NULL);

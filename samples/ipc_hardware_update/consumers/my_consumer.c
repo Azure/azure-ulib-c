@@ -3,7 +3,7 @@
 // See LICENSE file in the project root for full license information.
 
 #include "my_consumer.h"
-#include "az_ulib_pal_os_api.h"
+#include "az_ulib_pal_api.h"
 #include "az_ulib_result.h"
 #include "display_1_model.h"
 

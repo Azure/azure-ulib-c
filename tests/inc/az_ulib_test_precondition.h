@@ -61,4 +61,20 @@
     assert_int_equal(g_precondition_test_count, 1); \
   } while (0)
 
+// In release builds, the compiler optimizes out 'ASSERT_PRECONDITION_CHECKED' which could result in
+// function parameters not being used. Explicitly storing the function result as a bool and using
+// (void) to cast it away so that we don't get a warning related to unused variables, particularly
+// in release configurations.
+#define AZ_ULIB_ASSERT_PRECONDITION_CHECKED_VOID_FUNCTION(fn) \
+  do                                                          \
+  {                                                           \
+    g_precondition_test_count = 0;                            \
+    (void)setjmp(g_precond_test_jmp_buf);                     \
+    if (g_precondition_test_count == 0)                       \
+    {                                                         \
+      fn;                                                     \
+    }                                                         \
+    assert_int_equal(g_precondition_test_count, 1);           \
+  } while (0)
+
 #endif // _az_TEST_PRECONDITION_H

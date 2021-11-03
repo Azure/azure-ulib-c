@@ -20,8 +20,7 @@
 #include "az_ulib_descriptor_api.h"
 #include "az_ulib_interface_api.h"
 #include "az_ulib_ipc_function_table.h"
-#include "az_ulib_pal_os_api.h"
-#include "az_ulib_port.h"
+#include "az_ulib_pal_api.h"
 #include "az_ulib_result.h"
 #include "azure/az_core.h"
 

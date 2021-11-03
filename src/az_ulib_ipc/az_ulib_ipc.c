@@ -1,6 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-// See LICENSE file in the project root for full license information.
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 #include <memory.h>
 #include <stdint.h>
@@ -13,13 +12,19 @@
 #include "az_ulib_interface_api.h"
 #include "az_ulib_ipc_api.h"
 #include "az_ulib_ipc_function_table.h"
-#include "az_ulib_pal_os_api.h"
-#include "az_ulib_port.h"
+#include "az_ulib_pal_api.h"
+#include "az_ulib_registry_api.h"
 #include "az_ulib_result.h"
 #include "azure/az_core.h"
 
 #include <azure/core/internal/az_precondition_internal.h>
 
+/**
+ * @brief   IPC query continuation token.
+ *
+ * Structure to represent the continuation token in the IPC query. This is an internal structure,
+ * developers shall not try to parse it.
+ */
 typedef union
 {
   struct
@@ -31,7 +36,22 @@ typedef union
   uint32_t val;
 } ipc_continuation_token;
 
-/*
+/**
+ * @brief   Data stored in the Registry to recover IPC state after a device reset.
+ */
+typedef struct
+{
+  /** Interface flags following the #_az_ulib_ipc_flags. */
+  uint32_t flags;
+
+} ipc_registry_data;
+
+#define MAX_INTERFACE_KEY_SIZE \
+  (AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME_VERSION + AZ_ULIB_CONFIG_MAX_DM_PACKAGE_NAME_VERSION + 1)
+
+/**
+ * @brief   IPC single instance.
+ *
  * IPC is a singleton component, and shall be initialized only once.
  *
  * Make it volatile to avoid any compilation optimization.
@@ -192,6 +212,162 @@ AZ_NODISCARD az_result az_ulib_ipc_init(az_ulib_ipc_control_block* ipc_control_b
   return publish_ipc_owned_interfaces();
 }
 
+static az_result concat_name_version(
+    az_span destination,
+    az_span name,
+    uint32_t version,
+    az_span* out)
+{
+  uint8_t* buf = az_span_ptr(destination);
+  int32_t buf_size = az_span_size(destination);
+
+  az_span_to_str((char*)buf, buf_size, name);
+  buf[az_span_size(name)] = '.';
+  az_span version_span = az_span_create(
+      (uint8_t*)&buf[az_span_size(name) + 1], (buf_size - (az_span_size(name) + 1)));
+  az_span rest = AZ_SPAN_EMPTY;
+  az_result result = az_span_i32toa(version_span, (int32_t)version, &rest);
+
+  if (result == AZ_OK)
+  {
+    *out = az_span_create(
+        buf, az_span_size(name) + 1 + az_span_size(version_span) - az_span_size(rest));
+  }
+
+  return result;
+}
+
+static az_result concat_full_name(
+    az_span destination,
+    az_span package_name,
+    az_ulib_version package_version,
+    az_span interface_name,
+    az_ulib_version interface_version,
+    az_span* out)
+{
+  AZ_ULIB_TRY
+  {
+    uint8_t* buf = az_span_ptr(destination);
+    int32_t buf_size = az_span_size(destination);
+    az_span package_out = AZ_SPAN_EMPTY;
+
+    /* Add package name and version. */
+    AZ_ULIB_THROW_IF_AZ_ERROR(
+        concat_name_version(destination, package_name, package_version, &package_out));
+    AZ_ULIB_THROW_IF_ERROR((az_span_size(package_out) < buf_size - 2), AZ_ERROR_NOT_ENOUGH_SPACE);
+
+    /* Use '.' to split package from interface. */
+    buf[az_span_size(package_out)] = '.';
+
+    /* Add interface name and version. */
+    az_span interface_out = az_span_create(
+        &buf[az_span_size(package_out) + 1], buf_size - (az_span_size(package_out) + 1));
+    AZ_ULIB_THROW_IF_AZ_ERROR(
+        concat_name_version(interface_out, interface_name, interface_version, &interface_out));
+
+    *out = az_span_create(buf, az_span_size(package_out) + 1 + az_span_size(interface_out));
+  }
+  AZ_ULIB_CATCH(...) {}
+
+  return AZ_ULIB_TRY_RESULT;
+}
+
+static az_result get_interface_information_in_registry(
+    _az_ulib_ipc_interface* ipc_interface,
+    ipc_registry_data* registry_data)
+{
+  AZ_ULIB_TRY
+  {
+    uint8_t interface_full_name[MAX_INTERFACE_KEY_SIZE];
+    az_span interface_span = az_span_create(interface_full_name, sizeof(interface_full_name));
+    AZ_ULIB_THROW_IF_AZ_ERROR(concat_full_name(
+        interface_span,
+        ipc_interface->interface_descriptor->_internal.pkg_name,
+        ipc_interface->interface_descriptor->_internal.pkg_version,
+        ipc_interface->interface_descriptor->_internal.intf_name,
+        ipc_interface->interface_descriptor->_internal.intf_version,
+        &interface_span));
+
+    az_span old_registry_data_span = AZ_SPAN_EMPTY;
+
+    AZ_ULIB_THROW_IF_AZ_ERROR(
+        az_ulib_registry_try_get_value(interface_span, &old_registry_data_span));
+
+    AZ_ULIB_THROW_IF_ERROR(
+        (az_span_size(old_registry_data_span) == sizeof(ipc_registry_data)), AZ_ERROR_ULIB_SYSTEM);
+    registry_data->flags = ((ipc_registry_data*)az_span_ptr(old_registry_data_span))->flags;
+  }
+  AZ_ULIB_CATCH(...) {}
+
+  return AZ_ULIB_TRY_RESULT;
+}
+
+static az_result delete_interface_information_in_registry(_az_ulib_ipc_interface* ipc_interface)
+{
+  AZ_ULIB_TRY
+  {
+    uint8_t interface_full_name[MAX_INTERFACE_KEY_SIZE];
+    az_span interface_span = az_span_create(interface_full_name, sizeof(interface_full_name));
+    AZ_ULIB_THROW_IF_AZ_ERROR(concat_full_name(
+        interface_span,
+        ipc_interface->interface_descriptor->_internal.pkg_name,
+        ipc_interface->interface_descriptor->_internal.pkg_version,
+        ipc_interface->interface_descriptor->_internal.intf_name,
+        ipc_interface->interface_descriptor->_internal.intf_version,
+        &interface_span));
+
+    AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_registry_delete(interface_span));
+  }
+  AZ_ULIB_CATCH(...) {}
+
+  return AZ_ULIB_TRY_RESULT;
+}
+
+static az_result update_interface_information_in_registry(_az_ulib_ipc_interface* ipc_interface)
+{
+  AZ_ULIB_TRY
+  {
+    uint8_t interface_full_name[MAX_INTERFACE_KEY_SIZE];
+    az_span interface_span = az_span_create(interface_full_name, sizeof(interface_full_name));
+    AZ_ULIB_THROW_IF_AZ_ERROR(concat_full_name(
+        interface_span,
+        ipc_interface->interface_descriptor->_internal.pkg_name,
+        ipc_interface->interface_descriptor->_internal.pkg_version,
+        ipc_interface->interface_descriptor->_internal.intf_name,
+        ipc_interface->interface_descriptor->_internal.intf_version,
+        &interface_span));
+
+    ipc_registry_data registry_data = { 0 };
+    az_span new_registry_data_span
+        = az_span_create((uint8_t*)&registry_data, sizeof(ipc_registry_data));
+    az_span old_registry_data_span = AZ_SPAN_EMPTY;
+
+    if (az_ulib_registry_try_get_value(interface_span, &old_registry_data_span) == AZ_OK)
+    {
+      AZ_ULIB_THROW_IF_ERROR(
+          (az_span_size(old_registry_data_span) == sizeof(ipc_registry_data)),
+          AZ_ERROR_ULIB_SYSTEM);
+
+      if (((uint32_t)(ipc_interface->flags) & AZ_ULIB_IPC_FLAGS_DEFAULT)
+          != (((ipc_registry_data*)az_span_ptr(old_registry_data_span))->flags
+              & AZ_ULIB_IPC_FLAGS_DEFAULT))
+      {
+        registry_data.flags = (ipc_interface->flags & AZ_ULIB_IPC_FLAGS_DEFAULT);
+        AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_registry_delete(interface_span));
+        AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_registry_add(interface_span, new_registry_data_span));
+      }
+    }
+    else
+    {
+      registry_data.flags = (ipc_interface->flags & AZ_ULIB_IPC_FLAGS_DEFAULT);
+      AZ_ULIB_THROW_IF_AZ_ERROR(az_ulib_registry_add(interface_span, new_registry_data_span));
+    }
+  }
+  AZ_ULIB_CATCH(...) {}
+
+  return AZ_ULIB_TRY_RESULT;
+}
+
 AZ_NODISCARD az_result az_ulib_ipc_deinit(void)
 {
   _az_PRECONDITION_NOT_NULL(_az_ipc_control_block);
@@ -221,74 +397,6 @@ AZ_NODISCARD az_result az_ulib_ipc_deinit(void)
     (void)unpublish_ipc_owned_interfaces();
     az_pal_os_lock_deinit(&(_az_ipc_control_block->_internal.lock));
     _az_ipc_control_block = NULL;
-  }
-
-  return result;
-}
-
-AZ_NODISCARD az_result
-az_ulib_ipc_publish(const az_ulib_interface_descriptor* const interface_descriptor)
-{
-  _az_PRECONDITION_NOT_NULL(_az_ipc_control_block);
-  _az_PRECONDITION_NOT_NULL(interface_descriptor);
-
-  az_result result;
-  _az_ulib_ipc_interface* new_interface;
-
-  if ((interface_descriptor->_internal.pkg_version == AZ_ULIB_VERSION_DEFAULT)
-      || (interface_descriptor->_internal.intf_version == AZ_ULIB_VERSION_DEFAULT))
-  {
-    // IPC shall not allow publish an interface using the default version.
-    result = AZ_ERROR_ARG;
-  }
-  else
-  {
-    az_pal_os_lock_acquire(&(_az_ipc_control_block->_internal.lock));
-    {
-      if (lookup_interface(
-              interface_descriptor->_internal.pkg_name,
-              interface_descriptor->_internal.pkg_version,
-              interface_descriptor->_internal.intf_name,
-              interface_descriptor->_internal.intf_version)
-          != NULL)
-      {
-        // IPC shall not accept interfaces with same name and version because it cannot decided
-        // each one to retrieve when someone uses az_ulib_ipc_try_get_interface().
-        result = AZ_ERROR_ULIB_ELEMENT_DUPLICATE;
-      }
-      else
-      {
-        if ((new_interface = get_first_free()) == NULL) // interface with ref_count == 0.
-        {
-          result = AZ_ERROR_NOT_ENOUGH_SPACE;
-        }
-        else
-        {
-          new_interface->interface_descriptor = interface_descriptor;
-          new_interface->flags = AZ_ULIB_IPC_FLAGS_NONE;
-          new_interface->hash = (_az_ipc_control_block->_internal.publish_count++);
-          AZ_ULIB_PORT_GET_DATA_CONTEXT(&(new_interface->data_base_address));
-
-          // Look up for default.
-          if (lookup_interface(
-                  interface_descriptor->_internal.pkg_name,
-                  AZ_ULIB_VERSION_DEFAULT,
-                  interface_descriptor->_internal.intf_name,
-                  interface_descriptor->_internal.intf_version)
-              == NULL)
-          {
-            // No other package exposes this interface, so make it default.
-            new_interface->flags = AZ_ULIB_IPC_FLAGS_DEFAULT;
-          }
-
-          // ref_count >= 1 means that this is a valid interface.
-          new_interface->ref_count = 1;
-
-          result = AZ_OK;
-        }
-      }
-    }
-    az_pal_os_lock_release(&(_az_ipc_control_block->_internal.lock));
   }
 
   return result;
@@ -326,21 +434,124 @@ AZ_NODISCARD az_result az_ulib_ipc_set_default(
       }
       else
       {
+        result = AZ_OK;
         _az_ulib_ipc_interface* old_default_interface;
         // Try to find the old default.
         if ((old_default_interface = lookup_interface(
                  package_name, AZ_ULIB_VERSION_DEFAULT, interface_name, interface_version))
             != NULL)
         {
-          // Set as not default anymore.
-          old_default_interface->flags &= !AZ_ULIB_IPC_FLAGS_DEFAULT;
-          // Force all old handle to renew and get the new default.
-          old_default_interface->hash = (_az_ipc_control_block->_internal.publish_count++);
+          if (old_default_interface == new_default_interface)
+          {
+            result = AZ_ERROR_ARG;
+          }
+          else
+          {
+            // Set as not default anymore.
+            old_default_interface->flags &= !AZ_ULIB_IPC_FLAGS_DEFAULT;
+
+            // Force all old handle to renew and get the new default.
+            old_default_interface->hash = (_az_ipc_control_block->_internal.publish_count++);
+
+            // Change default in registry.
+            result = update_interface_information_in_registry(old_default_interface);
+          }
         }
 
-        // Set new default interface.
-        new_default_interface->flags |= AZ_ULIB_IPC_FLAGS_DEFAULT;
-        result = AZ_OK;
+        if (result == AZ_OK)
+        {
+          // Set new default interface.
+          new_default_interface->flags |= AZ_ULIB_IPC_FLAGS_DEFAULT;
+
+          // Change default in registry.
+          result = update_interface_information_in_registry(new_default_interface);
+        }
+      }
+    }
+    az_pal_os_lock_release(&(_az_ipc_control_block->_internal.lock));
+  }
+
+  return result;
+}
+
+AZ_NODISCARD az_result
+az_ulib_ipc_publish(const az_ulib_interface_descriptor* const interface_descriptor)
+{
+  _az_PRECONDITION_NOT_NULL(_az_ipc_control_block);
+  _az_PRECONDITION_NOT_NULL(interface_descriptor);
+
+  az_result result;
+  _az_ulib_ipc_interface* new_interface;
+
+  if ((interface_descriptor->_internal.pkg_version == AZ_ULIB_VERSION_DEFAULT)
+      || (interface_descriptor->_internal.intf_version == AZ_ULIB_VERSION_DEFAULT))
+  {
+    // IPC shall not allow publish an interface using the default version.
+    result = AZ_ERROR_ARG;
+  }
+  else
+  {
+    az_pal_os_lock_acquire(&(_az_ipc_control_block->_internal.lock));
+    {
+      if (lookup_interface(
+              interface_descriptor->_internal.pkg_name,
+              interface_descriptor->_internal.pkg_version,
+              interface_descriptor->_internal.intf_name,
+              interface_descriptor->_internal.intf_version)
+          != NULL)
+      {
+        // IPC shall not accept interfaces with same name and version because it cannot
+        // decided each one to retrieve when az_ulib_ipc_try_get_interface() is called.
+        result = AZ_ERROR_ULIB_ELEMENT_DUPLICATE;
+      }
+      else
+      {
+        if (((new_interface = get_first_free()) == NULL) || // interface with ref_count == 0.
+            (az_span_size(interface_descriptor->_internal.intf_name)
+             >= AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME))
+        {
+          result = AZ_ERROR_NOT_ENOUGH_SPACE;
+        }
+        else
+        {
+          new_interface->interface_descriptor = interface_descriptor;
+          new_interface->flags = AZ_ULIB_IPC_FLAGS_NONE;
+          new_interface->hash = (_az_ipc_control_block->_internal.publish_count++);
+          AZ_ULIB_PORT_GET_DATA_CONTEXT(&(new_interface->data_base_address));
+
+          ipc_registry_data registry_data;
+          if (get_interface_information_in_registry(new_interface, &registry_data) == AZ_OK)
+          {
+            if (AZ_ULIB_FLAGS_IS_SET(registry_data.flags, AZ_ULIB_IPC_FLAGS_DEFAULT))
+            {
+              result = az_ulib_ipc_set_default(
+                  interface_descriptor->_internal.pkg_name,
+                  interface_descriptor->_internal.pkg_version,
+                  interface_descriptor->_internal.intf_name,
+                  interface_descriptor->_internal.intf_version);
+            }
+          }
+          else
+          {
+            // Look up for default.
+            if (lookup_interface(
+                    interface_descriptor->_internal.pkg_name,
+                    AZ_ULIB_VERSION_DEFAULT,
+                    interface_descriptor->_internal.intf_name,
+                    interface_descriptor->_internal.intf_version)
+                == NULL)
+            {
+              // No other package exposes this interface, so make it default.
+              new_interface->flags = AZ_ULIB_IPC_FLAGS_DEFAULT;
+              result = update_interface_information_in_registry(new_interface);
+            }
+          }
+
+          // ref_count >= 1 means that this is a valid interface.
+          new_interface->ref_count = 1;
+
+          result = AZ_OK;
+        }
       }
     }
     az_pal_os_lock_release(&(_az_ipc_control_block->_internal.lock));
@@ -358,9 +569,9 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
 
   az_result result;
 
-  // We are using a retry loop to wait for the interface to be free. A semaphore would probably be a
-  // better solution, however, our PAL does not support it yet. So, we will implement it in a
-  // separated Feature [10869774].
+  // We are using a retry loop to wait for the interface to be free. A semaphore would
+  // probably be a better solution, however, our PAL does not support it yet. So, we will
+  // implement it in a separated Feature [10869774].
   uint32_t retry_interval;
   uint32_t retry_total_time = 0;
   if (wait_option_ms == AZ_ULIB_WAIT_FOREVER)
@@ -397,9 +608,13 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
           if (release_interface->ref_count == 1)
           {
             // Nobody is using this interface, just unpublish.
-            release_interface->interface_descriptor = NULL;
-            release_interface->ref_count = 0;
-            result = AZ_OK;
+            result = delete_interface_information_in_registry(release_interface);
+            if ((result == AZ_OK) || (result == AZ_ERROR_ITEM_NOT_FOUND))
+            {
+              release_interface->interface_descriptor = NULL;
+              release_interface->ref_count = 0;
+              result = AZ_OK;
+            }
           }
           // Someone is using this interface.
           else if (retry_total_time < wait_option_ms) // Shall keep waiting.
@@ -409,8 +624,8 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
               // It will not wait forever, so increment the waiting time.
               retry_total_time += retry_interval;
             }
-            // Put this interface on hold, so try_get_interface will fail, it will give this
-            // interface chance to be unpublished.
+            // Put this interface on hold, so try_get_interface will fail, it will give
+            // this interface chance to be unpublished.
             release_interface->flags |= AZ_ULIB_IPC_FLAGS_ON_HOLD;
             result = AZ_ULIB_PENDING;
           }
@@ -426,7 +641,8 @@ AZ_NODISCARD az_result az_ulib_ipc_unpublish(
 
       if (result == AZ_ULIB_PENDING)
       {
-        // Give other threads chance to release this interface. It shall be outside of the "lock".
+        // Give other threads chance to release this interface. It shall be outside of the
+        // "lock".
         az_pal_os_sleep(retry_interval);
       }
 

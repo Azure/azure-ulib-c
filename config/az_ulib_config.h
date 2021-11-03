@@ -46,6 +46,40 @@ extern "C"
  */
 #define AZ_ULIB_CONFIG_MAX_IPC_INSTANCES 128
 
+/**
+ * @brief   Maximum number of chars that can compose the package name.
+ *
+ * Define the maximum number of bytes to store the package name, including the `/0`. Increase this
+ * number shall increase the utilization of RAM in the DM, and the flash in the Registry.
+ */
+#define AZ_ULIB_CONFIG_MAX_DM_PACKAGE_NAME 32
+
+/**
+ * @brief   Maximum number of chars that can compose the package name and version.
+ *
+ * Define the maximum number of bytes to store the package name, an dot and the package version in
+ * hexadecimal, including the `/0`. Increase this number shall increase the utilization of RAM in
+ * the DM, and the flash in the Registry.
+ */
+#define AZ_ULIB_CONFIG_MAX_DM_PACKAGE_NAME_VERSION (AZ_ULIB_CONFIG_MAX_DM_PACKAGE_NAME + 1 + 8)
+
+/**
+ * @brief   Maximum number of chars that can compose the interface name.
+ *
+ * Define the maximum number of bytes to store the interface name, including the `/0`. Increase this
+ * number shall increase the utilization of stack in the IPC, and the flash in the Registry.
+ */
+#define AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME 32
+
+/**
+ * @brief   Maximum number of chars that can compose the interface name and version.
+ *
+ * Define the maximum number of bytes to store the interface name, an dot and the interface version
+ * in hexadecimal, including the `/0`. Increase this number shall increase the utilization of RAM in
+ * the DM, and the flash in the Registry.
+ */
+#define AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME_VERSION (AZ_ULIB_CONFIG_MAX_DM_INTERFACE_NAME + 1 + 8)
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
