@@ -1,3 +1,8 @@
+--------------------------------
+This repository has been archived due to sustained lack of activity as noted in issue: [https://github.com/Azure/azure-ulib-c/issues/89](https://github.com/Azure/azure-ulib-c/issues/89)
+--------------------------------
+
+
 # Azure uLib C - PREVIEW
 
 [![Build Status](https://azure-iot-sdks.visualstudio.com/azure-iot-stuben/_apis/build/status/azure-iot-ulib/azure-iot-ulib-build?branchName=master)](https://azure-iot-sdks.visualstudio.com/azure-iot-stuben/_build/latest?definitionId=176&branchName=master)
